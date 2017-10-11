@@ -1,0 +1,35 @@
+---
+title: "A guided tour in targeted learning territory"
+author: "David Benkeser, Antoine Chambaz, Nima Hejazi"
+date: "10/11/2017"
+encoding: "UTF-8"
+output:
+  pdf_document:
+    toc: true
+    toc_depth: 2
+    number_sections: true
+  latex_engine: pdflatex
+  citation_package: natbib
+---
+
+<!-- to compile the file, run
+
+R -e "rmarkdown::render('dan.Rmd', encoding='UTF-8')"
+
+-->
+
+# Introduction
+
+This is a very first draft of our article. The current *tentative* title is
+\begin{center}
+  {\em A guided tour in targeted learning territory}
+\end{center}
+
+```{r setup, echo = FALSE}
+knitr::opts_chunk$set(
+    warnings = FALSE,
+	fig.width = 12, 
+	fig.height = 4, 
+	fig.path = 'img/'
+)
+```
