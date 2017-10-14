@@ -8,6 +8,8 @@ output:
     toc: true
     toc_depth: 2
     number_sections: true
+    includes:
+      in_header: dan_header.tex
   latex_engine: pdflatex
   citation_package: natbib
 ---
@@ -18,18 +20,108 @@ R -e "rmarkdown::render('dan.Rmd', encoding='UTF-8')"
 
 -->
 
-# Introduction
+```{r setup, echo = FALSE}
+knitr::opts_chunk$set(
+  warnings = FALSE,
+  fig.width = 12, 
+  fig.height = 4, 
+  fig.path = 'img/')
+```
+
 
 This is a very first draft of our article. The current *tentative* title is
 \begin{center}
   {\em A guided tour in targeted learning territory}
 \end{center}
 
-```{r setup, echo = FALSE}
-knitr::opts_chunk$set(
-    warnings = FALSE,
-	fig.width = 12, 
-	fig.height = 4, 
-	fig.path = 'img/'
-)
+```{r visible-setup}
+set.seed(54321) ## because reproducibility matters...
+suppressMessages(library(R.utils)) ## make sure it is installed
+expit <- plogis
+logit <- qlogis
 ```
+
+# Introduction
+
+We are interested in a reproducible experiment. The generic summary of how one
+realization of the experiment unfolds, our observation, is called $O$. We view
+$O$  as a  random variable  drawn from  what we  call the  law $P_{0}$  of the
+experiment.  The  law $P_{0}$  is viewed  as an  element of  what we  call the
+model. Denoted by $\calM$, the model is the collection of \emph{all} laws from
+which $O$ can be drawn. The more  we know about the experiment, the smaller is
+$\calM$. In all our examples, model $\calM$ will put no restriction whatsoever
+on the candidate laws.
+
+Consider the following chunk of code:
+```{r simulation}
+drawFromExperiment <- function(n, intervention = c("none", "zero", "one")) {
+  ##
+  ## preliminary
+  ##
+  n <- Arguments$getInteger(n, c(1, Inf))
+  intervention <- match.arg(intervention)
+  ## 'gbar' and 'Qbar' factors
+  gbar <- function(W) {
+    expit(-0.3 + 2 * W - 1.5 * W^2)
+  }
+  Qbar <- function(AW) {
+    A <- AW[, 1]
+	W <- AW[, 2]
+    A * cos(2 * pi * W) + (1 - A) * sin(2 * pi * W^2)
+  }
+  ##
+  ## sampling
+  ##
+  
+  ## context
+  W <- runif(n)
+  
+  ## counterfactual rewards
+  zeroW <- cbind(A = 0, W)
+  oneW <- cbind(A = 1, W)
+  Yzero <- rnorm(n, mean = Qbar(zeroW), sd = 1)
+  Yone <- rnorm(n, mean = Qbar(oneW), sd = 1)
+  
+  ## action undertaken
+  if (intervention == "none") {
+    A <- rbinom(n, size = 1, prob = gbar(W))
+  } else if (intervention == "zero") {
+    A <- rep(0, n)
+  } else if (intervention == "one") {
+    A <- rep(1, n)
+  }
+  
+  ## actual rewards
+  Y <- A * Yone + (1 - A) * Yzero
+  
+  ## observation
+  obs <- cbind(W = W, A = A, Y = Y)
+  attr(obs, "gbar") <- gbar
+  attr(obs, "Qbar") <- Qbar
+  
+  return(obs)
+}
+```
+
+We can  interpret `drawFromExperiment` as a  law $P_{0}$ since we  can use the
+function to sample observations  from a common law.  It is  even a little more
+than that, because we can \textbf{intervene} on the experiment, by setting its
+`intervention`  argument to  either `"zero"`  or `"one"`  (the default  value,
+`"none"`, corresponds to the absence of  intervention). The next chunk of code
+runs the experiment five times independently:
+```{r draw-five-obs}
+obs.five <- drawFromExperiment(5)
+obs.five
+```
+The `attributes`  of the object `obs`  are visible because we  act as oracles,
+\emph{i.e.},  we  know  completely  the  nature  of  the  experiment.  From  a
+probabilistic  point   of  view,   the  attributes   `gbar`  and   `Qbar`  are
+infinite-dimensional  features  of $P_{0}$.  There  is  more to  $P_{0}$  than
+$\gbar_{0}$ and $\Qbar_{0}$, formally defined by 
+\begin{equation}
+  \gbar_{0} (W) \equiv  P_{0} (A=1|W), \quad \Qbar_{0}  (A,W) \equiv E_{P_{0}}
+  (Y | A, W),
+\end{equation}
+for  instance  the  marginal  distribution  of  $W$  under  $P_{0}$,  and  the
+conditional  distribution   (not  expectation)  of  $Y$   given  $(A,W)$,  but
+$\gbar_{0}$ and $\Qbar_{0}$ will play a prominent role in our story.
