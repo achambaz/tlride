@@ -1,9 +1,18 @@
-\usepackage{amsmath,amssymb}
+\usepackage{amsmath,amssymb,xcolor}
 
+\makeatletter
+\renewcommand\subsection{\@startsection{subsection}{3}{\z@}%
+                                     {-3.25ex\@plus -1ex \@minus -.2ex}%
+                                     {-1.5ex \@plus .2ex}%
+                                     {\normalfont\normalsize\bfseries}}
+\makeatother
+
+\newcommand{\bbO}{\mathbb{O}}
+\newcommand{\bbP}{\mathbb{P}}
 \newcommand{\calM}{{\cal M}}
 \newcommand{\gbar}{\bar{g}}
 \newcommand{\Qbar}{\bar{Q}}
-
+\newcommand{\tcb}[1]{\textcolor{blue}{#1}}
 
 %%% Local Variables:
 %%% mode: latex
