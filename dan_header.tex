@@ -1,4 +1,4 @@
-\usepackage{amsmath,amssymb,xcolor}
+\usepackage{amsmath,interval,amssymb,xcolor,manfnt}
 
 \makeatletter
 \renewcommand\subsection{\@startsection{subsection}{3}{\z@}%
@@ -7,13 +7,21 @@
                                      {\normalfont\normalsize\bfseries}}
 \makeatother
 
+\renewcommand*{\thefootnote}{\fnsymbol{footnote}}
+
+\DeclareMathOperator{\Dirac}{Dirac}
+\DeclareMathOperator{\Rem}{Rem}
+\DeclareMathOperator{\Var}{Var}
+
 \newcommand{\bbO}{\mathbb{O}}
 \newcommand{\bbP}{\mathbb{P}}
+\newcommand{\bbR}{\mathbb{R}}
 \newcommand{\calM}{\mathcal{M}}
 \newcommand{\calO}{\mathcal{O}}
 \newcommand{\gbar}{\bar{g}}
+\newcommand{\Psihat}{\widehat{\Psi}}
 \newcommand{\Qbar}{\bar{Q}}
-\newcommand{\tcb}[1]{\textcolor{blue}{#1}}
+\newcommand{\tcg}[1]{\textcolor{olive}{#1}}
 
 %%% Local Variables:
 %%% mode: latex

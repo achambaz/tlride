@@ -14,7 +14,7 @@ expit <- plogis
 logit <- qlogis
 
 ## ----simulation----------------------------------------------------------
-drawFromExperiment <- function(n, full = FALSE) {
+draw_from_experiment <- function(n, full = FALSE) {
   ## preliminary
   n <- Arguments$getInteger(n, c(1, Inf))
   full <- Arguments$getLogical(full)
@@ -24,8 +24,8 @@ drawFromExperiment <- function(n, full = FALSE) {
   }
   Qbar <- function(AW) {
     A <- AW[, 1]
-	W <- AW[, 2]
-    A * cos(2 * pi * W) + (1 - A) * sin(2 * pi * W^2)
+    W <- AW[, 2]
+    A * cos((1 + W) * pi / 5) + (1 - A) * sin((1 + W^2) * pi / 4)
   }
   ## sampling
   ## ## context
@@ -33,8 +33,10 @@ drawFromExperiment <- function(n, full = FALSE) {
   ## ## counterfactual rewards
   zeroW <- cbind(A = 0, W)
   oneW <- cbind(A = 1, W)
-  Yzero <- rnorm(n, mean = Qbar(zeroW), sd = 1)
-  Yone <- rnorm(n, mean = Qbar(oneW), sd = 1)
+  Qbar.zeroW <- Qbar(zeroW)
+  Qbar.oneW <- Qbar(oneW)
+  Yzero <- rbeta(n, shape1 = 1, shape2 = (1 - Qbar.zeroW) / Qbar.zeroW)
+  Yone <- rbeta(n, shape1 = 1, shape2 = (1 - Qbar.oneW) / Qbar.oneW)
   ## ## action undertaken
   A <- rbinom(n, size = 1, prob = gbar(W))
   ## ## actual reward
@@ -53,26 +55,23 @@ drawFromExperiment <- function(n, full = FALSE) {
 }
 
 ## ----draw-five-obs-------------------------------------------------------
-five.obs <- drawFromExperiment(5) 
-five.obs
+(five_obs <- draw_from_experiment(5))
 
 ## ----DAG-----------------------------------------------------------------
 ## plot the causal diagram
 
 ## ----approx-psi-zero-a---------------------------------------------------
 B <- 1e6
-full.obs <- drawFromExperiment(B, full = TRUE)
-psi.hat <- mean(full.obs[, "Yone"] - full.obs[, "Yzero"])
-psi.hat
+full_obs <- draw_from_experiment(B, full = TRUE)
+(psi_hat <- mean(full_obs[, "Yone"] - full_obs[, "Yzero"]))
 
 ## ----approx-psi-zero-b---------------------------------------------------
-sd.hat <- sd(full.obs[, "Yone"] - full.obs[, "Yzero"])
+sd_hat <- sd(full_obs[, "Yone"] - full_obs[, "Yzero"])
 alpha <- 0.05
-psi.CI <- psi.hat + c(-1, 1) * qnorm(1 - alpha / 2) * sd.hat / sqrt(B)
-psi.CI
+(psi_CI <- psi_hat + c(-1, 1) * qnorm(1 - alpha / 2) * sd_hat / sqrt(B))
 
-## ----another_simulation--------------------------------------------------
-drawFromAnotherExperiment <- function(n, h = 0) {
+## ----another-simulation--------------------------------------------------
+draw_from_another_experiment <- function(n, h = 0) {
   ## preliminary
   n <- Arguments$getInteger(n, c(1, Inf))
   h <- Arguments$getNumeric(h)
@@ -88,54 +87,98 @@ drawFromAnotherExperiment <- function(n, h = 0) {
   }
   ## sampling
   ## ## context
-  W <- rbeta(n, shape1 = 2, shape2 = 2)
+  W <- runif(n, min = 1/10, max = 9/10)
   ## ## action undertaken
   A <- rbinom(n, size = 1, prob = gbar(W))
   ## ## reward
+  shape1 <- 4
   QAW <- Qbar(cbind(A, W))
-  Y <- rbeta(n, shape1 = 1, shape2 = (1 - QAW) / QAW)
+  Y <- rbeta(n, shape1 = shape1, shape2 = shape1 * (1 - QAW) / QAW)
   ## ## observation
   obs <- cbind(W = W, A = A, Y = Y)
   attr(obs, "gbar") <- gbar
   attr(obs, "Qbar") <- Qbar
-  attr(obs, "QW") <- dunif
+  attr(obs, "QW") <- function(x){dunif(x, min = 1/10, max = 9/10)}
+  attr(obs, "shape1") <- shape1
   ##
   return(obs)
 }
 
 ## ----approx-psi-one------------------------------------------------------
-obs.from.another.experiment <- drawFromAnotherExperiment(1)
+five_obs_from_another_experiment <- draw_from_another_experiment(5)
 integrand <- function(w) {
-  Qbar <- attr(obs.from.another.experiment, "Qbar")
-  QW <- attr(obs.from.another.experiment, "QW")
+  Qbar <- attr(five_obs_from_another_experiment, "Qbar")
+  QW <- attr(five_obs_from_another_experiment, "QW")
   ( Qbar(cbind(1, w)) - Qbar(cbind(0, w)) ) * QW(w)
 }
-psi.Pi.zero <- integrate(integrand, lower = 0, upper = 1)$val
-psi.Pi.zero
+(psi_Pi_zero <- integrate(integrand, lower = 0, upper = 1)$val)
 
-## ----psi-approx-psi-one--------------------------------------------------
+## ----psi-approx-psi-one, fig.cap  = "Evolution of the  statistical parameter along a fluctuation."----
 approx <- seq(-1, 1, length.out = 1e2)
-psi.Pi.h <- sapply(approx, function(t) {
-  obs.from.another.experiment <- drawFromAnotherExperiment(1, h = t)
+psi_Pi_h <- sapply(approx, function(t) {
+  obs_from_another_experiment <- draw_from_another_experiment(1, h = t)
   integrand <- function(w) {
-    Qbar <- attr(obs.from.another.experiment, "Qbar")
-    QW <- attr(obs.from.another.experiment, "QW")
+    Qbar <- attr(obs_from_another_experiment, "Qbar")
+    QW <- attr(obs_from_another_experiment, "QW")
     ( Qbar(cbind(1, w)) - Qbar(cbind(0, w)) ) * QW(w)
   }
   integrate(integrand, lower = 0, upper = 1)$val  
 })
-slope <- (psi.Pi.h - psi.Pi.zero) / approx
-slope <- slope[min(which(approx > 0))]
+slope_approx <- (psi_Pi_h - psi_Pi_zero) / approx
+slope_approx <- slope_approx[min(which(approx > 0))]
 ggplot() +
-  geom_point(data = data.frame(x = approx,
-                               y = psi.Pi.h),
-             aes(x, y), color = "firebrick") +
-  labs(x = "h", y = expression(Psi(Pi[h]))) +
-  geom_segment(data = data.frame(x = c(-1, 1),
-                                 y = psi.Pi.zero + slope * c(-1, 1)),
-               aes(x = x[1], y = y[1], xend = x[2], yend = y[2]),
-               color = "blue",
-               arrow = arrow(length = unit(0.03, "npc"))) +
-  geom_vline(xintercept = 0) +
-  geom_hline(yintercept = psi.Pi.zero)
+  geom_point(data = data.frame(x = approx, y = psi_Pi_h), aes(x, y),
+             color = "#CC6666") +
+  geom_segment(aes(x = -1, y = psi_Pi_zero - slope_approx,
+                   xend = 1, yend = psi_Pi_zero + slope_approx),
+               arrow = arrow(length = unit(0.03, "npc")),
+               color = "#9999CC") +
+  geom_vline(xintercept = 0, color = "#66CC99") +
+  geom_hline(yintercept = psi_Pi_zero, color = "#66CC99") +
+  labs(x = "h", y = expression(Psi(Pi[h]))) 
+
+## ----eic-----------------------------------------------------------------
+eic <- function(obs, psi) {
+  Qbar <- attr(obs, "Qbar")
+  gbar <- attr(obs, "gbar")
+  QAW <- Qbar(obs[, c("A", "W")])
+  gW <- gbar(obs[, "W"])
+  lgAW <- obs[, "A"] * gW + (1 - obs[, "A"]) * (1 - gW)
+  ( Qbar(cbind(1, obs[, "W"])) - Qbar(cbind(0, obs[, "W"])) - psi ) +
+    (2 * obs[, "A"] - 1) / lgAW * (obs[, "Y"] - QAW)
+}
+
+(eic(five_obs, psi = psi_hat))
+(eic(five_obs_from_another_experiment, psi = psi_Pi_zero))
+
+## ----cramer-rao----------------------------------------------------------
+obs <- draw_from_experiment(B)
+(cramer_rao_hat <- var(eic(obs, psi = psi_hat)))
+
+## ----cramer-rao-another-experiment---------------------------------------
+obs_from_another_experiment <- draw_from_another_experiment(B)
+(cramer_rao_Pi_zero_hat <- var(eic(obs_from_another_experiment, psi = 59/300)))
+
+## ----recover-slope-------------------------------------------------------
+s_draw_from_another_experiment <- function(obs) { 
+  ## preliminary
+  Qbar <- attr(obs, "Qbar")
+  QAW <- Qbar(obs[, c("A", "W")])
+  shape1 <- Arguments$getInteger(attr(obs, "shape1"), c(1, Inf))
+  ## computations
+  betaAW <- shape1 * (1 - QAW) / QAW
+  out <- log(1 - obs[, "Y"])
+  for (int in 1:shape1) {
+    out <- out + 1/(int - 1 + betaAW)
+  }
+  out <- - out * shape1 * (1 - QAW) / QAW * 10 * sqrt(obs[, "W"]) * obs[, "A"]
+  ## no need to center given how we will use it
+  return(out)
+}
+
+vars <- eic(obs_from_another_experiment, psi = 59/300) *
+  s_draw_from_another_experiment(obs_from_another_experiment)
+sd_hat <- sd(vars)
+(slope_hat <- mean(vars))
+(slope_CI <- slope_hat + c(-1, 1) * qnorm(1 - alpha / 2) * sd_hat / sqrt(B))
 
