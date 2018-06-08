@@ -1,0 +1,538 @@
+---
+title: "A guided tour in targeted learning territory"
+author: "David Benkeser, Antoine Chambaz, Nima Hejazi"
+date: "08/06/2018"
+encoding: "UTF-8"
+output:
+  bookdown::pdf_document2:
+    toc: true
+    toc_depth: 2
+    number_sections: true
+    includes:
+      in_header: dan_header.tex
+  latex_engine: pdflatex
+  citation_package: natbib
+---
+
+<!-- to compile the file, run
+
+R -e "rmarkdown::render('dan.Rmd', encoding='UTF-8')"
+
+-->
+
+
+```{r setup, echo = FALSE}
+knitr::opts_chunk$set(
+  size = "tiny",
+  warnings = FALSE,
+  fig.width = 12, 
+  fig.height = 4, 
+  fig.path = 'img/')
+```
+
+\section{Introduction}
+
+\tcg{This is a very first draft  of our article. The current *tentative* title
+  is "A guided tour in targeted learning territory".}
+
+\tcg{Explain our objectives and how we will meet them. Explain that the symbol
+\textdbend indicates more delicate material.}
+
+\tcg{Use sectioning a lot to ease cross-referencing.}
+
+\tcg{Do we include exercises?}
+
+```{r visible-setup}
+set.seed(54321) ## because reproducibility matters...
+suppressMessages(library(R.utils)) ## make sure it is installed
+suppressMessages(library(ggplot2)) ## make sure it is installed
+expit <- plogis
+logit <- qlogis
+```
+
+
+\section{A simulation study}
+\label{sec:simulation:study}
+
+blabla
+
+\subsection{Reproducible experiment as a law.}
+\label{subsec:as:a:law}
+
+We are interested in a reproducible experiment. The generic summary of how one
+realization of the experiment unfolds, our observation, is called $O$. We view
+$O$  as a  random variable  drawn from  what we  call the  law $P_{0}$  of the
+experiment.  The  law $P_{0}$  is viewed  as an  element of  what we  call the
+model. Denoted  by $\calM$, the model  is the collection of  \textit{all} laws
+from which  $O$ can be drawn  and that meet some  constraints. The constraints
+translate the knowledge  we have about the experiment. The  more we know about
+the experiment,  the smaller is  $\calM$. In  all our examples,  model $\calM$
+will put very few restrictions on the candidate laws.
+
+Consider the following chunk of code:
+```{r simulation}
+draw_from_experiment <- function(n, full = FALSE) {
+  ## preliminary
+  n <- Arguments$getInteger(n, c(1, Inf))
+  full <- Arguments$getLogical(full)
+  ## ## 'gbar' and 'Qbar' factors
+  gbar <- function(W) {
+    expit(-0.3 + 2 * W - 1.5 * W^2)
+  }
+  Qbar <- function(AW) {
+    A <- AW[, 1]
+    W <- AW[, 2]
+    A * cos((1 + W) * pi / 5) + (1 - A) * sin((1 + W^2) * pi / 4)
+  }
+  ## sampling
+  ## ## context
+  W <- runif(n)
+  ## ## counterfactual rewards
+  zeroW <- cbind(A = 0, W)
+  oneW <- cbind(A = 1, W)
+  Qbar.zeroW <- Qbar(zeroW)
+  Qbar.oneW <- Qbar(oneW)
+  Yzero <- rbeta(n, shape1 = 1, shape2 = (1 - Qbar.zeroW) / Qbar.zeroW)
+  Yone <- rbeta(n, shape1 = 1, shape2 = (1 - Qbar.oneW) / Qbar.oneW)
+  ## ## action undertaken
+  A <- rbinom(n, size = 1, prob = gbar(W))
+  ## ## actual reward
+  Y <- A * Yone + (1 - A) * Yzero
+  ## ## observation
+  if (full) {
+    obs <- cbind(W = W, Yzero = Yzero, Yone = Yone, A = A, Y = Y)
+  } else {
+    obs <- cbind(W = W, A = A, Y = Y)
+  }
+  attr(obs, "gbar") <- gbar
+  attr(obs, "Qbar") <- Qbar
+  attr(obs, "QW") <- dunif
+  ##
+  return(obs)
+}
+```
+
+We can interpret `draw_from_experiment` as a  law $P_{0}$ since we can use the
+function to sample observations  from a common law.  It is  even a little more
+than that, because we can tweak the experiment, by setting its `full` argument
+to  `TRUE`, in  order  to  get what  appear  as intermediary  (counterfactual)
+variables  in  the regular  experiment.   The  next  chunk  of code  runs  the
+(regular) experiment five times independently:
+```{r draw-five-obs} 
+(five_obs <- draw_from_experiment(5))
+``` 
+We can view the `attributes` of object `five_obs` because, in this section, we
+act  as  oracles,  \textit{i.e.},  we   know  completely  the  nature  of  the
+experiment.  From a probabilistic point of view, the attributes `gbar`, `Qbar`
+and  `QW` are  infinite-dimensional features  of  $P_{0}$.  There  is more  to
+$P_{0}$ than  $\gbar_{0}$ (`gbar`), $\Qbar_{0}$ (`Qbar`),  formally defined by
+\begin{equation}  \gbar_{0} (W)  \equiv P_{0}  (A=1|W), \quad  \Qbar_{0} (A,W)
+\equiv  E_{P_{0}} (Y  | A,  W), \end{equation}  and the  marginal distribution
+$Q_{0,W}$  of  $W$   under  $P_{0}$  (`QW`),  for   instance  the  conditional
+distribution  (not  expectation)  of   $Y$  given  $(A,W)$,  but  $\gbar_{0}$,
+$\Qbar_{0}$ and $Q_{0,W}$ will play a prominent role in our story.
+
+\subsection{The parameter of interest, first pass.}
+\label{subsec:parameter:first}
+
+It  happens  that we  especially  care  for  a finite-dimensional  feature  of
+$P_{0}$  that   we  denote  by   $\psi_{0}$.   Its  definition   involves  the
+aforementioned infinite-dimensional features: 
+\begin{align}
+\label{eq:psi0}
+  \psi_{0} 
+  &\equiv E_{P_{0}} \left(\Qbar_{0}(1, W) - \Qbar_{0}(0, W)\right)\\
+\notag
+&= \int \left(\Qbar_{0}(1, w) - \Qbar_{0}(0, w)\right) dQ_{0,W}(w).
+\end{align}
+Acting as oracles, we can compute explicitely the numerical value of
+$\psi_{0}$. 
+
+Our  interest in  $\psi_{0}$ is  of  causal nature.  Taking a  closer look  at
+`drawFromExperiment` reveals indeed  that the random making  of an observation
+$O$ drawn  from $P_{0}$ can  be summarized by  the following causal  graph and
+nonparametric system of structural equations:
+```{r DAG}
+## plot the causal diagram
+```
+and, for some  deterministic functions $f_w$, $f_a$,  $f_y$ and independent
+sources of randomness $U_w$, $U_a$, $U_y$,
+\begin{enumerate}
+\item sample  the context where the  rest of the experiment
+  will take place, $W = f_{w}(U_w)$;
+\item  sample the  two counterfactual  rewards of  the two
+  actions  that   can  be   undertaken,  $Y_{0}  =   f_{y}(0,  W,   U_y)$  and
+  $Y_{1} = f_{y}(1, W, U_y)$;
+\item\label{item:A:equals} sample   which  action is carried
+  out in the given context, $A = f_{a} (W, U_a)$;
+\item    define        the    corresponding    reward,
+  $Y = A Y_{1} + (1-A) Y_{0}$;
+\item summarize the course of the experiment  with the observation $O = (W, A,
+  Y)$, thus concealing $Y_{0}$ and $Y_{1}$. 
+\end{enumerate}
+
+The above  description of the  experiment `draw_from_experiment` is  useful to
+ram home what it means to run the "full" experiment by setting argument `full`
+to  `TRUE`  in   a  call  to  `draw_from_experiment`.  Doing   so  triggers  a
+modification   of  the   nature  of   the  experiment,   enforcing  that   the
+counterfactual  rewards $Y_{0}$  and $Y_{1}$  be part  of the  summary of  the
+experiment eventually.  In light  of the above  enumeration, $\bbO  \equiv (W,
+Y_{0}, Y_{1}, A,  Y)$ is output, as  opposed to its summary  measure $O$. This
+defines another experiment and its law, that we denote $\bbP_{0}$.
+
+It is well known \tcg{(do we give the proof or refer to other articles?)} that
+\begin{equation*}   \psi_{0}  =   E_{\bbP_{0}}  \left(Y_{1}   -  Y_{0}\right).
+\end{equation*} Thus, $\psi_{0}$ compares (additively) the averages of the two
+counterfactual rewards.  In other words, $\psi_{0}$  quantifies the difference
+in average  of the  reward one  would get in  a world  where one  would always
+enforce action $a=1$ with the reward one  would get in a world where one would
+always  enforce  action  $a=0$.   This  said, it  is  worth  emphasizing  that
+$\psi_{0}$ is a well defined parameter beyond its causal interpretation.
+
+To conclude this subsection, we draw  advantage from the possibility to sample
+full observations  from `draw_from_experiment` by setting  its argument `full`
+to `TRUE` in order to numerically approximate $\psi_{0}$.  By the law of large
+numbers, the following chunk of code approximates $\psi_{0}$:
+```{r approx-psi-zero-a}
+B <- 1e6
+full_obs <- draw_from_experiment(B, full = TRUE)
+(psi_hat <- mean(full_obs[, "Yone"] - full_obs[, "Yzero"]))
+```
+In fact,  the central limit  theorem and Slutsky's lemma  allow us to  build a
+confidence interval with asymptotic level 95\% for $\psi_{0}$:
+```{r approx-psi-zero-b}
+sd_hat <- sd(full_obs[, "Yone"] - full_obs[, "Yzero"])
+alpha <- 0.05
+(psi_CI <- psi_hat + c(-1, 1) * qnorm(1 - alpha / 2) * sd_hat / sqrt(B))
+```
+
+\subsection{The parameter of interest, second pass.}
+\label{subsec:parameter:second}
+
+Suppose we  know beforehand that  $O$ drawn from  $P_{0}$ takes its  values in
+$\calO \equiv  [0,1] \times \{0,1\}  \times [0,1]$ and that  $P_{0}(A=1|W)$ is
+bounded  away from  zero and  one $Q_{0,W}$-almost  surely (this  is the  case
+indeed).  Then  we can  define model  $\calM$ as the  set of  all laws  $P$ on
+$\calO$ such that $\gbar(W) \equiv P(A=1|W)$ is bounded away from zero and one
+$Q_{W}$-almost surely, where $Q_{W}$ is the marginal distribution of $W$
+under $P$.  
+
+Let us also define generically $\Qbar$ as \begin{equation*} \Qbar (A,W) \equiv
+E_{P} (Y|A, W). \end{equation*} Central  to our approach is viewing $\psi_{0}$
+as the  value at  $P_{0}$ of  the statistical mapping  $\Psi$ from  $\calM$ to
+$[0,1]$ characterized  by \begin{align*} \Psi(P) &\equiv  E_{P} \left(\Qbar(1,
+W)  - \Qbar(0,  W)\right)\\ &=  \int  \left(\Qbar(1, w)  - \Qbar(0,  w)\right)
+dQ_{W}(w), \end{align*}  a clear extension of  \eqref{eq:psi0}.  For instance,
+although the  law $\Pi_{0}  \in \calM$ encoded  by default  (\textit{i.e.}, with
+`h=0`)  in  `drawFromAnotherExperiment`  defined below  differs  starkly  from
+$P_{0}$,
+```{r another-simulation}
+draw_from_another_experiment <- function(n, h = 0) {
+  ## preliminary
+  n <- Arguments$getInteger(n, c(1, Inf))
+  h <- Arguments$getNumeric(h)
+  ## ## 'gbar' and 'Qbar' factors
+  gbar <- function(W) {
+    sin((1 + W) * pi / 6)
+  }
+  Qbar <- function(AW, hh = h) {
+    A <- AW[, 1]
+    W <- AW[, 2]
+    expit( logit( A *  W + (1 - A) * W^2 ) +
+           hh * 10 * sqrt(W) * A )
+  }
+  ## sampling
+  ## ## context
+  W <- runif(n, min = 1/10, max = 9/10)
+  ## ## action undertaken
+  A <- rbinom(n, size = 1, prob = gbar(W))
+  ## ## reward
+  shape1 <- 4
+  QAW <- Qbar(cbind(A, W))
+  Y <- rbeta(n, shape1 = shape1, shape2 = shape1 * (1 - QAW) / QAW)
+  ## ## observation
+  obs <- cbind(W = W, A = A, Y = Y)
+  attr(obs, "gbar") <- gbar
+  attr(obs, "Qbar") <- Qbar
+  attr(obs, "QW") <- function(x){dunif(x, min = 1/10, max = 9/10)}
+  attr(obs, "shape1") <- shape1
+  ##
+  return(obs)
+}
+```
+parameter $\Psi(\Pi_{0})$  is well defined, and  approximated by `psi.Pi.zero`
+in the following chunk of code:
+```{r approx-psi-one}
+five_obs_from_another_experiment <- draw_from_another_experiment(5)
+integrand <- function(w) {
+  Qbar <- attr(five_obs_from_another_experiment, "Qbar")
+  QW <- attr(five_obs_from_another_experiment, "QW")
+  ( Qbar(cbind(1, w)) - Qbar(cbind(0, w)) ) * QW(w)
+}
+(psi_Pi_zero <- integrate(integrand, lower = 0, upper = 1)$val)
+```
+(easy algebra reveals that $\Psi(\Pi_{0}) = 59/300$ indeed).
+
+\subsection{Being smooth, first pass.}
+\label{subsec:being:smooth:one}
+
+
+Luckily, the statistical mapping $\Psi$ is well behaved, or smooth.  Here,
+this colloquial expression refers to the fact that, for each $P \in \calM$, if
+$P_{h} \to_{h} P$ in  $\calM$ from a direction $s$ when  the real parameter $h
+\to 0$,  then not  only $\Psi(P_{h}) \to_{h}  \Psi(P)$ (continuity),  but also
+$h^{-1} [\Psi(P_{h}) - \Psi(P)] \to_{h} c$,  where the real number $c$ depends
+on $P$ and $s$ (differentiability).
+
+
+For   instance,   let   $\Pi_{h}   \in   \calM$  be   the   law   encoded   in
+`draw_from_another_experiment` with  `h` ranging over  $\interval{-1}{1}$.  We
+will argue shortly that $\Pi_{h} \to_{h}  \Pi_{0}$ in $\calM$ from a direction
+$s$ when  $h \to  0$.  The  following chunk of  code evaluates  and represents
+$\Psi(\Pi_{h})$   for   $h$   ranging   in   a   discrete   approximation   of
+$\interval{-1}{1}$:
+```{r psi-approx-psi-one, fig.cap  = "Evolution of the  statistical parameter along a fluctuation."}
+approx <- seq(-1, 1, length.out = 1e2)
+psi_Pi_h <- sapply(approx, function(t) {
+  obs_from_another_experiment <- draw_from_another_experiment(1, h = t)
+  integrand <- function(w) {
+    Qbar <- attr(obs_from_another_experiment, "Qbar")
+    QW <- attr(obs_from_another_experiment, "QW")
+    ( Qbar(cbind(1, w)) - Qbar(cbind(0, w)) ) * QW(w)
+  }
+  integrate(integrand, lower = 0, upper = 1)$val  
+})
+slope_approx <- (psi_Pi_h - psi_Pi_zero) / approx
+slope_approx <- slope_approx[min(which(approx > 0))]
+ggplot() +
+  geom_point(data = data.frame(x = approx, y = psi_Pi_h), aes(x, y),
+             color = "#CC6666") +
+  geom_segment(aes(x = -1, y = psi_Pi_zero - slope_approx,
+                   xend = 1, yend = psi_Pi_zero + slope_approx),
+               arrow = arrow(length = unit(0.03, "npc")),
+               color = "#9999CC") +
+  geom_vline(xintercept = 0, color = "#66CC99") +
+  geom_hline(yintercept = psi_Pi_zero, color = "#66CC99") +
+  labs(x = "h", y = expression(Psi(Pi[h]))) 
+```
+
+The dotted curve  represents the function $h \mapsto  \Psi(\Pi_{h})$. The blue
+line represents  the tangent to the  previous curve at $h=0$,  which is indeed
+differentiable around $h=0$.  It is  derived by simple geometric arguments. In
+the  next  subsection,  we formalize  what  it  means  to  be smooth  for  the
+statistical mapping $\Psi$. Once the presentation is complete, we will be able
+to derive a  closed-form expression for the  slope of the blue  curve from the
+chunk of code where `draw_from_another_experiment` is defined.
+
+\subsection{\textdbend Being smooth, second pass.}
+\label{subsec:being:smooth:two}
+
+Let us now describe what it means  for statistical mapping $\Psi$ to be smooth
+at  every $P  \in \calM$.   The description  necessitates the  introduction of
+fluctuations.
+
+For every direction\footnote{A direction is a measurable function.} $s : \calO
+\to \bbR$ such that  $s \neq 0$\footnote{That is, $s(O)$ is  not equal to zero
+$P$-almost surely.},  $E_{P} (s(O))  = 0$  and $s$ bounded  by, say,  $M$, for
+every $h \in H = \interval[open]{-M^{-1}}{M^{-1}}$, we can define a law $P_{h}
+\in \calM$ by setting $P_{h} \ll  P$\footnote{That is, $P_{h}$ is dominated by
+$P$: if an  event $A$ satisfies $P(A)  = 0$, then necessarily $P_{h}  (A) = 0$
+too.}  and
+
+\begin{equation}\label{eq:fluct}\frac{dP_{h}}{dP}(O)      =     1      +     h
+s(O),\end{equation} 
+
+that is, $P_{h}$ has density $(1 + h s)$ with respect to (w.r.t.) $P$. We call
+$\{P_{h}  :  h  \in  H\}$  a  fluctuation of  $P$  in  direction  $s$  because
+
+\begin{equation}\label{eq:score}(i)  \;  P_{h}|_{h=0}  =   P,  \quad  (ii)  \;
+\left.\frac{d}{dh}       \log        \frac{dP_{h}}{dP}(O)\right|_{h=0}       =
+s(O).\end{equation} 
+
+The fluctuation is a one-dimensional parametric submodel of $\calM$. 
+
+Statistical mapping $\Psi$ is smooth at  every $P \in \calM$ because, for each
+$P \in \calM$, there exists  a so called efficient influence curve\footnote{It
+is  a   measurable  function.}   $D^{*}(P)   :  \calO  \to  \bbR$   such  that
+$E_{P}(D^{*}(P)(O)) = 0$ and, for any direction  $s$ as above, if $\{P_{h} : h
+\in H\}$  is defined as in  \eqref{eq:fluct}, then the real-valued  mapping $h
+\mapsto \Psi(P_{h})$ is differentiable at $h=0$, with a derivative equal to
+
+\begin{equation}\label{eq:derivative}E_{P} \left(D^{*}(P)(O) s(O)\right).\end{equation}
+
+Interestingly,   if  a   fluctuation   $\{P_{h}  :   h   \in  H\}$   satisfies
+\eqref{eq:score} for  a direction $s$ such  that $s\neq 0$, $E_{P}(s(O))  = 0$
+and  $\Var_{P}  (s(O))  <  \infty$,  then $h \mapsto  \Psi(P_{h})$  is  still
+differentiable  at  $h=0$ with  a  derivative  equal to  \eqref{eq:derivative}
+(beyond fluctuations of the form \eqref{eq:fluct}).
+
+The influence curves $D^{*}(P)$ convey valuable information about $\Psi$. For
+instance,  an  important  result  from   the  theory  of  inference  based  on
+semiparametric models  guarantees that if $\psi_{n}$  is a regular\footnote{We
+can view  $\psi_{n}$ as the  by product of  an algorithm $\Psihat$  trained on
+independent observations $O_{1}$, \ldots, $O_{n}$ drawn from $P$.  
+% or, equivalently, trained on the empirical measure $P_{n} = n^{-1}
+% \sum_{i=1}^{n} \Dirac(O_{i})$: $\psi_{n} = \Psihat(P_{n})$.  
+The estimator is regular at $P$ (w.r.t. the maximal tangent space) if, for any
+direction  $s\neq 0$  such that  $E_{P}  (s(O)) =  0$ and  $\Var_{P} (s(O))  <
+\infty$ and fluctuation $\{P_{h} : h \in H\}$ satisfying \eqref{eq:score}, the
+estimator $\psi_{n,1/\sqrt{n}}$ of $\Psi(P_{1/\sqrt{n}})$ obtained by training
+$\Psihat$  on independent  observations  $O_{1}$, \ldots,  $O_{n}$ drawn  from
+$P_{1/\sqrt{n}}$    is   such    that    $\sqrt{n}   (\psi_{n,1/\sqrt{n}}    -
+\Psi(P_{1/\sqrt{n}}))$ converges  in law to  a limit  that does not  depend on
+$s$.} estimator  of $\Psi(P)$  built from  $n$ independent  observations drawn
+from $P$, then the asymptotic variance  of the centered and rescaled $\sqrt{n}
+(\psi_{n} - \Psi(P))$ cannot be smaller  than the variance of the $P$-specific
+efficient influence curve, that is,
+
+\begin{equation}\label{eq:CR}\Var_{P}(D^{*}(P)(O)).\end{equation}
+
+In   this   light,   an   estimator    $\psi_{n}$   of   $\Psi(P)$   is   said
+\textit{asymptotically efficient} at $P$ if it is regular at $P$ and such that
+$\sqrt{n} (\psi_{n} - \Psi(P))$ converges in  law to the centered Gaussian law
+with variance \eqref{eq:CR}, which is called the Cramér-Rao bound.
+
+\subsection{The efficient influence curve.}
+\label{subsec:parameter:third}
+
+It is not difficult to check \tcg{(do  we give the proof?)} that the efficient
+influence curve  $D^{*}(P)$ of $\Psi$ at  $P \in \calM$ writes  as $D^{*}(P) =
+D_{1}^{*} (P) +  D_{2}^{*} (P)$ where $D_{1}^{*} (P)$ and  $D_{2}^{*} (P)$ are
+given by
+
+\begin{align*}D_{1}^{*}(P) (O) &= \Qbar(1,W) - \Qbar(0,W) - \Psi(P),\\
+D_{2}^{*}(P) (O) &= \frac{2A-1}{\ell\gbar(A,W)} (Y - \Qbar(A,W)),\end{align*}
+
+with  shorthand notation  $\ell\gbar(A,W) =  A\gbar(W) +  (1-A) (1-\gbar(W))$.
+The  following chunk  of code  enables the  computation of  the values  of the
+efficient influence curve $D^{*}(P)$ at observations drawn from $P$ (note that
+it  is necessary  to  provide  the value  of  $\Psi(P)$,  or an  approximation
+thereof, through argument `psi`).
+
+```{r eic}
+eic <- function(obs, psi) {
+  Qbar <- attr(obs, "Qbar")
+  gbar <- attr(obs, "gbar")
+  QAW <- Qbar(obs[, c("A", "W")])
+  gW <- gbar(obs[, "W"])
+  lgAW <- obs[, "A"] * gW + (1 - obs[, "A"]) * (1 - gW)
+  ( Qbar(cbind(1, obs[, "W"])) - Qbar(cbind(0, obs[, "W"])) - psi ) +
+    (2 * obs[, "A"] - 1) / lgAW * (obs[, "Y"] - QAW)
+}
+
+(eic(five_obs, psi = psi_hat))
+(eic(five_obs_from_another_experiment, psi = psi_Pi_zero))
+```
+
+\subsection{Computing and comparing Cramér-Rao bounds.}
+
+We can use `eic` to approximate the Cramér-Rao bound at $P_{0}$:
+
+```{r cramer-rao}
+obs <- draw_from_experiment(B)
+(cramer_rao_hat <- var(eic(obs, psi = psi_hat)))
+```
+
+and the Cramér-Rao bound at $\Pi_{0}$:
+```{r cramer-rao-another-experiment}
+obs_from_another_experiment <- draw_from_another_experiment(B)
+(cramer_rao_Pi_zero_hat <- var(eic(obs_from_another_experiment, psi = 59/300)))
+(ratio <- sqrt(cramer_rao_Pi_zero_hat/cramer_rao_hat))
+```
+
+We  thus  discover  that  of  the  statistical  parameters  $\Psi(P_{0})$  and
+$\Psi(\Pi_{0})$,   the  latter   is  easier   to  target   than  the   former.
+Heuristically, for  large sample  sizes, the narrowest  (efficient) confidence
+intervals for  $\Psi(\Pi_{0})$ are  approximately `r round(ratio,  2)` smaller
+than their counterparts for $\Psi(P_{0})$.
+
+\subsection{Revisiting Section~\ref{subsec:being:smooth:one}.}
+
+It is not difficult either (though a little cumbersome) \tcg{(do we give the
+proof? I'd rather not)} to verify  that $\{\Pi_{h} : h \in \interval{-1}{1}\}$
+is a fluctuation  of $\Pi_{0}$ in the direction of  $\sigma_{0}$ (in the sense
+of \eqref{eq:fluct}) given, up to a constant, by
+
+\begin{align*}\sigma_{0}(O)  &=   -  10   \sqrt{W}  A   \times  \beta_{0}(A,W)
+\left(\log(1    -     Y)    +     \sum_{k=0}^{3}    \left(k     +    \beta_{0}
+(A,W)\right)^{-1}\right)     +      \text{constant},\\     \text{where}     \;
+\beta_{0}(A,W)&=\frac{1
+-\Qbar_{\Pi_{0}}(A,W)}{\Qbar_{\Pi_{0}}(A,W)}.\end{align*}
+
+Consequently,    the    slope    of     the    dotted    curve    in    Figure
+\@ref(fig:psi-approx-psi-one) is equal to 
+
+\begin{equation}\label{eq:slope:Pi}E_{\Pi_{0}}       (D^{*}(\Pi_{0})       (O)
+\sigma_{0}(O))\end{equation}
+
+(since $D^{*}(\Pi_{0})$  is centered under $\Pi_{0}$,  knowing $\sigma_{0}$ up
+to a constant is not problematic). 
+
+Let  us check  this numerically.  In  the next  chunk of  code, we  implements
+direction  $s$  with  `s_draw_from_another_experiment`,  then  we  approximate
+\eqref{eq:slope:Pi} (pointwise  and with  a confidence interval  of asymptotic
+level 95\%):
+
+```{r recover-slope}
+s_draw_from_another_experiment <- function(obs) { 
+  ## preliminary
+  Qbar <- attr(obs, "Qbar")
+  QAW <- Qbar(obs[, c("A", "W")])
+  shape1 <- Arguments$getInteger(attr(obs, "shape1"), c(1, Inf))
+  ## computations
+  betaAW <- shape1 * (1 - QAW) / QAW
+  out <- log(1 - obs[, "Y"])
+  for (int in 1:shape1) {
+    out <- out + 1/(int - 1 + betaAW)
+  }
+  out <- - out * shape1 * (1 - QAW) / QAW * 10 * sqrt(obs[, "W"]) * obs[, "A"]
+  ## no need to center given how we will use it
+  return(out)
+}
+
+vars <- eic(obs_from_another_experiment, psi = 59/300) *
+  s_draw_from_another_experiment(obs_from_another_experiment)
+sd_hat <- sd(vars)
+(slope_hat <- mean(vars))
+(slope_CI <- slope_hat + c(-1, 1) * qnorm(1 - alpha / 2) * sd_hat / sqrt(B))
+```
+
+Equal to `r  slope_approx`, the first approximation `slope_approx`  is not too
+off.
+
+\subsection{Double-robustness}
+\label{subsec:double:robustness}
+
+The  efficient influence  curve $D^{*}(P)$  at  $P \in  \calM$ enjoys  another
+remarkable  property: it  is  double-robust.  Specifically,  for  all $P'  \in
+\calM$, it holds that
+
+\begin{equation}\label{eq:rem:one}  \Psi(P') -  \Psi(P) =  - E_{P}  (D^{*}(P')
+(O)) + \Rem_{P} (\Qbar', \gbar')\end{equation}
+
+where   the   so   called   remainder   term   $\Rem_{P}   (\Qbar',   \gbar')$
+satisfies\footnote{For  any   (measurable)  $f:\calO  \to  \bbR$,   we  denote
+$\|f\|_{P} = E_{P} (f(O)^{2})^{1/2}$.}
+
+\begin{equation}\label{eq:rem:two}   \Rem_{P}    (\Qbar',   \gbar')^{2}   \leq
+\|\Qbar'  - \Qbar\|_{P}^{2}  \times  \|(\gbar' -  \gbar)/\ell\gbar'\|_{P}^{2}.
+\end{equation}
+
+In particular, if
+
+\begin{equation}\label{eq:solves:eic} E_{P} (D^{*}(P') (O)) =
+0,\end{equation}
+
+and  \textit{either}  $\Qbar' =  \Qbar$  \textit{or}  $\gbar' =  \gbar$,  then
+$\Rem_{P} (\Qbar', \gbar') = 0$ hence $\Psi(P') = \Psi(P)$.  In words, if $P'$
+solves  the   so  called  $P$-specific  efficient   influence  curve  equation
+\eqref{eq:solves:eic} and if, in addition, $P'$ has the same $\Qbar$-component
+or $\gbar$-component as $P$, then $\Psi(P')  = \Psi(P)$ no matter how $P'$ may
+differ  from  $P$ otherwise.  This  property  is  useful to  build  consistent
+estimators of $\Psi(P)$.
+
+However,   there  is   much   more  to   double-robustness   than  the   above
+straightforward implication.
+
+
+
