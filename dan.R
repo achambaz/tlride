@@ -9,6 +9,7 @@ knitr::opts_chunk$set(
 ## ----visible-setup-------------------------------------------------------
 set.seed(54321) ## because reproducibility matters...
 suppressMessages(library(R.utils)) ## make sure it is installed
+suppressMessages(library(tidyverse)) ## make sure it is installed
 suppressMessages(library(ggplot2)) ## make sure it is installed
 expit <- plogis
 logit <- qlogis
@@ -18,9 +19,9 @@ draw_from_experiment <- function(n, full = FALSE) {
   ## preliminary
   n <- Arguments$getInteger(n, c(1, Inf))
   full <- Arguments$getLogical(full)
-  ## ## 'gbar' and 'Qbar' factors
-  gbar <- function(W) {
-    expit(-0.3 + 2 * W - 1.5 * W^2)
+  ## ## 'Gbar' and 'Qbar' factors
+  Gbar <- function(W) {
+    expit(-0.2 + 3 * sqrt(W) - 1.5 * W)
   }
   Qbar <- function(AW) {
     A <- AW[, 1]
@@ -38,7 +39,7 @@ draw_from_experiment <- function(n, full = FALSE) {
   Yzero <- rbeta(n, shape1 = 1, shape2 = (1 - Qbar.zeroW) / Qbar.zeroW)
   Yone <- rbeta(n, shape1 = 1, shape2 = (1 - Qbar.oneW) / Qbar.oneW)
   ## ## action undertaken
-  A <- rbinom(n, size = 1, prob = gbar(W))
+  A <- rbinom(n, size = 1, prob = Gbar(W))
   ## ## actual reward
   Y <- A * Yone + (1 - A) * Yzero
   ## ## observation
@@ -47,7 +48,7 @@ draw_from_experiment <- function(n, full = FALSE) {
   } else {
     obs <- cbind(W = W, A = A, Y = Y)
   }
-  attr(obs, "gbar") <- gbar
+  attr(obs, "Gbar") <- Gbar
   attr(obs, "Qbar") <- Qbar
   attr(obs, "QW") <- dunif
   ##
@@ -75,8 +76,8 @@ draw_from_another_experiment <- function(n, h = 0) {
   ## preliminary
   n <- Arguments$getInteger(n, c(1, Inf))
   h <- Arguments$getNumeric(h)
-  ## ## 'gbar' and 'Qbar' factors
-  gbar <- function(W) {
+  ## ## 'Gbar' and 'Qbar' factors
+  Gbar <- function(W) {
     sin((1 + W) * pi / 6)
   }
   Qbar <- function(AW, hh = h) {
@@ -89,14 +90,14 @@ draw_from_another_experiment <- function(n, h = 0) {
   ## ## context
   W <- runif(n, min = 1/10, max = 9/10)
   ## ## action undertaken
-  A <- rbinom(n, size = 1, prob = gbar(W))
+  A <- rbinom(n, size = 1, prob = Gbar(W))
   ## ## reward
   shape1 <- 4
   QAW <- Qbar(cbind(A, W))
   Y <- rbeta(n, shape1 = shape1, shape2 = shape1 * (1 - QAW) / QAW)
   ## ## observation
   obs <- cbind(W = W, A = A, Y = Y)
-  attr(obs, "gbar") <- gbar
+  attr(obs, "Gbar") <- Gbar
   attr(obs, "Qbar") <- Qbar
   attr(obs, "QW") <- function(x){dunif(x, min = 1/10, max = 9/10)}
   attr(obs, "shape1") <- shape1
@@ -113,7 +114,7 @@ integrand <- function(w) {
 }
 (psi_Pi_zero <- integrate(integrand, lower = 0, upper = 1)$val)
 
-## ----psi-approx-psi-one, fig.cap  = "Evolution of the  statistical parameter along a fluctuation."----
+## ----psi-approx-psi-one,  fig.cap =  "Evolution of statistical parameter $\\Psi$ along fluctuation $\\{\\Pi_{h} : h \\in H\\}$."----
 approx <- seq(-1, 1, length.out = 1e2)
 psi_Pi_h <- sapply(approx, function(t) {
   obs_from_another_experiment <- draw_from_another_experiment(1, h = t)
@@ -140,9 +141,9 @@ ggplot() +
 ## ----eic-----------------------------------------------------------------
 eic <- function(obs, psi) {
   Qbar <- attr(obs, "Qbar")
-  gbar <- attr(obs, "gbar")
+  Gbar <- attr(obs, "Gbar")
   QAW <- Qbar(obs[, c("A", "W")])
-  gW <- gbar(obs[, "W"])
+  gW <- Gbar(obs[, "W"])
   lgAW <- obs[, "A"] * gW + (1 - obs[, "A"]) * (1 - gW)
   ( Qbar(cbind(1, obs[, "W"])) - Qbar(cbind(0, obs[, "W"])) - psi ) +
     (2 * obs[, "A"] - 1) / lgAW * (obs[, "Y"] - QAW)
@@ -158,6 +159,7 @@ obs <- draw_from_experiment(B)
 ## ----cramer-rao-another-experiment---------------------------------------
 obs_from_another_experiment <- draw_from_another_experiment(B)
 (cramer_rao_Pi_zero_hat <- var(eic(obs_from_another_experiment, psi = 59/300)))
+(ratio <- sqrt(cramer_rao_Pi_zero_hat/cramer_rao_hat))
 
 ## ----recover-slope-------------------------------------------------------
 s_draw_from_another_experiment <- function(obs) { 
@@ -181,4 +183,28 @@ vars <- eic(obs_from_another_experiment, psi = 59/300) *
 sd_hat <- sd(vars)
 (slope_hat <- mean(vars))
 (slope_CI <- slope_hat + c(-1, 1) * qnorm(1 - alpha / 2) * sd_hat / sqrt(B))
+
+## ----known-Gbar-one, fig.cap  = "Two estimators of $\\psi_{0}$, one of them poor, the other assuming that $\\Gbar_{0}$ is known."----
+Gbar <- attr(obs, "Gbar")
+
+psi_hat_ab <- obs %>% as_tibble() %>% mutate(id = 1:nrow(obs) %% 1e3) %>%
+  mutate(lgAW = A * Gbar(W) + (1 - A) * (1 - Gbar(W))) %>% group_by(id) %>%
+  summarize(est_a = mean(Y[A==1]) - mean(Y[A==0]),
+            est_b = mean(Y * (2 * A - 1) / lgAW),
+            std_b = sd(Y * (2 * A - 1) / lgAW),
+            clt_b = sqrt(n()) * (est_b - psi_hat) / std_b)
+std_a <- sd(psi_hat_ab$est_a)
+psi_hat_ab <- psi_hat_ab %>%
+  mutate(std_a = std_a,
+         clt_a = (est_a - psi_hat) / std_a) %>% 
+  gather(key, value, -id) %>%
+  extract(key, c("what", "type"), "([^_]+)_([ab])") %>%
+  spread(what, value)
+
+(bias <- psi_hat_ab %>% group_by(type) %>% summarise(bias = mean(clt)))
+
+ggplot(psi_hat_ab, aes(clt, fill = type, colour = type)) +
+  geom_density(alpha = 0.1) +
+  geom_vline(aes(xintercept = bias, colour = type), bias) +
+  labs(x = expression(paste(sqrt(n)*(psi[n]^{list(a, b)} - psi[0])))) 
 

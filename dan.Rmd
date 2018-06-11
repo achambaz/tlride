@@ -49,6 +49,7 @@ knitr::opts_chunk$set(
 ```{r visible-setup}
 set.seed(54321) ## because reproducibility matters...
 suppressMessages(library(R.utils)) ## make sure it is installed
+suppressMessages(library(tidyverse)) ## make sure it is installed
 suppressMessages(library(ggplot2)) ## make sure it is installed
 expit <- plogis
 logit <- qlogis
@@ -79,9 +80,9 @@ draw_from_experiment <- function(n, full = FALSE) {
   ## preliminary
   n <- Arguments$getInteger(n, c(1, Inf))
   full <- Arguments$getLogical(full)
-  ## ## 'gbar' and 'Qbar' factors
-  gbar <- function(W) {
-    expit(-0.3 + 2 * W - 1.5 * W^2)
+  ## ## 'Gbar' and 'Qbar' factors
+  Gbar <- function(W) {
+    expit(-0.2 + 3 * sqrt(W) - 1.5 * W)
   }
   Qbar <- function(AW) {
     A <- AW[, 1]
@@ -99,7 +100,7 @@ draw_from_experiment <- function(n, full = FALSE) {
   Yzero <- rbeta(n, shape1 = 1, shape2 = (1 - Qbar.zeroW) / Qbar.zeroW)
   Yone <- rbeta(n, shape1 = 1, shape2 = (1 - Qbar.oneW) / Qbar.oneW)
   ## ## action undertaken
-  A <- rbinom(n, size = 1, prob = gbar(W))
+  A <- rbinom(n, size = 1, prob = Gbar(W))
   ## ## actual reward
   Y <- A * Yone + (1 - A) * Yzero
   ## ## observation
@@ -108,7 +109,7 @@ draw_from_experiment <- function(n, full = FALSE) {
   } else {
     obs <- cbind(W = W, A = A, Y = Y)
   }
-  attr(obs, "gbar") <- gbar
+  attr(obs, "Gbar") <- Gbar
   attr(obs, "Qbar") <- Qbar
   attr(obs, "QW") <- dunif
   ##
@@ -127,13 +128,13 @@ variables  in  the regular  experiment.   The  next  chunk  of code  runs  the
 ``` 
 We can view the `attributes` of object `five_obs` because, in this section, we
 act  as  oracles,  \textit{i.e.},  we   know  completely  the  nature  of  the
-experiment.  From a probabilistic point of view, the attributes `gbar`, `Qbar`
+experiment.  From a probabilistic point of view, the attributes `Gbar`, `Qbar`
 and  `QW` are  infinite-dimensional features  of  $P_{0}$.  There  is more  to
-$P_{0}$ than  $\gbar_{0}$ (`gbar`), $\Qbar_{0}$ (`Qbar`),  formally defined by
-\begin{equation}  \gbar_{0} (W)  \equiv P_{0}  (A=1|W), \quad  \Qbar_{0} (A,W)
+$P_{0}$ than  $\Gbar_{0}$ (`Gbar`), $\Qbar_{0}$ (`Qbar`),  formally defined by
+\begin{equation}  \Gbar_{0} (W)  \equiv P_{0}  (A=1|W), \quad  \Qbar_{0} (A,W)
 \equiv  E_{P_{0}} (Y  | A,  W), \end{equation}  and the  marginal distribution
 $Q_{0,W}$  of  $W$   under  $P_{0}$  (`QW`),  for   instance  the  conditional
-distribution  (not  expectation)  of   $Y$  given  $(A,W)$,  but  $\gbar_{0}$,
+distribution  (not  expectation)  of   $Y$  given  $(A,W)$,  but  $\Gbar_{0}$,
 $\Qbar_{0}$ and $Q_{0,W}$ will play a prominent role in our story.
 
 \subsection{The parameter of interest, first pass.}
@@ -217,7 +218,7 @@ Suppose we  know beforehand that  $O$ drawn from  $P_{0}$ takes its  values in
 $\calO \equiv  [0,1] \times \{0,1\}  \times [0,1]$ and that  $P_{0}(A=1|W)$ is
 bounded  away from  zero and  one $Q_{0,W}$-almost  surely (this  is the  case
 indeed).  Then  we can  define model  $\calM$ as the  set of  all laws  $P$ on
-$\calO$ such that $\gbar(W) \equiv P(A=1|W)$ is bounded away from zero and one
+$\calO$ such that $\Gbar(W) \equiv P(A=1|W)$ is bounded away from zero and one
 $Q_{W}$-almost surely, where $Q_{W}$ is the marginal distribution of $W$
 under $P$.  
 
@@ -235,8 +236,8 @@ draw_from_another_experiment <- function(n, h = 0) {
   ## preliminary
   n <- Arguments$getInteger(n, c(1, Inf))
   h <- Arguments$getNumeric(h)
-  ## ## 'gbar' and 'Qbar' factors
-  gbar <- function(W) {
+  ## ## 'Gbar' and 'Qbar' factors
+  Gbar <- function(W) {
     sin((1 + W) * pi / 6)
   }
   Qbar <- function(AW, hh = h) {
@@ -249,14 +250,14 @@ draw_from_another_experiment <- function(n, h = 0) {
   ## ## context
   W <- runif(n, min = 1/10, max = 9/10)
   ## ## action undertaken
-  A <- rbinom(n, size = 1, prob = gbar(W))
+  A <- rbinom(n, size = 1, prob = Gbar(W))
   ## ## reward
   shape1 <- 4
   QAW <- Qbar(cbind(A, W))
   Y <- rbeta(n, shape1 = shape1, shape2 = shape1 * (1 - QAW) / QAW)
   ## ## observation
   obs <- cbind(W = W, A = A, Y = Y)
-  attr(obs, "gbar") <- gbar
+  attr(obs, "Gbar") <- Gbar
   attr(obs, "Qbar") <- Qbar
   attr(obs, "QW") <- function(x){dunif(x, min = 1/10, max = 9/10)}
   attr(obs, "shape1") <- shape1
@@ -295,7 +296,7 @@ will argue shortly that $\Pi_{h} \to_{h}  \Pi_{0}$ in $\calM$ from a direction
 $s$ when  $h \to  0$.  The  following chunk of  code evaluates  and represents
 $\Psi(\Pi_{h})$   for   $h$   ranging   in   a   discrete   approximation   of
 $\interval{-1}{1}$:
-```{r psi-approx-psi-one, fig.cap  = "Evolution of the  statistical parameter along a fluctuation."}
+```{r psi-approx-psi-one,  fig.cap =  "Evolution of statistical parameter $\\Psi$ along fluctuation $\\{\\Pi_{h} : h \\in H\\}$."}
 approx <- seq(-1, 1, length.out = 1e2)
 psi_Pi_h <- sapply(approx, function(t) {
   obs_from_another_experiment <- draw_from_another_experiment(1, h = t)
@@ -405,11 +406,11 @@ influence curve  $D^{*}(P)$ of  $\Psi$ at  $P \in  \calM$ writes  as $D^{*}(P)
 (P)$ are given by
 
 \begin{align*}D_{1}^{*}(P) (O)  &\equiv \Qbar(1,W)  - \Qbar(0,W)  - \Psi(P),\\
-D_{2}^{*}(P)     (O)     &\equiv      \frac{2A-1}{\ell\gbar(A,W)}     (Y     -
+D_{2}^{*}(P)     (O)     &\equiv      \frac{2A-1}{\ell\Gbar(A,W)}     (Y     -
 \Qbar(A,W)),\end{align*}
 
-with   shorthand   notation   $\ell\gbar(A,W)   \equiv   A\gbar(W)   +   (1-A)
-(1-\gbar(W))$.  The  following chunk  of code enables  the computation  of the
+with   shorthand   notation   $\ell\Gbar(A,W)   \equiv   A\Gbar(W)   +   (1-A)
+(1-\Gbar(W))$.  The  following chunk  of code enables  the computation  of the
 values of the efficient influence  curve $D^{*}(P)$ at observations drawn from
 $P$  (note that  it is  necessary  to provide  the  value of  $\Psi(P)$, or  a
 numerical approximation thereof, through argument `psi`).
@@ -417,9 +418,9 @@ numerical approximation thereof, through argument `psi`).
 ```{r eic}
 eic <- function(obs, psi) {
   Qbar <- attr(obs, "Qbar")
-  gbar <- attr(obs, "gbar")
+  Gbar <- attr(obs, "Gbar")
   QAW <- Qbar(obs[, c("A", "W")])
-  gW <- gbar(obs[, "W"])
+  gW <- Gbar(obs[, "W"])
   lgAW <- obs[, "A"] * gW + (1 - obs[, "A"]) * (1 - gW)
   ( Qbar(cbind(1, obs[, "W"])) - Qbar(cbind(0, obs[, "W"])) - psi ) +
     (2 * obs[, "A"] - 1) / lgAW * (obs[, "Y"] - QAW)
@@ -513,14 +514,14 @@ remarkable  property: it  is  double-robust.  Specifically,  for  all $P'  \in
 \calM$, it holds that
 
 \begin{equation}\label{eq:rem:one}  \Psi(P') -  \Psi(P) =  - E_{P}  (D^{*}(P')
-(O)) + \Rem_{P} (\Qbar', \gbar')\end{equation}
+(O)) + \Rem_{P} (\Qbar', \Gbar')\end{equation}
 
-where   the   so   called   remainder   term   $\Rem_{P}   (\Qbar',   \gbar')$
+where   the   so   called   remainder   term   $\Rem_{P}   (\Qbar',   \Gbar')$
 satisfies\footnote{For  any   (measurable)  $f:\calO  \to  \bbR$,   we  denote
 $\|f\|_{P} = E_{P} (f(O)^{2})^{1/2}$.}
 
-\begin{equation}\label{eq:rem:two}   \Rem_{P}    (\Qbar',   \gbar')^{2}   \leq
-\|\Qbar'  - \Qbar\|_{P}^{2}  \times  \|(\gbar' -  \gbar)/\ell\gbar'\|_{P}^{2}.
+\begin{equation}\label{eq:rem:two}   \Rem_{P}    (\Qbar',   \Gbar')^{2}   \leq
+\|\Qbar'  - \Qbar\|_{P}^{2}  \times  \|(\Gbar' -  \Gbar)/\ell\Gbar'\|_{P}^{2}.
 \end{equation}
 
 In particular, if
@@ -528,11 +529,11 @@ In particular, if
 \begin{equation}\label{eq:solves:eic} E_{P} (D^{*}(P') (O)) =
 0,\end{equation}
 
-and  \textit{either}  $\Qbar' =  \Qbar$  \textit{or}  $\gbar' =  \gbar$,  then
-$\Rem_{P} (\Qbar', \gbar') = 0$ hence $\Psi(P') = \Psi(P)$.  In words, if $P'$
+and  \textit{either}  $\Qbar' =  \Qbar$  \textit{or}  $\Gbar' =  \Gbar$,  then
+$\Rem_{P} (\Qbar', \Gbar') = 0$ hence $\Psi(P') = \Psi(P)$.  In words, if $P'$
 solves  the   so  called  $P$-specific  efficient   influence  curve  equation
 \eqref{eq:solves:eic} and if, in addition, $P'$ has the same $\Qbar$-component
-or $\gbar$-component as $P$, then $\Psi(P')  = \Psi(P)$ no matter how $P'$ may
+or $\Gbar$-component as $P$, then $\Psi(P')  = \Psi(P)$ no matter how $P'$ may
 differ  from  $P$ otherwise.  This  property  is  useful to  build  consistent
 estimators of $\Psi(P)$.
 
@@ -546,13 +547,39 @@ is data-driven, based  on observing $n$ independent draws  from $P$.  Equality
 \ref{eq:rem:one} reveals  that the  statistical behavior of  the corresponding
 \textit{substitution}  estimator  $\psi_{n}^{0}   \equiv  \Psi(P_{n}^{0})$  is
 easier  to   analyze  when   the  remainder  term   $\Rem_{P}  (\Qbar_{n}^{0},
-\gbar_{n}^{0})$ goes  to zero  at a  fast (relative to  $n$) enough  rate.  In
+\Gbar_{n}^{0})$ goes  to zero  at a  fast (relative to  $n$) enough  rate.  In
 light of  \ref{eq:rem:two}, this happens  if the features  $\Qbar_{n}^{0}$ and
-$\gbar_{n}^{0}$ of  $P_{n}^{0}$ converge  to their  counterparts under  $P$ at
+$\Gbar_{n}^{0}$ of  $P_{n}^{0}$ converge  to their  counterparts under  $P$ at
 rates of which \textit{the product} is fast enough.
 
 \subsection{Targeted inference.}
 \label{subsec:tmle}
 
+blabla
 
+```{r known-Gbar-one, fig.cap  = "Of two estimators of $\\psi_{0}$, one of them misconceived, the other assuming that $\\Gbar_{0}$ is known."}
+Gbar <- attr(obs, "Gbar")
 
+psi_hat_ab <- obs %>% as_tibble() %>% mutate(id = 1:nrow(obs) %% 1e3) %>%
+  mutate(lgAW = A * Gbar(W) + (1 - A) * (1 - Gbar(W))) %>% group_by(id) %>%
+  summarize(est_a = mean(Y[A==1]) - mean(Y[A==0]),
+            est_b = mean(Y * (2 * A - 1) / lgAW),
+            std_b = sd(Y * (2 * A - 1) / lgAW),
+            clt_b = sqrt(n()) * (est_b - psi_hat) / std_b)
+std_a <- sd(psi_hat_ab$est_a)
+psi_hat_ab <- psi_hat_ab %>%
+  mutate(std_a = std_a,
+         clt_a = (est_a - psi_hat) / std_a) %>% 
+  gather(key, value, -id) %>%
+  extract(key, c("what", "type"), "([^_]+)_([ab])") %>%
+  spread(what, value)
+
+bias <- psi_hat_ab %>% group_by(type) %>% summarise(bias = mean(clt))
+
+ggplot(psi_hat_ab, aes(clt, fill = type, colour = type)) +
+  geom_density(alpha = 0.1) +
+  geom_vline(aes(xintercept = bias, colour = type), bias) +
+  labs(x = expression(paste(sqrt(n)*(psi[n]^{list(a, b)} - psi[0])))) 
+```
+
+blabla
