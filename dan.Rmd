@@ -18,6 +18,10 @@ output:
 
 R -e "rmarkdown::render('dan.Rmd', encoding='UTF-8')"
 
+or 
+
+R> bookdown::render_book("dan.Rmd")
+
 -->
 
 
@@ -260,8 +264,8 @@ draw_from_another_experiment <- function(n, h = 0) {
   return(obs)
 }
 ```
-parameter $\Psi(\Pi_{0})$  is well defined, and  approximated by `psi.Pi.zero`
-in the following chunk of code:
+parameter  $\Psi(\Pi_{0})$ is  well defined,  and numerically  approximated by
+`psi.Pi.zero` in the following chunk of code:
 ```{r approx-psi-one}
 five_obs_from_another_experiment <- draw_from_another_experiment(5)
 integrand <- function(w) {
@@ -334,13 +338,13 @@ fluctuations.
 For every direction\footnote{A direction is a measurable function.} $s : \calO
 \to \bbR$ such that  $s \neq 0$\footnote{That is, $s(O)$ is  not equal to zero
 $P$-almost surely.},  $E_{P} (s(O))  = 0$  and $s$ bounded  by, say,  $M$, for
-every $h \in H = \interval[open]{-M^{-1}}{M^{-1}}$, we can define a law $P_{h}
-\in \calM$ by setting $P_{h} \ll  P$\footnote{That is, $P_{h}$ is dominated by
-$P$: if an  event $A$ satisfies $P(A)  = 0$, then necessarily $P_{h}  (A) = 0$
-too.}  and
+every $h \in  H \equiv \interval[open]{-M^{-1}}{M^{-1}}$, we can  define a law
+$P_{h}  \in \calM$  by  setting  $P_{h} \ll  P$\footnote{That  is, $P_{h}$  is
+dominated  by $P$:  if an  event $A$  satisfies $P(A)  = 0$,  then necessarily
+$P_{h} (A) = 0$ too.}  and
 
-\begin{equation}\label{eq:fluct}\frac{dP_{h}}{dP}(O)      =     1      +     h
-s(O),\end{equation} 
+\begin{equation}\label{eq:fluct}\frac{dP_{h}}{dP}(O)    \equiv     1    +    h
+s(O),\end{equation}
 
 that is, $P_{h}$ has density $(1 + h s)$ with respect to (w.r.t.) $P$. We call
 $\{P_{h}  :  h  \in  H\}$  a  fluctuation of  $P$  in  direction  $s$  because
@@ -396,18 +400,19 @@ with variance \eqref{eq:CR}, which is called the Cramér-Rao bound.
 \label{subsec:parameter:third}
 
 It is not difficult to check \tcg{(do  we give the proof?)} that the efficient
-influence curve  $D^{*}(P)$ of $\Psi$ at  $P \in \calM$ writes  as $D^{*}(P) =
-D_{1}^{*} (P) +  D_{2}^{*} (P)$ where $D_{1}^{*} (P)$ and  $D_{2}^{*} (P)$ are
-given by
+influence curve  $D^{*}(P)$ of  $\Psi$ at  $P \in  \calM$ writes  as $D^{*}(P)
+\equiv D_{1}^{*}  (P) +  D_{2}^{*} (P)$ where  $D_{1}^{*} (P)$  and $D_{2}^{*}
+(P)$ are given by
 
-\begin{align*}D_{1}^{*}(P) (O) &= \Qbar(1,W) - \Qbar(0,W) - \Psi(P),\\
-D_{2}^{*}(P) (O) &= \frac{2A-1}{\ell\gbar(A,W)} (Y - \Qbar(A,W)),\end{align*}
+\begin{align*}D_{1}^{*}(P) (O)  &\equiv \Qbar(1,W)  - \Qbar(0,W)  - \Psi(P),\\
+D_{2}^{*}(P)     (O)     &\equiv      \frac{2A-1}{\ell\gbar(A,W)}     (Y     -
+\Qbar(A,W)),\end{align*}
 
-with  shorthand notation  $\ell\gbar(A,W) =  A\gbar(W) +  (1-A) (1-\gbar(W))$.
-The  following chunk  of code  enables the  computation of  the values  of the
-efficient influence curve $D^{*}(P)$ at observations drawn from $P$ (note that
-it  is necessary  to  provide  the value  of  $\Psi(P)$,  or an  approximation
-thereof, through argument `psi`).
+with   shorthand   notation   $\ell\gbar(A,W)   \equiv   A\gbar(W)   +   (1-A)
+(1-\gbar(W))$.  The  following chunk  of code enables  the computation  of the
+values of the efficient influence  curve $D^{*}(P)$ at observations drawn from
+$P$  (note that  it is  necessary  to provide  the  value of  $\Psi(P)$, or  a
+numerical approximation thereof, through argument `psi`).
 
 ```{r eic}
 eic <- function(obs, psi) {
@@ -426,7 +431,7 @@ eic <- function(obs, psi) {
 
 \subsection{Computing and comparing Cramér-Rao bounds.}
 
-We can use `eic` to approximate the Cramér-Rao bound at $P_{0}$:
+We can use `eic` to numerically approximate the Cramér-Rao bound at $P_{0}$:
 
 ```{r cramer-rao}
 obs <- draw_from_experiment(B)
@@ -443,8 +448,8 @@ obs_from_another_experiment <- draw_from_another_experiment(B)
 We  thus  discover  that  of  the  statistical  parameters  $\Psi(P_{0})$  and
 $\Psi(\Pi_{0})$,   the  latter   is  easier   to  target   than  the   former.
 Heuristically, for  large sample  sizes, the narrowest  (efficient) confidence
-intervals for  $\Psi(\Pi_{0})$ are  approximately `r round(ratio,  2)` smaller
-than their counterparts for $\Psi(P_{0})$.
+intervals for  $\Psi(\Pi_{0})$ are approximately `r  round(ratio, 2)` (rounded
+to two decimal places) smaller than their counterparts for $\Psi(P_{0})$.
 
 \subsection{Revisiting Section~\ref{subsec:being:smooth:one}.}
 
@@ -453,10 +458,10 @@ proof? I'd rather not)} to verify  that $\{\Pi_{h} : h \in \interval{-1}{1}\}$
 is a fluctuation  of $\Pi_{0}$ in the direction of  $\sigma_{0}$ (in the sense
 of \eqref{eq:fluct}) given, up to a constant, by
 
-\begin{align*}\sigma_{0}(O)  &=   -  10   \sqrt{W}  A   \times  \beta_{0}(A,W)
+\begin{align*}\sigma_{0}(O)  &\equiv -  10  \sqrt{W}  A \times  \beta_{0}(A,W)
 \left(\log(1    -     Y)    +     \sum_{k=0}^{3}    \left(k     +    \beta_{0}
 (A,W)\right)^{-1}\right)     +      \text{constant},\\     \text{where}     \;
-\beta_{0}(A,W)&=\frac{1
+\beta_{0}(A,W)&\equiv                                                  \frac{1
 -\Qbar_{\Pi_{0}}(A,W)}{\Qbar_{\Pi_{0}}(A,W)}.\end{align*}
 
 Consequently,    the    slope    of     the    dotted    curve    in    Figure
@@ -468,10 +473,10 @@ Consequently,    the    slope    of     the    dotted    curve    in    Figure
 (since $D^{*}(\Pi_{0})$  is centered under $\Pi_{0}$,  knowing $\sigma_{0}$ up
 to a constant is not problematic). 
 
-Let  us check  this numerically.  In  the next  chunk of  code, we  implements
-direction  $s$  with  `s_draw_from_another_experiment`,  then  we  approximate
-\eqref{eq:slope:Pi} (pointwise  and with  a confidence interval  of asymptotic
-level 95\%):
+Let  us check  this numerically.   In the  next chunk  of code,  we implements
+direction  $s$  with  `s_draw_from_another_experiment`,  then  we  numerically
+approximate \eqref{eq:slope:Pi}  (pointwise and with a  confidence interval of
+asymptotic level 95\%):
 
 ```{r recover-slope}
 s_draw_from_another_experiment <- function(obs) { 
@@ -497,8 +502,8 @@ sd_hat <- sd(vars)
 (slope_CI <- slope_hat + c(-1, 1) * qnorm(1 - alpha / 2) * sd_hat / sqrt(B))
 ```
 
-Equal to `r  slope_approx`, the first approximation `slope_approx`  is not too
-off.
+Equal to  `r round(slope_approx,  3)` (rounded to  three decimal  places), the
+first numerical approximation `slope_approx` is not too off.
 
 \subsection{Double-robustness}
 \label{subsec:double:robustness}
@@ -532,7 +537,22 @@ differ  from  $P$ otherwise.  This  property  is  useful to  build  consistent
 estimators of $\Psi(P)$.
 
 However,   there  is   much   more  to   double-robustness   than  the   above
-straightforward implication.
+straightforward  implication. Indeed,  \ref{eq:rem:one} is  useful to  build a
+consistent etimator of $\Psi(P)$ that,  in addition, satisfies a central limit
+theorem and thus lends itsef to the construction of confidence intervals.
+
+Let $P_{n}^{0} \in \calM$  be an element of model $\calM$  of which the choice
+is data-driven, based  on observing $n$ independent draws  from $P$.  Equality
+\ref{eq:rem:one} reveals  that the  statistical behavior of  the corresponding
+\textit{substitution}  estimator  $\psi_{n}^{0}   \equiv  \Psi(P_{n}^{0})$  is
+easier  to   analyze  when   the  remainder  term   $\Rem_{P}  (\Qbar_{n}^{0},
+\gbar_{n}^{0})$ goes  to zero  at a  fast (relative to  $n$) enough  rate.  In
+light of  \ref{eq:rem:two}, this happens  if the features  $\Qbar_{n}^{0}$ and
+$\gbar_{n}^{0}$ of  $P_{n}^{0}$ converge  to their  counterparts under  $P$ at
+rates of which \textit{the product} is fast enough.
+
+\subsection{Targeted inference.}
+\label{subsec:tmle}
 
 
 
