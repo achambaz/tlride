@@ -62,7 +62,7 @@ draw_from_experiment <- function(n, full = FALSE) {
 ## plot the causal diagram
 
 ## ----approx-psi-zero-a---------------------------------------------------
-B <- 1e6
+B <- 1e5 ## 1e6 eventually, or more
 full_obs <- draw_from_experiment(B, full = TRUE)
 (psi_hat <- mean(full_obs[, "Yone"] - full_obs[, "Yzero"]))
 
@@ -162,7 +162,7 @@ obs_from_another_experiment <- draw_from_another_experiment(B)
 (ratio <- sqrt(cramer_rao_Pi_zero_hat/cramer_rao_hat))
 
 ## ----recover-slope-------------------------------------------------------
-s_draw_from_another_experiment <- function(obs) { 
+sigma0_draw_from_another_experiment <- function(obs) { 
   ## preliminary
   Qbar <- attr(obs, "Qbar")
   QAW <- Qbar(obs[, c("A", "W")])
@@ -179,12 +179,12 @@ s_draw_from_another_experiment <- function(obs) {
 }
 
 vars <- eic(obs_from_another_experiment, psi = 59/300) *
-  s_draw_from_another_experiment(obs_from_another_experiment)
+  sigma0_draw_from_another_experiment(obs_from_another_experiment)
 sd_hat <- sd(vars)
 (slope_hat <- mean(vars))
 (slope_CI <- slope_hat + c(-1, 1) * qnorm(1 - alpha / 2) * sd_hat / sqrt(B))
 
-## ----known-Gbar-one, fig.cap  = "Two estimators of $\\psi_{0}$, one of them poor, the other assuming that $\\Gbar_{0}$ is known."----
+## ----known-Gbar-one, fig.cap  = "Of two estimators of $\\psi_{0}$, one of them misconceived, the other assuming that $\\Gbar_{0}$ is known."----
 Gbar <- attr(obs, "Gbar")
 
 psi_hat_ab <- obs %>% as_tibble() %>% mutate(id = 1:nrow(obs) %% 1e3) %>%
@@ -201,10 +201,57 @@ psi_hat_ab <- psi_hat_ab %>%
   extract(key, c("what", "type"), "([^_]+)_([ab])") %>%
   spread(what, value)
 
-(bias <- psi_hat_ab %>% group_by(type) %>% summarise(bias = mean(clt)))
+bias_ab <- psi_hat_ab %>% group_by(type) %>% summarise(bias = mean(clt))
 
 ggplot(psi_hat_ab, aes(clt, fill = type, colour = type)) +
   geom_density(alpha = 0.1) +
-  geom_vline(aes(xintercept = bias, colour = type), bias) +
+  geom_vline(aes(xintercept = bias, colour = type), bias_ab) +
   labs(x = expression(paste(sqrt(n)*(psi[n]^{list(a, b)} - psi[0])))) 
+
+## ----known-Gbar-two-a----------------------------------------------------
+estimate_G <- function(dat, working_model) {
+  fit <- working_model[[1]](formula = working_model[[2]], data = dat)
+  Ghat <- function(newdata) {
+    predict(fit, newdata, type = "response")
+  }
+  return(Ghat)
+}
+
+predict_lGAW <- function(A, W, working_model, threshold = 0.05) {
+  ## fit the working model
+  dat <- data.frame(A = A, W= W)
+  Ghat <- estimate_G(dat, working_model)
+  ## make predictions based on the fit
+  Ghat_W <- Ghat(dat)
+  A <- dat[, "A"]
+  lGAW <- A * Ghat_W + (1 - A) * (1 - Ghat_W)
+  pmin(1 - threshold, pmax(lGAW, threshold))
+}
+
+working_model <- list(
+  model = function(...) {glm(family = binomial(), ...)},
+  formula = as.formula(
+    paste("A ~",
+          paste("I(W^", seq(1/4, 3, by = 1/4), sep = "", collapse = ") + "),
+          ")")
+  ))
+working_model$formula
+
+## ----known-Gbar-two-b----------------------------------------------------
+psi_hat_c <- obs %>% as_tibble() %>% mutate(id = 1:nrow(obs) %% 1e3) %>%
+  group_by(id) %>%
+  mutate(lgAW = predict_lGAW(A, W, working_model)) %>%
+  summarize(est = mean(Y * (2 * A - 1) / lgAW))
+std_c <- sd(psi_hat_c$est)
+psi_hat_c <- psi_hat_c %>%
+  mutate(std = std_c,
+         clt = (est - psi_hat) / std,
+         type = "c")
+
+bias_c <- psi_hat_c %>% summarise(bias = mean(clt))
+
+ggplot(full_join(psi_hat_ab, psi_hat_c), aes(clt, fill = type, colour = type)) +
+  geom_density(alpha = 0.1) +
+  geom_vline(aes(xintercept = bias, colour = type), c(bias_ab, bias_c)) +
+  labs(x = expression(paste(sqrt(n)*(psi[n]^{list(a, b, c)} - psi[0])))) 
 

@@ -27,11 +27,14 @@ R> bookdown::render_book("dan.Rmd")
 
 ```{r setup, echo = FALSE}
 knitr::opts_chunk$set(
-  size = "tiny",
-  warnings = FALSE,
-  fig.width = 12, 
   fig.height = 4, 
-  fig.path = 'img/')
+  fig.path = 'img/',
+  fig.width = 12,
+  message = FALSE,
+  size = "tiny",
+  warning = FALSE,
+  warnings = FALSE
+)
 ```
 
 \section{Introduction}
@@ -122,7 +125,8 @@ function to sample observations  from a common law.  It is  even a little more
 than that, because we can tweak the experiment, by setting its `full` argument
 to  `TRUE`, in  order  to  get what  appear  as intermediary  (counterfactual)
 variables  in  the regular  experiment.   The  next  chunk  of code  runs  the
-(regular) experiment five times independently:
+(regular)  experiment  five  times  independently and  outputs  the  resulting
+observations: 
 ```{r draw-five-obs} 
 (five_obs <- draw_from_experiment(5))
 ``` 
@@ -133,25 +137,20 @@ and  `QW` are  infinite-dimensional features  of  $P_{0}$.  There  is more  to
 $P_{0}$ than  $\Gbar_{0}$ (`Gbar`), $\Qbar_{0}$ (`Qbar`),  formally defined by
 \begin{equation}  \Gbar_{0} (W)  \equiv P_{0}  (A=1|W), \quad  \Qbar_{0} (A,W)
 \equiv  E_{P_{0}} (Y  | A,  W), \end{equation}  and the  marginal distribution
-$Q_{0,W}$  of  $W$   under  $P_{0}$  (`QW`),  for   instance  the  conditional
+$Q_{0,W}$  of  $W$ under  $P_{0}$  (`QW`)  ---  for instance  the  conditional
 distribution  (not  expectation)  of   $Y$  given  $(A,W)$,  but  $\Gbar_{0}$,
 $\Qbar_{0}$ and $Q_{0,W}$ will play a prominent role in our story.
 
 \subsection{The parameter of interest, first pass.}
 \label{subsec:parameter:first}
 
-It  happens  that we  especially  care  for  a finite-dimensional  feature  of
-$P_{0}$  that   we  denote  by   $\psi_{0}$.   Its  definition   involves  the
-aforementioned infinite-dimensional features: 
-\begin{align}
-\label{eq:psi0}
-  \psi_{0} 
-  &\equiv E_{P_{0}} \left(\Qbar_{0}(1, W) - \Qbar_{0}(0, W)\right)\\
-\notag
-&= \int \left(\Qbar_{0}(1, w) - \Qbar_{0}(0, w)\right) dQ_{0,W}(w).
-\end{align}
-Acting as oracles, we can compute explicitely the numerical value of
-$\psi_{0}$. 
+It happens that we especially care for a finite-dimensional feature of $P_{0}$
+that  we   denote  by  $\psi_{0}$.    Its  definition  involves  two   of  the
+aforementioned  infinite-dimensional  features: \begin{align}  \label{eq:psi0}
+\psi_{0} &\equiv  E_{P_{0}} \left(\Qbar_{0}(1,  W) -  \Qbar_{0}(0, W)\right)\\
+\notag  &= \int  \left(\Qbar_{0}(1, w)  - \Qbar_{0}(0,  w)\right) dQ_{0,W}(w).
+\end{align} Acting as oracles, we  can compute explicitely the numerical value
+of $\psi_{0}$.
 
 Our  interest in  $\psi_{0}$ is  of  causal nature.  Taking a  closer look  at
 `drawFromExperiment` reveals indeed  that the random making  of an observation
@@ -197,9 +196,10 @@ $\psi_{0}$ is a well defined parameter beyond its causal interpretation.
 To conclude this subsection, we draw  advantage from the possibility to sample
 full observations  from `draw_from_experiment` by setting  its argument `full`
 to `TRUE` in order to numerically approximate $\psi_{0}$.  By the law of large
-numbers, the following chunk of code approximates $\psi_{0}$:
+numbers,  the following  chunk of  code approximates  $\psi_{0}$ and  shows it
+approximate value:
 ```{r approx-psi-zero-a}
-B <- 1e6
+B <- 1e5 ## 1e6 eventually, or more
 full_obs <- draw_from_experiment(B, full = TRUE)
 (psi_hat <- mean(full_obs[, "Yone"] - full_obs[, "Yzero"]))
 ```
@@ -215,11 +215,12 @@ alpha <- 0.05
 \label{subsec:parameter:second}
 
 Suppose we  know beforehand that  $O$ drawn from  $P_{0}$ takes its  values in
-$\calO \equiv  [0,1] \times \{0,1\}  \times [0,1]$ and that  $P_{0}(A=1|W)$ is
-bounded  away from  zero and  one $Q_{0,W}$-almost  surely (this  is the  case
-indeed).  Then  we can  define model  $\calM$ as the  set of  all laws  $P$ on
-$\calO$ such that $\Gbar(W) \equiv P(A=1|W)$ is bounded away from zero and one
-$Q_{W}$-almost surely, where $Q_{W}$ is the marginal distribution of $W$
+$\calO  \equiv  [0,1]  \times  \{0,1\}  \times [0,1]$  and  that  $\Gbar(W)  =
+P_{0}(A=1|W)$ is bounded away from  zero and one $Q_{0,W}$-almost surely (this
+is the case indeed).  Then we can define  model $\calM$ as the set of all laws
+$P$ on $\calO$ such that $\Gbar(W)  \equiv P(A=1|W)$ is bounded away from zero
+and one $Q_{W}$-almost  surely, where $Q_{W}$ is the  marginal distribution of
+$W$
 under $P$.  
 
 Let us also define generically $\Qbar$ as \begin{equation*} \Qbar (A,W) \equiv
@@ -474,13 +475,13 @@ Consequently,    the    slope    of     the    dotted    curve    in    Figure
 (since $D^{*}(\Pi_{0})$  is centered under $\Pi_{0}$,  knowing $\sigma_{0}$ up
 to a constant is not problematic). 
 
-Let  us check  this numerically.   In the  next chunk  of code,  we implements
-direction  $s$  with  `s_draw_from_another_experiment`,  then  we  numerically
-approximate \eqref{eq:slope:Pi}  (pointwise and with a  confidence interval of
-asymptotic level 95\%):
+Let  us check  this numerically.   In  the next  chunk of  code, we  implement
+direction  $\sigma_{0}$  with `sigma0_draw_from_another_experiment`,  then  we
+numerically approximate  \eqref{eq:slope:Pi} (pointwise and with  a confidence
+interval of asymptotic level 95\%):
 
 ```{r recover-slope}
-s_draw_from_another_experiment <- function(obs) { 
+sigma0_draw_from_another_experiment <- function(obs) { 
   ## preliminary
   Qbar <- attr(obs, "Qbar")
   QAW <- Qbar(obs[, c("A", "W")])
@@ -497,7 +498,7 @@ s_draw_from_another_experiment <- function(obs) {
 }
 
 vars <- eic(obs_from_another_experiment, psi = 59/300) *
-  s_draw_from_another_experiment(obs_from_another_experiment)
+  sigma0_draw_from_another_experiment(obs_from_another_experiment)
 sd_hat <- sd(vars)
 (slope_hat <- mean(vars))
 (slope_CI <- slope_hat + c(-1, 1) * qnorm(1 - alpha / 2) * sd_hat / sqrt(B))
@@ -510,13 +511,13 @@ first numerical approximation `slope_approx` is not too off.
 \label{subsec:double:robustness}
 
 The  efficient influence  curve $D^{*}(P)$  at  $P \in  \calM$ enjoys  another
-remarkable  property: it  is  double-robust.  Specifically,  for  all $P'  \in
-\calM$, it holds that
+remarkable property: it is double-robust.   Specifically, if we define for all
+$P' \in \calM$
 
-\begin{equation}\label{eq:rem:one}  \Psi(P') -  \Psi(P) =  - E_{P}  (D^{*}(P')
-(O)) + \Rem_{P} (\Qbar', \Gbar')\end{equation}
+\begin{equation}\label{eq:rem:one} \Rem_{P} (\Qbar',  \Gbar')\equiv \Psi(P') -
+\Psi(P) + E_{P} (D^{*}(P') (O)), \end{equation}
 
-where   the   so   called   remainder   term   $\Rem_{P}   (\Qbar',   \Gbar')$
+then   the   so   called    remainder   term   $\Rem_{P}   (\Qbar',   \Gbar')$
 satisfies\footnote{For  any   (measurable)  $f:\calO  \to  \bbR$,   we  denote
 $\|f\|_{P} = E_{P} (f(O)^{2})^{1/2}$.}
 
@@ -552,15 +553,67 @@ light of  \ref{eq:rem:two}, this happens  if the features  $\Qbar_{n}^{0}$ and
 $\Gbar_{n}^{0}$ of  $P_{n}^{0}$ converge  to their  counterparts under  $P$ at
 rates of which \textit{the product} is fast enough.
 
-\subsection{Targeted inference.}
-\label{subsec:tmle}
+\subsection[Inference assuming $\Gbar_{0}$ known, or not.]{Inference assuming
+$\boldsymbol{\Gbar_{0}}$ known, or not.} 
+\label{subsec:known:gbar}
 
-blabla
+Let $O_{1}$,  \ldots, $O_{n}$  be a sample  of independent  observations drawn
+from   $P_{0}$.   Let   $P_{n}$  be   the  corresponding   empirical  measure,
+\textit{i.e.},  the  law consisting  in  drawing  one among  $O_{1}$,  \ldots,
+$O_{n}$ with equal probabilities $n^{-1}$. 
 
-```{r known-Gbar-one, fig.cap  = "Of two estimators of $\\psi_{0}$, one of them misconceived, the other assuming that $\\Gbar_{0}$ is known."}
+Let us  assume for a moment  that we know  $\Gbar_{0}$.  This may be  the case
+indeed if  $P_{0}$ was a  controlled experiment.  Note that, on  the contrary,
+assuming $\Qbar_{0}$ known would be difficult to justify. 
+
+```{r known-Gbar-one-a}
 Gbar <- attr(obs, "Gbar")
 
-psi_hat_ab <- obs %>% as_tibble() %>% mutate(id = 1:nrow(obs) %% 1e3) %>%
+iter <- 1e2
+```
+
+Then, the alternative expression \begin{equation}\label{eq:psi0:b} \psi_{0} =
+E_{P_{0}}     \left(\frac{2A-1}{\ell\Gbar_{0}(A,W)}Y\right)     \end{equation}
+suggests            to           estimate            $\psi_{0}$           with
+\begin{equation}\label{eq:psi:n:b}\psi_{n}^{b}         \equiv        E_{P_{n}}
+\left(\frac{2A-1}{\ell\Gbar_{0}(A,W)}Y\right)  =   \frac{1}{n}  \sum_{i=1}^{n}
+\left(\frac{2A_{i}-1}{\ell\Gbar_{0}(A_{i},W_{i})}Y_{i}\right).\end{equation}
+Note how $P_{n}$ is substituted  for $P_{0}$ in \eqref{eq:psi:n:b} relative to
+\eqref{eq:psi0:b}. 
+
+It is easy to check that $\psi_{n}^{b}$ estimates $\psi_{0}$ consistently, but
+this  is too  little  to request  from an  estimator  of $\psi_{0}$.   Better,
+$\psi_{n}^{b}$   also   satisfies   a   central   limit   theorem:   $\sqrt{n}
+(\psi_{n}^{b}  -   \psi_{0})$  converges  in   law  to  a   centered  Gaussian
+distribution   with   asymptotic    variance   \begin{equation*}v^{b}   \equiv
+\Var_{P_{0}}     \left(\frac{2A-1}{\ell\Gbar_{0}(A,W)}Y\right),\end{equation*}
+where  $v^{b}$ can  be  consistently estimated  by  its empirical  counterpart
+\begin{equation*}v_{n}^{b}                 \equiv                 \Var_{P_{n}}
+\left(\frac{2A-1}{\ell\Gbar_{0}(A,W)}Y\right)  =   \frac{1}{n}  \sum_{i=1}^{n}
+\left(\frac{2A_{i}-1}{\ell\Gbar_{0}(A_{i},W_{i})}Y_{i}                       -
+\psi_{n}^{b}\right)^{2}.\end{equation*} 
+
+Let us investigate how $\psi_{n}^{b}$ behaves  based on `obs`.  Because we are
+interested  in the  \textit{law} of  $\psi_{n}^{b}$,  the next  chunk of  code
+constitutes `iter =` `r iter`  independent samples of independent observations
+drawn from  $P_{0}$, each  consisting of  $n$ equal  to `nrow(obs)/iter  =` `r
+nrow(obs) / iter` data points,  and computes the realization of $\psi_{n}^{b}$
+on all samples.
+
+Before  proceeding,   let  us  introduce   \begin{align*}\psi_{n}^{a}  &\equiv
+E_{P_{n}}  \left(Y  |  A=1\right)  -  E_{P_{n}} \left(Y  |  A=0\right)  \\  &=
+\frac{1}{n_{1}}   \sum_{i=1}^{n}  \one\{A_{i}=1\}   Y_{i}  -   \frac{1}{n_{0}}
+\sum_{i=1}^{n} \one\{A_{i}=0\} Y_{i}  \\&=\frac{1}{n_{1}} \sum_{i=1}^{n} A_{i}
+Y_{i} - \frac{1}{n_{0}}  \sum_{i=1}^{n} (1 - A_{i})  Y_{i}, \end{align*} where
+$n_{1}  = \sum_{i=1}^{n}  A_{i} =  n -  n_{0}$ is  the number  of observations
+$O_{i}$    such   that    $A_{i}   =    1$.    It   is    an   estimator    of
+\begin{equation*}E_{P_{0}} (Y | A=1) -  E_{P_{0}} (Y | A=0).\end{equation*} We
+seize  this  opportunity to  demonstrate  numerically  the obvious  fact  that
+$\psi_{n}^{a}$ does not estimate $\psi_{0}$. 
+
+
+```{r known-Gbar-one-b, fig.cap = "Kernel density estimators of the law of two estimators of $\\psi_{0}$, one of them misconceived (a), the other assuming that $\\Gbar_{0}$ is known (b). Built based on `iter` independent realizations of each estimator."}
+psi_hat_ab <- obs %>% as_tibble() %>% mutate(id = 1:nrow(obs) %% iter) %>%
   mutate(lgAW = A * Gbar(W) + (1 - A) * (1 - Gbar(W))) %>% group_by(id) %>%
   summarize(est_a = mean(Y[A==1]) - mean(Y[A==0]),
             est_b = mean(Y * (2 * A - 1) / lgAW),
@@ -574,12 +627,98 @@ psi_hat_ab <- psi_hat_ab %>%
   extract(key, c("what", "type"), "([^_]+)_([ab])") %>%
   spread(what, value)
 
-bias <- psi_hat_ab %>% group_by(type) %>% summarise(bias = mean(clt))
+(bias_ab <- psi_hat_ab %>% group_by(type) %>% summarise(bias = mean(clt)))
 
-ggplot(psi_hat_ab, aes(clt, fill = type, colour = type)) +
-  geom_density(alpha = 0.1) +
-  geom_vline(aes(xintercept = bias, colour = type), bias) +
-  labs(x = expression(paste(sqrt(n)*(psi[n]^{list(a, b)} - psi[0])))) 
+fig <- ggplot() +
+  geom_line(aes(x = x, y = y), 
+            data = tibble(x = seq(-3, 3, length.out = 1e3),
+                          y = dnorm(x)),
+            linetype = 1, alpha = 0.5) +
+  geom_density(aes(clt, fill = type, colour = type),
+               psi_hat_ab, alpha = 0.1) +
+  geom_vline(aes(xintercept = bias, colour = type),
+             bias_ab, size = 1.5, alpha = 0.5)
+  
+fig +
+  labs(x = expression(paste(sqrt(n)*(psi[n]^{list(a, b)} - psi[0]))))
 ```
 
-blabla
+Let  $v^{a}$  be  the  empirical   variance  of  the  `iter`  realizations  of
+$\psi_{n}^{a}$.  By the  above chunk of code, the  averages of $\sqrt{n/v^{a}}
+(\psi_{n}^{a} - \psi_{0})$ and  $\sqrt{n/v_{n}^{b}} (\psi_{n}^{b} - \psi_{0})$
+computed across the realizations of  the two estimators are respectively equal
+to `r round(bias_ab$bias[bias_ab$type=="a"],3)` and 
+`r round(bias_ab$bias[bias_ab$type=="b"],  3)` (both rounded to  three decimal
+places --- see `bias_ab`). Interpreted as amounts of bias, those to quantities
+are represented  by vertical lines in  Figure \@ref(fig:known-Gbar-one-b). The
+red and blue bell-shaped curves represent the empirical laws of $\psi_{n}^{a}$
+and $\psi_{n}^{b}$  as estimated by  kernel density estimation. The  latter is
+close to the black curve, which represents the standard normal density.
+
+
+
+
+```{r unknown-Gbar-one}
+estimate_G <- function(dat, working_model) {
+  fit <- working_model[[1]](formula = working_model[[2]], data = dat)
+  Ghat <- function(newdata) {
+    predict(fit, newdata, type = "response")
+  }
+  return(Ghat)
+}
+
+predict_lGAW <- function(A, W, working_model, threshold = 0.05) {
+  ## fit the working model
+  dat <- data.frame(A = A, W= W)
+  Ghat <- estimate_G(dat, working_model)
+  ## make predictions based on the fit
+  Ghat_W <- Ghat(dat)
+  A <- dat[, "A"]
+  lGAW <- A * Ghat_W + (1 - A) * (1 - Ghat_W)
+  pmin(1 - threshold, pmax(lGAW, threshold))
+}
+
+working_model <- list(
+  model = function(...) {glm(family = binomial(), ...)},
+  formula = as.formula(
+    paste("A ~",
+          paste("I(W^", seq(1/4, 3, by = 1/4), sep = "", collapse = ") + "),
+          ")")
+  ))
+working_model$formula
+```
+
+
+
+```{r unknown-Gbar-two, fig.cap  = "Kernel density estimators of the law of three estimators of $\\psi_{0}$, one of them misconceived (a), one assuming that $\\Gbar_{0}$ is known (b) and one that hinges on the estimation of $\\Gbar_{0}$ (c). The present figure includes Figure \\@ref(fig:known-Gbar-one-b) (but the colors differ). Built based on `iter` independent realizations of each estimator."}
+psi_hat_c <- obs %>% as_tibble() %>% mutate(id = 1:nrow(obs) %% iter) %>%
+  group_by(id) %>%
+  mutate(lgAW = predict_lGAW(A, W, working_model)) %>%
+  summarize(est = mean(Y * (2 * A - 1) / lgAW))
+std_c <- sd(psi_hat_c$est)
+psi_hat_abc <- psi_hat_c %>%
+  mutate(std = std_c,
+         clt = (est - psi_hat) / std,
+         type = "c") %>%
+  full_join(psi_hat_ab)
+
+bias_abc <- psi_hat_abc %>% group_by(type) %>% summarise(bias = mean(clt))
+
+fig +
+  geom_density(aes(clt, fill = type, colour = type), psi_hat_abc, alpha = 0.1) +
+  geom_vline(aes(xintercept = bias, colour = type),
+             bias_abc, size = 1.5, alpha = 0.5) +
+  xlim(-3, 3) + 
+  labs(x = expression(paste(sqrt(n)*(psi[n]^{list(a, b, c)} - psi[0]))))
+```
+
+```{r unknown-Gbar-three, fig.cap  = "Quantile-quantile plot of the standard normal law against the empirical laws  of three estimators of $\\psi_{0}$, one of them misconceived (a), one assuming that $\\Gbar_{0}$ is known (b) and one that hinges on the estimation of $\\Gbar_{0}$ (c). Built based on `iter` independent realizations of each estimator."}
+ggplot(psi_hat_abc, aes(sample = clt, fill = type, colour = type)) +
+  geom_abline(intercept = 0, slope = 1, alpha = 0.5) +
+  geom_qq(alpha = 1)
+```
+
+
+\subsection{Targeted inference.}
+\label{subsec:tmle}
+
