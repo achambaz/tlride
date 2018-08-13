@@ -65,7 +65,7 @@ draw_from_experiment <- function(n, full = FALSE) {
 ## plot the causal diagram
 
 ## ----approx-psi-zero-a---------------------------------------------------
-B <- 1e6 ## 1e6 eventually, or more
+B <- 1e6 ## Antoine: 1e6 eventually
 full_obs <- draw_from_experiment(B, full = TRUE)
 (psi_hat <- mean(full_obs[, "Yone"] - full_obs[, "Yzero"]))
 
@@ -192,13 +192,13 @@ Gbar <- attr(obs, "Gbar")
 
 iter <- 1e3
 
-## ----known-Gbar-one-b, fig.cap = "Kernel density estimators of the law of two estimators of $\\psi_{0}$, one of them misconceived (a), the other assuming that $\\Gbar_{0}$ is known (b). Built based on `iter` independent realizations of each estimator."----
+## ----known-Gbar-one-b, fig.cap = "Kernel density estimators of the law of two estimators of $\\psi_{0}$ (recentered and renormalized), one of them misconceived (a), the other assuming that $\\Gbar_{0}$ is known (b). Built based on `iter` independent realizations of each estimator."----
 psi_hat_ab <- obs %>% as_tibble() %>% mutate(id = 1:nrow(obs) %% iter) %>%
   mutate(lgAW = A * Gbar(W) + (1 - A) * (1 - Gbar(W))) %>% group_by(id) %>%
   summarize(est_a = mean(Y[A==1]) - mean(Y[A==0]),
             est_b = mean(Y * (2 * A - 1) / lgAW),
-            std_b = sd(Y * (2 * A - 1) / lgAW),
-            clt_b = sqrt(n()) * (est_b - psi_hat) / std_b)
+            std_b = sd(Y * (2 * A - 1) / lgAW) / sqrt(n()),
+            clt_b = (est_b - psi_hat) / std_b)
 std_a <- sd(psi_hat_ab$est_a)
 psi_hat_ab <- psi_hat_ab %>%
   mutate(std_a = std_a,
@@ -220,21 +220,21 @@ fig <- ggplot() +
              bias_ab, size = 1.5, alpha = 0.5)
   
 fig +
-  labs(x = expression(paste(sqrt(n)*(psi[n]^{list(a, b)} - psi[0]))))
+  labs(x = expression(paste(sqrt(n/v[n]^{list(a, b)})*(psi[n]^{list(a, b)} - psi[0]))))
 
 ## ----unknown-Gbar-one----------------------------------------------------
-estimate_G <- function(dat, working_model) {
-  fit <- working_model[[1]](formula = working_model[[2]], data = dat)
+estimate_G <- function(dat, working_model_G) {
+  fit <- working_model_G[[1]](formula = working_model_G[[2]], data = dat)
   Ghat <- function(newdata) {
     predict(fit, newdata, type = "response")
   }
   return(Ghat)
 }
 
-predict_lGAW <- function(A, W, working_model, threshold = 0.05) {
+predict_lGAW <- function(A, W, working_model_G, threshold = 0.05) {
   ## fit the working model
-  dat <- data.frame(A = A, W= W)
-  Ghat <- estimate_G(dat, working_model)
+  dat <- data.frame(A = A, W = W)
+  Ghat <- estimate_G(dat, working_model_G)
   ## make predictions based on the fit
   Ghat_W <- Ghat(dat)
   A <- dat[, "A"]
@@ -242,38 +242,101 @@ predict_lGAW <- function(A, W, working_model, threshold = 0.05) {
   pmin(1 - threshold, pmax(lGAW, threshold))
 }
 
-working_model <- list(
+## ----unknown-Gbar-two----------------------------------------------------
+working_model_G <- list(
   model = function(...) {glm(family = binomial(), ...)},
   formula = as.formula(
     paste("A ~",
-          paste("I(W^", seq(1/2, 3, by = 1/2), sep = "", collapse = ") + "),
+          paste("I(W^", seq(1/2, 2, by = 1/2), sep = "", collapse = ") + "),
           ")")
   ))
-working_model$formula
+working_model_G$formula
 
-## ----unknown-Gbar-two, fig.cap  = "Kernel density estimators of the law of three estimators of $\\psi_{0}$, one of them misconceived (a), one assuming that $\\Gbar_{0}$ is known (b) and one that hinges on the estimation of $\\Gbar_{0}$ (c). The present figure includes Figure \\@ref(fig:known-Gbar-one-b) (but the colors differ). Built based on `iter` independent realizations of each estimator."----
+## ----unknown-Gbar-two-bis------------------------------------------------
 psi_hat_c <- obs %>% as_tibble() %>% mutate(id = 1:nrow(obs) %% iter) %>%
   group_by(id) %>%
-  mutate(lgAW = predict_lGAW(A, W, working_model)) %>%
-  summarize(est = mean(Y * (2 * A - 1) / lgAW))
+  mutate(lgAW = predict_lGAW(A, W, working_model_G)) %>%
+  summarize(est = mean(Y * (2 * A - 1) / lgAW),
+            try = sd(Y * (2 * A - 1) / lgAW) / sqrt(n()))
 std_c <- sd(psi_hat_c$est)
 psi_hat_abc <- psi_hat_c %>%
   mutate(std = std_c,
+         try = try,
          clt = (est - psi_hat) / std,
          type = "c") %>%
   full_join(psi_hat_ab)
 
-bias_abc <- psi_hat_abc %>% group_by(type) %>% summarise(bias = mean(clt))
+(bias_abc <- psi_hat_abc %>% group_by(type) %>% summarise(bias = mean(clt)))
 
+## ----unknown-Gbar-three, fig.cap = "Kernel density estimators of the law of three estimators of $\\psi_{0}$  (recentered and renormalized), one of them misconceived (a), one assuming that $\\Gbar_{0}$ is known (b) and one that hinges on the estimation of $\\Gbar_{0}$ (c). The present figure includes Figure \\@ref(fig:known-Gbar-one-b) (but the colors differ). Built based on `iter` independent realizations of each estimator."----
 fig +
   geom_density(aes(clt, fill = type, colour = type), psi_hat_abc, alpha = 0.1) +
   geom_vline(aes(xintercept = bias, colour = type),
              bias_abc, size = 1.5, alpha = 0.5) +
   xlim(-3, 3) + 
-  labs(x = expression(paste(sqrt(n)*(psi[n]^{list(a, b, c)} - psi[0]))))
+  labs(x = expression(paste(sqrt(n/v[n]^{list(a, b, c)})*
+                            (psi[n]^{list(a, b, c)} - psi[0]))))
 
-## ----unknown-Gbar-three, fig.cap  = "Quantile-quantile plot of the standard normal law against the empirical laws  of three estimators of $\\psi_{0}$, one of them misconceived (a), one assuming that $\\Gbar_{0}$ is known (b) and one that hinges on the estimation of $\\Gbar_{0}$ (c). Built based on `iter` independent realizations of each estimator."----
+## ----unknown-Gbar-four, fig.cap  = "Quantile-quantile plot of the standard normal law against the empirical laws  of three estimators of $\\psi_{0}$, one of them misconceived (a), one assuming that $\\Gbar_{0}$ is known (b) and one that hinges on the estimation of $\\Gbar_{0}$ (c). Built based on `iter` independent realizations of each estimator."----
 ggplot(psi_hat_abc, aes(sample = clt, fill = type, colour = type)) +
   geom_abline(intercept = 0, slope = 1, alpha = 0.5) +
   geom_qq(alpha = 1)
+
+## ----exercises-one, eval = FALSE-----------------------------------------
+## powers <- ## make sure '1/2' and '1' belong to 'powers', eg
+##   seq(1/4, 3, by = 1/4)
+## working_model_G_two <- list(
+##   model = function(...) {glm(family = binomial(), ...)},
+##   formula = as.formula(
+##     paste("A ~",
+##           paste("I(W^", powers, sep = "", collapse = ") + "),
+##           ")")
+##   ))
+
+## ----exercises-two, eval = FALSE-----------------------------------------
+## transform <- c("cos", "sin", "sqrt", "log", "exp")
+## working_model_G_three <- list(
+##   model = function(...) {glm(family = binomial(), ...)},
+##   formula = as.formula(
+##     paste("A ~",
+##           paste("I(", transform, sep = "", collapse = "(W)) + "),
+##           "(W))")
+##   ))
+
+## ----estimating-Qbar-----------------------------------------------------
+NP_estimate_Q <- function(dat, method) {
+  fit <- method[[1]](dat)
+  Qhat <- function(newdata) {
+    method[[2]](newdata, fit)
+  }
+  return(Qhat)
+}
+
+NP_predict_QAW <- function(Y, A, W, method, blip = FALSE) {
+  ## carries out the estimation based on NP method 'method'
+  dat <- data.frame(Y = Y, A = A, W = W)
+  Qhat <- NP_estimate_Q(dat, method)
+  ## make predictions based on the fit
+  if (!blip) {
+    pred <- Qhat(dat)
+  } else {
+    pred <- Qhat(data.frame(A = 1, W = W)) - Qhat(data.frame(A = 0, W = W))
+  }
+  return(pred)
+}
+
+rf <- list(
+  learn = function(dat) {
+    randomForest::randomForest(formula(Y ~ A * W), dat)
+  },
+  predict = function(newdata, fit) {
+    randomForest:::predict.randomForest(fit, newdata, type = "response")
+  })
+
+
+psi_hat_d <- obs %>% as_tibble() %>% mutate(id = 1:nrow(obs) %% iter) %>%
+  group_by(id) %>%
+  mutate(blipQW = NP_predict_QAW(Y, A, W, rf, blip = TRUE)) %>%
+  summarize(est = mean(blipQW))
+
 
