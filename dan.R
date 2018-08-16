@@ -14,6 +14,7 @@ set.seed(54321) ## because reproducibility matters...
 suppressMessages(library(R.utils)) ## make sure it is installed
 suppressMessages(library(tidyverse)) ## make sure it is installed
 suppressMessages(library(ggplot2)) ## make sure it is installed
+suppressMessages(library(caret)) ## make sure it is installed
 expit <- plogis
 logit <- qlogis
 
@@ -29,7 +30,9 @@ draw_from_experiment <- function(n, full = FALSE) {
   Qbar <- function(AW) {
     A <- AW[, 1]
     W <- AW[, 2]
-    A * cos((1 + W) * pi / 5) + (1 - A) * sin((1 + W^2) * pi / 4)
+    ## A * cos((1 + W) * pi / 5) + (1 - A) * sin((1 + W^2) * pi / 4)
+    A * (cos((1 + W) * pi / 5) + (1/3 <= W & W <= 1/2) / 10) +
+      (1 - A) * (sin(4 * W^2 * pi) / 4 + 1/2) 
   }
   ## sampling
   ## ## context
@@ -39,8 +42,8 @@ draw_from_experiment <- function(n, full = FALSE) {
   oneW <- cbind(A = 1, W)
   Qbar.zeroW <- Qbar(zeroW)
   Qbar.oneW <- Qbar(oneW)
-  Yzero <- rbeta(n, shape1 = 1, shape2 = (1 - Qbar.zeroW) / Qbar.zeroW)
-  Yone <- rbeta(n, shape1 = 1, shape2 = (1 - Qbar.oneW) / Qbar.oneW)
+  Yzero <- rbeta(n, shape1 = 2, shape2 = 2 * (1 - Qbar.zeroW) / Qbar.zeroW)
+  Yone <- rbeta(n, shape1 = 3, shape2 = 3 * (1 - Qbar.oneW) / Qbar.oneW)
   ## ## action undertaken
   A <- rbinom(n, size = 1, prob = Gbar(W))
   ## ## actual reward
@@ -193,7 +196,7 @@ Gbar <- attr(obs, "Gbar")
 iter <- 1e3
 
 ## ----known-Gbar-one-b, fig.cap = "Kernel density estimators of the law of two estimators of $\\psi_{0}$ (recentered and renormalized), one of them misconceived (a), the other assuming that $\\Gbar_{0}$ is known (b). Built based on `iter` independent realizations of each estimator."----
-psi_hat_ab <- obs %>% as_tibble() %>% mutate(id = 1:nrow(obs) %% iter) %>%
+psi_hat_ab <- obs %>% as_tibble() %>% mutate(id = 1:n() %% iter) %>%
   mutate(lgAW = A * Gbar(W) + (1 - A) * (1 - Gbar(W))) %>% group_by(id) %>%
   summarize(est_a = mean(Y[A==1]) - mean(Y[A==0]),
             est_b = mean(Y * (2 * A - 1) / lgAW),
@@ -209,6 +212,7 @@ psi_hat_ab <- psi_hat_ab %>%
 
 (bias_ab <- psi_hat_ab %>% group_by(type) %>% summarise(bias = mean(clt)))
 
+debug(ggplot2::stat_density)
 fig <- ggplot() +
   geom_line(aes(x = x, y = y), 
             data = tibble(x = seq(-3, 3, length.out = 1e3),
@@ -223,39 +227,47 @@ fig +
   labs(x = expression(paste(sqrt(n/v[n]^{list(a, b)})*(psi[n]^{list(a, b)} - psi[0]))))
 
 ## ----unknown-Gbar-one----------------------------------------------------
-estimate_G <- function(dat, working_model_G) {
-  fit <- working_model_G[[1]](formula = working_model_G[[2]], data = dat)
-  Ghat <- function(newdata) {
-    predict(fit, newdata, type = "response")
+estimate_G <- function(dat, algorithm, ...) {
+  if (!attr(algorithm, "ML")) {
+    fit <- working_model_G[[1]](formula = working_model_G[[2]], data = dat)
+    Ghat <- function(newdata) {
+      predict(fit, newdata, type = "response")
+    }
+  } else {
+    fit <- algorithm(dat, ...)
+    Qhat <- function(newdata) {
+      caret::predict.train(fit, newdata)
+    }
   }
   return(Ghat)
 }
 
-predict_lGAW <- function(A, W, working_model_G, threshold = 0.05) {
-  ## fit the working model
+predict_lGAW <- function(A, W, algorithm, threshold = 0.05, ...) {
+  ## a wrapper to use in a call to 'mutate'
+  ## (a) fit the working model
   dat <- data.frame(A = A, W = W)
-  Ghat <- estimate_G(dat, working_model_G)
-  ## make predictions based on the fit
+  Ghat <- estimate_G(dat, algorithm, ...)
+  ## (b) make predictions based on the fit
   Ghat_W <- Ghat(dat)
-  A <- dat[, "A"]
   lGAW <- A * Ghat_W + (1 - A) * (1 - Ghat_W)
   pmin(1 - threshold, pmax(lGAW, threshold))
 }
 
 ## ----unknown-Gbar-two----------------------------------------------------
-working_model_G <- list(
+working_model_G_one <- list(
   model = function(...) {glm(family = binomial(), ...)},
   formula = as.formula(
     paste("A ~",
           paste("I(W^", seq(1/2, 2, by = 1/2), sep = "", collapse = ") + "),
           ")")
   ))
-working_model_G$formula
+attr(working_model_G_one, "ML") <- FALSE
+working_model_G_one$formula
 
 ## ----unknown-Gbar-two-bis------------------------------------------------
-psi_hat_c <- obs %>% as_tibble() %>% mutate(id = 1:nrow(obs) %% iter) %>%
+psi_hat_c <- obs %>% as_tibble() %>% mutate(id = 1:n() %% iter) %>%
   group_by(id) %>%
-  mutate(lgAW = predict_lGAW(A, W, working_model_G)) %>%
+  mutate(lgAW = predict_lGAW(A, W, working_model_G_one)) %>%
   summarize(est = mean(Y * (2 * A - 1) / lgAW),
             try = sd(Y * (2 * A - 1) / lgAW) / sqrt(n()))
 std_c <- sd(psi_hat_c$est)
@@ -292,31 +304,42 @@ ggplot(psi_hat_abc, aes(sample = clt, fill = type, colour = type)) +
 ##           paste("I(W^", powers, sep = "", collapse = ") + "),
 ##           ")")
 ##   ))
+## attr(working_model_G_two, "ML") <- FALSE
 
-## ----exercises-two, eval = FALSE-----------------------------------------
-## transform <- c("cos", "sin", "sqrt", "log", "exp")
-## working_model_G_three <- list(
-##   model = function(...) {glm(family = binomial(), ...)},
-##   formula = as.formula(
-##     paste("A ~",
-##           paste("I(", transform, sep = "", collapse = "(W)) + "),
-##           "(W))")
-##   ))
+## ----exercises-two, eval = TRUE------------------------------------------
+transform <- c("cos", "sin", "sqrt", "log", "exp")
+working_model_G_three <- list(
+  model = function(...) {glm(family = binomial(), ...)},
+  formula = as.formula(
+    paste("A ~",
+          paste("I(", transform, sep = "", collapse = "(W)) + "),
+          "(W))")
+  ))
+attr(working_model_G_three, "ML") <- FALSE
+(working_model_G_three$formula)
 
-## ----estimating-Qbar-----------------------------------------------------
-NP_estimate_Q <- function(dat, method) {
-  fit <- method[[1]](dat)
-  Qhat <- function(newdata) {
-    method[[2]](newdata, fit)
+## ----estimating-Qbar-one-------------------------------------------------
+estimate_Q <- function(dat, algorithm, ...) {
+  if (!attr(algorithm, "ML")) {
+    fit <- working_model_Q[[1]](formula = working_model_Q[[2]], data = dat)
+    Qhat <- function(newdata) {
+      predict(fit, newdata, type = "response")
+    }
+  } else {
+    fit <- algorithm(dat, ...)
+    Qhat <- function(newdata) {
+      caret::predict.train(fit, newdata)
+    }    
   }
   return(Qhat)
 }
 
-NP_predict_QAW <- function(Y, A, W, method, blip = FALSE) {
-  ## carries out the estimation based on NP method 'method'
+predict_QAW <- function(Y, A, W, algorithm, blip = FALSE, ...) {
+  ## a wrapper to use in a call to 'mutate'
+  ## (a) carry out the estimation based on 'algorithm'
   dat <- data.frame(Y = Y, A = A, W = W)
-  Qhat <- NP_estimate_Q(dat, method)
-  ## make predictions based on the fit
+  Qhat <- estimate_Q(dat, algorithm, ...)
+  ## (b) make predictions based on the fit
   if (!blip) {
     pred <- Qhat(dat)
   } else {
@@ -325,18 +348,197 @@ NP_predict_QAW <- function(Y, A, W, method, blip = FALSE) {
   return(pred)
 }
 
-rf <- list(
-  learn = function(dat) {
-    randomForest::randomForest(formula(Y ~ A * W), dat)
-  },
-  predict = function(newdata, fit) {
-    randomForest:::predict.randomForest(fit, newdata, type = "response")
-  })
+working_model_Q_one <- list(
+  model = function(...) {glm(family = binomial(), ...)},
+  formula = as.formula(
+    paste("Y ~ A * (",
+          paste("I(W^", seq(1/2, 2, by = 1/2), sep = "", collapse = ") + "),
+          "))")
+  ))
+attr(working_model_Q_one, "ML") <- FALSE
+working_model_Q_one$formula
 
+working_model_Q_two <- list(
+  model = function(...) {glm(family = binomial(), ...)},
+  formula = as.formula(
+    paste("Y ~ A * (",
+          paste("I(W^", seq(1/2, 3, by = 1/2), sep = "", collapse = ") + "),
+          "))")
+  ))
+attr(working_model_Q_two, "ML") <- FALSE
+working_model_Q_two$formula
 
-psi_hat_d <- obs %>% as_tibble() %>% mutate(id = 1:nrow(obs) %% iter) %>%
+psi_hat_de <- obs %>% as_tibble() %>% mutate(id = 1:n() %% iter) %>%
   group_by(id) %>%
-  mutate(blipQW = NP_predict_QAW(Y, A, W, rf, blip = TRUE)) %>%
-  summarize(est = mean(blipQW))
+  mutate(blipQW_d = predict_QAW(Y, A, W, working_model_Q_one, blip = TRUE),
+         blipQW_e = predict_QAW(Y, A, W, working_model_Q_two, blip = TRUE)) %>%
+  summarize(est_d = mean(blipQW_d),
+            est_e = mean(blipQW_e))
 
+std_d <- sd(psi_hat_de$est_d)
+std_e <- sd(psi_hat_de$est_e)
+psi_hat_de <- psi_hat_de %>%
+  mutate(std_d = std_d,
+         clt_d = (est_d - psi_hat) / std_d,
+         std_e = std_e,
+         clt_e = (est_e - psi_hat) / std_e) %>% 
+  gather(key, value, -id) %>%
+  extract(key, c("what", "type"), "([^_]+)_([de])") %>%
+  spread(what, value)
+
+(bias_de <- psi_hat_de %>% group_by(type) %>% summarize(bias = mean(clt)))
+
+fig <- ggplot() +
+  geom_line(aes(x = x, y = y), 
+            data = tibble(x = seq(-3, 3, length.out = 1e3),
+                          y = dnorm(x)),
+            linetype = 1, alpha = 0.5) +
+  geom_density(aes(clt, fill = type, colour = type),
+               psi_hat_de, alpha = 0.1) +
+  geom_vline(aes(xintercept = bias, colour = type),
+             bias_de, size = 1.5, alpha = 0.5)
+  
+fig +
+  labs(x = expression(paste(sqrt(n/v[n]^{list(d, e)})*(psi[n]^{list(d, e)} - psi[0]))))
+
+
+## ----estimating-Qbar-two, eval = FALSE-----------------------------------
+## estimate_Q <- function(dat, algorithm, ...) {
+##   fit <- algorithm(dat, ...)
+##   Qhat <- function(newdata) {
+##     caret::predict.train(fit, newdata)
+##   }
+##   return(Qhat)
+## }
+## 
+## 
+## kknn_algo <- function(dat, ...) {
+##   control <- trainControl(method = "cv", number = 2,
+##                           allowParallel = TRUE)
+##   grid <- expand.grid(kmax = c(3, 5, 7),
+##                       distance = 2,
+##                       kernel = "optimal")
+##   caret::train(Y ~ I(10*A) + W,
+##                data = dat,
+##                method = "kknn",
+##                trControl = control,
+##                tuneGrid = grid,
+##                verbose = FALSE)
+## }
+## 
+## rf_algo <- function(dat) {
+##   control <- trainControl(method = "cv", number = 2,
+##                           allowParallel = TRUE)
+##   grid <- expand.grid(mtry = 2)
+##   caret::train(Y ~ I(10*A) + W,
+##                data = dat,
+##                method = "rf",
+##                trControl = control,
+##                tuneGrid = grid,
+##                verbose = FALSE)
+## }
+## 
+## xgb_tree_algo <- function(dat) {
+##   control <- trainControl(method = "cv", number = 2,
+##                           allowParallel = TRUE)
+##   grid <- expand.grid(nrounds = 350,
+##                       max_depth = c(4, 6),
+##                       eta = c(0.05, 0.1),
+##                       gamma = 0.01,
+##                       colsample_bytree = 0.75,
+##                       subsample = 0.5,
+##                       min_child_weight = 0)
+##   caret::train(Y ~ I(10*A) + W,
+##                data = dat,
+##                method = "xgbTree",
+##                trControl = control,
+##                tuneGrid = grid,
+##                verbose = FALSE)
+## }
+## 
+## 
+
+## ----exercises-three, eval = FALSE---------------------------------------
+## gbm_algo <- function(dat) {
+##   fit_control <- trainControl(method = "cv", number = 2)
+##   formula <- as.formula(
+##     paste("Y ~ A *",
+##           paste("I(W^", seq_len(10), sep = "", collapse = ") + "),
+##           ")"))
+##   caret::train(formula,
+##                data = dat,
+##                method = "gbm",
+##                trControl = fit_control,
+##                verbose = FALSE)
+## }
+## 
+## npreg <- list(
+##   label = "Kernel regression",
+##   type = "Regression",
+##   library = "np",
+##   parameters = data.frame(parameter =
+##                             c("subsample", "regtype",
+##                               "ckertype", "ckerorder"),
+##                           class = c("integer", "character",
+##                                     "character", "integer"),
+##                           label = c("#subsample", "regtype",
+##                                     "ckertype", "ckerorder")),
+##   grid = function(x, y, len = NULL, search = "grid") {
+##     if (!identical(search, "grid")) {
+##       stop("No random search implemented.\n")
+##     } else {
+##       out <- expand.grid(subsample = c(50, 100),
+##                          regtype = c("lc", "ll"),
+##                          ckertype =
+##                            c("gaussian",
+##                              "epanechnikov",
+##                              "uniform"),
+##                          ckerorder = seq(2, 8, 2))
+##     }
+##     return(out)
+##   },
+##   fit = function(x, y, wts, param, lev, last, classProbs, ...) {
+##     ny <- length(y)
+##     if (ny > param$subsample) {
+##       ## otherwise far too slow for what we intend to do here...
+##       keep <- sample.int(ny, param$subsample)
+##       x <- x[keep, ]
+##       y <- y[keep]
+##     }
+##     bw <- np::npregbw(xdat = as.data.frame(x), ydat = y,
+##                       regtype = param$regtype,
+##                       ckertype = param$ckertype,
+##                       ckerorder = param$ckerorder,
+##                       remin = FALSE, ftol = 0.01, tol = 0.01,
+##                       ...)
+##     np::npreg(bw)
+##   },
+##   predict = function (modelFit, newdata, preProc = NULL, submodels = NULL) {
+##     if (!is.data.frame(newdata)) {
+##       newdata <- as.data.frame(newdata)
+##     }
+##     np:::predict.npregression(modelFit, se.fit = FALSE, newdata)
+##   },
+##   sort = function(x) {
+##     x[order(x$regtype, x$ckerorder), ]
+##   },
+##   loop = NULL, prob = NULL, levels = NULL
+## )
+## 
+## grid <- data.frame(subsample = 100,
+##                    regtype = "lc",
+##                    ckertype = "gaussian",
+##                    ckerorder = 4,
+##                    stringsAsFactors = FALSE)
+## control <- trainControl(method = "cv", number = 2,
+##                         predictionBounds = c(0, 1),
+##                         allowParallel = TRUE)
+## fit_npreg <- train(working_model_Q_one$formula,
+##                    data = obs[1:1e3, ],
+##                    method = npreg,
+##                    trControl = control,
+##                    tuneGrid = grid)
+## 
+## ## pred <- predict(fit_npreg, newdata = obs)
+## 
 
