@@ -252,7 +252,7 @@ $\psi_{0}$.   By  the law  of  large  numbers,  the  following chunk  of  code
 approximates $\psi_{0}$ and shows it approximate value:
 
 ```{r approx-psi-zero-a-two}
-B <- 1e5 ## Antoine: 1e6 eventually
+B <- 1e6 ## Antoine: 1e6 eventually
 ideal_obs <- draw_from_experiment(B, ideal = TRUE)
 (psi_hat <- mean(ideal_obs[, "Yone"] - ideal_obs[, "Yzero"]))
 ```
@@ -1015,7 +1015,7 @@ would be legitimate.
 \subsection{Targeted inference.}
 \label{subsec:tmle}
 
-```{r estimating-Qbar-one, eval = FALSE}
+```{r estimating-Qbar-one, eval = TRUE}
 estimate_Q <- function(dat, algorithm, ...) {
   if (!attr(algorithm, "ML")) {
     fit <- algorithm[[1]](formula = algorithm[[2]], data = dat)
@@ -1212,4 +1212,4 @@ npreg_grid <- data.frame(subsample = 100,
                          ckerorder = 4,
                          stringsAsFactors = FALSE)
 ```
--->
+
