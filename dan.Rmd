@@ -245,7 +245,7 @@ rather than describe a quantile of the  difference $Y_1 - Y_0$; the latter, of
 course,  involves   cross-world  distributions  (i.e.,  the   joint  dist.  of
 $(Y_1,Y_0)$)]*
 
-To conclude  this subsection, we  take advantage of  our status as  oracles to
+To conclude this  subsection, we take advantage of our  position as oracles to
 sample observations from the  ideal experiment. We call `draw_from_experiment`
 with its  argument `ideal` set to  `TRUE` in order to  numerically approximate
 $\psi_{0}$.   By  the law  of  large  numbers,  the  following chunk  of  code
