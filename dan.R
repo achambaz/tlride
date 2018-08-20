@@ -19,10 +19,10 @@ expit <- plogis
 logit <- qlogis
 
 ## ----simulation----------------------------------------------------------
-draw_from_experiment <- function(n, full = FALSE) {
+draw_from_experiment <- function(n, ideal = FALSE) {
   ## preliminary
   n <- Arguments$getInteger(n, c(1, Inf))
-  full <- Arguments$getLogical(full)
+  ideal <- Arguments$getLogical(ideal)
   ## ## 'Gbar' and 'Qbar' factors
   Gbar <- function(W) {
     expit(-0.2 + 3 * sqrt(W) - 1.5 * W)
@@ -30,13 +30,16 @@ draw_from_experiment <- function(n, full = FALSE) {
   Qbar <- function(AW) {
     A <- AW[, 1]
     W <- AW[, 2]
-    ## A * cos((1 + W) * pi / 5) + (1 - A) * sin((1 + W^2) * pi / 4)
     A * (cos((1 + W) * pi / 5) + (1/3 <= W & W <= 1/2) / 10) +
       (1 - A) * (sin(4 * W^2 * pi) / 4 + 1/2) 
   }
   ## sampling
   ## ## context
-  W <- runif(n)
+  mixture_weights <- c(1/10, 9/10, 0)
+  mins <- c(0, 11/30, 0)
+  maxs <- c(1, 14/30, 1)
+  latent <- findInterval(runif(n), cumsum(mixture_weights)) + 1
+  W <- runif(n, min = mins[latent], max = maxs[latent])
   ## ## counterfactual rewards
   zeroW <- cbind(A = 0, W)
   oneW <- cbind(A = 1, W)
@@ -49,14 +52,28 @@ draw_from_experiment <- function(n, full = FALSE) {
   ## ## actual reward
   Y <- A * Yone + (1 - A) * Yzero
   ## ## observation
-  if (full) {
+  if (ideal) {
     obs <- cbind(W = W, Yzero = Yzero, Yone = Yone, A = A, Y = Y)
   } else {
     obs <- cbind(W = W, A = A, Y = Y)
   }
   attr(obs, "Gbar") <- Gbar
   attr(obs, "Qbar") <- Qbar
-  attr(obs, "QW") <- dunif
+  attr(obs, "QW") <- function(W) {
+    out <- sapply(1:length(mixture_weights),
+                  function(ii){
+                    mixture_weights[ii] *
+                      dunif(W, min = mins[ii], max = maxs[ii])
+                  })
+    return(rowSums(out))
+  }
+  attr(obs, "qY") <- function(AW, Y, Qbar){
+    A <- AW[, 1]
+    W <- AW[, 2]
+    Qbar.AW <- do.call(Qbar, list(AW)) # is call to 'do.call' necessary?
+    shape1 <- ifelse(A == 0, 2, 3)
+    dbeta(Y, shape1 = shape1, shape2 = shape1 * (1 - Qbar.AW) / Qbar.AW)
+  }
   ##
   return(obs)
 }
@@ -64,16 +81,24 @@ draw_from_experiment <- function(n, full = FALSE) {
 ## ----draw-five-obs-------------------------------------------------------
 (five_obs <- draw_from_experiment(5))
 
+## ----approx-psi-0-a-one--------------------------------------------------
+integrand <- function(w) {
+  Qbar <- attr(five_obs, "Qbar")
+  QW <- attr(five_obs, "QW")
+  ( Qbar(cbind(1, w)) - Qbar(cbind(0, w)) ) * QW(w)
+}
+(psi_zero <- integrate(integrand, lower = 0, upper = 1)$val)
+
 ## ----DAG-----------------------------------------------------------------
 ## plot the causal diagram
 
-## ----approx-psi-zero-a---------------------------------------------------
+## ----approx-psi-zero-a-two-----------------------------------------------
 B <- 1e6 ## Antoine: 1e6 eventually
-full_obs <- draw_from_experiment(B, full = TRUE)
-(psi_hat <- mean(full_obs[, "Yone"] - full_obs[, "Yzero"]))
+ideal_obs <- draw_from_experiment(B, ideal = TRUE)
+(psi_hat <- mean(ideal_obs[, "Yone"] - ideal_obs[, "Yzero"]))
 
 ## ----approx-psi-zero-b---------------------------------------------------
-sd_hat <- sd(full_obs[, "Yone"] - full_obs[, "Yzero"])
+sd_hat <- sd(ideal_obs[, "Yone"] - ideal_obs[, "Yzero"])
 alpha <- 0.05
 (psi_CI <- psi_hat + c(-1, 1) * qnorm(1 - alpha / 2) * sd_hat / sqrt(B))
 
@@ -107,18 +132,23 @@ draw_from_another_experiment <- function(n, h = 0) {
   attr(obs, "Qbar") <- Qbar
   attr(obs, "QW") <- function(x){dunif(x, min = 1/10, max = 9/10)}
   attr(obs, "shape1") <- shape1
+  attr(obs, "qY") <- function(AW, Y, Qbar, shape1){
+    A <- AW[,1]; W <- AW[,2]
+    Qbar.AW <- do.call(Qbar, list(AW))
+    dbeta(Y, shape1 = shape1, shape2 = shape1 * (1 - Qbar.AW) / Qbar.AW)
+  }
   ##
   return(obs)
 }
 
 ## ----approx-psi-one------------------------------------------------------
 five_obs_from_another_experiment <- draw_from_another_experiment(5)
-integrand <- function(w) {
+another_integrand <- function(w) {
   Qbar <- attr(five_obs_from_another_experiment, "Qbar")
   QW <- attr(five_obs_from_another_experiment, "QW")
   ( Qbar(cbind(1, w)) - Qbar(cbind(0, w)) ) * QW(w)
 }
-(psi_Pi_zero <- integrate(integrand, lower = 0, upper = 1)$val)
+(psi_Pi_zero <- integrate(another_integrand, lower = 0, upper = 1)$val)
 
 ## ----psi-approx-psi-one,  fig.cap =  "Evolution of statistical parameter $\\Psi$ along fluctuation $\\{\\Pi_{h} : h \\in H\\}$."----
 approx <- seq(-1, 1, length.out = 1e2)
@@ -196,23 +226,28 @@ Gbar <- attr(obs, "Gbar")
 iter <- 1e3
 
 ## ----known-Gbar-one-b, fig.cap = "Kernel density estimators of the law of two estimators of $\\psi_{0}$ (recentered and renormalized), one of them misconceived (a), the other assuming that $\\Gbar_{0}$ is known (b). Built based on `iter` independent realizations of each estimator."----
-psi_hat_ab <- obs %>% as_tibble() %>% mutate(id = 1:n() %% iter) %>%
+PSI_hat_ab <- obs %>% as_tibble() %>% mutate(id = 1:n() %% iter) %>%
   mutate(lgAW = A * Gbar(W) + (1 - A) * (1 - Gbar(W))) %>% group_by(id) %>%
   summarize(est_a = mean(Y[A==1]) - mean(Y[A==0]),
+            std_ = map_dbl(est_a, sd),
             est_b = mean(Y * (2 * A - 1) / lgAW),
-            std_b = sd(Y * (2 * A - 1) / lgAW) / sqrt(n()),
-            clt_b = (est_b - psi_hat) / std_b)
-std_a <- sd(psi_hat_ab$est_a)
-psi_hat_ab <- psi_hat_ab %>%
-  mutate(std_a = std_a,
-         clt_a = (est_a - psi_hat) / std_a) %>% 
+            std_b = map_dbl(Y * (2 * A - 1) / lgAW) / sqrt(n()), sd),
+            clt_a = (est_a - psi_hat) / std_a,   
+            clt_b = (est_b - psi_hat) / std_b) %>% 
   gather(key, value, -id) %>%
   extract(key, c("what", "type"), "([^_]+)_([ab])") %>%
   spread(what, value)
 
-(bias_ab <- psi_hat_ab %>% group_by(type) %>% summarise(bias = mean(clt)))
+(BIAS_ab <- PSI_hat_ab %>% group_by(type) %>% summarise(bias = mean(clt)))
 
-debug(ggplot2::stat_density)
+PSI <- obs %>% as_tibble() %>% mutate(id = 1:n() %% iter) %>%
+  nest(-id) %>%
+  mutate(Ghat = estimate_G(., )
+  summarize(est_a = mean(Y[A==1]) - mean(Y[A==0]),
+            est_b = mean(Y * (2 * A - 1) / lgAW),
+            std_b = sd(Y * (2 * A - 1) / lgAW) / sqrt(n()),
+            clt_b = (est_b - psi_hat) / std_b)
+
 fig <- ggplot() +
   geom_line(aes(x = x, y = y), 
             data = tibble(x = seq(-3, 3, length.out = 1e3),
@@ -229,7 +264,7 @@ fig +
 ## ----unknown-Gbar-one----------------------------------------------------
 estimate_G <- function(dat, algorithm, ...) {
   if (!attr(algorithm, "ML")) {
-    fit <- working_model_G[[1]](formula = working_model_G[[2]], data = dat)
+    fit <- algorithm[[1]](formula = algorithm[[2]], data = dat)
     Ghat <- function(newdata) {
       predict(fit, newdata, type = "response")
     }
@@ -265,20 +300,22 @@ attr(working_model_G_one, "ML") <- FALSE
 working_model_G_one$formula
 
 ## ----unknown-Gbar-two-bis------------------------------------------------
-psi_hat_c <- obs %>% as_tibble() %>% mutate(id = 1:n() %% iter) %>%
+learned <- obs %>% as_tibble() %>% mutate(id = 1:n() %% iter) %>%
+  nest(-id, .key = "obs") %>%
+  mutate(Ghat = map(obs, ~ estimate_G(., algorithm = working_model_G_one))) %>%
+  mutate(lGAW = map2(Ghat, obs, ~ compute_lGhatAW(.y$A, .y$W, .x)))
+
+
+psi_hat_c <- learned %>%
+  unnest(obs, lGAW) %>%
   group_by(id) %>%
-  mutate(lgAW = predict_lGAW(A, W, working_model_G_one)) %>%
-  summarize(est = mean(Y * (2 * A - 1) / lgAW),
-            try = sd(Y * (2 * A - 1) / lgAW) / sqrt(n()))
-std_c <- sd(psi_hat_c$est)
-psi_hat_abc <- psi_hat_c %>%
-  mutate(std = std_c,
-         try = try,
-         clt = (est - psi_hat) / std,
+  summarize(est = mean(Y * (2 * A - 1) / lGAW)) %>%
+  mutate(std = sd(est),
+         clt = (est - psi_approx) / std,
          type = "c") %>%
   full_join(psi_hat_ab)
 
-(bias_abc <- psi_hat_abc %>% group_by(type) %>% summarise(bias = mean(clt)))
+(BIAS_abc <- psi_hat_abc %>% group_by(type) %>% summarise(bias = mean(clt)))
 
 ## ----unknown-Gbar-three, fig.cap = "Kernel density estimators of the law of three estimators of $\\psi_{0}$  (recentered and renormalized), one of them misconceived (a), one assuming that $\\Gbar_{0}$ is known (b) and one that hinges on the estimation of $\\Gbar_{0}$ (c). The present figure includes Figure \\@ref(fig:known-Gbar-one-b) (but the colors differ). Built based on `iter` independent realizations of each estimator."----
 fig +
@@ -318,10 +355,10 @@ working_model_G_three <- list(
 attr(working_model_G_three, "ML") <- FALSE
 (working_model_G_three$formula)
 
-## ----estimating-Qbar-one-------------------------------------------------
+## ----estimating-Qbar-one, eval = TRUE------------------------------------
 estimate_Q <- function(dat, algorithm, ...) {
   if (!attr(algorithm, "ML")) {
-    fit <- working_model_Q[[1]](formula = working_model_Q[[2]], data = dat)
+    fit <- algorithm[[1]](formula = algorithm[[2]], data = dat)
     Qhat <- function(newdata) {
       predict(fit, newdata, type = "response")
     }
@@ -358,26 +395,40 @@ working_model_Q_one <- list(
 attr(working_model_Q_one, "ML") <- FALSE
 working_model_Q_one$formula
 
-working_model_Q_two <- list(
-  model = function(...) {glm(family = binomial(), ...)},
-  formula = as.formula(
-    paste("Y ~ A * (",
-          paste("I(W^", seq(1/2, 3, by = 1/2), sep = "", collapse = ") + "),
-          "))")
-  ))
-attr(working_model_Q_two, "ML") <- FALSE
-working_model_Q_two$formula
+## k-NN
+kknn_algo <- function(dat, ...) {
+  args <- list(...)
+  if ("Subsample" %in% names(args)) {
+    keep <- sample.int(nrow(dat), args$Subsample)
+    dat <- dat[keep, ]
+  }
+  caret::train(Y ~ I(10*A) + W, ## a tweak
+               data = dat,
+               method = "kknn",
+               verbose = FALSE,
+               ...)
+}
+attr(kknn_algo, "ML") <- TRUE
+kknn_grid <- expand.grid(kmax = c(3, 5), distance = 2, kernel = "gaussian")
+control <- trainControl(method = "cv", number = 2,
+                        predictionBounds = c(0, 1),
+                        allowParallel = TRUE)
 
-psi_hat_de <- obs %>% as_tibble() %>% mutate(id = 1:n() %% iter) %>%
+iter <- 100
+n_head <- 1e5
+psi_hat_de_init <- obs %>% head(n = n_head) %>% as_tibble() %>% mutate(id = 1:n() %% iter) %>%
   group_by(id) %>%
   mutate(blipQW_d = predict_QAW(Y, A, W, working_model_Q_one, blip = TRUE),
-         blipQW_e = predict_QAW(Y, A, W, working_model_Q_two, blip = TRUE)) %>%
+         blipQW_e = predict_QAW(Y, A, W, kknn_algo, blip = TRUE,
+                                trControl = control,
+                                tuneGrid = kknn_grid,
+                                Subsample = 1000)) %>%
   summarize(est_d = mean(blipQW_d),
             est_e = mean(blipQW_e))
 
-std_d <- sd(psi_hat_de$est_d)
-std_e <- sd(psi_hat_de$est_e)
-psi_hat_de <- psi_hat_de %>%
+std_d <- sd(psi_hat_de_init$est_d)
+std_e <- sd(psi_hat_de_init$est_e)
+psi_hat_de <- psi_hat_de_init %>%
   mutate(std_d = std_d,
          clt_d = (est_d - psi_hat) / std_d,
          std_e = std_e,
@@ -401,53 +452,23 @@ fig <- ggplot() +
 fig +
   labs(x = expression(paste(sqrt(n/v[n]^{list(d, e)})*(psi[n]^{list(d, e)} - psi[0]))))
 
+## ----one-step------------------------------------------------------------
+
 
 ## ----estimating-Qbar-two, eval = FALSE-----------------------------------
-## estimate_Q <- function(dat, algorithm, ...) {
-##   fit <- algorithm(dat, ...)
-##   Qhat <- function(newdata) {
-##     caret::predict.train(fit, newdata)
-##   }
-##   return(Qhat)
-## }
 ## 
 ## 
-## kknn_algo <- function(dat, ...) {
-##   control <- trainControl(method = "cv", number = 2,
-##                           allowParallel = TRUE)
-##   grid <- expand.grid(kmax = c(3, 5, 7),
-##                       distance = 2,
-##                       kernel = "optimal")
-##   caret::train(Y ~ I(10*A) + W,
-##                data = dat,
-##                method = "kknn",
-##                trControl = control,
-##                tuneGrid = grid,
-##                verbose = FALSE)
-## }
+## working_model_Q_two <- list(
+##   model = function(...) {glm(family = binomial(), ...)},
+##   formula = as.formula(
+##     paste("Y ~ A * (",
+##           paste("I(W^", seq(1/2, 3, by = 1/2), sep = "", collapse = ") + "),
+##           "))")
+##   ))
+## attr(working_model_Q_two, "ML") <- FALSE
 ## 
-## rf_algo <- function(dat) {
-##   control <- trainControl(method = "cv", number = 2,
-##                           allowParallel = TRUE)
-##   grid <- expand.grid(mtry = 2)
-##   caret::train(Y ~ I(10*A) + W,
-##                data = dat,
-##                method = "rf",
-##                trControl = control,
-##                tuneGrid = grid,
-##                verbose = FALSE)
-## }
-## 
-## xgb_tree_algo <- function(dat) {
-##   control <- trainControl(method = "cv", number = 2,
-##                           allowParallel = TRUE)
-##   grid <- expand.grid(nrounds = 350,
-##                       max_depth = c(4, 6),
-##                       eta = c(0.05, 0.1),
-##                       gamma = 0.01,
-##                       colsample_bytree = 0.75,
-##                       subsample = 0.5,
-##                       min_child_weight = 0)
+## ## xgboost based on trees
+## xgb_tree_algo <- function(dat, ...) {
 ##   caret::train(Y ~ I(10*A) + W,
 ##                data = dat,
 ##                method = "xgbTree",
@@ -455,23 +476,16 @@ fig +
 ##                tuneGrid = grid,
 ##                verbose = FALSE)
 ## }
+## attr(xgb_tree_algo, "ML") <- TRUE
+## xgb_tree_grid <- expand.grid(nrounds = 350,
+##                              max_depth = c(4, 6),
+##                              eta = c(0.05, 0.1),
+##                              gamma = 0.01,
+##                              colsample_bytree = 0.75,
+##                              subsample = 0.5,
+##                              min_child_weight = 0)
 ## 
-## 
-
-## ----exercises-three, eval = FALSE---------------------------------------
-## gbm_algo <- function(dat) {
-##   fit_control <- trainControl(method = "cv", number = 2)
-##   formula <- as.formula(
-##     paste("Y ~ A *",
-##           paste("I(W^", seq_len(10), sep = "", collapse = ") + "),
-##           ")"))
-##   caret::train(formula,
-##                data = dat,
-##                method = "gbm",
-##                trControl = fit_control,
-##                verbose = FALSE)
-## }
-## 
+## ## nonparametric kernel smoothing regression
 ## npreg <- list(
 ##   label = "Kernel regression",
 ##   type = "Regression",
@@ -525,20 +539,17 @@ fig +
 ##   loop = NULL, prob = NULL, levels = NULL
 ## )
 ## 
-## grid <- data.frame(subsample = 100,
-##                    regtype = "lc",
-##                    ckertype = "gaussian",
-##                    ckerorder = 4,
-##                    stringsAsFactors = FALSE)
-## control <- trainControl(method = "cv", number = 2,
-##                         predictionBounds = c(0, 1),
-##                         allowParallel = TRUE)
-## fit_npreg <- train(working_model_Q_one$formula,
-##                    data = obs[1:1e3, ],
-##                    method = npreg,
-##                    trControl = control,
-##                    tuneGrid = grid)
-## 
-## ## pred <- predict(fit_npreg, newdata = obs)
-## 
+## npreg_algo <- function(dat, ...) {
+##   caret::train(working_model_Q_one$formula,
+##                data = dat,
+##                method = npreg, # no quotes!
+##                verbose = FALSE,
+##                ...)
+## }
+## attr(npreg_algo, "ML") <- TRUE
+## npreg_grid <- data.frame(subsample = 100,
+##                          regtype = "lc",
+##                          ckertype = "gaussian",
+##                          ckerorder = 4,
+##                          stringsAsFactors = FALSE)
 

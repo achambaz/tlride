@@ -97,7 +97,6 @@ draw_from_experiment <- function(n, ideal = FALSE) {
   Qbar <- function(AW) {
     A <- AW[, 1]
     W <- AW[, 2]
-    ## A * cos((1 + W) * pi / 5) + (1 - A) * sin((1 + W^2) * pi / 4)
     A * (cos((1 + W) * pi / 5) + (1/3 <= W & W <= 1/2) / 10) +
       (1 - A) * (sin(4 * W^2 * pi) / 4 + 1/2) 
   }
@@ -163,16 +162,22 @@ We can view the `attributes` of object `five_obs` because, in this section, we
 act  as  oracles,  \textit{i.e.},  we   know  completely  the  nature  of  the
 experiment. In  particular, we  have included several  features of  $P_0$ that
 play an important  role in our developments. The attribute  `QW` describes the
-density  of $W$,  that  of  a uniform  distribution  over  $[0.1, 0.9]$.   The
-attribute `Gbar` describes the conditional probability of action $A = 1$ given
-$W$, and  for $a  = 0,1$  and each  $w$ in the  support of  $W$, we  denote by
-$\Gbar_0(a,w) = \Pr_{P_0}(A = a \mid W  = w)$. The attribute `qY` describes the
-conditional   density  of   $Y$   given   $A$  and   $W$.    For  each   $y\in
-\interval[open]{0}{1}$,  we  denote  by  $q_{0,Y}(y, a,  w)$  the  conditional
-density of $Y$ given $A = a, W = w$ evaluated at $y$. Similarly, the attribute
+density of $W$,  of which the law  $Q_{0,W}$ is a mixture of  the uniform laws
+over $\interval{0}{1}$  (weight $1/10$) and  $\interval{11/30}{14/30}$ (weight
+$9/10$).\footnote{We fine-tuned (or tweaked, or something else?)  the marginal
+law  of $W$  to make  it easier  later on  to drive  home important  messages.
+Specifically, $\ldots{}$ (do we explain  what happens?)}  The attribute `Gbar`
+describes the conditional  probability of action $A = 1$  given $W$.  For each
+$a  \in \{0,1\}$,  we denote  $\Gbar_0(W)  \equiv \Pr_{P_0}(A  = 1  | W)$  and
+$\ell\Gbar_0(a,W) \equiv \Pr_{P_0}(A = a  | W)$.  The attribute `qY` describes
+the  conditional  density   of  $Y$  given  $A$  and  $W$.    For  each  $y\in
+\interval[open]{0}{1}$,  we  denote  by  $q_{0,Y}(y, A,  W)$  the  conditional
+density evaluated at  $y$ of $Y$ given $A$ and  $W$.  Similarly, the attribute
 `Qbar` describes the conditional mean of $Y$  given $A$ and $W$, and we denote
-by $\Qbar_0(a,w)$ the conditional mean of $Y$ given $A = a, W = w$.
+$\Qbar_0(A,W) = \Exp_{P_{0}}(Y|A,W$ the conditional  mean of $Y$ given $A$ and
+$W$.
 
+\tcg{For consistency, I removed the $A=a$ and $W=w$.}
 
 \subsection{The parameter of interest, first pass.}
 \label{subsec:parameter:first}
@@ -251,16 +256,16 @@ approximates $\psi_{0}$ and shows it approximate value:
 ```{r approx-psi-zero-a-two}
 B <- 1e6 ## Antoine: 1e6 eventually
 ideal_obs <- draw_from_experiment(B, ideal = TRUE)
-(psi_hat <- mean(ideal_obs[, "Yone"] - ideal_obs[, "Yzero"]))
+(psi_approx <- mean(ideal_obs[, "Yone"] - ideal_obs[, "Yzero"]))
 ```
 
 In fact, the central limit theorem and Slutsky's lemma allow us to build a
 confidence interval with asymptotic level 95\% for $\psi_{0}$:
 
 ```{r approx-psi-zero-b}
-sd_hat <- sd(ideal_obs[, "Yone"] - ideal_obs[, "Yzero"])
+sd_approx <- sd(ideal_obs[, "Yone"] - ideal_obs[, "Yzero"])
 alpha <- 0.05
-(psi_CI <- psi_hat + c(-1, 1) * qnorm(1 - alpha / 2) * sd_hat / sqrt(B))
+(psi_approx_CI <- psi_approx + c(-1, 1) * qnorm(1 - alpha / 2) * sd_approx / sqrt(B))
 ```
 
 
@@ -573,7 +578,7 @@ eic <- function(obs, psi) {
     (2 * obs[, "A"] - 1) / lgAW * (obs[, "Y"] - QAW)
 }
 
-(eic(five_obs, psi = psi_hat))
+(eic(five_obs, psi = psi_approx))
 (eic(five_obs_from_another_experiment, psi = psi_Pi_zero))
 ```
 
@@ -583,7 +588,7 @@ We can use `eic` to numerically approximate the Cramér-Rao bound at $P_{0}$:
 
 ```{r cramer-rao}
 obs <- draw_from_experiment(B)
-(cramer_rao_hat <- var(eic(obs, psi = psi_hat)))
+(cramer_rao_hat <- var(eic(obs, psi = psi_approx)))
 ```
 
 and the Cramér-Rao bound at $\Pi_{0}$:
@@ -765,11 +770,9 @@ psi_hat_ab <- obs %>% as_tibble() %>% mutate(id = 1:n() %% iter) %>%
   summarize(est_a = mean(Y[A==1]) - mean(Y[A==0]),
             est_b = mean(Y * (2 * A - 1) / lgAW),
             std_b = sd(Y * (2 * A - 1) / lgAW) / sqrt(n()),
-            clt_b = (est_b - psi_hat) / std_b)
-std_a <- sd(psi_hat_ab$est_a)
-psi_hat_ab <- psi_hat_ab %>%
-  mutate(std_a = std_a,
-         clt_a = (est_a - psi_hat) / std_a) %>% 
+            clt_b = (est_b - psi_approx) / std_b) %>% 
+  mutate(std_a = sd(est_a),
+         clt_a = (est_a - psi_approx) / std_a) %>%
   gather(key, value, -id) %>%
   extract(key, c("what", "type"), "([^_]+)_([ab])") %>%
   spread(what, value)
@@ -821,16 +824,18 @@ procedures that involve penalization  (\textit{e.g.} the LASSO) or aggregation
 of competing estimators (\textit{via}  stacking/super learning) -- see Section
 \ref{subsec:exo:one}.  Defined in the next chunk of code, the generic function
 `estimate_G` fits a  user-specified working model by  minimizing the empirical
-risk associated to the user-specified loss function and provided data, and the
-generic  function  `predict_lGAW`  (merely  a  convenient  wrapper)  estimates
-$\ell\Gbar_{0}(A,W)$ for any $(A,W)$ based on the output of `estimate_G`.
+risk associated to the user-specified loss function and provided data. 
 
+\tcg{Comment on new structure of} `estimate_G` \tcg{and say a few words about}
+`compute_lGhatAW`.
 
 ```{r unknown-Gbar-one}
 estimate_G <- function(dat, algorithm, ...) {
   if (!attr(algorithm, "ML")) {
+    dat <- as.data.frame(dat)
     fit <- algorithm[[1]](formula = algorithm[[2]], data = dat)
     Ghat <- function(newdata) {
+      newdata <- as.data.frame(newdata)
       predict(fit, newdata, type = "response")
     }
   } else {
@@ -842,24 +847,20 @@ estimate_G <- function(dat, algorithm, ...) {
   return(Ghat)
 }
 
-predict_lGAW <- function(A, W, algorithm, threshold = 0.05, ...) {
-  ## a wrapper to use in a call to 'mutate'
-  ## (a) fit the working model
+compute_lGhatAW <- function(A, W, Ghat, threshold = 0.05) {
   dat <- data.frame(A = A, W = W)
-  Ghat <- estimate_G(dat, algorithm, ...)
-  ## (b) make predictions based on the fit
   Ghat_W <- Ghat(dat)
   lGAW <- A * Ghat_W + (1 - A) * (1 - Ghat_W)
-  pmin(1 - threshold, pmax(lGAW, threshold))
+  pred <- pmin(1 - threshold, pmax(lGAW, threshold))
+  return(pred)
 }
 ```
 
-\tcg{Comment on new structure of} `estimate_G`.
 
-Note how the prediction of any $\ell\Gbar_{0}(A,W)$ is manually bounded away
-from 0 and 1 at the last line of `predict_lGAW`. This is desirable because the
-\textit{inverse}   of  each   $\ell\Gbar_{0}(A_{i},W_{i})$   appears  in   the
-definition of $\psi_{n}^{b}$ \eqref{eq:psi:n:b}.
+Note how the  prediction of any $\ell\Gbar_{0}(A,W)$ is  manually bounded away
+from 0 and 1 at the last  but one line of `compute_lGhatAW`. This is desirable
+because the  \textit{inverse} of each $\ell\Gbar_{0}(A_{i},W_{i})$  appears in
+the definition of $\psi_{n}^{b}$ \eqref{eq:psi:n:b}.
 
 For sake of illustration, we choose argument `working_model_G_one` of function
 `estimate_G` as follows:
@@ -902,16 +903,18 @@ samples  of  independent  observations  drawn   from  $P_{0}$  as  in  Section
 \ref{subsec:known:gbar:one}:
 
 ```{r unknown-Gbar-two-bis}
-psi_hat_c <- obs %>% as_tibble() %>% mutate(id = 1:n() %% iter) %>%
+learned_features <- obs %>% as_tibble() %>% mutate(id = 1:n() %% iter) %>%
+  nest(-id, .key = "obs") %>%
+  mutate(Ghat = map(obs, ~ estimate_G(., algorithm = working_model_G_one))) %>%
+  mutate(lGAW = map2(Ghat, obs, ~ compute_lGhatAW(.y$A, .y$W, .x)))
+
+
+psi_hat_abc <- learned_features %>%
+  unnest(obs, lGAW) %>%
   group_by(id) %>%
-  mutate(lgAW = predict_lGAW(A, W, working_model_G_one)) %>%
-  summarize(est = mean(Y * (2 * A - 1) / lgAW),
-            try = sd(Y * (2 * A - 1) / lgAW) / sqrt(n()))
-std_c <- sd(psi_hat_c$est)
-psi_hat_abc <- psi_hat_c %>%
-  mutate(std = std_c,
-         try = try,
-         clt = (est - psi_hat) / std,
+  summarize(est = mean(Y * (2 * A - 1) / lGAW)) %>%
+  mutate(std = sd(est),
+         clt = (est - psi_approx) / std,
          type = "c") %>%
   full_join(psi_hat_ab)
 
@@ -964,9 +967,10 @@ a binomial  law with parameters  `iter` and  `0.95`, and recall  that function
 probability of success  in a Bernoulli experiment against  its three one-sided
 and two-sided alternatives.
 
-2.  The wrapper `predict_lGAW` makes predictions by fitting a working model on
-the same data points as those for which predictions are sought. Why could that
-be problematic? Can you think of a simple workaround, implement and test it?
+2.  The call to `compute_lGhatAW` makes predictions on the same data points as
+those  exploited to  learn $\Gbar_{0}$  by fitting  the user-supplied  working
+model. Why  could that be problematic?  Can you think of  a simple workaround,
+implement and test it?
 
 3.  Discuss what happens when the dimension of the (still well-specified)
 working model grows. You could use the following chunk of code
@@ -1008,16 +1012,19 @@ $v_{n}^{b}$ obtained  by substituting  $\ell\Gbar_{n}$ for  $\ell\Gbar_{0}$ in
 computation of  $\psi_{n}^{b}$ and its  companion quantities, discuss  if that
 would be legitimate.
 
+\subsection[Inference based on the estimation of $\Qbar_{0}$.]{Inference based
+on the estimation of $\boldsymbol{\Qbar_{0}}$.} 
+\label{subsec:inf:Q0}
 
-
-\subsection{Targeted inference.}
-\label{subsec:tmle}
+\tcg{Comment on  structure of} `estimate_Q`.
 
 ```{r estimating-Qbar-one, eval = TRUE}
 estimate_Q <- function(dat, algorithm, ...) {
   if (!attr(algorithm, "ML")) {
+    dat <- as.data.frame(dat)
     fit <- algorithm[[1]](formula = algorithm[[2]], data = dat)
     Qhat <- function(newdata) {
+      newdata <- as.data.frame(newdata)
       predict(fit, newdata, type = "response")
     }
   } else {
@@ -1029,18 +1036,14 @@ estimate_Q <- function(dat, algorithm, ...) {
   return(Qhat)
 }
 
-predict_QAW <- function(Y, A, W, algorithm, blip = FALSE, ...) {
-  ## a wrapper to use in a call to 'mutate'
-  ## (a) carry out the estimation based on 'algorithm'
-  dat <- data.frame(Y = Y, A = A, W = W)
-  Qhat <- estimate_Q(dat, algorithm, ...)
-  ## (b) make predictions based on the fit
+compute_QhatAW <- function(Y, A, W, Qhat, blip = FALSE) {
   if (!blip) {
+    dat <- data.frame(Y = Y, A = A, W = W)
     pred <- Qhat(dat)
   } else {
     pred <- Qhat(data.frame(A = 1, W = W)) - Qhat(data.frame(A = 0, W = W))
   }
-  return(pred)
+  return(pred)  
 }
 
 working_model_Q_one <- list(
@@ -1072,25 +1075,26 @@ control <- trainControl(method = "cv", number = 2,
                         predictionBounds = c(0, 1),
                         allowParallel = TRUE)
 
-iter <- 1000
-n_head <- 1e6
-psi_hat_de <- obs %>% head(n = n_head) %>% as_tibble() %>% mutate(id = 1:n() %% iter) %>%
-  group_by(id) %>%
-  mutate(blipQW_d = predict_QAW(Y, A, W, working_model_Q_one, blip = TRUE),
-         blipQW_e = predict_QAW(Y, A, W, kknn_algo, blip = TRUE,
-                                trControl = control,
-                                tuneGrid = kknn_grid,
-                                Subsample = 1000)) %>%
-  summarize(est_d = mean(blipQW_d),
-            est_e = mean(blipQW_e))
+learned_features <- learned_features %>% 
+  mutate(Qhat_d = map(obs, ~ estimate_Q(., algorithm = working_model_Q_one)),
+         Qhat_e = map(obs, ~ estimate_Q(., algorithm = kknn_algo,
+                                        trControl = control,
+                                        tuneGrid = kknn_grid,
+                                        Subsample = 1000))) %>%
+  mutate(blip_QW_d = map2(Qhat_d, obs,
+                          ~ compute_QhatAW(.y$Y, .y$A, .y$W, .x, blip = TRUE)),
+         blip_QW_e = map2(Qhat_e, obs,
+                          ~ compute_QhatAW(.y$Y, .y$A, .y$W, .x, blip = TRUE)))
 
-std_d <- sd(psi_hat_de$est_d)
-std_e <- sd(psi_hat_de$est_e)
-psi_hat_de <- psi_hat_de %>%
-  mutate(std_d = std_d,
-         clt_d = (est_d - psi_hat) / std_d,
-         std_e = std_e,
-         clt_e = (est_e - psi_hat) / std_e) %>% 
+psi_hat_de <- learned_features %>%
+  unnest(blip_QW_d, blip_QW_e) %>%
+  group_by(id) %>%
+  summarize(est_d = mean(blip_QW_d),
+            est_e = mean(blip_QW_e)) %>%
+  mutate(std_d = sd(est_d),
+         std_e = sd(est_e),
+         clt_d = (est_d - psi_approx) / std_d,
+         clt_e = (est_e - psi_approx) / std_e) %>% 
   gather(key, value, -id) %>%
   extract(key, c("what", "type"), "([^_]+)_([de])") %>%
   spread(what, value)
@@ -1109,8 +1113,18 @@ fig <- ggplot() +
   
 fig +
   labs(x = expression(paste(sqrt(n/v[n]^{list(d, e)})*(psi[n]^{list(d, e)} - psi[0]))))
+```
+
+\subsection{One-step estimation.}
+\label{subsec:one:step}
+
+```{r one-step}
 
 ```
+
+\subsection{Targeted inference.}
+\label{subsec:tmle}
+
 
 For later$\ldots{}$
 
