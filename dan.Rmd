@@ -1,7 +1,7 @@
 ---
 title: "A guided tour in targeted learning territory"
 author: "David Benkeser, Antoine Chambaz, Nima Hejazi"
-date: "08/13/2018"
+date: "08/20/2018"
 encoding: "UTF-8"
 output:
   bookdown::pdf_document2:
@@ -68,7 +68,7 @@ inverse function  $\logit : ]0,1[  \to \bbR$  given by $\logit(p)  \equiv \log
 \section{A simulation study}
 \label{sec:simulation:study}
 
-blabla
+\tcg{blabla}
 
 \subsection{Reproducible experiment as a law.}
 \label{subsec:as:a:law}
@@ -103,7 +103,11 @@ draw_from_experiment <- function(n, ideal = FALSE) {
   }
   ## sampling
   ## ## context
-  W <- runif(n)
+  mixture_weights <- c(1/10, 9/10, 0)
+  mins <- c(0, 11/30, 0)
+  maxs <- c(1, 14/30, 1)
+  latent <- findInterval(runif(n), cumsum(mixture_weights)) + 1
+  W <- runif(n, min = mins[latent], max = maxs[latent])
   ## ## counterfactual rewards
   zeroW <- cbind(A = 0, W)
   oneW <- cbind(A = 1, W)
@@ -123,11 +127,18 @@ draw_from_experiment <- function(n, ideal = FALSE) {
   }
   attr(obs, "Gbar") <- Gbar
   attr(obs, "Qbar") <- Qbar
-  attr(obs, "QW") <- dunif
+  attr(obs, "QW") <- function(W) {
+    out <- sapply(1:length(mixture_weights),
+                  function(ii){
+                    mixture_weights[ii] *
+                      dunif(W, min = mins[ii], max = maxs[ii])
+                  })
+    return(rowSums(out))
+  }
   attr(obs, "qY") <- function(AW, Y, Qbar){
     A <- AW[, 1]
     W <- AW[, 2]
-    Qbar.AW <- do.call(Qbar, list(AW))
+    Qbar.AW <- do.call(Qbar, list(AW)) # is call to 'do.call' necessary?
     shape1 <- ifelse(A == 0, 2, 3)
     dbeta(Y, shape1 = shape1, shape2 = shape1 * (1 - Qbar.AW) / Qbar.AW)
   }
@@ -155,7 +166,7 @@ play an important  role in our developments. The attribute  `QW` describes the
 density  of $W$,  that  of  a uniform  distribution  over  $[0.1, 0.9]$.   The
 attribute `Gbar` describes the conditional probability of action $A = 1$ given
 $W$, and  for $a  = 0,1$  and each  $w$ in the  support of  $W$, we  denote by
-$\Gbar_0(a,w) = pr_{P_0}(A = a \mid W  = w)$. The attribute `qY` describes the
+$\Gbar_0(a,w) = \Pr_{P_0}(A = a \mid W  = w)$. The attribute `qY` describes the
 conditional   density  of   $Y$   given   $A$  and   $W$.    For  each   $y\in
 \interval[open]{0}{1}$,  we  denote  by  $q_{0,Y}(y, a,  w)$  the  conditional
 density of $Y$ given $A = a, W = w$ evaluated at $y$. Similarly, the attribute
@@ -170,7 +181,7 @@ It happens that we especially care for a finite-dimensional feature of $P_{0}$
 that  we   denote  by  $\psi_{0}$.    Its  definition  involves  two   of  the
 aforementioned  infinite-dimensional  features: \begin{align}  \label{eq:psi0}
 \psi_{0}  &\equiv   \int  \left(\Qbar_{0}(1,   w)  -   \Qbar_{0}(0,  w)\right)
-dQ_{0,W}(w)\\  \notag  &=  E_{P_{0}}   \left(\Qbar_{0}(1,  W)  -  \Qbar_{0}(0,
+dQ_{0,W}(w)\\  \notag  &=  \Exp_{P_{0}}   \left(\Qbar_{0}(1,  W)  -  \Qbar_{0}(0,
 W)\right).   \end{align} Acting  as  oracles, we  can  compute explicitly  the
 numerical value of  $\psi_{0}$.  
 
@@ -221,8 +232,8 @@ defines another experiment and its law, that we denote $\bbP_{0}$.
 
 It is well known \tcg{(do we give the proof or refer to other articles?)} that
 \begin{equation} \label{eq:psi:zero}    
-\psi_{0}  =  E_{\bbP_{0}} \left(Y_{1}  -  Y_{0}\right)  = E_{\bbP_{0}}(Y_1)  -
-E_{\bbP_{0}}(Y_0).   \end{equation}  Thus,  $\psi_{0}$ describes  the  average
+\psi_{0} = \Exp_{\bbP_{0}} \left(Y_{1} - Y_{0}\right) = \Exp_{\bbP_{0}}(Y_1) -
+\Exp_{\bbP_{0}}(Y_0).  \end{equation}  Thus, $\psi_{0}$ describes  the average
 difference in of  the two counterfactual rewards.  In  other words, $\psi_{0}$
 quantifies the difference  in average of the  reward one would get  in a world
 where one would always enforce action $a=1$ with the reward one would get in a
@@ -275,7 +286,7 @@ cumulative distribution of  reward $Y$ given $A=a$ and $W=w$,  evaluated at $y
 
 It is not difficult to check that \tcg{do  we give the proof or refer to other
 articles?}      \begin{equation*}\gamma_{0,a,c}     =     \inf\left\{y     \in
-\interval[open]{0}{1}      :      pr_{\bbP_{0}}(Y_a     \leq      y)      \geq
+\interval[open]{0}{1}      :      \Pr_{\bbP_{0}}(Y_a     \leq      y)      \geq
 c\right\}.\end{equation*}  Thus,  $\gamma_{0,a,c}$  can be  interpreted  as  a
 covariate-adjusted $c$-th  quantile reward when  action $a$ is  enforced.  The
 difference     \begin{equation*}\delta_{0,c}    \equiv     \gamma_{0,1,c}    -
@@ -307,14 +318,14 @@ zero and one $Q_{W}$-almost surely, where $Q_{W}$ is the marginal law of $W$
 under $P$.  
 
 Let us also define generically $\Qbar$ as \begin{equation*} \Qbar (A,W) \equiv
-E_{P} (Y|A, W). \end{equation*} Central  to our approach is viewing $\psi_{0}$
-as the  value at  $P_{0}$ of  the statistical mapping  $\Psi$ from  $\calM$ to
-$[0,1]$ characterized  by \begin{align*}  \Psi(P) &\equiv  \int \left(\Qbar(1,
-w) -  \Qbar(0, w)\right) dQ_{W}(w)  \\ &=  E_{P} \left(\Qbar(1, W)  - \Qbar(0,
-W)\right), \end{align*}  a clear extension of  \eqref{eq:psi0}.  For instance,
-although the law  $\Pi_{0} \in \calM$ encoded by  default (\textit{i.e.}, with
-`h=0`)  in  `drawFromAnotherExperiment`  defined below  differs  starkly  from
-$P_{0}$,
+\Exp_{P}  (Y|A,  W).   \end{equation*}  Central to  our  approach  is  viewing
+$\psi_{0}$ as  the value  at $P_{0}$  of the  statistical mapping  $\Psi$ from
+$\calM$  to  $[0,1]$  characterized  by \begin{align*}  \Psi(P)  &\equiv  \int
+\left(\Qbar(1, w) - \Qbar(0, w)\right) dQ_{W}(w) \\ &= \Exp_{P} \left(\Qbar(1,
+W) -  \Qbar(0, W)\right), \end{align*}  a clear extension  of \eqref{eq:psi0}.
+For  instance,  although  the  law  $\Pi_{0} \in  \calM$  encoded  by  default
+(\textit{i.e.},  with  `h=0`)  in  `drawFromAnotherExperiment`  defined  below
+differs starkly from $P_{0}$,
 
 ```{r another-simulation}
 draw_from_another_experiment <- function(n, h = 0) {
@@ -473,7 +484,7 @@ fluctuations.
 
 For every direction\footnote{A direction is a measurable function.} $s : \calO
 \to \bbR$ such that  $s \neq 0$\footnote{That is, $s(O)$ is  not equal to zero
-$P$-almost surely.},  $E_{P} (s(O))  = 0$  and $s$ bounded  by, say,  $M$, for
+$P$-almost surely.}, $\Exp_{P}  (s(O)) = 0$ and $s$ bounded  by, say, $M$, for
 every $h \in  H \equiv \interval[open]{-M^{-1}}{M^{-1}}$, we can  define a law
 $P_{h}  \in \calM$  by  setting  $P_{h} \ll  P$\footnote{That  is, $P_{h}$  is
 dominated  by $P$:  if an  event $A$  satisfies $P(A)  = 0$,  then necessarily
@@ -494,15 +505,16 @@ The fluctuation is a one-dimensional parametric submodel of $\calM$.
 Statistical mapping $\Psi$ is smooth at  every $P \in \calM$ because, for each
 $P \in \calM$, there exists  a so called efficient influence curve\footnote{It
 is  a   measurable  function.}   $D^{*}(P)   :  \calO  \to  \bbR$   such  that
-$E_{P}(D^{*}(P)(O)) = 0$ and, for any direction  $s$ as above, if $\{P_{h} : h
-\in H\}$  is defined as in  \eqref{eq:fluct}, then the real-valued  mapping $h
+$\Exp_{P}(D^{*}(P)(O)) = 0$ and, for any direction $s$ as above, if $\{P_{h} :
+h \in H\}$ is defined as  in \eqref{eq:fluct}, then the real-valued mapping $h
 \mapsto \Psi(P_{h})$ is differentiable at $h=0$, with a derivative equal to
 
-\begin{equation}\label{eq:derivative}E_{P} \left(D^{*}(P)(O) s(O)\right).\end{equation}
+\begin{equation}\label{eq:derivative}\Exp_{P}                \left(D^{*}(P)(O)
+s(O)\right).\end{equation}
 
 Interestingly,   if  a   fluctuation   $\{P_{h}  :   h   \in  H\}$   satisfies
-\eqref{eq:score} for  a direction $s$ such  that $s\neq 0$, $E_{P}(s(O))  = 0$
-and  $\Var_{P}  (s(O))  <  \infty$,  then $h \mapsto  \Psi(P_{h})$  is  still
+\eqref{eq:score} for a direction $s$ such that $s\neq 0$, $\Exp_{P}(s(O)) = 0$
+and  $\Var_{P}  (s(O))  <  \infty$,  then $h  \mapsto  \Psi(P_{h})$  is  still
 differentiable  at  $h=0$ with  a  derivative  equal to  \eqref{eq:derivative}
 (beyond fluctuations of the form \eqref{eq:fluct}).
 
@@ -514,7 +526,7 @@ independent observations $O_{1}$, \ldots, $O_{n}$ drawn from $P$.
 % or, equivalently, trained on the empirical measure $P_{n} = n^{-1}
 % \sum_{i=1}^{n} \Dirac(O_{i})$: $\psi_{n} = \Psihat(P_{n})$.  
 The estimator is regular at $P$ (w.r.t. the maximal tangent space) if, for any
-direction  $s\neq 0$  such that  $E_{P}  (s(O)) =  0$ and  $\Var_{P} (s(O))  <
+direction $s\neq  0$ such that  $\Exp_{P} (s(O)) =  0$ and $\Var_{P}  (s(O)) <
 \infty$ and fluctuation $\{P_{h} : h \in H\}$ satisfying \eqref{eq:score}, the
 estimator $\psi_{n,1/\sqrt{n}}$ of $\Psi(P_{1/\sqrt{n}})$ obtained by training
 $\Psihat$  on independent  observations  $O_{1}$, \ldots,  $O_{n}$ drawn  from
@@ -604,7 +616,7 @@ of \eqref{eq:fluct}) given, up to a constant, by
 Consequently,    the    slope    of     the    dotted    curve    in    Figure
 \@ref(fig:psi-approx-psi-one) is equal to 
 
-\begin{equation}\label{eq:slope:Pi}E_{\Pi_{0}}       (D^{*}(\Pi_{0})       (O)
+\begin{equation}\label{eq:slope:Pi}\Exp_{\Pi_{0}}      (D^{*}(\Pi_{0})     (O)
 \sigma_{0}(O))\end{equation}
 
 (since $D^{*}(\Pi_{0})$  is centered under $\Pi_{0}$,  knowing $\sigma_{0}$ up
@@ -650,11 +662,11 @@ remarkable property: it is double-robust.   Specifically, if we define for all
 $P' \in \calM$
 
 \begin{equation}\label{eq:rem:one} \Rem_{P} (\Qbar',  \Gbar')\equiv \Psi(P') -
-\Psi(P) + E_{P} (D^{*}(P') (O)), \end{equation}
+\Psi(P) + \Exp_{P} (D^{*}(P') (O)), \end{equation}
 
 then   the   so   called    remainder   term   $\Rem_{P}   (\Qbar',   \Gbar')$
 satisfies\footnote{For  any   (measurable)  $f:\calO  \to  \bbR$,   we  denote
-$\|f\|_{P} = E_{P} (f(O)^{2})^{1/2}$.}
+$\|f\|_{P} = \Exp_{P} (f(O)^{2})^{1/2}$.}
 
 \begin{equation}\label{eq:rem:two}   \Rem_{P}    (\Qbar',   \Gbar')^{2}   \leq
 \|\Qbar'  - \Qbar\|_{P}^{2}  \times  \|(\Gbar' -  \Gbar)/\ell\Gbar'\|_{P}^{2}.
@@ -662,7 +674,7 @@ $\|f\|_{P} = E_{P} (f(O)^{2})^{1/2}$.}
 
 In particular, if
 
-\begin{equation}\label{eq:solves:eic} E_{P} (D^{*}(P') (O)) =
+\begin{equation}\label{eq:solves:eic}     \Exp_{P}    (D^{*}(P')     (O))    =
 0,\end{equation}
 
 and  \textit{either}  $\Qbar' =  \Qbar$  \textit{or}  $\Gbar' =  \Gbar$,  then
@@ -707,14 +719,14 @@ Gbar <- attr(obs, "Gbar")
 iter <- 1e3
 ```
 
-Then, the alternative expression \begin{equation}\label{eq:psi0:b} \psi_{0} =
-E_{P_{0}}     \left(\frac{2A-1}{\ell\Gbar_{0}(A,W)}Y\right)     \end{equation}
+Then, the alternative  expression \begin{equation}\label{eq:psi0:b} \psi_{0} =
+\Exp_{P_{0}}    \left(\frac{2A-1}{\ell\Gbar_{0}(A,W)}Y\right)   \end{equation}
 suggests            to           estimate            $\psi_{0}$           with
-\begin{equation}\label{eq:psi:n:b}\psi_{n}^{b}         \equiv        E_{P_{n}}
+\begin{equation}\label{eq:psi:n:b}\psi_{n}^{b}       \equiv       \Exp_{P_{n}}
 \left(\frac{2A-1}{\ell\Gbar_{0}(A,W)}Y\right)  =   \frac{1}{n}  \sum_{i=1}^{n}
 \left(\frac{2A_{i}-1}{\ell\Gbar_{0}(A_{i},W_{i})}Y_{i}\right).\end{equation}
 Note how $P_{n}$ is substituted  for $P_{0}$ in \eqref{eq:psi:n:b} relative to
-\eqref{eq:psi0:b}. 
+\eqref{eq:psi0:b}.
 
 It is easy to check that $\psi_{n}^{b}$ estimates $\psi_{0}$ consistently, but
 this  is too  little  to request  from an  estimator  of $\psi_{0}$.   Better,
@@ -736,15 +748,15 @@ drawn from $P_{0}$, each consisting of $n$ equal to `nrow(obs)/iter =`
 on all samples.
 
 Before  proceeding,   let  us  introduce   \begin{align*}\psi_{n}^{a}  &\equiv
-E_{P_{n}}  \left(Y  |  A=1\right)  -  E_{P_{n}} \left(Y  |  A=0\right)  \\  &=
+\Exp_{P_{n}} \left(Y  | A=1\right) -  \Exp_{P_{n}} \left(Y | A=0\right)  \\ &=
 \frac{1}{n_{1}}   \sum_{i=1}^{n}  \one\{A_{i}=1\}   Y_{i}  -   \frac{1}{n_{0}}
 \sum_{i=1}^{n} \one\{A_{i}=0\} Y_{i}  \\&=\frac{1}{n_{1}} \sum_{i=1}^{n} A_{i}
 Y_{i} - \frac{1}{n_{0}}  \sum_{i=1}^{n} (1 - A_{i})  Y_{i}, \end{align*} where
 $n_{1}  = \sum_{i=1}^{n}  A_{i} =  n -  n_{0}$ is  the number  of observations
-$O_{i}$    such   that    $A_{i}   =    1$.    It   is    an   estimator    of
-\begin{equation*}E_{P_{0}} (Y | A=1) -  E_{P_{0}} (Y | A=0).\end{equation*} We
-seize  this  opportunity to  demonstrate  numerically  the obvious  fact  that
-$\psi_{n}^{a}$ does not estimate $\psi_{0}$. 
+$O_{i}$    such   that    $A_{i}   =    1$.    It    is   an    estimator   of
+\begin{equation*}\Exp_{P_{0}}    (Y   |    A=1)    -    \Exp_{P_{0}}   (Y    |
+A=0).\end{equation*} We seize this  opportunity to demonstrate numerically the
+obvious fact that $\psi_{n}^{a}$ does not estimate $\psi_{0}$.
 
 
 ```{r known-Gbar-one-b, fig.cap = "Kernel density estimators of the law of two estimators of $\\psi_{0}$ (recentered and renormalized), one of them misconceived (a), the other assuming that $\\Gbar_{0}$ is known (b). Built based on `iter` independent realizations of each estimator."}
@@ -873,11 +885,12 @@ any function $f : [0,1] \to [0,1]$ paired with the working model $\calF \equiv
 \theta_{j}  W^{j/2}$. The  working model  is well  specified: it  happens that
 $\Gbar_{0}$  is the  unique minimizer  of the  risk entailed  by $L_{a}$  over
 $\calF$: \begin{equation*}\Gbar_{0} = \mathop{\arg\min}_{f_{\theta} \in \calF}
-E_{P_{0}}  \left(L_{a}(f_{\theta})(A,W)\right).\end{equation*} Therefore,  the
-estimator $\Gbar_{n}$  output by `estimate_G`  and obtained by  minimizing the
-empirical risk \begin{equation*} E_{P_{n}} \left(L_{a}(f_{\theta})(A,W)\right)
-=  \frac{1}{n}   \sum_{i=1}^{n}  L_{a}(f_{\theta})(A_{i},W_{i})\end{equation*}
-over $\calF$ consistently estimates $\Gbar_{0}$.
+\Exp_{P_{0}}   \left(L_{a}(f_{\theta})(A,W)\right).\end{equation*}  Therefore,
+the estimator  $\Gbar_{n}$ output by  `estimate_G` and obtained  by minimizing
+the        empirical         risk        \begin{equation*}        \Exp_{P_{n}}
+\left(L_{a}(f_{\theta})(A,W)\right)      =     \frac{1}{n}      \sum_{i=1}^{n}
+L_{a}(f_{\theta})(A_{i},W_{i})\end{equation*}   over    $\calF$   consistently
+estimates $\Gbar_{0}$.
 
 In light of  \eqref{eq:psi:n:b}, introduce \begin{equation}\psi_{n}^{c} \equiv
 \frac{1}{n}   \sum_{i=1}^{n}   \left(\frac{2A_{i}  -   1}{\ell\Gbar_{n}(A_{i},
@@ -1059,13 +1072,15 @@ control <- trainControl(method = "cv", number = 2,
                         predictionBounds = c(0, 1),
                         allowParallel = TRUE)
 
-psi_hat_de <- obs %>% as_tibble() %>% mutate(id = 1:n() %% iter) %>%
+iter <- 1000
+n_head <- 1e6
+psi_hat_de <- obs %>% head(n = n_head) %>% as_tibble() %>% mutate(id = 1:n() %% iter) %>%
   group_by(id) %>%
   mutate(blipQW_d = predict_QAW(Y, A, W, working_model_Q_one, blip = TRUE),
          blipQW_e = predict_QAW(Y, A, W, kknn_algo, blip = TRUE,
                                 trControl = control,
                                 tuneGrid = kknn_grid,
-                                Subsample = 100)) %>%
+                                Subsample = 1000)) %>%
   summarize(est_d = mean(blipQW_d),
             est_e = mean(blipQW_e))
 
