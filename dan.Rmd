@@ -96,7 +96,10 @@ draw_from_experiment <- function(n, ideal = FALSE) {
   Qbar <- function(AW) {
     A <- AW[, 1]
     W <- AW[, 2]
-    A * (cos((1 + W) * pi / 5) + (1/3 <= W & W <= 1/2) / 10) +
+    ## A * (cos((1 + W) * pi / 4) + (1/3 <= W & W <= 1/2) / 5) +
+    ##  (1 - A) * (sin(4 * W^2 * pi) / 4 + 1/2)
+    A * (cos((-1/2 + W) * pi) * 2/5 + 1/5 + (1/3 <= W & W <= 1/2) / 5 +
+         (W >= 3/4) * (W - 3/4) * 2) +
       (1 - A) * (sin(4 * W^2 * pi) / 4 + 1/2) 
   }
   ## sampling
@@ -181,10 +184,12 @@ $W$.
 \subsection{\gear Visualizing infinite-dimensional features of the experiment}
 \label{subsec:visualizing}
 
-1.  Run the  following  chunk  of code.  It  visualizes  the conditional  mean
+
+
+1.  Run the following chunk of code.  It visualizes the conditional mean
    $\Qbar_{0}$.
 
-```{r exercise:visualize, eval = FALSE}
+```{r exercise:visualize, eval = TRUE}
 Gbar <- attr(five_obs, "Gbar")
 Qbar <- attr(five_obs, "Qbar")
 QW <- attr(five_obs, "QW")
@@ -203,7 +208,8 @@ features %>% select(-Qw, -Gw) %>%
   gather("f", "value", -w) %>%
   ggplot() +
   geom_line(aes(x = w, y = value, color = f), size = 1) +
-  labs(y = "f(w)", title = bquote("Visualizing" ~ bar(Q)[0]))  
+  labs(y = "f(w)", title = bquote("Visualizing" ~ bar(Q)[0])) +
+  ylim(NA, 1)
 ```
 
 2. Adapt the  above chunk of code to visualize  the marginal density $Q_{0,W}$
@@ -304,7 +310,7 @@ alpha <- 0.05
 pass.}  
 \label{subsec:exo:dave:one}
 
-The questions are asked in the context of Sections \ref{subsec:parameter:first}.
+The problems come within the scope of Sections \ref{subsec:parameter:first}.
 
 As discussed  above, parameter $\psi_0$ \eqref{eq:psi:zero}  is the difference
 in average  rewards if  we enforce  action $a  = 1$  rather than  $a =  0$. An
@@ -422,7 +428,7 @@ pass.}
 \label{subsec:exo:dave:two}
 
 We  continue with  the exercise  from Section  \ref{subsec:exo:dave:one}.  The
-questions are asked in the context of Section \ref{subsec:parameter:first}.
+problems come within the scope of Section \ref{subsec:parameter:first}.
 
 As above,  we define $q_{Y}(y,a,w)$  to be the $(A,W)$-conditional  density of
 $Y$ given $A=a$ and  $W=w$, evaluated at $y$, that is implied  by a generic $P
@@ -935,13 +941,16 @@ samples  of  independent  observations  drawn   from  $P_{0}$  as  in  Section
 \ref{subsec:known:gbar:one}:
 
 ```{r unknown-Gbar-two-bis}
-learned_features <- obs %>% as_tibble() %>% mutate(id = 1:n() %% iter) %>%
+learned_features_fixed_sample_size <-
+  obs %>% as_tibble() %>%
+  mutate(id = 1:n() %% iter) %>%
   nest(-id, .key = "obs") %>%
   mutate(Ghat = map(obs, ~ estimate_G(., algorithm = working_model_G_one))) %>%
   mutate(lGAW = map2(Ghat, obs, ~ compute_lGhatAW(.y$A, .y$W, .x)))
 
 
-psi_hat_abc <- learned_features %>%
+psi_hat_abc <-
+  learned_features_fixed_sample_size %>%
   unnest(obs, lGAW) %>%
   group_by(id) %>%
   summarize(est = mean(Y * (2 * A - 1) / lGAW)) %>%
@@ -986,7 +995,7 @@ did not discuss how to estimate its asymptotic variance.
 \subsection{\gear Exercises.}
 \label{subsec:exo:one}
 
-The questions are asked in the context of Sections \ref{subsec:known:gbar:one}
+The problems  come within the context  of Sections \ref{subsec:known:gbar:one}
 and \ref{subsec:known:gbar:two}.
 
 1. Compute a numerical approximation of $\Exp_{P_{0}} (Y | A=1) - \Exp_{P_{0}}
@@ -1053,9 +1062,13 @@ would be legitimate.
 on the estimation of $\boldsymbol{\Qbar_{0}}$.} 
 \label{subsec:inf:Q0}
 
-\tcg{Comment on  structure of} `estimate_Q`.
+\tcg{Comment on structure of} `estimate_Q`, similar to that of `estimate_G`.
 
-```{r estimating-Qbar-one, eval = FALSE}
+\tcg{Demonstrating the  inference of} $\psi_{0}$ \tcg{based  on the estimation
+of} $\Qbar_{0}$ \tcg{(and of the marginal  law of} $W$\tcg{).  Once based on a
+(mis-specified) working model, and once based on a non-parametric algorithm.}
+
+```{r estimating-Qbar-one, eval = TRUE}
 estimate_Q <- function(dat, algorithm, ...) {
   if (!attr(algorithm, "ML")) {
     dat <- as.data.frame(dat)
@@ -1087,7 +1100,7 @@ working_model_Q_one <- list(
   model = function(...) {glm(family = binomial(), ...)},
   formula = as.formula(
     paste("Y ~ A * (",
-          paste("I(W^", seq(1/2, 2, by = 1/2), sep = "", collapse = ") + "),
+          paste("I(W^", seq(1/2, 3/2, by = 1/2), sep = "", collapse = ") + "),
           "))")
   ))
 attr(working_model_Q_one, "ML") <- FALSE
@@ -1107,23 +1120,24 @@ kknn_algo <- function(dat, ...) {
                ...)
 }
 attr(kknn_algo, "ML") <- TRUE
-kknn_grid <- expand.grid(kmax = c(3, 5), distance = 2, kernel = "gaussian")
+kknn_grid <- expand.grid(kmax = 11, distance = 2, kernel = "gaussian")
 control <- trainControl(method = "cv", number = 2,
                         predictionBounds = c(0, 1),
                         allowParallel = TRUE)
 
-learned_features <- learned_features %>% 
+learned_features_fixed_sample_size <-
+  learned_features_fixed_sample_size %>% # head(n = 100) %>%
   mutate(Qhat_d = map(obs, ~ estimate_Q(., algorithm = working_model_Q_one)),
          Qhat_e = map(obs, ~ estimate_Q(., algorithm = kknn_algo,
                                         trControl = control,
-                                        tuneGrid = kknn_grid,
-                                        Subsample = 1000))) %>%
+                                        tuneGrid = kknn_grid))) %>%
   mutate(blip_QW_d = map2(Qhat_d, obs,
                           ~ compute_QhatAW(.y$Y, .y$A, .y$W, .x, blip = TRUE)),
          blip_QW_e = map2(Qhat_e, obs,
                           ~ compute_QhatAW(.y$Y, .y$A, .y$W, .x, blip = TRUE)))
 
-psi_hat_de <- learned_features %>%
+psi_hat_de <-
+  learned_features_fixed_sample_size %>%
   unnest(blip_QW_d, blip_QW_e) %>%
   group_by(id) %>%
   summarize(est_d = mean(blip_QW_d),
@@ -1152,6 +1166,73 @@ fig +
   labs(x = expression(paste(sqrt(n/v[n]^{list(d, e)})*(psi[n]^{list(d, e)} - psi[0]))))
 ```
 
+\tcg{No  that bad!   Yet,  we know  that  $\sqrt{n}$ times  bias  is bound  to
+increase with sample size. To see this, check out the next chunks of code.}
+
+
+
+```{r estimating-Qbar-two, eval = TRUE}
+log_sample_size <- seq(9, 13, 1)
+block_size <- sum(2^log_sample_size)
+
+label <- function(xx, log_sample_size = c(9, 11, 13)) {
+  by <- sum(2^log_sample_size)
+  xx <- xx[seq_len((length(xx) %/% by) * by)] - 1
+  prefix <- xx %/% by
+  suffix <- findInterval(xx %% by, cumsum(2^log_sample_size))
+  paste(prefix + 1, suffix + 1, sep = "_")
+}
+
+learned_features_varying_sample_size <- obs %>% as.tibble %>% 
+  head(n = (nrow(.) %/% block_size) * block_size) %>% 
+  mutate(block = label(1:nrow(.), log_sample_size)) %>%
+  nest(-block, .key = "obs")
+```
+
+First, we cut the  data set into independent sub-data sets  of sample size $n$
+in `r block_size`.   Second, we infer $\psi_{0}$ as shown  two chunks earlier.
+We thus obtain  `r nrow(obs) %/% block_size` independent  realizations of each
+estimator derived on data sets of three, increasing sample sizes.
+
+```{r estimating-Qbar-three, eval = TRUE}
+learned_features_varying_sample_size <-
+  learned_features_varying_sample_size %>% 
+  mutate(Qhat_d = map(obs, ~ estimate_Q(., algorithm = working_model_Q_one)),
+         Qhat_e = map(obs, ~ estimate_Q(., algorithm = kknn_algo,
+                                        trControl = control,
+                                        tuneGrid = kknn_grid))) %>%
+  mutate(blip_QW_d = map2(Qhat_d, obs,
+                          ~ compute_QhatAW(.y$Y, .y$A, .y$W, .x, blip = TRUE)),
+         blip_QW_e = map2(Qhat_e, obs,
+                          ~ compute_QhatAW(.y$Y, .y$A, .y$W, .x, blip = TRUE)))
+
+
+root_n_bias <- learned_features_varying_sample_size %>%
+  unnest(blip_QW_d, blip_QW_e) %>%
+  group_by(block) %>%
+  summarize(est_d = sqrt(n())*(mean(blip_QW_d) - psi_approx),
+            est_e = sqrt(n())*(mean(blip_QW_e) - psi_approx))
+
+  gather("key", "value", -block) %>%
+  extract(key, c("what", "type"), "([^_]+)_([de])") %>%
+  spread(what, value) %>%
+  mutate(block = unlist(map(strsplit(block, "_"), ~.x[2])),
+         sample_size = (2^log_sample_size)[as.integer(block)])  %>%
+  select(est, type, sample_size) %>%
+  group_by(type, sample_size) %>%
+  summarize(bias = mean(est))
+```
+The  `tibble`  called  `root_n_bias`  reports  root-$n$  times  bias  for  all
+combinations of  estimator and sample  size. The  next chunk of  code presents
+visually our findings.
+
+```{r estimating-Qbar-four, eval = TRUE}
+root_n_bias %>% ggplot(aes(x = sample_size, y = bias, color = type)) +
+  geom_point(cex = 2) + geom_line() +
+  labs(x = paste("sample size n"),
+       y = expression(paste(sqrt(n)*(psi[n]^{list(d, e)} - psi[0]))))
+```
+
 \subsection{One-step estimation.}
 \label{subsec:one:step}
 
@@ -1164,7 +1245,7 @@ fig +
 
 For later$\ldots{}$
 
-```{r estimating-Qbar-two, eval = FALSE}
+```{r estimating-Qbar-appendix, eval = FALSE}
 
 
 working_model_Q_two <- list(

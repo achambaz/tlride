@@ -24,12 +24,15 @@ draw_from_experiment <- function(n, ideal = FALSE) {
   ideal <- Arguments$getLogical(ideal)
   ## ## 'Gbar' and 'Qbar' factors
   Gbar <- function(W) {
-    expit(-0.2 + 3 * sqrt(W) - 1.5 * W)
+    expit(1 + 2 * W - 4 * sqrt(abs((W - 5/12))))
   }
   Qbar <- function(AW) {
     A <- AW[, 1]
     W <- AW[, 2]
-    A * (cos((1 + W) * pi / 5) + (1/3 <= W & W <= 1/2) / 10) +
+    ## A * (cos((1 + W) * pi / 4) + (1/3 <= W & W <= 1/2) / 5) +
+    ##  (1 - A) * (sin(4 * W^2 * pi) / 4 + 1/2)
+    A * (cos((-1/2 + W) * pi) * 2/5 + 1/5 + (1/3 <= W & W <= 1/2) / 5 +
+         (W >= 3/4) * (W - 3/4) * 2) +
       (1 - A) * (sin(4 * W^2 * pi) / 4 + 1/2) 
   }
   ## sampling
@@ -79,6 +82,28 @@ draw_from_experiment <- function(n, ideal = FALSE) {
 
 ## ----draw-five-obs-------------------------------------------------------
 (five_obs <- draw_from_experiment(5))
+
+## ----exercise:visualize, eval = TRUE-------------------------------------
+Gbar <- attr(five_obs, "Gbar")
+Qbar <- attr(five_obs, "Qbar")
+QW <- attr(five_obs, "QW")
+
+features <- tibble(w = seq(0, 1, length.out = 1e3)) %>%
+  mutate(Qw = QW(w),
+         Gw = Gbar(w),
+         Q1w = Qbar(cbind(A = 1, W = w)),
+         Q0w = Qbar(cbind(A = 0, W = w)),
+         blip_Qw = Q1w - Q0w)
+
+features %>% select(-Qw, -Gw) %>%
+  rename("Q(1,.)" = Q1w,
+         "Q(0,.)" = Q0w,
+         "Q(1,.) - Q(0,.)" = blip_Qw) %>%
+  gather("f", "value", -w) %>%
+  ggplot() +
+  geom_line(aes(x = w, y = value, color = f), size = 1) +
+  labs(y = "f(w)", title = bquote("Visualizing" ~ bar(Q)[0])) +
+  ylim(NA, 1)
 
 ## ----approx-psi-0-a-one--------------------------------------------------
 integrand <- function(w) {
@@ -233,7 +258,7 @@ psi_hat_ab <- obs %>% as_tibble() %>% mutate(id = 1:n() %% iter) %>%
             clt_b = (est_b - psi_approx) / std_b) %>% 
   mutate(std_a = sd(est_a),
          clt_a = (est_a - psi_approx) / std_a) %>%
-  gather(key, value, -id) %>%
+  gather("key", "value", -id) %>%
   extract(key, c("what", "type"), "([^_]+)_([ab])") %>%
   spread(what, value)
 
@@ -251,8 +276,6 @@ fig <- ggplot() +
   
 fig +
   labs(x = expression(paste(sqrt(n/v[n]^{list(a, b)})*(psi[n]^{list(a, b)} - psi[0]))))
-
-stop("Stops here.\n")
 
 ## ----unknown-Gbar-one----------------------------------------------------
 estimate_G <- function(dat, algorithm, ...) {
@@ -285,7 +308,9 @@ working_model_G_one <- list(
   model = function(...) {glm(family = binomial(), ...)},
   formula = as.formula(
     paste("A ~",
-          paste("I(W^", seq(1/2, 2, by = 1/2), sep = "", collapse = ") + "),
+          paste(c("I(W^", "I(abs(W - 5/12)^"),
+                rep(seq(1/2, 3/2, by = 1/2), each = 2),
+                sep = "", collapse = ") + "),
           ")")
   ))
 attr(working_model_G_one, "ML") <- FALSE
@@ -314,7 +339,7 @@ fig +
   geom_density(aes(clt, fill = type, colour = type), psi_hat_abc, alpha = 0.1) +
   geom_vline(aes(xintercept = bias, colour = type),
              bias_abc, size = 1.5, alpha = 0.5) +
-  xlim(-3, 3) + 
+  xlim(-3, 4) + 
   labs(x = expression(paste(sqrt(n/v[n]^{list(a, b, c)})*
                             (psi[n]^{list(a, b, c)} - psi[0]))))
 
@@ -330,7 +355,9 @@ ggplot(psi_hat_abc, aes(sample = clt, fill = type, colour = type)) +
 ##   model = function(...) {glm(family = binomial(), ...)},
 ##   formula = as.formula(
 ##     paste("A ~",
-##           paste("I(W^", powers, sep = "", collapse = ") + "),
+##           paste(c("I(W^", "I(abs(W - 5/12)^"),
+##                 rep(powers, each = 2),
+##                 sep = "", collapse = ") + "),
 ##           ")")
 ##   ))
 ## attr(working_model_G_two, "ML") <- FALSE
@@ -379,7 +406,7 @@ working_model_Q_one <- list(
   model = function(...) {glm(family = binomial(), ...)},
   formula = as.formula(
     paste("Y ~ A * (",
-          paste("I(W^", seq(1/2, 2, by = 1/2), sep = "", collapse = ") + "),
+          paste("I(W^", seq(1/2, 3/2, by = 1/2), sep = "", collapse = ") + "),
           "))")
   ))
 attr(working_model_Q_one, "ML") <- FALSE
@@ -399,17 +426,16 @@ kknn_algo <- function(dat, ...) {
                ...)
 }
 attr(kknn_algo, "ML") <- TRUE
-kknn_grid <- expand.grid(kmax = c(3, 5), distance = 2, kernel = "gaussian")
+kknn_grid <- expand.grid(kmax = 11, distance = 2, kernel = "gaussian")
 control <- trainControl(method = "cv", number = 2,
                         predictionBounds = c(0, 1),
                         allowParallel = TRUE)
 
-learned_features <- learned_features %>% 
+learned_features <- learned_features %>% # head(n = 100) %>%
   mutate(Qhat_d = map(obs, ~ estimate_Q(., algorithm = working_model_Q_one)),
          Qhat_e = map(obs, ~ estimate_Q(., algorithm = kknn_algo,
                                         trControl = control,
-                                        tuneGrid = kknn_grid,
-                                        Subsample = 1000))) %>%
+                                        tuneGrid = kknn_grid))) %>%
   mutate(blip_QW_d = map2(Qhat_d, obs,
                           ~ compute_QhatAW(.y$Y, .y$A, .y$W, .x, blip = TRUE)),
          blip_QW_e = map2(Qhat_e, obs,
@@ -424,7 +450,7 @@ psi_hat_de <- learned_features %>%
          std_e = sd(est_e),
          clt_d = (est_d - psi_approx) / std_d,
          clt_e = (est_e - psi_approx) / std_e) %>% 
-  gather(key, value, -id) %>%
+  gather("key", "value", -id) %>%
   extract(key, c("what", "type"), "([^_]+)_([de])") %>%
   spread(what, value)
 
@@ -545,81 +571,46 @@ fig +
 ##                          stringsAsFactors = FALSE)
 
 
-
-Gbar_alt <- function(W) {
-  expit(1 + 2 * W - 4 * sqrt(abs((W - 5/12))))
+label <- function(xx, log_sample_size = c(9, 11, 13)) {
+  by <- sum(2^log_sample_size)
+  xx <- xx[seq_len((length(xx) %/% by) * by)] - 1
+  prefix <- xx %/% by
+  suffix <- findInterval(xx %% by, cumsum(2^log_sample_size))
+  paste(prefix + 1, suffix + 1, sep = "_")
 }
 
-tibble(x = seq(0, 1, length.out = 1e3),
-       orig = Gbar(x),
-       alt = Gbar_alt(x)) %>%
-  gather(key, value, -x) %>%
-  ggplot() +
-  geom_point(aes(x, value, color = key)) +
-  ylim(0, 1)
+log_sample_size <- c(9, 11, 13)
+block_size <- sum(2^log_sample_size)
+
+behavior <- obs %>% as.tibble %>% 
+  head(n = (nrow(.) %/% block_size) * block_size) %>% 
+  mutate(block = label(1:nrow(.), log_sample_size)) %>%
+  nest(-block, .key = "obs") %>%
+  mutate(Qhat_d = map(obs, ~ estimate_Q(., algorithm = working_model_Q_one)),
+         Qhat_e = map(obs, ~ estimate_Q(., algorithm = kknn_algo,
+                                        trControl = control,
+                                        tuneGrid = kknn_grid))) %>%
+  mutate(blip_QW_d = map2(Qhat_d, obs,
+                          ~ compute_QhatAW(.y$Y, .y$A, .y$W, .x, blip = TRUE)),
+         blip_QW_e = map2(Qhat_e, obs,
+                          ~ compute_QhatAW(.y$Y, .y$A, .y$W, .x, blip = TRUE))) %>%
+  unnest(blip_QW_d, blip_QW_e) %>%
+  group_by(block) %>%
+  summarize(est_d = sqrt(n())*(mean(blip_QW_d) - psi_approx),
+            est_e = sqrt(n())*(mean(blip_QW_e) - psi_approx))
+
+behavior %>%
+  gather("key", "value", -block) %>%
+  extract(key, c("what", "type"), "([^_]+)_([de])") %>%
+  spread(what, value) %>%
+  mutate(block_type = paste(type,
+                            unlist(map(strsplit(block, "_"), ~.x[2])),
+                            sep = "_")) %>%
+  select(est, block_type) %>%
+  group_by(block_type) %>%
+  summarize(bias = mean(est))
 
 
-draw_from_experiment_alt <- function(n, ideal = FALSE) {
-  ## preliminary
-  n <- Arguments$getInteger(n, c(1, Inf))
-  ideal <- Arguments$getLogical(ideal)
-  ## ## 'Gbar' and 'Qbar' factors
-  Gbar_alt <- function(W) {
-    expit(1 + 2 * W - 4 * sqrt(abs((W - 5/12))))
-  }
-  Gbar <- Gbar_alt
-  Qbar <- function(AW) {
-    A <- AW[, 1]
-    W <- AW[, 2]
-    A * (cos((1 + W) * pi / 5) + (1/3 <= W & W <= 1/2) / 10) +
-      (1 - A) * (sin(4 * W^2 * pi) / 4 + 1/2) 
-  }
-  ## sampling
-  ## ## context
-  mixture_weights <- c(1/10, 9/10, 0)
-  mins <- c(0, 11/30, 0)
-  maxs <- c(1, 14/30, 1)
-  latent <- findInterval(runif(n), cumsum(mixture_weights)) + 1
-  W <- runif(n, min = mins[latent], max = maxs[latent])
-  ## ## counterfactual rewards
-  zeroW <- cbind(A = 0, W)
-  oneW <- cbind(A = 1, W)
-  Qbar.zeroW <- Qbar(zeroW)
-  Qbar.oneW <- Qbar(oneW)
-  Yzero <- rbeta(n, shape1 = 2, shape2 = 2 * (1 - Qbar.zeroW) / Qbar.zeroW)
-  Yone <- rbeta(n, shape1 = 3, shape2 = 3 * (1 - Qbar.oneW) / Qbar.oneW)
-  ## ## action undertaken
-  A <- rbinom(n, size = 1, prob = Gbar(W))
-  ## ## actual reward
-  Y <- A * Yone + (1 - A) * Yzero
-  ## ## observation
-  if (ideal) {
-    obs <- cbind(W = W, Yzero = Yzero, Yone = Yone, A = A, Y = Y)
-  } else {
-    obs <- cbind(W = W, A = A, Y = Y)
-  }
-  attr(obs, "Gbar") <- Gbar
-  attr(obs, "Qbar") <- Qbar
-  attr(obs, "QW") <- function(W) {
-    out <- sapply(1:length(mixture_weights),
-                  function(ii){
-                    mixture_weights[ii] *
-                      dunif(W, min = mins[ii], max = maxs[ii])
-                  })
-    return(rowSums(out))
-  }
-  attr(obs, "qY") <- function(AW, Y, Qbar){
-    A <- AW[, 1]
-    W <- AW[, 2]
-    Qbar.AW <- do.call(Qbar, list(AW)) # is call to 'do.call' necessary?
-    shape1 <- ifelse(A == 0, 2, 3)
-    dbeta(Y, shape1 = shape1, shape2 = shape1 * (1 - Qbar.AW) / Qbar.AW)
-  }
-  ##
-  return(obs)
-}
 
-B <- 1e6 ## Antoine: 1e6 eventually
-obs <- draw_from_experiment_alt(B)
-idx <- obs[, "A"] == 1
-phi <- mean(obs[idx, "Y"]) - mean(obs[!idx, "Y"])
+  
+
