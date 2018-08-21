@@ -54,7 +54,6 @@ subsections with symbol $\gear$.}
 set.seed(54321) ## because reproducibility matters...
 suppressMessages(library(R.utils)) ## make sure it is installed
 suppressMessages(library(tidyverse)) ## make sure it is installed
-suppressMessages(library(ggplot2)) ## make sure it is installed
 suppressMessages(library(caret)) ## make sure it is installed
 expit <- plogis
 logit <- qlogis
@@ -92,7 +91,7 @@ draw_from_experiment <- function(n, ideal = FALSE) {
   ideal <- Arguments$getLogical(ideal)
   ## ## 'Gbar' and 'Qbar' factors
   Gbar <- function(W) {
-    expit(-0.2 + 3 * sqrt(W) - 1.5 * W)
+    expit(1 + 2 * W - 4 * sqrt(abs((W - 5/12))))
   }
   Qbar <- function(AW) {
     A <- AW[, 1]
@@ -178,6 +177,37 @@ $\Qbar_0(A,W) = \Exp_{P_{0}}(Y|A,W$ the conditional  mean of $Y$ given $A$ and
 $W$.
 
 \tcg{For consistency, I removed the $A=a$ and $W=w$.}
+
+\subsection{\gear Visualizing infinite-dimensional features of the experiment}
+\label{subsec:visualizing}
+
+1.  Run the  following  chunk  of code.  It  visualizes  the conditional  mean
+   $\Qbar_{0}$.
+
+```{r exercise:visualize, eval = FALSE}
+Gbar <- attr(five_obs, "Gbar")
+Qbar <- attr(five_obs, "Qbar")
+QW <- attr(five_obs, "QW")
+
+features <- tibble(w = seq(0, 1, length.out = 1e3)) %>%
+  mutate(Qw = QW(w),
+         Gw = Gbar(w),
+         Q1w = Qbar(cbind(A = 1, W = w)),
+         Q0w = Qbar(cbind(A = 0, W = w)),
+         blip_Qw = Q1w - Q0w)
+
+features %>% select(-Qw, -Gw) %>%
+  rename("Q(1,.)" = Q1w,
+         "Q(0,.)" = Q0w,
+         "Q(1,.) - Q(0,.)" = blip_Qw) %>%
+  gather("f", "value", -w) %>%
+  ggplot() +
+  geom_line(aes(x = w, y = value, color = f), size = 1) +
+  labs(y = "f(w)", title = bquote("Visualizing" ~ bar(Q)[0]))  
+```
+
+2. Adapt the  above chunk of code to visualize  the marginal density $Q_{0,W}$
+   and conditional probability $\Gbar_{0}$.
 
 \subsection{The parameter of interest, first pass.}
 \label{subsec:parameter:first}
@@ -572,10 +602,10 @@ eic <- function(obs, psi) {
   Qbar <- attr(obs, "Qbar")
   Gbar <- attr(obs, "Gbar")
   QAW <- Qbar(obs[, c("A", "W")])
-  gW <- Gbar(obs[, "W"])
-  lgAW <- obs[, "A"] * gW + (1 - obs[, "A"]) * (1 - gW)
+  GW <- Gbar(obs[, "W"])
+  lGAW <- obs[, "A"] * GW + (1 - obs[, "A"]) * (1 - GW)
   ( Qbar(cbind(1, obs[, "W"])) - Qbar(cbind(0, obs[, "W"])) - psi ) +
-    (2 * obs[, "A"] - 1) / lgAW * (obs[, "Y"] - QAW)
+    (2 * obs[, "A"] - 1) / lGAW * (obs[, "Y"] - QAW)
 }
 
 (eic(five_obs, psi = psi_approx))
@@ -766,14 +796,14 @@ obvious fact that $\psi_{n}^{a}$ does not estimate $\psi_{0}$.
 
 ```{r known-Gbar-one-b, fig.cap = "Kernel density estimators of the law of two estimators of $\\psi_{0}$ (recentered and renormalized), one of them misconceived (a), the other assuming that $\\Gbar_{0}$ is known (b). Built based on `iter` independent realizations of each estimator."}
 psi_hat_ab <- obs %>% as_tibble() %>% mutate(id = 1:n() %% iter) %>%
-  mutate(lgAW = A * Gbar(W) + (1 - A) * (1 - Gbar(W))) %>% group_by(id) %>%
+  mutate(lGAW = A * Gbar(W) + (1 - A) * (1 - Gbar(W))) %>% group_by(id) %>%
   summarize(est_a = mean(Y[A==1]) - mean(Y[A==0]),
-            est_b = mean(Y * (2 * A - 1) / lgAW),
-            std_b = sd(Y * (2 * A - 1) / lgAW) / sqrt(n()),
+            est_b = mean(Y * (2 * A - 1) / lGAW),
+            std_b = sd(Y * (2 * A - 1) / lGAW) / sqrt(n()),
             clt_b = (est_b - psi_approx) / std_b) %>% 
   mutate(std_a = sd(est_a),
          clt_a = (est_a - psi_approx) / std_a) %>%
-  gather(key, value, -id) %>%
+  gather("key", "value", -id) %>%
   extract(key, c("what", "type"), "([^_]+)_([ab])") %>%
   spread(what, value)
 
@@ -870,7 +900,9 @@ working_model_G_one <- list(
   model = function(...) {glm(family = binomial(), ...)},
   formula = as.formula(
     paste("A ~",
-          paste("I(W^", seq(1/2, 2, by = 1/2), sep = "", collapse = ") + "),
+          paste(c("I(W^", "I(abs(W - 5/12)^"),
+                rep(seq(1/2, 3/2, by = 1/2), each = 2),
+                sep = "", collapse = ") + "),
           ")")
   ))
 attr(working_model_G_one, "ML") <- FALSE
@@ -936,7 +968,7 @@ fig +
   geom_density(aes(clt, fill = type, colour = type), psi_hat_abc, alpha = 0.1) +
   geom_vline(aes(xintercept = bias, colour = type),
              bias_abc, size = 1.5, alpha = 0.5) +
-  xlim(-3, 3) + 
+  xlim(-3, 4) + 
   labs(x = expression(paste(sqrt(n/v[n]^{list(a, b, c)})*
                             (psi[n]^{list(a, b, c)} - psi[0]))))
 ```
@@ -957,7 +989,10 @@ did not discuss how to estimate its asymptotic variance.
 The questions are asked in the context of Sections \ref{subsec:known:gbar:one}
 and \ref{subsec:known:gbar:two}.
 
-1. Building  upon the  piece of  code devoted to  the repeated  computation of
+1. Compute a numerical approximation of $\Exp_{P_{0}} (Y | A=1) - \Exp_{P_{0}}
+(Y | A=0)$. How accurate is it?
+
+2. Building upon the piece of code devoted to the repeated computation of
 $\psi_{n}^{b}$ and  its companion  quantities, construct  confidence intervals
 for  $\psi_{0}$ of  (asymptotic)  level  $95\%$, and  check  if the  empirical
 coverage is satisfactory.  Note that if  the coverage was exactly $95\%$, then
@@ -967,12 +1002,12 @@ a binomial  law with parameters  `iter` and  `0.95`, and recall  that function
 probability of success  in a Bernoulli experiment against  its three one-sided
 and two-sided alternatives.
 
-2.  The call to `compute_lGhatAW` makes predictions on the same data points as
+3.  The call to `compute_lGhatAW` makes predictions on the same data points as
 those  exploited to  learn $\Gbar_{0}$  by fitting  the user-supplied  working
 model. Why  could that be problematic?  Can you think of  a simple workaround,
 implement and test it?
 
-3.  Discuss what happens when the dimension of the (still well-specified)
+4.  Discuss what happens when the dimension of the (still well-specified)
 working model grows. You could use the following chunk of code
 ```{r exercises-one, eval = FALSE}
 powers <- ## make sure '1/2' and '1' belong to 'powers', eg
@@ -981,7 +1016,9 @@ working_model_G_two <- list(
   model = function(...) {glm(family = binomial(), ...)},
   formula = as.formula(
     paste("A ~",
-          paste("I(W^", powers, sep = "", collapse = ") + "),
+          paste(c("I(W^", "I(abs(W - 5/12)^"),
+                rep(powers, each = 2),
+                sep = "", collapse = ") + "),
           ")")
   ))
 attr(working_model_G_two, "ML") <- FALSE
@@ -990,7 +1027,7 @@ play around with  argument `powers` (making sure that `1/2`  and `1` belong to
 it),   and   plot   graphics   similar   to   those   presented   in   Figures
 \@ref(fig:unknown-Gbar-three) and \@ref(fig:unknown-Gbar-four). 
 
-4. Discuss  what happens when the  working model is mis-specified.   You could
+5. Discuss  what happens when the  working model is mis-specified.   You could
 use the following chunk of code:
 ```{r exercises-two, eval = TRUE}
 transform <- c("cos", "sin", "sqrt", "log", "exp")
@@ -1005,7 +1042,7 @@ attr(working_model_G_three, "ML") <- FALSE
 (working_model_G_three$formula)
 ```
 
-5.   \textdbend  Drawing inspiration  from \eqref{eq:v:n:b}, one  may consider
+6.   \textdbend  Drawing inspiration  from \eqref{eq:v:n:b}, one  may consider
 estimating the asymptotic  variance of $\psi_{n}^{c}$ with  the counterpart of
 $v_{n}^{b}$ obtained  by substituting  $\ell\Gbar_{n}$ for  $\ell\Gbar_{0}$ in
 \eqref{eq:v:n:b}.   By adapting  the piece  of  code devoted  to the  repeated
@@ -1018,7 +1055,7 @@ on the estimation of $\boldsymbol{\Qbar_{0}}$.}
 
 \tcg{Comment on  structure of} `estimate_Q`.
 
-```{r estimating-Qbar-one, eval = TRUE}
+```{r estimating-Qbar-one, eval = FALSE}
 estimate_Q <- function(dat, algorithm, ...) {
   if (!attr(algorithm, "ML")) {
     dat <- as.data.frame(dat)
@@ -1095,7 +1132,7 @@ psi_hat_de <- learned_features %>%
          std_e = sd(est_e),
          clt_d = (est_d - psi_approx) / std_d,
          clt_e = (est_e - psi_approx) / std_e) %>% 
-  gather(key, value, -id) %>%
+  gather("key", "value", -id) %>%
   extract(key, c("what", "type"), "([^_]+)_([de])") %>%
   spread(what, value)
 
@@ -1119,7 +1156,6 @@ fig +
 \label{subsec:one:step}
 
 ```{r one-step}
-
 ```
 
 \subsection{Targeted inference.}
