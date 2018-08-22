@@ -1223,9 +1223,10 @@ root_n_bias <- learned_features_varying_sample_size %>%
 ```
 The  `tibble`  called  `root_n_bias`  reports  root-$n$  times  bias  for  all
 combinations of  estimator and sample  size. The  next chunk of  code presents
-visually our findings. Note how we  include the realizations of the estimators
-derived earlier and contained in  `psi_hat_de` (thus breaking the independence
-between components of `root_n_bias`, a small price to pay here).
+visually our findings, see Figure \@ref(fig:estimating-Qbar-four). Note how we
+include the  realizations of the  estimators derived earlier and  contained in
+`psi_hat_de`   (thus  breaking   the   independence   between  components   of
+`root_n_bias`, a small price to pay in this context).
 
 ```{r estimating-Qbar-four, fig.width = 7, fig.height = 7, fig.cap  = "Evolution of root-$n$ times bias versus sample size for two inference methodology of $\\psi_{0}$ based on the estimation of $\\Qbar_{0}$. Big dots represent the average biases and vertical lines represent twice the standard error."}
 root_n_bias <- learned_features_fixed_sample_size %>%
@@ -1271,11 +1272,29 @@ root_n_bias %>%
 \subsection{One-step estimation.}
 \label{subsec:one:step}
 
-```{r one-step}
+
+
+```{r one-step-one}
+set_Qbar_Gbar<- function(obs, Qbar, Gbar) {
+  attr(obs, "Qbar") <- Qbar
+  attr(obs, "Gbar") <- Gbar
+  return(obs)
+}
+```
+
+```{r one-step-two}
+one_realization <- learned_features_fixed_sample_size %>%
+  head(1) %>% rename(data = obs)
+attach(one_realization)
+
+detach(one_realization)
 ```
 
 \subsection{Targeted inference.}
 \label{subsec:tmle}
+
+\subsection{Appendix.}
+\label{subsec:appendix}
 
 
 For later$\ldots{}$
