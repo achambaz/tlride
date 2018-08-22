@@ -1227,14 +1227,14 @@ visually our findings. Note how we  include the realizations of the estimators
 derived earlier and contained in  `psi_hat_de` (thus breaking the independence
 between components of `root_n_bias`, a small price to pay here).
 
-```{r estimating-Qbar-four, fig.cap  = "Evolution of root-$n$ times bias versus sample size for two inference methodology of $\\psi_{0}$ based on the estimation of $\\Qbar_{0}$. Big dots represent the average biases and vertical lines represent twice the standard error."}
+```{r estimating-Qbar-four, fig.width = 7, fig.height = 7, fig.cap  = "Evolution of root-$n$ times bias versus sample size for two inference methodology of $\\psi_{0}$ based on the estimation of $\\Qbar_{0}$. Big dots represent the average biases and vertical lines represent twice the standard error."}
 root_n_bias <- learned_features_fixed_sample_size %>%
-  mutate(sample_size = 1e3) %>%
+  mutate(sample_size = B/iter) %>%  # because *fixed* sample size
   unnest(blip_QW_d, blip_QW_e) %>%
   group_by(id) %>%
   summarize(clt_d = sqrt(n()) * (mean(blip_QW_d) - psi_approx),
             clt_e = sqrt(n()) * (mean(blip_QW_e) - psi_approx),
-            sample_size = sample_size[1]) %>% # because *fixed* sample size
+            sample_size = sample_size[1]) %>%
   gather("key", "clt", -id, -sample_size) %>%
   extract(key, c("what", "type"), "([^_]+)_([de])") %>%
   mutate(block = "0") %>% select(-id, -what) %>%
@@ -1248,6 +1248,12 @@ root_n_bias %>%
                fun.data = mean_se, fun.args = list(mult = 2),
                position = position_dodge(width = 250), cex = 1) +
   stat_summary(aes(x = sample_size, y = clt,
+                   group = interaction(sample_size, type),
+                   color = type),
+               fun.data = mean_se, fun.args = list(mult = 2),
+               position = position_dodge(width = 250), cex = 1,
+               geom = "errorbar", width = 750) +
+  stat_summary(aes(x = sample_size, y = clt,
                    color = type),
                fun.y = mean, 
                position = position_dodge(width = 250),
@@ -1255,8 +1261,9 @@ root_n_bias %>%
   geom_point(aes(x = sample_size, y = clt,
                  group = interaction(sample_size, type),
                  color = type),
-             alpha = 0.1,
-             position = position_dodge(width = 250)) +
+             position = position_dodge(width = 250),
+             alpha = 0.1) +
+  scale_x_continuous(breaks = unique(sample_size)) +
   labs(x = "sample size n",
        y = expression(paste(sqrt(n)*(psi[n]^{list(d, e)} - psi[0]))))
 ```	
