@@ -247,9 +247,9 @@ sd_hat <- sd(vars)
 ## ----known-Gbar-one-a----------------------------------------------------
 Gbar <- attr(obs, "Gbar")
 
-iter <- 1e3
+iter <- 1e3 # 1e3 eventually
 
-## ----known-Gbar-one-b, fig.cap = "Kernel density estimators of the law of two estimators of $\\psi_{0}$ (recentered and renormalized), one of them misconceived (a), the other assuming that $\\Gbar_{0}$ is known (b). Built based on `iter` independent realizations of each estimator."----
+## ----known-Gbar-one-b, fig.cap = "Kernel density estimators of the law of two estimators of $\\psi_{0}$ (recentered with respect to $\\psi_{0}$, and renormalized), one of them misconceived (a), the other assuming that $\\Gbar_{0}$ is known (b). Built based on `iter` independent realizations of each estimator."----
 psi_hat_ab <- obs %>% as_tibble() %>% mutate(id = 1:n() %% iter) %>%
   mutate(lGAW = A * Gbar(W) + (1 - A) * (1 - Gbar(W))) %>% group_by(id) %>%
   summarize(est_a = mean(Y[A==1]) - mean(Y[A==0]),
@@ -317,13 +317,16 @@ attr(working_model_G_one, "ML") <- FALSE
 working_model_G_one$formula
 
 ## ----unknown-Gbar-two-bis------------------------------------------------
-learned_features <- obs %>% as_tibble() %>% mutate(id = 1:n() %% iter) %>%
-  nest(-id, .key = "obs") %>%
+learned_features_fixed_sample_size <-
+  obs %>% as_tibble() %>% 
+  mutate(id = 1:n() %% iter) %>%
+  nest(-id, .key = "obs") %>% 
   mutate(Ghat = map(obs, ~ estimate_G(., algorithm = working_model_G_one))) %>%
-  mutate(lGAW = map2(Ghat, obs, ~ compute_lGhatAW(.y$A, .y$W, .x)))
+  mutate(lGAW = map2(Ghat, obs, ~ compute_lGhatAW(.y$A, .y$W, .x)),
+         sample_size = map_int(obs, ~ nrow(.x)))
 
-
-psi_hat_abc <- learned_features %>%
+psi_hat_abc <-
+  learned_features_fixed_sample_size %>%
   unnest(obs, lGAW) %>%
   group_by(id) %>%
   summarize(est = mean(Y * (2 * A - 1) / lGAW)) %>%
@@ -334,7 +337,7 @@ psi_hat_abc <- learned_features %>%
 
 (bias_abc <- psi_hat_abc %>% group_by(type) %>% summarise(bias = mean(clt)))
 
-## ----unknown-Gbar-three, fig.cap = "Kernel density estimators of the law of three estimators of $\\psi_{0}$  (recentered and renormalized), one of them misconceived (a), one assuming that $\\Gbar_{0}$ is known (b) and one that hinges on the estimation of $\\Gbar_{0}$ (c). The present figure includes Figure \\@ref(fig:known-Gbar-one-b) (but the colors differ). Built based on `iter` independent realizations of each estimator."----
+## ----unknown-Gbar-three, fig.cap = "Kernel density estimators of the law of three estimators of $\\psi_{0}$  (recentered with respect to $\\psi_{0}$, and renormalized), one of them misconceived (a), one assuming that $\\Gbar_{0}$ is known (b) and one that hinges on the estimation of $\\Gbar_{0}$ (c). The present figure includes Figure \\@ref(fig:known-Gbar-one-b) (but the colors differ). Built based on `iter` independent realizations of each estimator."----
 fig +
   geom_density(aes(clt, fill = type, colour = type), psi_hat_abc, alpha = 0.1) +
   geom_vline(aes(xintercept = bias, colour = type),
@@ -374,7 +377,7 @@ working_model_G_three <- list(
 attr(working_model_G_three, "ML") <- FALSE
 (working_model_G_three$formula)
 
-## ----estimating-Qbar-one, eval = TRUE------------------------------------
+## ----estimating-Qbar-one-------------------------------------------------
 estimate_Q <- function(dat, algorithm, ...) {
   if (!attr(algorithm, "ML")) {
     dat <- as.data.frame(dat)
@@ -426,12 +429,14 @@ kknn_algo <- function(dat, ...) {
                ...)
 }
 attr(kknn_algo, "ML") <- TRUE
-kknn_grid <- expand.grid(kmax = 11, distance = 2, kernel = "gaussian")
+kknn_grid <- expand.grid(kmax = 5, distance = 2, kernel = "gaussian")
 control <- trainControl(method = "cv", number = 2,
                         predictionBounds = c(0, 1),
                         allowParallel = TRUE)
 
-learned_features <- learned_features %>% # head(n = 100) %>%
+## ----estimating-Qbar-one-bis, cache = FALSE------------------------------
+learned_features_fixed_sample_size <-
+  learned_features_fixed_sample_size %>% # head(n = 100) %>%
   mutate(Qhat_d = map(obs, ~ estimate_Q(., algorithm = working_model_Q_one)),
          Qhat_e = map(obs, ~ estimate_Q(., algorithm = kknn_algo,
                                         trControl = control,
@@ -441,7 +446,8 @@ learned_features <- learned_features %>% # head(n = 100) %>%
          blip_QW_e = map2(Qhat_e, obs,
                           ~ compute_QhatAW(.y$Y, .y$A, .y$W, .x, blip = TRUE)))
 
-psi_hat_de <- learned_features %>%
+psi_hat_de <-
+  learned_features_fixed_sample_size %>%
   unnest(blip_QW_d, blip_QW_e) %>%
   group_by(id) %>%
   summarize(est_d = mean(blip_QW_d),
@@ -469,123 +475,26 @@ fig <- ggplot() +
 fig +
   labs(x = expression(paste(sqrt(n/v[n]^{list(d, e)})*(psi[n]^{list(d, e)} - psi[0]))))
 
-## ----one-step------------------------------------------------------------
+## ----estimating-Qbar-two, eval = TRUE------------------------------------
+sample_size <- c(2e3, 3e3, 5e3)
+block_size <- sum(sample_size)
 
-
-## ----estimating-Qbar-two, eval = FALSE-----------------------------------
-## 
-## 
-## working_model_Q_two <- list(
-##   model = function(...) {glm(family = binomial(), ...)},
-##   formula = as.formula(
-##     paste("Y ~ A * (",
-##           paste("I(W^", seq(1/2, 3, by = 1/2), sep = "", collapse = ") + "),
-##           "))")
-##   ))
-## attr(working_model_Q_two, "ML") <- FALSE
-## 
-## ## xgboost based on trees
-## xgb_tree_algo <- function(dat, ...) {
-##   caret::train(Y ~ I(10*A) + W,
-##                data = dat,
-##                method = "xgbTree",
-##                trControl = control,
-##                tuneGrid = grid,
-##                verbose = FALSE)
-## }
-## attr(xgb_tree_algo, "ML") <- TRUE
-## xgb_tree_grid <- expand.grid(nrounds = 350,
-##                              max_depth = c(4, 6),
-##                              eta = c(0.05, 0.1),
-##                              gamma = 0.01,
-##                              colsample_bytree = 0.75,
-##                              subsample = 0.5,
-##                              min_child_weight = 0)
-## 
-## ## nonparametric kernel smoothing regression
-## npreg <- list(
-##   label = "Kernel regression",
-##   type = "Regression",
-##   library = "np",
-##   parameters = data.frame(parameter =
-##                             c("subsample", "regtype",
-##                               "ckertype", "ckerorder"),
-##                           class = c("integer", "character",
-##                                     "character", "integer"),
-##                           label = c("#subsample", "regtype",
-##                                     "ckertype", "ckerorder")),
-##   grid = function(x, y, len = NULL, search = "grid") {
-##     if (!identical(search, "grid")) {
-##       stop("No random search implemented.\n")
-##     } else {
-##       out <- expand.grid(subsample = c(50, 100),
-##                          regtype = c("lc", "ll"),
-##                          ckertype =
-##                            c("gaussian",
-##                              "epanechnikov",
-##                              "uniform"),
-##                          ckerorder = seq(2, 8, 2))
-##     }
-##     return(out)
-##   },
-##   fit = function(x, y, wts, param, lev, last, classProbs, ...) {
-##     ny <- length(y)
-##     if (ny > param$subsample) {
-##       ## otherwise far too slow for what we intend to do here...
-##       keep <- sample.int(ny, param$subsample)
-##       x <- x[keep, ]
-##       y <- y[keep]
-##     }
-##     bw <- np::npregbw(xdat = as.data.frame(x), ydat = y,
-##                       regtype = param$regtype,
-##                       ckertype = param$ckertype,
-##                       ckerorder = param$ckerorder,
-##                       remin = FALSE, ftol = 0.01, tol = 0.01,
-##                       ...)
-##     np::npreg(bw)
-##   },
-##   predict = function (modelFit, newdata, preProc = NULL, submodels = NULL) {
-##     if (!is.data.frame(newdata)) {
-##       newdata <- as.data.frame(newdata)
-##     }
-##     np:::predict.npregression(modelFit, se.fit = FALSE, newdata)
-##   },
-##   sort = function(x) {
-##     x[order(x$regtype, x$ckerorder), ]
-##   },
-##   loop = NULL, prob = NULL, levels = NULL
-## )
-## 
-## npreg_algo <- function(dat, ...) {
-##   caret::train(working_model_Q_one$formula,
-##                data = dat,
-##                method = npreg, # no quotes!
-##                verbose = FALSE,
-##                ...)
-## }
-## attr(npreg_algo, "ML") <- TRUE
-## npreg_grid <- data.frame(subsample = 100,
-##                          regtype = "lc",
-##                          ckertype = "gaussian",
-##                          ckerorder = 4,
-##                          stringsAsFactors = FALSE)
-
-
-label <- function(xx, log_sample_size = c(9, 11, 13)) {
-  by <- sum(2^log_sample_size)
+label <- function(xx, sample_size = c(1e3, 1e4)) {
+  by <- sum(sample_size)
   xx <- xx[seq_len((length(xx) %/% by) * by)] - 1
   prefix <- xx %/% by
-  suffix <- findInterval(xx %% by, cumsum(2^log_sample_size))
+  suffix <- findInterval(xx %% by, cumsum(sample_size))
   paste(prefix + 1, suffix + 1, sep = "_")
 }
 
-log_sample_size <- c(9, 11, 13)
-block_size <- sum(2^log_sample_size)
-
-behavior <- obs %>% as.tibble %>% 
+learned_features_varying_sample_size <- obs %>% as.tibble %>% 
   head(n = (nrow(.) %/% block_size) * block_size) %>% 
-  mutate(block = label(1:nrow(.), log_sample_size)) %>%
-  nest(-block, .key = "obs") %>%
+  mutate(block = label(1:nrow(.), sample_size)) %>%
+  nest(-block, .key = "obs")
+
+## ----estimating-Qbar-three, eval = TRUE----------------------------------
+learned_features_varying_sample_size <-
+  learned_features_varying_sample_size %>% 
   mutate(Qhat_d = map(obs, ~ estimate_Q(., algorithm = working_model_Q_one)),
          Qhat_e = map(obs, ~ estimate_Q(., algorithm = kknn_algo,
                                         trControl = control,
@@ -593,24 +502,51 @@ behavior <- obs %>% as.tibble %>%
   mutate(blip_QW_d = map2(Qhat_d, obs,
                           ~ compute_QhatAW(.y$Y, .y$A, .y$W, .x, blip = TRUE)),
          blip_QW_e = map2(Qhat_e, obs,
-                          ~ compute_QhatAW(.y$Y, .y$A, .y$W, .x, blip = TRUE))) %>%
+                          ~ compute_QhatAW(.y$Y, .y$A, .y$W, .x, blip = TRUE)))
+
+root_n_bias <- learned_features_varying_sample_size %>%
   unnest(blip_QW_d, blip_QW_e) %>%
   group_by(block) %>%
-  summarize(est_d = sqrt(n())*(mean(blip_QW_d) - psi_approx),
-            est_e = sqrt(n())*(mean(blip_QW_e) - psi_approx))
-
-behavior %>%
+  summarize(clt_d = sqrt(n()) * (mean(blip_QW_d) - psi_approx),
+            clt_e = sqrt(n()) * (mean(blip_QW_e) - psi_approx)) %>%
   gather("key", "value", -block) %>%
   extract(key, c("what", "type"), "([^_]+)_([de])") %>%
   spread(what, value) %>%
-  mutate(block_type = paste(type,
-                            unlist(map(strsplit(block, "_"), ~.x[2])),
-                            sep = "_")) %>%
-  select(est, block_type) %>%
-  group_by(block_type) %>%
-  summarize(bias = mean(est))
+  mutate(block = unlist(map(strsplit(block, "_"), ~.x[2])),
+         sample_size = sample_size[as.integer(block)])
 
+root_n_bias <- learned_features_fixed_sample_size %>%
+  mutate(sample_size = 1e3) %>%
+  unnest(blip_QW_d, blip_QW_e) %>%
+  group_by(id) %>%
+  summarize(clt_d = sqrt(n()) * (mean(blip_QW_d) - psi_approx),
+            clt_e = sqrt(n()) * (mean(blip_QW_e) - psi_approx),
+            sample_size = sample_size[1]) %>% # because *fixed* sample size
+  gather("key", "clt", -id, -sample_size) %>%
+  extract(key, c("what", "type"), "([^_]+)_([de])") %>%
+  mutate(block = "0") %>% select(-id, -what) %>%
+  full_join(root_n_bias)
 
 
   
+## ----estimating-Qbar-four, fig.cap  = "Evolution of root-$n$ times bias versus sample size for two inference methodology of $\\psi_{0}$ based on the estimation of $\\Qbar_{0}$. Big dots represent the average biases and vertical lines represent twice the standard error."----
+root_n_bias %>%
+  ggplot() +
+  stat_summary(aes(x = sample_size, y = clt,
+                   group = interaction(sample_size, type),
+                   color = type),
+               fun.data = mean_se, fun.args = list(mult = 2),
+               position = position_dodge(width = 250), cex = 1) +
+  stat_summary(aes(x = sample_size, y = clt,
+                   color = type),
+               fun.y = mean, 
+               position = position_dodge(width = 250),
+               geom = "polygon", fill = NA) +
+  geom_point(aes(x = sample_size, y = clt,
+                 group = interaction(sample_size, type),
+                 color = type),
+             alpha = 0.1,
+             position = position_dodge(width = 250)) +
+  labs(x = "sample size n",
+       y = expression(paste(sqrt(n)*(psi[n]^{list(d, e)} - psi[0]))))
 

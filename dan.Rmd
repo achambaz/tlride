@@ -783,7 +783,7 @@ assuming $\Qbar_{0}$ known would be difficult to justify.
 ```{r known-Gbar-one-a}
 Gbar <- attr(obs, "Gbar")
 
-iter <- 1e3
+iter <- 1e3 # 1e3 eventually
 ```
 
 Then, the alternative  expression \begin{equation}\label{eq:psi0:b} \psi_{0} =
@@ -826,7 +826,7 @@ A=0).\end{equation*} We seize this  opportunity to demonstrate numerically the
 obvious fact that $\psi_{n}^{a}$ does not estimate $\psi_{0}$.
 
 
-```{r known-Gbar-one-b, fig.cap = "Kernel density estimators of the law of two estimators of $\\psi_{0}$ (recentered and renormalized), one of them misconceived (a), the other assuming that $\\Gbar_{0}$ is known (b). Built based on `iter` independent realizations of each estimator."}
+```{r known-Gbar-one-b, fig.cap = "Kernel density estimators of the law of two estimators of $\\psi_{0}$ (recentered with respect to $\\psi_{0}$, and renormalized), one of them misconceived (a), the other assuming that $\\Gbar_{0}$ is known (b). Built based on `iter` independent realizations of each estimator."}
 psi_hat_ab <- obs %>% as_tibble() %>% mutate(id = 1:n() %% iter) %>%
   mutate(lGAW = A * Gbar(W) + (1 - A) * (1 - Gbar(W))) %>% group_by(id) %>%
   summarize(est_a = mean(Y[A==1]) - mean(Y[A==0]),
@@ -865,9 +865,10 @@ estimators are respectively equal to
 places  ---  see  `bias_ab`).   Interpreted  as amounts  of  bias,  those  two
 quantities    are     represented    by     vertical    lines     in    Figure
 \@ref(fig:known-Gbar-one-b). The red and blue bell-shaped curves represent the
-empirical   laws  of   $\psi_{n}^{a}$  and   $\psi_{n}^{b}$  (recentered   and
-renormalized) as estimated  by kernel density estimation. The  latter is close
-to the black curve, which represents the standard normal density.
+empirical laws  of $\psi_{n}^{a}$ and $\psi_{n}^{b}$  (recentered with respect
+to   $\\psi_{0}$,   and  renormalized)   as   estimated   by  kernel   density
+estimation.  The latter  is close  to the  black curve,  which represents  the
+standard normal density.
 
 \subsection[Inference assuming $\Gbar_{0}$ known, or not, second pass.]{Inference assuming
 $\boldsymbol{\Gbar_{0}}$ known, or not, second pass.} 
@@ -993,12 +994,12 @@ the  asymptotic variance  of the  estimator with  $v_{n}^{c}/n$. By  the above
 chunk of code,  the average of $\sqrt{n/v_{n}^{c}}  (\psi_{n}^{c} - \psi_{0})$
 computed across the realizations is equal to 
 `r round(bias_abc$bias[bias_abc$type=="c"],3)` (rounded to three decimal places
---- see  `bias_abc`). We represent  the empirical  laws of the  recentered and
-renormalized  $\psi_{n}^{a}$,  $\psi_{n}^{b}$  and $\psi_{n}^{c}$  in  Figures
-\@ref(fig:unknown-Gbar-three)     (kernel      density     estimators)     and
-\@ref(fig:unknown-Gbar-four) (quantile-quantile plots).
+--- see `bias_abc`).  We represent the empirical laws of  the recentered (with
+respect to  $\\psi_{0}$) and  renormalized $\psi_{n}^{a}$,  $\psi_{n}^{b}$ and
+$\psi_{n}^{c}$  in   Figures  \@ref(fig:unknown-Gbar-three)   (kernel  density
+estimators) and \@ref(fig:unknown-Gbar-four) (quantile-quantile plots). 
 
-```{r unknown-Gbar-three, fig.cap = "Kernel density estimators of the law of three estimators of $\\psi_{0}$  (recentered and renormalized), one of them misconceived (a), one assuming that $\\Gbar_{0}$ is known (b) and one that hinges on the estimation of $\\Gbar_{0}$ (c). The present figure includes Figure \\@ref(fig:known-Gbar-one-b) (but the colors differ). Built based on `iter` independent realizations of each estimator."}
+```{r unknown-Gbar-three, fig.cap = "Kernel density estimators of the law of three estimators of $\\psi_{0}$  (recentered with respect to $\\psi_{0}$, and renormalized), one of them misconceived (a), one assuming that $\\Gbar_{0}$ is known (b) and one that hinges on the estimation of $\\Gbar_{0}$ (c). The present figure includes Figure \\@ref(fig:known-Gbar-one-b) (but the colors differ). Built based on `iter` independent realizations of each estimator."}
 fig +
   geom_density(aes(clt, fill = type, colour = type), psi_hat_abc, alpha = 0.1) +
   geom_vline(aes(xintercept = bias, colour = type),
@@ -1094,7 +1095,7 @@ on the estimation of $\boldsymbol{\Qbar_{0}}$.}
 of} $\Qbar_{0}$ \tcg{(and of the marginal  law of} $W$\tcg{).  Once based on a
 (mis-specified) working model, and once based on a non-parametric algorithm.}
 
-```{r estimating-Qbar-one, eval = TRUE}
+```{r estimating-Qbar-one}
 estimate_Q <- function(dat, algorithm, ...) {
   if (!attr(algorithm, "ML")) {
     dat <- as.data.frame(dat)
@@ -1146,11 +1147,13 @@ kknn_algo <- function(dat, ...) {
                ...)
 }
 attr(kknn_algo, "ML") <- TRUE
-kknn_grid <- expand.grid(kmax = 11, distance = 2, kernel = "gaussian")
+kknn_grid <- expand.grid(kmax = 5, distance = 2, kernel = "gaussian")
 control <- trainControl(method = "cv", number = 2,
                         predictionBounds = c(0, 1),
                         allowParallel = TRUE)
+```
 
+```{r estimating-Qbar-one-bis, cache = FALSE}
 learned_features_fixed_sample_size <-
   learned_features_fixed_sample_size %>% # head(n = 100) %>%
   mutate(Qhat_d = map(obs, ~ estimate_Q(., algorithm = working_model_Q_one)),
@@ -1192,33 +1195,34 @@ fig +
   labs(x = expression(paste(sqrt(n/v[n]^{list(d, e)})*(psi[n]^{list(d, e)} - psi[0]))))
 ```
 
-\tcg{No  that bad!   Yet,  we know  that  $\sqrt{n}$ times  bias  is bound  to
+\tcg{No that bad!   Yet, we know that} $\sqrt{n}$ \tcg{times  bias is bound to
 increase with sample size. To see this, check out the next chunks of code.}
 
 
 
 ```{r estimating-Qbar-two, eval = TRUE}
-log_sample_size <- seq(9, 13, 1)
-block_size <- sum(2^log_sample_size)
+sample_size <- c(1e3, 4e3, 9e3)
+block_size <- sum(sample_size)
 
-label <- function(xx, log_sample_size = c(9, 11, 13)) {
-  by <- sum(2^log_sample_size)
+label <- function(xx, sample_size = c(1e3, 2e3)) {
+  by <- sum(sample_size)
   xx <- xx[seq_len((length(xx) %/% by) * by)] - 1
   prefix <- xx %/% by
-  suffix <- findInterval(xx %% by, cumsum(2^log_sample_size))
+  suffix <- findInterval(xx %% by, cumsum(sample_size))
   paste(prefix + 1, suffix + 1, sep = "_")
 }
 
 learned_features_varying_sample_size <- obs %>% as.tibble %>% 
   head(n = (nrow(.) %/% block_size) * block_size) %>% 
-  mutate(block = label(1:nrow(.), log_sample_size)) %>%
+  mutate(block = label(1:nrow(.), sample_size)) %>%
   nest(-block, .key = "obs")
 ```
 
 First, we cut the  data set into independent sub-data sets  of sample size $n$
-in `r block_size`.   Second, we infer $\psi_{0}$ as shown  two chunks earlier.
-We thus obtain  `r nrow(obs) %/% block_size` independent  realizations of each
-estimator derived on data sets of three, increasing sample sizes.
+in $\{$ `r sample_size` $\}$.  Second, we infer $\psi_{0}$ as shown two chunks
+earlier.  We thus obtain `r nrow(obs) %/% block_size` independent realizations
+of each estimator derived on  data sets of `r length(sample_size)`, increasing
+sample sizes.
 
 ```{r estimating-Qbar-three, eval = TRUE}
 learned_features_varying_sample_size <-
@@ -1232,32 +1236,63 @@ learned_features_varying_sample_size <-
          blip_QW_e = map2(Qhat_e, obs,
                           ~ compute_QhatAW(.y$Y, .y$A, .y$W, .x, blip = TRUE)))
 
-
 root_n_bias <- learned_features_varying_sample_size %>%
   unnest(blip_QW_d, blip_QW_e) %>%
   group_by(block) %>%
-  summarize(est_d = sqrt(n())*(mean(blip_QW_d) - psi_approx),
-            est_e = sqrt(n())*(mean(blip_QW_e) - psi_approx))
-
+  summarize(clt_d = sqrt(n())*(mean(blip_QW_d) - psi_approx),
+            clt_e = sqrt(n())*(mean(blip_QW_e) - psi_approx)) %>%
   gather("key", "value", -block) %>%
   extract(key, c("what", "type"), "([^_]+)_([de])") %>%
   spread(what, value) %>%
   mutate(block = unlist(map(strsplit(block, "_"), ~.x[2])),
-         sample_size = (2^log_sample_size)[as.integer(block)])  %>%
-  select(est, type, sample_size) %>%
-  group_by(type, sample_size) %>%
-  summarize(bias = mean(est))
+         sample_size = sample_size[as.integer(block)])
 ```
 The  `tibble`  called  `root_n_bias`  reports  root-$n$  times  bias  for  all
 combinations of  estimator and sample  size. The  next chunk of  code presents
-visually our findings.
+visually our findings. Note how we  include the realizations of the estimators
+derived earlier and contained in  `psi_hat_de` (thus breaking the independence
+between components of `root_n_bias`, a small price to pay here).
 
-```{r estimating-Qbar-four, eval = TRUE}
-root_n_bias %>% ggplot(aes(x = sample_size, y = bias, color = type)) +
-  geom_point(cex = 2) + geom_line() +
-  labs(x = paste("sample size n"),
+```{r estimating-Qbar-four, fig.width = 7, fig.height = 7, fig.cap  = "Evolution of root-$n$ times bias versus sample size for two inference methodology of $\\psi_{0}$ based on the estimation of $\\Qbar_{0}$. Big dots represent the average biases and vertical lines represent twice the standard error."}
+root_n_bias <- learned_features_fixed_sample_size %>%
+  mutate(sample_size = B/iter) %>%  # because *fixed* sample size
+  unnest(blip_QW_d, blip_QW_e) %>%
+  group_by(id) %>%
+  summarize(clt_d = sqrt(n()) * (mean(blip_QW_d) - psi_approx),
+            clt_e = sqrt(n()) * (mean(blip_QW_e) - psi_approx),
+            sample_size = sample_size[1]) %>%
+  gather("key", "clt", -id, -sample_size) %>%
+  extract(key, c("what", "type"), "([^_]+)_([de])") %>%
+  mutate(block = "0") %>% select(-id, -what) %>%
+  full_join(root_n_bias)
+
+root_n_bias %>%
+  ggplot() +
+  stat_summary(aes(x = sample_size, y = clt,
+                   group = interaction(sample_size, type),
+                   color = type),
+               fun.data = mean_se, fun.args = list(mult = 2),
+               position = position_dodge(width = 250), cex = 1) +
+  stat_summary(aes(x = sample_size, y = clt,
+                   group = interaction(sample_size, type),
+                   color = type),
+               fun.data = mean_se, fun.args = list(mult = 2),
+               position = position_dodge(width = 250), cex = 1,
+               geom = "errorbar", width = 750) +
+  stat_summary(aes(x = sample_size, y = clt,
+                   color = type),
+               fun.y = mean, 
+               position = position_dodge(width = 250),
+               geom = "polygon", fill = NA) +
+  geom_point(aes(x = sample_size, y = clt,
+                 group = interaction(sample_size, type),
+                 color = type),
+             position = position_dodge(width = 250),
+             alpha = 0.1) +
+  scale_x_continuous(breaks = unique(sample_size)) +
+  labs(x = "sample size n",
        y = expression(paste(sqrt(n)*(psi[n]^{list(d, e)} - psi[0]))))
-```
+```	
 
 \subsection{One-step estimation.}
 \label{subsec:one:step}
