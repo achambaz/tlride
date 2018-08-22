@@ -55,7 +55,6 @@ set.seed(54321) ## because reproducibility matters...
 suppressMessages(library(R.utils)) ## make sure it is installed
 suppressMessages(library(tidyverse)) ## make sure it is installed
 suppressMessages(library(caret)) ## make sure it is installed
-suppressMessages(library(cubature)) ## make sure it is installed
 expit <- plogis
 logit <- qlogis
 ```
@@ -135,12 +134,12 @@ draw_from_experiment <- function(n, ideal = FALSE) {
                     mixture_weights[ii] *
                       dunif(W, min = mins[ii], max = maxs[ii])
                   })
-    return(rowSums(as.matrix(out)))
+    return(rowSums(out))
   }
   attr(obs, "qY") <- function(AW, Y, Qbar){
     A <- AW[, 1]
     W <- AW[, 2]
-    Qbar.AW <- Qbar(AW) 
+    Qbar.AW <- do.call(Qbar, list(AW)) # is call to 'do.call' necessary?
     shape1 <- ifelse(A == 0, 2, 3)
     dbeta(Y, shape1 = shape1, shape2 = shape1 * (1 - Qbar.AW) / Qbar.AW)
   }
@@ -177,15 +176,11 @@ the  conditional  density   of  $Y$  given  $A$  and  $W$.    For  each  $y\in
 \interval[open]{0}{1}$,  we  denote  by  $q_{0,Y}(y, A,  W)$  the  conditional
 density evaluated at  $y$ of $Y$ given $A$ and  $W$.  Similarly, the attribute
 `Qbar` describes the conditional mean of $Y$  given $A$ and $W$, and we denote
-$\Qbar_0(A,W) = \Exp_{P_{0}}(Y|A,W$ the conditional  mean of $Y$ given $A$ and
+$\Qbar_0(A,W) = \Exp_{P_{0}}(Y|A,W)$ the conditional  mean of $Y$ given $A$ and
 $W$.
-
-\tcg{For consistency, I removed the $A=a$ and $W=w$.}
 
 \subsection{\gear Visualizing infinite-dimensional features of the experiment}
 \label{subsec:visualizing}
-
-
 
 1.  Run the following chunk of code.  It visualizes the conditional mean
    $\Qbar_{0}$.
@@ -248,7 +243,7 @@ and, for some deterministic functions $f_w$, $f_a$, $f_y$ and independent
 sources of randomness $U_w$, $U_a$, $U_y$,
 \begin{enumerate}
 \item sample  the context where the  rest of the experiment
-  will take place, $W = f_{w}(U_w)$;
+  will take place \tcg{Not sure I understand this sentence}, $W = f_{w}(U_w)$;
 \item  sample the  two counterfactual  rewards of  the two
   actions  that   can  be   undertaken,  $Y_{0}  =   f_{y}(0,  W,   U_y)$  and
   $Y_{1} = f_{y}(1, W, U_y)$;
@@ -269,25 +264,27 @@ experiment eventually.  In light  of the above  enumeration, $\bbO  \equiv (W,
 Y_{0}, Y_{1}, A,  Y)$ is output, as  opposed to its summary  measure $O$. This
 defines another experiment and its law, that we denote $\bbP_{0}$.
 
-
-
-It is well known \tcg{(do we give the proof or refer to other articles?)} that
+It is straightforward to show\footnote{For $a = 0,1$, \begin{align*}
+E(Y_a) &= \int \Exp_{\bbP_0}(Y_a \mid W = w) dQ_{0,W}(w) = \int \Exp_{\bbP_0}(Y_a \mid A = a, W = w) dQ_{0,W}(w) \\
+&= \int \Exp_{P_0}(Y \mid A = a, W = w) dQ_{0,W}(w) = \int \Qbar_0(a,W) dQ_{0,W}(w). 
+\end{align*}} that under assumptions\footnote{The second equality in the above footnote is the result of the randomization assumption, which states that $(Y_0,Y_1) \perp A \mid W$. The third equality results from two assumptions: consistency and positivity. Consistency states that $Y_a = Y \mid A = a$; that is, the counterfactual of interest $Y_a$ is equal to the observed value $Y$ when $A = a$. Positivity states that for $a = 0,1$, $\Pr_{P_0}\{\ell\Gbar_0(a,W) > 0\} = 1$, and is needed for $\Exp_{P_0}(Y \mid A = a, W = w)$ to be well-defined.}
 \begin{equation} \label{eq:psi:zero}    
 \psi_{0} = \Exp_{\bbP_{0}} \left(Y_{1} - Y_{0}\right) = \Exp_{\bbP_{0}}(Y_1) -
-\Exp_{\bbP_{0}}(Y_0).  \end{equation}  Thus, $\psi_{0}$ describes  the average
+\Exp_{\bbP_{0}}(Y_0).  \end{equation}  Thus, under these assumptions, 
+$\psi_{0}$ describes  the average
 difference in of  the two counterfactual rewards.  In  other words, $\psi_{0}$
 quantifies the difference  in average of the  reward one would get  in a world
 where one would always enforce action $a=1$ with the reward one would get in a
 world where  one would always  enforce action $a=0$.   This said, it  is worth
-emphasizing  that $\psi_{0}$  is a  well defined  parameter beyond  its causal
-interpretation.
+emphasizing  that $\psi_{0}$  is a  well-defined  parameter beyond  its causal
+interpretation and describes a standardized association between the action $A$ 
+and the reward $Y$. 
 
-
-To conclude this  subsection, we take advantage of our  position as oracles to
+To conclude this  subsection, we use our  position as oracles to
 sample observations from the  ideal experiment. We call `draw_from_experiment`
 with its  argument `ideal` set to  `TRUE` in order to  numerically approximate
-$\psi_{0}$.   By  the law  of  large  numbers,  the  following chunk  of  code
-approximates $\psi_{0}$ and shows it approximate value:
+$\psi_{0}$.   By  the law  of  large  numbers,  the  following code
+approximates $\psi_{0}$ and shows it approximate value.
 
 ```{r approx-psi-zero-a-two}
 B <- 1e6 ## Antoine: 1e6 eventually
@@ -295,8 +292,11 @@ ideal_obs <- draw_from_experiment(B, ideal = TRUE)
 (psi_approx <- mean(ideal_obs[, "Yone"] - ideal_obs[, "Yzero"]))
 ```
 
-In fact, the central limit theorem and Slutsky's lemma allow us to build a
-confidence interval with asymptotic level 95\% for $\psi_{0}$:
+The object `psi_approx` contains an approximation to $\psi_0$ based on `B` 
+observations from the ideal experiment. The random sampling of observations
+results in uncertainty in the numerical approximation of $\psi_0$. 
+This uncertainty can be quantified 
+by constructing a 95\% confidence interval for $\psi_0$. The central limit theorem and Slutsky's lemma allow us to build such an interval as follows. 
 
 ```{r approx-psi-zero-b}
 sd_approx <- sd(ideal_obs[, "Yone"] - ideal_obs[, "Yzero"])
@@ -304,7 +304,9 @@ alpha <- 0.05
 (psi_approx_CI <- psi_approx + c(-1, 1) * qnorm(1 - alpha / 2) * sd_approx / sqrt(B))
 ```
 
-
+We note that the interpretation of this confidence interval is that in 95\% of 
+draws of size `B` from the ideal data generating experiment, the true value of 
+$\psi_0$ will be contained in the generated confidence interval. 
 
 \subsection{\gear Difference in covariate-adjusted quantile rewards, first
 pass.}  

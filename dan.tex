@@ -123,7 +123,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{08/13/2018}
+    \date{08/20/2018}
 
 \usepackage{amsmath,interval,amssymb,xcolor,manfnt,tikz}
 
@@ -167,6 +167,7 @@
 \newcommand{\calF}{\mathcal{F}}
 \newcommand{\calM}{\mathcal{M}}
 \newcommand{\calO}{\mathcal{O}}
+\newcommand{\Exp}{\textrm{E}}
 \newcommand{\Gbar}{\bar{G}}
 \newcommand{\one}{\textbf{1}}
 \newcommand{\Psihat}{\widehat{\Psi}}
@@ -219,7 +220,6 @@ subsections with symbol $\gear$.}
 \KeywordTok{set.seed}\NormalTok{(}\DecValTok{54321}\NormalTok{) ## because reproducibility matters...}
 \KeywordTok{suppressMessages}\NormalTok{(}\KeywordTok{library}\NormalTok{(R.utils)) ## make sure it is installed}
 \KeywordTok{suppressMessages}\NormalTok{(}\KeywordTok{library}\NormalTok{(tidyverse)) ## make sure it is installed}
-\KeywordTok{suppressMessages}\NormalTok{(}\KeywordTok{library}\NormalTok{(ggplot2)) ## make sure it is installed}
 \KeywordTok{suppressMessages}\NormalTok{(}\KeywordTok{library}\NormalTok{(caret)) ## make sure it is installed}
 \NormalTok{expit <-}\StringTok{ }\NormalTok{plogis}
 \NormalTok{logit <-}\StringTok{ }\NormalTok{qlogis}
@@ -235,7 +235,7 @@ implements its inverse function \(\logit : ]0,1[ \to \bbR\) given by
 \section{A simulation study}
 \label{sec:simulation:study}
 
-blabla
+\tcg{blabla}
 
 \subsection{Reproducible experiment as a law.}
 \label{subsec:as:a:law}
@@ -261,18 +261,24 @@ Consider the following chunk of code:
 \NormalTok{  ideal <-}\StringTok{ }\NormalTok{Arguments}\OperatorTok{$}\KeywordTok{getLogical}\NormalTok{(ideal)}
 \NormalTok{  ## ## 'Gbar' and 'Qbar' factors}
 \NormalTok{  Gbar <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(W) \{}
-    \KeywordTok{expit}\NormalTok{(}\OperatorTok{-}\FloatTok{0.2} \OperatorTok{+}\StringTok{ }\DecValTok{3} \OperatorTok{*}\StringTok{ }\KeywordTok{sqrt}\NormalTok{(W) }\OperatorTok{-}\StringTok{ }\FloatTok{1.5} \OperatorTok{*}\StringTok{ }\NormalTok{W)}
+    \KeywordTok{expit}\NormalTok{(}\DecValTok{1} \OperatorTok{+}\StringTok{ }\DecValTok{2} \OperatorTok{*}\StringTok{ }\NormalTok{W }\OperatorTok{-}\StringTok{ }\DecValTok{4} \OperatorTok{*}\StringTok{ }\KeywordTok{sqrt}\NormalTok{(}\KeywordTok{abs}\NormalTok{((W }\OperatorTok{-}\StringTok{ }\DecValTok{5}\OperatorTok{/}\DecValTok{12}\NormalTok{))))}
 \NormalTok{  \}}
 \NormalTok{  Qbar <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(AW) \{}
 \NormalTok{    A <-}\StringTok{ }\NormalTok{AW[, }\DecValTok{1}\NormalTok{]}
 \NormalTok{    W <-}\StringTok{ }\NormalTok{AW[, }\DecValTok{2}\NormalTok{]}
-\NormalTok{    ## A * cos((1 + W) * pi / 5) + (1 - A) * sin((1 + W^2) * pi / 4)}
-\NormalTok{    A }\OperatorTok{*}\StringTok{ }\NormalTok{(}\KeywordTok{cos}\NormalTok{((}\DecValTok{1} \OperatorTok{+}\StringTok{ }\NormalTok{W) }\OperatorTok{*}\StringTok{ }\NormalTok{pi }\OperatorTok{/}\StringTok{ }\DecValTok{5}\NormalTok{) }\OperatorTok{+}\StringTok{ }\NormalTok{(}\DecValTok{1}\OperatorTok{/}\DecValTok{3} \OperatorTok{<=}\StringTok{ }\NormalTok{W }\OperatorTok{&}\StringTok{ }\NormalTok{W }\OperatorTok{<=}\StringTok{ }\DecValTok{1}\OperatorTok{/}\DecValTok{2}\NormalTok{) }\OperatorTok{/}\StringTok{ }\DecValTok{10}\NormalTok{) }\OperatorTok{+}
+\NormalTok{    ## A * (cos((1 + W) * pi / 4) + (1/3 <= W & W <= 1/2) / 5) +}
+\NormalTok{    ##  (1 - A) * (sin(4 * W^2 * pi) / 4 + 1/2)}
+\NormalTok{    A }\OperatorTok{*}\StringTok{ }\NormalTok{(}\KeywordTok{cos}\NormalTok{((}\OperatorTok{-}\DecValTok{1}\OperatorTok{/}\DecValTok{2} \OperatorTok{+}\StringTok{ }\NormalTok{W) }\OperatorTok{*}\StringTok{ }\NormalTok{pi) }\OperatorTok{*}\StringTok{ }\DecValTok{2}\OperatorTok{/}\DecValTok{5} \OperatorTok{+}\StringTok{ }\DecValTok{1}\OperatorTok{/}\DecValTok{5} \OperatorTok{+}\StringTok{ }\NormalTok{(}\DecValTok{1}\OperatorTok{/}\DecValTok{3} \OperatorTok{<=}\StringTok{ }\NormalTok{W }\OperatorTok{&}\StringTok{ }\NormalTok{W }\OperatorTok{<=}\StringTok{ }\DecValTok{1}\OperatorTok{/}\DecValTok{2}\NormalTok{) }\OperatorTok{/}\StringTok{ }\DecValTok{5} \OperatorTok{+}
+\StringTok{         }\NormalTok{(W }\OperatorTok{>=}\StringTok{ }\DecValTok{3}\OperatorTok{/}\DecValTok{4}\NormalTok{) }\OperatorTok{*}\StringTok{ }\NormalTok{(W }\OperatorTok{-}\StringTok{ }\DecValTok{3}\OperatorTok{/}\DecValTok{4}\NormalTok{) }\OperatorTok{*}\StringTok{ }\DecValTok{2}\NormalTok{) }\OperatorTok{+}
 \StringTok{      }\NormalTok{(}\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{A) }\OperatorTok{*}\StringTok{ }\NormalTok{(}\KeywordTok{sin}\NormalTok{(}\DecValTok{4} \OperatorTok{*}\StringTok{ }\NormalTok{W}\OperatorTok{^}\DecValTok{2} \OperatorTok{*}\StringTok{ }\NormalTok{pi) }\OperatorTok{/}\StringTok{ }\DecValTok{4} \OperatorTok{+}\StringTok{ }\DecValTok{1}\OperatorTok{/}\DecValTok{2}\NormalTok{) }
 \NormalTok{  \}}
 \NormalTok{  ## sampling}
 \NormalTok{  ## ## context}
-\NormalTok{  W <-}\StringTok{ }\KeywordTok{runif}\NormalTok{(n)}
+\NormalTok{  mixture_weights <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{1}\OperatorTok{/}\DecValTok{10}\NormalTok{, }\DecValTok{9}\OperatorTok{/}\DecValTok{10}\NormalTok{, }\DecValTok{0}\NormalTok{)}
+\NormalTok{  mins <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{11}\OperatorTok{/}\DecValTok{30}\NormalTok{, }\DecValTok{0}\NormalTok{)}
+\NormalTok{  maxs <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{14}\OperatorTok{/}\DecValTok{30}\NormalTok{, }\DecValTok{1}\NormalTok{)}
+\NormalTok{  latent <-}\StringTok{ }\KeywordTok{findInterval}\NormalTok{(}\KeywordTok{runif}\NormalTok{(n), }\KeywordTok{cumsum}\NormalTok{(mixture_weights)) }\OperatorTok{+}\StringTok{ }\DecValTok{1}
+\NormalTok{  W <-}\StringTok{ }\KeywordTok{runif}\NormalTok{(n, }\DataTypeTok{min =}\NormalTok{ mins[latent], }\DataTypeTok{max =}\NormalTok{ maxs[latent])}
 \NormalTok{  ## ## counterfactual rewards}
 \NormalTok{  zeroW <-}\StringTok{ }\KeywordTok{cbind}\NormalTok{(}\DataTypeTok{A =} \DecValTok{0}\NormalTok{, W)}
 \NormalTok{  oneW <-}\StringTok{ }\KeywordTok{cbind}\NormalTok{(}\DataTypeTok{A =} \DecValTok{1}\NormalTok{, W)}
@@ -292,11 +298,18 @@ Consider the following chunk of code:
 \NormalTok{  \}}
   \KeywordTok{attr}\NormalTok{(obs, }\StringTok{"Gbar"}\NormalTok{) <-}\StringTok{ }\NormalTok{Gbar}
   \KeywordTok{attr}\NormalTok{(obs, }\StringTok{"Qbar"}\NormalTok{) <-}\StringTok{ }\NormalTok{Qbar}
-  \KeywordTok{attr}\NormalTok{(obs, }\StringTok{"QW"}\NormalTok{) <-}\StringTok{ }\NormalTok{dunif}
+  \KeywordTok{attr}\NormalTok{(obs, }\StringTok{"QW"}\NormalTok{) <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(W) \{}
+\NormalTok{    out <-}\StringTok{ }\KeywordTok{sapply}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\KeywordTok{length}\NormalTok{(mixture_weights),}
+                  \ControlFlowTok{function}\NormalTok{(ii)\{}
+\NormalTok{                    mixture_weights[ii] }\OperatorTok{*}
+\StringTok{                      }\KeywordTok{dunif}\NormalTok{(W, }\DataTypeTok{min =}\NormalTok{ mins[ii], }\DataTypeTok{max =}\NormalTok{ maxs[ii])}
+\NormalTok{                  \})}
+    \KeywordTok{return}\NormalTok{(}\KeywordTok{rowSums}\NormalTok{(out))}
+\NormalTok{  \}}
   \KeywordTok{attr}\NormalTok{(obs, }\StringTok{"qY"}\NormalTok{) <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(AW, Y, Qbar)\{}
 \NormalTok{    A <-}\StringTok{ }\NormalTok{AW[, }\DecValTok{1}\NormalTok{]}
 \NormalTok{    W <-}\StringTok{ }\NormalTok{AW[, }\DecValTok{2}\NormalTok{]}
-\NormalTok{    Qbar.AW <-}\StringTok{ }\KeywordTok{do.call}\NormalTok{(Qbar, }\KeywordTok{list}\NormalTok{(AW))}
+\NormalTok{    Qbar.AW <-}\StringTok{ }\KeywordTok{do.call}\NormalTok{(Qbar, }\KeywordTok{list}\NormalTok{(AW)) }\CommentTok{# is call to 'do.call' necessary?}
 \NormalTok{    shape1 <-}\StringTok{ }\KeywordTok{ifelse}\NormalTok{(A }\OperatorTok{==}\StringTok{ }\DecValTok{0}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{3}\NormalTok{)}
     \KeywordTok{dbeta}\NormalTok{(Y, }\DataTypeTok{shape1 =}\NormalTok{ shape1, }\DataTypeTok{shape2 =}\NormalTok{ shape1 }\OperatorTok{*}\StringTok{ }\NormalTok{(}\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{Qbar.AW) }\OperatorTok{/}\StringTok{ }\NormalTok{Qbar.AW)}
 \NormalTok{  \}}
@@ -322,33 +335,39 @@ times independently and outputs the resulting observations:
 
 \begin{verbatim}
 ##              W A         Y
-## [1,] 0.4290078 0 0.9426242
-## [2,] 0.4984304 1 0.7202482
-## [3,] 0.1766923 1 0.8768885
-## [4,] 0.2743935 0 0.8494665
-## [5,] 0.2165102 1 0.3849406
+## [1,] 0.4533028 0 0.8979460
+## [2,] 0.3716077 0 0.9905312
+## [3,] 0.3875802 0 0.8080567
+## [4,] 0.4008279 1 0.9954100
+## [5,] 0.4038325 0 0.9772926
 ## attr(,"Gbar")
 ## function (W) 
 ## {
-##     expit(-0.2 + 3 * sqrt(W) - 1.5 * W)
+##     expit(1 + 2 * W - 4 * sqrt(abs((W - 5/12))))
 ## }
-## <bytecode: 0x7f982627c238>
-## <environment: 0x7f98404f2828>
+## <bytecode: 0x7fdefcdf9a10>
+## <environment: 0x7fdefc83d508>
 ## attr(,"Qbar")
 ## function (AW) 
 ## {
 ##     A <- AW[, 1]
 ##     W <- AW[, 2]
-##     A * (cos((1 + W) * pi/5) + (1/3 <= W & W <= 1/2)/10) + (1 - 
-##         A) * (sin(4 * W^2 * pi)/4 + 1/2)
+##     A * (cos((-1/2 + W) * pi) * 2/5 + 1/5 + (1/3 <= W & W <= 
+##         1/2)/5 + (W >= 3/4) * (W - 3/4) * 2) + (1 - A) * (sin(4 * 
+##         W^2 * pi)/4 + 1/2)
 ## }
-## <bytecode: 0x7f982de20a88>
-## <environment: 0x7f98404f2828>
+## <bytecode: 0x7fdefdbfb850>
+## <environment: 0x7fdefc83d508>
 ## attr(,"QW")
-## function (x, min = 0, max = 1, log = FALSE) 
-## .Call(C_dunif, x, min, max, log)
-## <bytecode: 0x7f9839a02008>
-## <environment: namespace:stats>
+## function (W) 
+## {
+##     out <- sapply(1:length(mixture_weights), function(ii) {
+##         mixture_weights[ii] * dunif(W, min = mins[ii], max = maxs[ii])
+##     })
+##     return(rowSums(out))
+## }
+## <bytecode: 0x7fdeffadbc60>
+## <environment: 0x7fdefc83d508>
 ## attr(,"qY")
 ## function (AW, Y, Qbar) 
 ## {
@@ -358,8 +377,8 @@ times independently and outputs the resulting observations:
 ##     shape1 <- ifelse(A == 0, 2, 3)
 ##     dbeta(Y, shape1 = shape1, shape2 = shape1 * (1 - Qbar.AW)/Qbar.AW)
 ## }
-## <bytecode: 0x7f9840515a18>
-## <environment: 0x7f98404f2828>
+## <bytecode: 0x7fdefff712b0>
+## <environment: 0x7fdefc83d508>
 \end{verbatim}
 
 We can view the \texttt{attributes} of object \texttt{five\_obs}
@@ -367,24 +386,70 @@ because, in this section, we act as oracles, \textit{i.e.}, we know
 completely the nature of the experiment. In particular, we have included
 several features of \(P_0\) that play an important role in our
 developments. The attribute \texttt{QW} describes the density of \(W\),
-that of a uniform distribution over \([0.1, 0.9]\). The attribute
+of which the law \(Q_{0,W}\) is a mixture of the uniform laws over
+\(\interval{0}{1}\) (weight \(1/10\)) and \(\interval{11/30}{14/30}\)
+(weight
+\(9/10\)).\footnote{We fine-tuned (or tweaked, or something else?)  the marginal
+law  of $W$  to make  it easier  later on  to drive  home important  messages.
+Specifically, $\ldots{}$ (do we explain  what happens?)} The attribute
 \texttt{Gbar} describes the conditional probability of action \(A = 1\)
-given \(W\), and for \(a = 0,1\) and each \(w\) in the support of \(W\),
-we denote by \(\Gbar_0(a,w) = pr_{P_0}(A = a \mid W = w)\). The
-attribute \texttt{qY} describes the conditional density of \(Y\) given
-\(A\) and \(W\). For each \(y\in \interval[open]{0}{1}\), we denote by
-\(q_{0,Y}(y, a, w)\) the conditional density of \(Y\) given
-\(A = a, W = w\) evaluated at \(y\). Similarly, the attribute
-\texttt{Qbar} describes the conditional mean of \(Y\) given \(A\) and
-\(W\), and we denote by \(\Qbar_0(a,w)\) the conditional mean of \(Y\)
-given \(A = a, W = w\).
+given \(W\). For each \(a \in \{0,1\}\), we denote
+\(\Gbar_0(W) \equiv \Pr_{P_0}(A = 1 | W)\) and
+\(\ell\Gbar_0(a,W) \equiv \Pr_{P_0}(A = a | W)\). The attribute
+\texttt{qY} describes the conditional density of \(Y\) given \(A\) and
+\(W\). For each \(y\in \interval[open]{0}{1}\), we denote by
+\(q_{0,Y}(y, A, W)\) the conditional density evaluated at \(y\) of \(Y\)
+given \(A\) and \(W\). Similarly, the attribute \texttt{Qbar} describes
+the conditional mean of \(Y\) given \(A\) and \(W\), and we denote
+\(\Qbar_0(A,W) = \Exp_{P_{0}}(Y|A,W)\) the conditional mean of \(Y\)
+given \(A\) and \(W\).
 
-\emph{{[}David note: I revised this paragraph to include a description
-of the conditional density of \(Y\), which is needed to describe the
-quantile exercises. Also, should we consider adopting the notational
-convention of lower case \(q\) for density (e.g., \(q_W\)) and upper
-case \(q\) for cumulative distribution? I need both quantities for the
-quantile exercises.{]}}
+\subsection{\gear Visualizing infinite-dimensional features of the experiment}
+\label{subsec:visualizing}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Run the following chunk of code. It visualizes the conditional mean
+  \(\Qbar_{0}\).
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Gbar <-}\StringTok{ }\KeywordTok{attr}\NormalTok{(five_obs, }\StringTok{"Gbar"}\NormalTok{)}
+\NormalTok{Qbar <-}\StringTok{ }\KeywordTok{attr}\NormalTok{(five_obs, }\StringTok{"Qbar"}\NormalTok{)}
+\NormalTok{QW <-}\StringTok{ }\KeywordTok{attr}\NormalTok{(five_obs, }\StringTok{"QW"}\NormalTok{)}
+
+\NormalTok{features <-}\StringTok{ }\KeywordTok{tibble}\NormalTok{(}\DataTypeTok{w =} \KeywordTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DataTypeTok{length.out =} \FloatTok{1e3}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{Qw =} \KeywordTok{QW}\NormalTok{(w),}
+         \DataTypeTok{Gw =} \KeywordTok{Gbar}\NormalTok{(w),}
+         \DataTypeTok{Q1w =} \KeywordTok{Qbar}\NormalTok{(}\KeywordTok{cbind}\NormalTok{(}\DataTypeTok{A =} \DecValTok{1}\NormalTok{, }\DataTypeTok{W =}\NormalTok{ w)),}
+         \DataTypeTok{Q0w =} \KeywordTok{Qbar}\NormalTok{(}\KeywordTok{cbind}\NormalTok{(}\DataTypeTok{A =} \DecValTok{0}\NormalTok{, }\DataTypeTok{W =}\NormalTok{ w)),}
+         \DataTypeTok{blip_Qw =}\NormalTok{ Q1w }\OperatorTok{-}\StringTok{ }\NormalTok{Q0w)}
+
+\NormalTok{features }\OperatorTok{%>%}\StringTok{ }\KeywordTok{select}\NormalTok{(}\OperatorTok{-}\NormalTok{Qw, }\OperatorTok{-}\NormalTok{Gw) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{rename}\NormalTok{(}\StringTok{"Q(1,.)"}\NormalTok{ =}\StringTok{ }\NormalTok{Q1w,}
+         \StringTok{"Q(0,.)"}\NormalTok{ =}\StringTok{ }\NormalTok{Q0w,}
+         \StringTok{"Q(1,.) - Q(0,.)"}\NormalTok{ =}\StringTok{ }\NormalTok{blip_Qw) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{gather}\NormalTok{(}\StringTok{"f"}\NormalTok{, }\StringTok{"value"}\NormalTok{, }\OperatorTok{-}\NormalTok{w) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_line}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ w, }\DataTypeTok{y =}\NormalTok{ value, }\DataTypeTok{color =}\NormalTok{ f), }\DataTypeTok{size =} \DecValTok{1}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{y =} \StringTok{"f(w)"}\NormalTok{, }\DataTypeTok{title =} \KeywordTok{bquote}\NormalTok{(}\StringTok{"Visualizing"} \OperatorTok{~}\StringTok{ }\KeywordTok{bar}\NormalTok{(Q)[}\DecValTok{0}\NormalTok{])) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ylim}\NormalTok{(}\OtherTok{NA}\NormalTok{, }\DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{img/exercise:visualize-1.pdf}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Adapt the above chunk of code to visualize the marginal density
+  \(Q_{0,W}\) and conditional probability \(\Gbar_{0}\).
+\end{enumerate}
 
 \subsection{The parameter of interest, first pass.}
 \label{subsec:parameter:first}
@@ -394,12 +459,9 @@ It happens that we especially care for a finite-dimensional feature of
 the aforementioned infinite-dimensional features:
 \begin{align}  \label{eq:psi0}
 \psi_{0}  &\equiv   \int  \left(\Qbar_{0}(1,   w)  -   \Qbar_{0}(0,  w)\right)
-dQ_{0,W}(w)\\  \notag  &=  E_{P_{0}}   \left(\Qbar_{0}(1,  W)  -  \Qbar_{0}(0,
-W)\right).   \end{align} Acting as oracles, we can compute explicitly
-the numerical value of \(\psi_{0}\). \emph{{[}David note: Is the first
-equality helpful? The preceding sentence might cause a reader to expect
-to see \(\Qbar_0\) and \(Q_{0,W}\) in the equation. So maybe we flip the
-order? Or remove the first equality altogether?{]}}
+dQ_{0,W}(w)\\  \notag  &=  \Exp_{P_{0}}   \left(\Exp_{P_0}(Y \mid A = 1,  W)  -  \Exp_{P_0}(Y \mid A = 0,  W) \right).   \end{align}
+Acting as oracles, we can compute explicitly the numerical value of
+\(\psi_{0}\).
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -413,7 +475,7 @@ order? Or remove the first equality altogether?{]}}
 \end{Shaded}
 
 \begin{verbatim}
-## [1] 0.0605389
+## [1] 0.08317711
 \end{verbatim}
 
 Our interest in \(\psi_{0}\) is of causal nature. Taking a closer look
@@ -432,7 +494,7 @@ independent sources of randomness \(U_w\), \(U_a\), \(U_y\),
 
 \begin{enumerate}
 \item sample  the context where the  rest of the experiment
-  will take place, $W = f_{w}(U_w)$;
+  will take place \tcg{Not sure I understand this sentence}, $W = f_{w}(U_w)$;
 \item  sample the  two counterfactual  rewards of  the two
   actions  that   can  be   undertaken,  $Y_{0}  =   f_{y}(0,  W,   U_y)$  and
   $Y_{1} = f_{y}(1, W, U_y)$;
@@ -455,14 +517,12 @@ eventually. In light of the above enumeration,
 summary measure \(O\). This defines another experiment and its law, that
 we denote \(\bbP_{0}\).
 
-\emph{{[}David note: Would `ideal' or `perfect' experiment be better
-than `full'?{]}}
-
-It is well known
-\tcg{(do we give the proof or refer to other articles?)} that
+It is straightforward to show\footnote{For $a = 0,1$, $$
+E(Y_a) = \int \Exp_{\bbP_0}(Y_a \mid W = w) dQ_{0,W}(w) = \int \Exp_{\bbP_0}(Y_a \mid A = a, W = w) dQ_{0,W}(w) = \int \Exp_{P_0}(Y \mid A = a, W = w) dQ_{0,W}(w) = \int \Qbar_0(a,W) dQ_{0,W}(w). 
+$$} that under assumptions\footnote{Something}
 \begin{equation} \label{eq:psi:zero}    
-\psi_{0}  =  E_{\bbP_{0}} \left(Y_{1}  -  Y_{0}\right)  = E_{\bbP_{0}}(Y_1)  -
-E_{\bbP_{0}}(Y_0).   \end{equation} Thus, \(\psi_{0}\) describes the
+\psi_{0} = \Exp_{\bbP_{0}} \left(Y_{1} - Y_{0}\right) = \Exp_{\bbP_{0}}(Y_1) -
+\Exp_{\bbP_{0}}(Y_0).  \end{equation} Thus, \(\psi_{0}\) describes the
 average difference in of the two counterfactual rewards. In other words,
 \(\psi_{0}\) quantifies the difference in average of the reward one
 would get in a world where one would always enforce action \(a=1\) with
@@ -470,16 +530,8 @@ the reward one would get in a world where one would always enforce
 action \(a=0\). This said, it is worth emphasizing that \(\psi_{0}\) is
 a well defined parameter beyond its causal interpretation.
 
-\emph{{[}David note: Is it worth writing this as
-\(E_{\bbP_{0}}(Y_1) - E_{\bbP_{0}}(Y_0)\) as well (or instead)? Maybe I
-am thinking too much, but for the quantile example, we compare a
-quantile of \(Y_1\) to a quantile of \(Y_0\) rather than describe a
-quantile of the difference \(Y_1 - Y_0\); the latter, of course,
-involves cross-world distributions (i.e., the joint dist. of
-\((Y_1,Y_0)\)){]}}
-
-To conclude this subsection, we take advantage of our status as oracles
-to sample observations from the ideal experiment. We call
+To conclude this subsection, we take advantage of our position as
+oracles to sample observations from the ideal experiment. We call
 \texttt{draw\_from\_experiment} with its argument \texttt{ideal} set to
 \texttt{TRUE} in order to numerically approximate \(\psi_{0}\). By the
 law of large numbers, the following chunk of code approximates
@@ -487,14 +539,14 @@ law of large numbers, the following chunk of code approximates
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{B <-}\StringTok{ }\FloatTok{1e5}\NormalTok{ ## Antoine: 1e6 eventually}
+\NormalTok{B <-}\StringTok{ }\FloatTok{1e6}\NormalTok{ ## Antoine: 1e6 eventually}
 \NormalTok{ideal_obs <-}\StringTok{ }\KeywordTok{draw_from_experiment}\NormalTok{(B, }\DataTypeTok{ideal =} \OtherTok{TRUE}\NormalTok{)}
-\NormalTok{(psi_hat <-}\StringTok{ }\KeywordTok{mean}\NormalTok{(ideal_obs[, }\StringTok{"Yone"}\NormalTok{] }\OperatorTok{-}\StringTok{ }\NormalTok{ideal_obs[, }\StringTok{"Yzero"}\NormalTok{]))}
+\NormalTok{(psi_approx <-}\StringTok{ }\KeywordTok{mean}\NormalTok{(ideal_obs[, }\StringTok{"Yone"}\NormalTok{] }\OperatorTok{-}\StringTok{ }\NormalTok{ideal_obs[, }\StringTok{"Yzero"}\NormalTok{]))}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## [1] 0.06062719
+## [1] 0.08293116
 \end{verbatim}
 
 In fact, the central limit theorem and Slutsky's lemma allow us to build
@@ -502,23 +554,21 @@ a confidence interval with asymptotic level 95\% for \(\psi_{0}\):
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{sd_hat <-}\StringTok{ }\KeywordTok{sd}\NormalTok{(ideal_obs[, }\StringTok{"Yone"}\NormalTok{] }\OperatorTok{-}\StringTok{ }\NormalTok{ideal_obs[, }\StringTok{"Yzero"}\NormalTok{])}
+\NormalTok{sd_approx <-}\StringTok{ }\KeywordTok{sd}\NormalTok{(ideal_obs[, }\StringTok{"Yone"}\NormalTok{] }\OperatorTok{-}\StringTok{ }\NormalTok{ideal_obs[, }\StringTok{"Yzero"}\NormalTok{])}
 \NormalTok{alpha <-}\StringTok{ }\FloatTok{0.05}
-\NormalTok{(psi_CI <-}\StringTok{ }\NormalTok{psi_hat }\OperatorTok{+}\StringTok{ }\KeywordTok{c}\NormalTok{(}\OperatorTok{-}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{) }\OperatorTok{*}\StringTok{ }\KeywordTok{qnorm}\NormalTok{(}\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{alpha }\OperatorTok{/}\StringTok{ }\DecValTok{2}\NormalTok{) }\OperatorTok{*}\StringTok{ }\NormalTok{sd_hat }\OperatorTok{/}\StringTok{ }\KeywordTok{sqrt}\NormalTok{(B))}
+\NormalTok{(psi_approx_CI <-}\StringTok{ }\NormalTok{psi_approx }\OperatorTok{+}\StringTok{ }\KeywordTok{c}\NormalTok{(}\OperatorTok{-}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{) }\OperatorTok{*}\StringTok{ }\KeywordTok{qnorm}\NormalTok{(}\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{alpha }\OperatorTok{/}\StringTok{ }\DecValTok{2}\NormalTok{) }\OperatorTok{*}\StringTok{ }\NormalTok{sd_approx }\OperatorTok{/}\StringTok{ }\KeywordTok{sqrt}\NormalTok{(B))}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## [1] 0.05858054 0.06267383
+## [1] 0.08232477 0.08353754
 \end{verbatim}
-
-\emph{{[}David note: Could remove the confidence interval bit?{]}}
 
 \subsection{\gear Difference in covariate-adjusted quantile rewards, first
 pass.}  
 \label{subsec:exo:dave:one}
 
-The questions are asked in the context of Sections
+The problems come within the scope of Sections
 \ref{subsec:parameter:first}.
 
 As discussed above, parameter \(\psi_0\) \eqref{eq:psi:zero} is the
@@ -539,7 +589,7 @@ It is not difficult to check that
 \tcg{do  we give the proof or refer to other
 articles?}
 \begin{equation*}\gamma_{0,a,c}     =     \inf\left\{y     \in
-\interval[open]{0}{1}      :      pr_{\bbP_{0}}(Y_a     \leq      y)      \geq
+\interval[open]{0}{1}      :      \Pr_{\bbP_{0}}(Y_a     \leq      y)      \geq
 c\right\}.\end{equation*} Thus, \(\gamma_{0,a,c}\) can be interpreted as
 a covariate-adjusted \(c\)-th quantile reward when action \(a\) is
 enforced. The difference
@@ -578,15 +628,16 @@ under \(P\).
 
 Let us also define generically \(\Qbar\) as
 \begin{equation*} \Qbar (A,W) \equiv
-E_{P} (Y|A, W). \end{equation*} Central to our approach is viewing
-\(\psi_{0}\) as the value at \(P_{0}\) of the statistical mapping
-\(\Psi\) from \(\calM\) to \([0,1]\) characterized by
-\begin{align*}  \Psi(P) &\equiv  \int \left(\Qbar(1,
-w) -  \Qbar(0, w)\right) dQ_{W}(w)  \\ &=  E_{P} \left(\Qbar(1, W)  - \Qbar(0,
-W)\right), \end{align*} a clear extension of \eqref{eq:psi0}. For
-instance, although the law \(\Pi_{0} \in \calM\) encoded by default
-(\textit{i.e.}, with \texttt{h=0}) in \texttt{drawFromAnotherExperiment}
-defined below differs starkly from \(P_{0}\),
+\Exp_{P}  (Y|A,  W).   \end{equation*} Central to our approach is
+viewing \(\psi_{0}\) as the value at \(P_{0}\) of the statistical
+mapping \(\Psi\) from \(\calM\) to \([0,1]\) characterized by
+\begin{align*}  \Psi(P)  &\equiv  \int
+\left(\Qbar(1, w) - \Qbar(0, w)\right) dQ_{W}(w) \\ &= \Exp_{P} \left(\Qbar(1,
+W) -  \Qbar(0, W)\right), \end{align*} a clear extension of
+\eqref{eq:psi0}. For instance, although the law \(\Pi_{0} \in \calM\)
+encoded by default (\textit{i.e.}, with \texttt{h=0}) in
+\texttt{drawFromAnotherExperiment} defined below differs starkly from
+\(P_{0}\),
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -656,7 +707,7 @@ pass.}
 \label{subsec:exo:dave:two}
 
 We continue with the exercise from Section \ref{subsec:exo:dave:one}.
-The questions are asked in the context of Section
+The problems come within the scope of Section
 \ref{subsec:parameter:first}.
 
 As above, we define \(q_{Y}(y,a,w)\) to be the \((A,W)\)-conditional
@@ -701,6 +752,28 @@ similarly be viewed as a mapping \(\Delta_c\) from \(\calM\) to
   distribution function.  Then  $\interval{X_{(k)}}{X_{(l)}}$ is a confidence
   interval for $F^{-1}(p)$ with asymptotic level $1 - 2\alpha$.}
 \end{enumerate}
+
+\subsection{The parameter of interest, third pass.}
+\label{subsec:parameter:third}
+
+In the previous subsection, we reoriented our view of the target
+parameter to be a statistical functional of the distribution of the
+observed data. Specifically, we viewed the parameter as a function of
+specific features of the observed data distribution, namely \(Q_{W}\)
+and \(\Qbar\). It is straightforward\footnote{
+  For $a = 0,1$, \begin{align*}
+    \Exp_{P_0}\left(\frac{I(A = a)Y}{\ell\Gbar{a,W}}\right) &= \Exp_{P_0}\left\{\Exp_{P_0}\left(\frac{I(A = a)Y}{\ell\Gbar{a,W}} \mid A, W\right) \right\} = \Exp_{P_0}\left\{\frac{I(A = a)}{\ell\Gbar{a,W}} \Exp_{P_0}(Y \mid A, W) \right\} \\
+    &= \Exp_{P_0}\left\{\frac{I(A = a)}{\ell\Gbar{a,W}} \Exp_{P_0}(Y \mid A = 1, W) \right\} 
+    = \Exp_{P_0}\left\{\Exp_{P_0}\left(\frac{I(A = a)}{\ell\Gbar{a,W}} \Exp_{P_0}(Y \mid A = 1, W) \mid W \right) \right\} \\
+    &=  \Exp_{P_0}\left(\ell\Gbar{a,W}}{\ell\Gbar{a,W}} \Exp_{P_0}(Y \mid A = 1, W) \mid W \right) = \Exp_{P_0} \left( \Exp_{P_0}(Y \mid A = 1, W) \right) \ . 
+    \end{align*}
+} to show an equivalent representation of the parameter as
+\begin{equation}\label{eq:psi0:b} 
+\psi_{0} = \Exp_{P_{0}}    \left\{\frac{I(A = 1)}{\ell\Gbar_{0}(1,W)} - \frac{I(A = 0)}{\ell\Gbar_{0}(0,W)} \right) Y \right\}   \ , 
+\end{equation} or, viewing the parameter as a statistical functional,
+for a given \(P\) in the model \begin{equation} \label{eq:psi0:c}
+\Psi(P) = \Exp_{P}\left\{\frac{I(A = 1)}{\mbox{Pr}_P(A = 1 \mid W)} - \frac{I(A = 0)}{\mbox{Pr}_P(A = 1 \mid W)} \right) Y \right\} \ . 
+\end{equation}
 
 \subsection{Being smooth, first pass.}
 \label{subsec:being:smooth:one}
@@ -774,7 +847,7 @@ introduction of fluctuations.
 For every direction\footnote{A direction is a measurable function.}
 \(s : \calO \to \bbR\) such that
 \(s \neq 0\)\footnote{That is, $s(O)$ is  not equal to zero
-$P$-almost surely.}, \(E_{P} (s(O)) = 0\) and \(s\) bounded by, say,
+$P$-almost surely.}, \(\Exp_{P} (s(O)) = 0\) and \(s\) bounded by, say,
 \(M\), for every \(h \in H \equiv \interval[open]{-M^{-1}}{M^{-1}}\), we
 can define a law \(P_{h} \in \calM\) by setting
 \(P_{h} \ll P\)\footnote{That  is, $P_{h}$  is
@@ -798,16 +871,17 @@ Statistical mapping \(\Psi\) is smooth at every \(P \in \calM\) because,
 for each \(P \in \calM\), there exists a so called efficient influence
 curve\footnote{It
 is  a   measurable  function.} \(D^{*}(P) : \calO \to \bbR\) such that
-\(E_{P}(D^{*}(P)(O)) = 0\) and, for any direction \(s\) as above, if
+\(\Exp_{P}(D^{*}(P)(O)) = 0\) and, for any direction \(s\) as above, if
 \(\{P_{h} : h \in H\}\) is defined as in \eqref{eq:fluct}, then the
 real-valued mapping \(h \mapsto \Psi(P_{h})\) is differentiable at
 \(h=0\), with a derivative equal to
 
-\begin{equation}\label{eq:derivative}E_{P} \left(D^{*}(P)(O) s(O)\right).\end{equation}
+\begin{equation}\label{eq:derivative}\Exp_{P}                \left(D^{*}(P)(O)
+s(O)\right).\end{equation}
 
 Interestingly, if a fluctuation \(\{P_{h} : h \in H\}\) satisfies
 \eqref{eq:score} for a direction \(s\) such that \(s\neq 0\),
-\(E_{P}(s(O)) = 0\) and \(\Var_{P} (s(O)) < \infty\), then
+\(\Exp_{P}(s(O)) = 0\) and \(\Var_{P} (s(O)) < \infty\), then
 \(h \mapsto \Psi(P_{h})\) is still differentiable at \(h=0\) with a
 derivative equal to \eqref{eq:derivative} (beyond fluctuations of the
 form \eqref{eq:fluct}).
@@ -821,7 +895,7 @@ independent observations $O_{1}$, \ldots, $O_{n}$ drawn from $P$.
 % or, equivalently, trained on the empirical measure $P_{n} = n^{-1}
 % \sum_{i=1}^{n} \Dirac(O_{i})$: $\psi_{n} = \Psihat(P_{n})$.  
 The estimator is regular at $P$ (w.r.t. the maximal tangent space) if, for any
-direction  $s\neq 0$  such that  $E_{P}  (s(O)) =  0$ and  $\Var_{P} (s(O))  <
+direction $s\neq  0$ such that  $\Exp_{P} (s(O)) =  0$ and $\Var_{P}  (s(O)) <
 \infty$ and fluctuation $\{P_{h} : h \in H\}$ satisfying \eqref{eq:score}, the
 estimator $\psi_{n,1/\sqrt{n}}$ of $\Psi(P_{1/\sqrt{n}})$ obtained by training
 $\Psihat$  on independent  observations  $O_{1}$, \ldots,  $O_{n}$ drawn  from
@@ -865,18 +939,18 @@ approximation thereof, through argument \texttt{psi}).
 \NormalTok{  Qbar <-}\StringTok{ }\KeywordTok{attr}\NormalTok{(obs, }\StringTok{"Qbar"}\NormalTok{)}
 \NormalTok{  Gbar <-}\StringTok{ }\KeywordTok{attr}\NormalTok{(obs, }\StringTok{"Gbar"}\NormalTok{)}
 \NormalTok{  QAW <-}\StringTok{ }\KeywordTok{Qbar}\NormalTok{(obs[, }\KeywordTok{c}\NormalTok{(}\StringTok{"A"}\NormalTok{, }\StringTok{"W"}\NormalTok{)])}
-\NormalTok{  gW <-}\StringTok{ }\KeywordTok{Gbar}\NormalTok{(obs[, }\StringTok{"W"}\NormalTok{])}
-\NormalTok{  lgAW <-}\StringTok{ }\NormalTok{obs[, }\StringTok{"A"}\NormalTok{] }\OperatorTok{*}\StringTok{ }\NormalTok{gW }\OperatorTok{+}\StringTok{ }\NormalTok{(}\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{obs[, }\StringTok{"A"}\NormalTok{]) }\OperatorTok{*}\StringTok{ }\NormalTok{(}\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{gW)}
+\NormalTok{  GW <-}\StringTok{ }\KeywordTok{Gbar}\NormalTok{(obs[, }\StringTok{"W"}\NormalTok{])}
+\NormalTok{  lGAW <-}\StringTok{ }\NormalTok{obs[, }\StringTok{"A"}\NormalTok{] }\OperatorTok{*}\StringTok{ }\NormalTok{GW }\OperatorTok{+}\StringTok{ }\NormalTok{(}\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{obs[, }\StringTok{"A"}\NormalTok{]) }\OperatorTok{*}\StringTok{ }\NormalTok{(}\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{GW)}
 \NormalTok{  ( }\KeywordTok{Qbar}\NormalTok{(}\KeywordTok{cbind}\NormalTok{(}\DecValTok{1}\NormalTok{, obs[, }\StringTok{"W"}\NormalTok{])) }\OperatorTok{-}\StringTok{ }\KeywordTok{Qbar}\NormalTok{(}\KeywordTok{cbind}\NormalTok{(}\DecValTok{0}\NormalTok{, obs[, }\StringTok{"W"}\NormalTok{])) }\OperatorTok{-}\StringTok{ }\NormalTok{psi ) }\OperatorTok{+}
-\StringTok{    }\NormalTok{(}\DecValTok{2} \OperatorTok{*}\StringTok{ }\NormalTok{obs[, }\StringTok{"A"}\NormalTok{] }\OperatorTok{-}\StringTok{ }\DecValTok{1}\NormalTok{) }\OperatorTok{/}\StringTok{ }\NormalTok{lgAW }\OperatorTok{*}\StringTok{ }\NormalTok{(obs[, }\StringTok{"Y"}\NormalTok{] }\OperatorTok{-}\StringTok{ }\NormalTok{QAW)}
+\StringTok{    }\NormalTok{(}\DecValTok{2} \OperatorTok{*}\StringTok{ }\NormalTok{obs[, }\StringTok{"A"}\NormalTok{] }\OperatorTok{-}\StringTok{ }\DecValTok{1}\NormalTok{) }\OperatorTok{/}\StringTok{ }\NormalTok{lGAW }\OperatorTok{*}\StringTok{ }\NormalTok{(obs[, }\StringTok{"Y"}\NormalTok{] }\OperatorTok{-}\StringTok{ }\NormalTok{QAW)}
 \NormalTok{\}}
 
-\NormalTok{(}\KeywordTok{eic}\NormalTok{(five_obs, }\DataTypeTok{psi =}\NormalTok{ psi_hat))}
+\NormalTok{(}\KeywordTok{eic}\NormalTok{(five_obs, }\DataTypeTok{psi =}\NormalTok{ psi_approx))}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## [1] -1.0729204  0.1645226  0.2829207 -0.5969342 -0.4555602
+## [1] -1.0154401 -0.9019670 -0.3260029  0.2457730 -1.2678877
 \end{verbatim}
 
 \begin{Shaded}
@@ -886,7 +960,7 @@ approximation thereof, through argument \texttt{psi}).
 \end{Shaded}
 
 \begin{verbatim}
-## [1]  0.17717086  0.18409808 -0.07018161  0.36266406  0.15090865
+## [1] -1.14434889 -0.04617269  0.15717587  0.38152278  0.09369052
 \end{verbatim}
 
 \subsection{Computing and comparing Cramér-Rao bounds.}
@@ -897,12 +971,12 @@ at \(P_{0}\):
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{obs <-}\StringTok{ }\KeywordTok{draw_from_experiment}\NormalTok{(B)}
-\NormalTok{(cramer_rao_hat <-}\StringTok{ }\KeywordTok{var}\NormalTok{(}\KeywordTok{eic}\NormalTok{(obs, }\DataTypeTok{psi =}\NormalTok{ psi_hat)))}
+\NormalTok{(cramer_rao_hat <-}\StringTok{ }\KeywordTok{var}\NormalTok{(}\KeywordTok{eic}\NormalTok{(obs, }\DataTypeTok{psi =}\NormalTok{ psi_approx)))}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## [1] 0.2553555
+## [1] 0.2874799
 \end{verbatim}
 
 and the Cramér-Rao bound at \(\Pi_{0}\):
@@ -915,7 +989,7 @@ and the Cramér-Rao bound at \(\Pi_{0}\):
 \end{Shaded}
 
 \begin{verbatim}
-## [1] 0.09414341
+## [1] 0.09476356
 \end{verbatim}
 
 \begin{Shaded}
@@ -925,13 +999,13 @@ and the Cramér-Rao bound at \(\Pi_{0}\):
 \end{Shaded}
 
 \begin{verbatim}
-## [1] 0.6071868
+## [1] 0.5741389
 \end{verbatim}
 
 We thus discover that of the statistical parameters \(\Psi(P_{0})\) and
 \(\Psi(\Pi_{0})\), the latter is easier to target than the former.
 Heuristically, for large sample sizes, the narrowest (efficient)
-confidence intervals for \(\Psi(\Pi_{0})\) are approximately 0.61
+confidence intervals for \(\Psi(\Pi_{0})\) are approximately 0.57
 (rounded to two decimal places) smaller than their counterparts for
 \(\Psi(P_{0})\).
 
@@ -953,7 +1027,7 @@ given, up to a constant, by
 Consequently, the slope of the dotted curve in Figure
 \ref{fig:psi-approx-psi-one} is equal to
 
-\begin{equation}\label{eq:slope:Pi}E_{\Pi_{0}}       (D^{*}(\Pi_{0})       (O)
+\begin{equation}\label{eq:slope:Pi}\Exp_{\Pi_{0}}      (D^{*}(\Pi_{0})     (O)
 \sigma_{0}(O))\end{equation}
 
 (since \(D^{*}(\Pi_{0})\) is centered under \(\Pi_{0}\), knowing
@@ -991,7 +1065,7 @@ interval of asymptotic level 95\%):
 \end{Shaded}
 
 \begin{verbatim}
-## [1] 1.357245
+## [1] 1.362463
 \end{verbatim}
 
 \begin{Shaded}
@@ -1001,7 +1075,7 @@ interval of asymptotic level 95\%):
 \end{Shaded}
 
 \begin{verbatim}
-## [1] 1.340548 1.373941
+## [1] 1.357179 1.367746
 \end{verbatim}
 
 Equal to 1.349 (rounded to three decimal places), the first numerical
@@ -1015,11 +1089,11 @@ another remarkable property: it is double-robust. Specifically, if we
 define for all \(P' \in \calM\)
 
 \begin{equation}\label{eq:rem:one} \Rem_{P} (\Qbar',  \Gbar')\equiv \Psi(P') -
-\Psi(P) + E_{P} (D^{*}(P') (O)), \end{equation}
+\Psi(P) + \Exp_{P} (D^{*}(P') (O)), \end{equation}
 
 then the so called remainder term \(\Rem_{P} (\Qbar', \Gbar')\)
 satisfies\footnote{For  any   (measurable)  $f:\calO  \to  \bbR$,   we  denote
-$\|f\|_{P} = E_{P} (f(O)^{2})^{1/2}$.}
+$\|f\|_{P} = \Exp_{P} (f(O)^{2})^{1/2}$.}
 
 \begin{equation}\label{eq:rem:two}   \Rem_{P}    (\Qbar',   \Gbar')^{2}   \leq
 \|\Qbar'  - \Qbar\|_{P}^{2}  \times  \|(\Gbar' -  \Gbar)/\ell\Gbar'\|_{P}^{2}.
@@ -1027,7 +1101,7 @@ $\|f\|_{P} = E_{P} (f(O)^{2})^{1/2}$.}
 
 In particular, if
 
-\begin{equation}\label{eq:solves:eic} E_{P} (D^{*}(P') (O)) =
+\begin{equation}\label{eq:solves:eic}     \Exp_{P}    (D^{*}(P')     (O))    =
 0,\end{equation}
 
 and \textit{either} \(\Qbar' = \Qbar\) \textit{or} \(\Gbar' = \Gbar\),
@@ -1073,15 +1147,15 @@ contrary, assuming \(\Qbar_{0}\) known would be difficult to justify.
 \begin{Highlighting}[]
 \NormalTok{Gbar <-}\StringTok{ }\KeywordTok{attr}\NormalTok{(obs, }\StringTok{"Gbar"}\NormalTok{)}
 
-\NormalTok{iter <-}\StringTok{ }\FloatTok{1e3}
+\NormalTok{iter <-}\StringTok{ }\FloatTok{1e3} \CommentTok{# 1e3 eventually}
 \end{Highlighting}
 \end{Shaded}
 
 Then, the alternative expression
 \begin{equation}\label{eq:psi0:b} \psi_{0} =
-E_{P_{0}}     \left(\frac{2A-1}{\ell\Gbar_{0}(A,W)}Y\right)     \end{equation}
+\Exp_{P_{0}}    \left(\frac{2A-1}{\ell\Gbar_{0}(A,W)}Y\right)   \end{equation}
 suggests to estimate \(\psi_{0}\) with
-\begin{equation}\label{eq:psi:n:b}\psi_{n}^{b}         \equiv        E_{P_{n}}
+\begin{equation}\label{eq:psi:n:b}\psi_{n}^{b}       \equiv       \Exp_{P_{n}}
 \left(\frac{2A-1}{\ell\Gbar_{0}(A,W)}Y\right)  =   \frac{1}{n}  \sum_{i=1}^{n}
 \left(\frac{2A_{i}-1}{\ell\Gbar_{0}(A_{i},W_{i})}Y_{i}\right).\end{equation}
 Note how \(P_{n}\) is substituted for \(P_{0}\) in \eqref{eq:psi:n:b}
@@ -1104,33 +1178,32 @@ Let us investigate how \(\psi_{n}^{b}\) behaves based on \texttt{obs}.
 Because we are interested in the \textit{law} of \(\psi_{n}^{b}\), the
 next chunk of code constitutes \texttt{iter\ =} 1000 independent samples
 of independent observations drawn from \(P_{0}\), each consisting of
-\(n\) equal to \texttt{nrow(obs)/iter\ =} 100 data points, and computes
+\(n\) equal to \texttt{nrow(obs)/iter\ =} 1000 data points, and computes
 the realization of \(\psi_{n}^{b}\) on all samples.
 
 Before proceeding, let us introduce \begin{align*}\psi_{n}^{a}  &\equiv
-E_{P_{n}}  \left(Y  |  A=1\right)  -  E_{P_{n}} \left(Y  |  A=0\right)  \\  &=
+\Exp_{P_{n}} \left(Y  | A=1\right) -  \Exp_{P_{n}} \left(Y | A=0\right)  \\ &=
 \frac{1}{n_{1}}   \sum_{i=1}^{n}  \one\{A_{i}=1\}   Y_{i}  -   \frac{1}{n_{0}}
 \sum_{i=1}^{n} \one\{A_{i}=0\} Y_{i}  \\&=\frac{1}{n_{1}} \sum_{i=1}^{n} A_{i}
 Y_{i} - \frac{1}{n_{0}}  \sum_{i=1}^{n} (1 - A_{i})  Y_{i}, \end{align*}
 where \(n_{1} = \sum_{i=1}^{n} A_{i} = n - n_{0}\) is the number of
 observations \(O_{i}\) such that \(A_{i} = 1\). It is an estimator of
-\begin{equation*}E_{P_{0}} (Y | A=1) -  E_{P_{0}} (Y | A=0).\end{equation*}
-We seize this opportunity to demonstrate numerically the obvious fact
-that \(\psi_{n}^{a}\) does not estimate \(\psi_{0}\).
+\begin{equation*}\Exp_{P_{0}}    (Y   |    A=1)    -    \Exp_{P_{0}}   (Y    |
+A=0).\end{equation*} We seize this opportunity to demonstrate
+numerically the obvious fact that \(\psi_{n}^{a}\) does not estimate
+\(\psi_{0}\).
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{psi_hat_ab <-}\StringTok{ }\NormalTok{obs }\OperatorTok{%>%}\StringTok{ }\KeywordTok{as_tibble}\NormalTok{() }\OperatorTok{%>%}\StringTok{ }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{id =} \DecValTok{1}\OperatorTok{:}\KeywordTok{n}\NormalTok{() }\OperatorTok{%%}\StringTok{ }\NormalTok{iter) }\OperatorTok{%>%}
-\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{lgAW =}\NormalTok{ A }\OperatorTok{*}\StringTok{ }\KeywordTok{Gbar}\NormalTok{(W) }\OperatorTok{+}\StringTok{ }\NormalTok{(}\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{A) }\OperatorTok{*}\StringTok{ }\NormalTok{(}\DecValTok{1} \OperatorTok{-}\StringTok{ }\KeywordTok{Gbar}\NormalTok{(W))) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{group_by}\NormalTok{(id) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{lGAW =}\NormalTok{ A }\OperatorTok{*}\StringTok{ }\KeywordTok{Gbar}\NormalTok{(W) }\OperatorTok{+}\StringTok{ }\NormalTok{(}\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{A) }\OperatorTok{*}\StringTok{ }\NormalTok{(}\DecValTok{1} \OperatorTok{-}\StringTok{ }\KeywordTok{Gbar}\NormalTok{(W))) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{group_by}\NormalTok{(id) }\OperatorTok{%>%}
 \StringTok{  }\KeywordTok{summarize}\NormalTok{(}\DataTypeTok{est_a =} \KeywordTok{mean}\NormalTok{(Y[A}\OperatorTok{==}\DecValTok{1}\NormalTok{]) }\OperatorTok{-}\StringTok{ }\KeywordTok{mean}\NormalTok{(Y[A}\OperatorTok{==}\DecValTok{0}\NormalTok{]),}
-            \DataTypeTok{est_b =} \KeywordTok{mean}\NormalTok{(Y }\OperatorTok{*}\StringTok{ }\NormalTok{(}\DecValTok{2} \OperatorTok{*}\StringTok{ }\NormalTok{A }\OperatorTok{-}\StringTok{ }\DecValTok{1}\NormalTok{) }\OperatorTok{/}\StringTok{ }\NormalTok{lgAW),}
-            \DataTypeTok{std_b =} \KeywordTok{sd}\NormalTok{(Y }\OperatorTok{*}\StringTok{ }\NormalTok{(}\DecValTok{2} \OperatorTok{*}\StringTok{ }\NormalTok{A }\OperatorTok{-}\StringTok{ }\DecValTok{1}\NormalTok{) }\OperatorTok{/}\StringTok{ }\NormalTok{lgAW) }\OperatorTok{/}\StringTok{ }\KeywordTok{sqrt}\NormalTok{(}\KeywordTok{n}\NormalTok{()),}
-            \DataTypeTok{clt_b =}\NormalTok{ (est_b }\OperatorTok{-}\StringTok{ }\NormalTok{psi_hat) }\OperatorTok{/}\StringTok{ }\NormalTok{std_b)}
-\NormalTok{std_a <-}\StringTok{ }\KeywordTok{sd}\NormalTok{(psi_hat_ab}\OperatorTok{$}\NormalTok{est_a)}
-\NormalTok{psi_hat_ab <-}\StringTok{ }\NormalTok{psi_hat_ab }\OperatorTok{%>%}
-\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{std_a =}\NormalTok{ std_a,}
-         \DataTypeTok{clt_a =}\NormalTok{ (est_a }\OperatorTok{-}\StringTok{ }\NormalTok{psi_hat) }\OperatorTok{/}\StringTok{ }\NormalTok{std_a) }\OperatorTok{%>%}\StringTok{ }
-\StringTok{  }\KeywordTok{gather}\NormalTok{(key, value, }\OperatorTok{-}\NormalTok{id) }\OperatorTok{%>%}
+            \DataTypeTok{est_b =} \KeywordTok{mean}\NormalTok{(Y }\OperatorTok{*}\StringTok{ }\NormalTok{(}\DecValTok{2} \OperatorTok{*}\StringTok{ }\NormalTok{A }\OperatorTok{-}\StringTok{ }\DecValTok{1}\NormalTok{) }\OperatorTok{/}\StringTok{ }\NormalTok{lGAW),}
+            \DataTypeTok{std_b =} \KeywordTok{sd}\NormalTok{(Y }\OperatorTok{*}\StringTok{ }\NormalTok{(}\DecValTok{2} \OperatorTok{*}\StringTok{ }\NormalTok{A }\OperatorTok{-}\StringTok{ }\DecValTok{1}\NormalTok{) }\OperatorTok{/}\StringTok{ }\NormalTok{lGAW) }\OperatorTok{/}\StringTok{ }\KeywordTok{sqrt}\NormalTok{(}\KeywordTok{n}\NormalTok{()),}
+            \DataTypeTok{clt_b =}\NormalTok{ (est_b }\OperatorTok{-}\StringTok{ }\NormalTok{psi_approx) }\OperatorTok{/}\StringTok{ }\NormalTok{std_b) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{std_a =} \KeywordTok{sd}\NormalTok{(est_a),}
+         \DataTypeTok{clt_a =}\NormalTok{ (est_a }\OperatorTok{-}\StringTok{ }\NormalTok{psi_approx) }\OperatorTok{/}\StringTok{ }\NormalTok{std_a) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{gather}\NormalTok{(}\StringTok{"key"}\NormalTok{, }\StringTok{"value"}\NormalTok{, }\OperatorTok{-}\NormalTok{id) }\OperatorTok{%>%}
 \StringTok{  }\KeywordTok{extract}\NormalTok{(key, }\KeywordTok{c}\NormalTok{(}\StringTok{"what"}\NormalTok{, }\StringTok{"type"}\NormalTok{), }\StringTok{"([^_]+)_([ab])"}\NormalTok{) }\OperatorTok{%>%}
 \StringTok{  }\KeywordTok{spread}\NormalTok{(what, value)}
 
@@ -1140,15 +1213,14 @@ that \(\psi_{n}^{a}\) does not estimate \(\psi_{0}\).
 
 \begin{verbatim}
 ## # A tibble: 2 x 2
-##   type     bias
-##   <chr>   <dbl>
-## 1 a     -0.258 
-## 2 b      0.0961
+##   type    bias
+##   <chr>  <dbl>
+## 1 a     1.46  
+## 2 b     0.0696
 \end{verbatim}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{debug}\NormalTok{(ggplot2}\OperatorTok{::}\NormalTok{stat_density)}
 \NormalTok{fig <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{() }\OperatorTok{+}
 \StringTok{  }\KeywordTok{geom_line}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ x, }\DataTypeTok{y =}\NormalTok{ y), }
             \DataTypeTok{data =} \KeywordTok{tibble}\NormalTok{(}\DataTypeTok{x =} \KeywordTok{seq}\NormalTok{(}\OperatorTok{-}\DecValTok{3}\NormalTok{, }\DecValTok{3}\NormalTok{, }\DataTypeTok{length.out =} \FloatTok{1e3}\NormalTok{),}
@@ -1168,24 +1240,24 @@ that \(\psi_{n}^{a}\) does not estimate \(\psi_{0}\).
 \centering
 \includegraphics{img/known-Gbar-one-b-1.pdf}
 \caption{\label{fig:known-Gbar-one-b}Kernel density estimators of the law of
-two estimators of \(\psi_{0}\) (recentered and renormalized), one of
-them misconceived (a), the other assuming that \(\Gbar_{0}\) is known
-(b). Built based on \texttt{iter} independent realizations of each
-estimator.}
+two estimators of \(\psi_{0}\) (recentered with respect to \(\psi_{0}\),
+and renormalized), one of them misconceived (a), the other assuming that
+\(\Gbar_{0}\) is known (b). Built based on \texttt{iter} independent
+realizations of each estimator.}
 \end{figure}
 
 Let \(v_{n}^{a}\) be \(n\) times the empirical variance of the
 \texttt{iter} realizations of \(\psi_{n}^{a}\). By the above chunk of
 code, the averages of \(\sqrt{n/v_{n}^{a}} (\psi_{n}^{a} - \psi_{0})\)
 and \(\sqrt{n/v_{n}^{b}} (\psi_{n}^{b} - \psi_{0})\) computed across the
-realizations of the two estimators are respectively equal to -0.258 and
-0.096 (both rounded to three decimal places --- see \texttt{bias\_ab}).
+realizations of the two estimators are respectively equal to 1.461 and
+0.07 (both rounded to three decimal places --- see \texttt{bias\_ab}).
 Interpreted as amounts of bias, those two quantities are represented by
 vertical lines in Figure \ref{fig:known-Gbar-one-b}. The red and blue
 bell-shaped curves represent the empirical laws of \(\psi_{n}^{a}\) and
-\(\psi_{n}^{b}\) (recentered and renormalized) as estimated by kernel
-density estimation. The latter is close to the black curve, which
-represents the standard normal density.
+\(\psi_{n}^{b}\) (recentered with respect to \(\\psi_{0}\), and
+renormalized) as estimated by kernel density estimation. The latter is
+close to the black curve, which represents the standard normal density.
 
 \subsection[Inference assuming $\Gbar_{0}$ known, or not, second pass.]{Inference assuming
 $\boldsymbol{\Gbar_{0}}$ known, or not, second pass.} 
@@ -1205,17 +1277,19 @@ aggregation of competing estimators (\textit{via} stacking/super
 learning) -- see Section \ref{subsec:exo:one}. Defined in the next chunk
 of code, the generic function \texttt{estimate\_G} fits a user-specified
 working model by minimizing the empirical risk associated to the
-user-specified loss function and provided data, and the generic function
-\texttt{predict\_lGAW} (merely a convenient wrapper) estimates
-\(\ell\Gbar_{0}(A,W)\) for any \((A,W)\) based on the output of
-\texttt{estimate\_G}.
+user-specified loss function and provided data.
+
+\tcg{Comment on new structure of} \texttt{estimate\_G}
+\tcg{and say a few words about} \texttt{compute\_lGhatAW}.
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{estimate_G <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(dat, algorithm, ...) \{}
   \ControlFlowTok{if}\NormalTok{ (}\OperatorTok{!}\KeywordTok{attr}\NormalTok{(algorithm, }\StringTok{"ML"}\NormalTok{)) \{}
+\NormalTok{    dat <-}\StringTok{ }\KeywordTok{as.data.frame}\NormalTok{(dat)}
 \NormalTok{    fit <-}\StringTok{ }\NormalTok{algorithm[[}\DecValTok{1}\NormalTok{]](}\DataTypeTok{formula =}\NormalTok{ algorithm[[}\DecValTok{2}\NormalTok{]], }\DataTypeTok{data =}\NormalTok{ dat)}
 \NormalTok{    Ghat <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(newdata) \{}
+\NormalTok{      newdata <-}\StringTok{ }\KeywordTok{as.data.frame}\NormalTok{(newdata)}
       \KeywordTok{predict}\NormalTok{(fit, newdata, }\DataTypeTok{type =} \StringTok{"response"}\NormalTok{)}
 \NormalTok{    \}}
 \NormalTok{  \} }\ControlFlowTok{else}\NormalTok{ \{}
@@ -1227,26 +1301,21 @@ user-specified loss function and provided data, and the generic function
   \KeywordTok{return}\NormalTok{(Ghat)}
 \NormalTok{\}}
 
-\NormalTok{predict_lGAW <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(A, W, algorithm, }\DataTypeTok{threshold =} \FloatTok{0.05}\NormalTok{, ...) \{}
-\NormalTok{  ## a wrapper to use in a call to 'mutate'}
-\NormalTok{  ## (a) fit the working model}
+\NormalTok{compute_lGhatAW <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(A, W, Ghat, }\DataTypeTok{threshold =} \FloatTok{0.05}\NormalTok{) \{}
 \NormalTok{  dat <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{A =}\NormalTok{ A, }\DataTypeTok{W =}\NormalTok{ W)}
-\NormalTok{  Ghat <-}\StringTok{ }\KeywordTok{estimate_G}\NormalTok{(dat, algorithm, ...)}
-\NormalTok{  ## (b) make predictions based on the fit}
 \NormalTok{  Ghat_W <-}\StringTok{ }\KeywordTok{Ghat}\NormalTok{(dat)}
 \NormalTok{  lGAW <-}\StringTok{ }\NormalTok{A }\OperatorTok{*}\StringTok{ }\NormalTok{Ghat_W }\OperatorTok{+}\StringTok{ }\NormalTok{(}\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{A) }\OperatorTok{*}\StringTok{ }\NormalTok{(}\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{Ghat_W)}
-  \KeywordTok{pmin}\NormalTok{(}\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{threshold, }\KeywordTok{pmax}\NormalTok{(lGAW, threshold))}
+\NormalTok{  pred <-}\StringTok{ }\KeywordTok{pmin}\NormalTok{(}\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{threshold, }\KeywordTok{pmax}\NormalTok{(lGAW, threshold))}
+  \KeywordTok{return}\NormalTok{(pred)}
 \NormalTok{\}}
 \end{Highlighting}
 \end{Shaded}
 
-\tcg{Comment on new structure of} \texttt{estimate\_G}.
-
 Note how the prediction of any \(\ell\Gbar_{0}(A,W)\) is manually
-bounded away from 0 and 1 at the last line of \texttt{predict\_lGAW}.
-This is desirable because the \textit{inverse} of each
-\(\ell\Gbar_{0}(A_{i},W_{i})\) appears in the definition of
-\(\psi_{n}^{b}\) \eqref{eq:psi:n:b}.
+bounded away from 0 and 1 at the last but one line of
+\texttt{compute\_lGhatAW}. This is desirable because the
+\textit{inverse} of each \(\ell\Gbar_{0}(A_{i},W_{i})\) appears in the
+definition of \(\psi_{n}^{b}\) \eqref{eq:psi:n:b}.
 
 For sake of illustration, we choose argument
 \texttt{working\_model\_G\_one} of function \texttt{estimate\_G} as
@@ -1258,7 +1327,9 @@ follows:
   \DataTypeTok{model =} \ControlFlowTok{function}\NormalTok{(...) \{}\KeywordTok{glm}\NormalTok{(}\DataTypeTok{family =} \KeywordTok{binomial}\NormalTok{(), ...)\},}
   \DataTypeTok{formula =} \KeywordTok{as.formula}\NormalTok{(}
     \KeywordTok{paste}\NormalTok{(}\StringTok{"A ~"}\NormalTok{,}
-          \KeywordTok{paste}\NormalTok{(}\StringTok{"I(W^"}\NormalTok{, }\KeywordTok{seq}\NormalTok{(}\DecValTok{1}\OperatorTok{/}\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DataTypeTok{by =} \DecValTok{1}\OperatorTok{/}\DecValTok{2}\NormalTok{), }\DataTypeTok{sep =} \StringTok{""}\NormalTok{, }\DataTypeTok{collapse =} \StringTok{") + "}\NormalTok{),}
+          \KeywordTok{paste}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{"I(W^"}\NormalTok{, }\StringTok{"I(abs(W - 5/12)^"}\NormalTok{),}
+                \KeywordTok{rep}\NormalTok{(}\KeywordTok{seq}\NormalTok{(}\DecValTok{1}\OperatorTok{/}\DecValTok{2}\NormalTok{, }\DecValTok{3}\OperatorTok{/}\DecValTok{2}\NormalTok{, }\DataTypeTok{by =} \DecValTok{1}\OperatorTok{/}\DecValTok{2}\NormalTok{), }\DataTypeTok{each =} \DecValTok{2}\NormalTok{),}
+                \DataTypeTok{sep =} \StringTok{""}\NormalTok{, }\DataTypeTok{collapse =} \StringTok{") + "}\NormalTok{),}
           \StringTok{")"}\NormalTok{)}
 \NormalTok{  ))}
 \KeywordTok{attr}\NormalTok{(working_model_G_one, }\StringTok{"ML"}\NormalTok{) <-}\StringTok{ }\OtherTok{FALSE}
@@ -1267,7 +1338,8 @@ follows:
 \end{Shaded}
 
 \begin{verbatim}
-## A ~ I(W^0.5) + I(W^1) + I(W^1.5) + I(W^2)
+## A ~ I(W^0.5) + I(abs(W - 5/12)^0.5) + I(W^1) + I(abs(W - 5/12)^1) + 
+##     I(W^1.5) + I(abs(W - 5/12)^1.5)
 \end{verbatim}
 
 In words, we choose the so called logistic (or negative binomial) loss
@@ -1280,12 +1352,13 @@ for any \(\theta \in \bbR^{5}\),
 The working model is well specified: it happens that \(\Gbar_{0}\) is
 the unique minimizer of the risk entailed by \(L_{a}\) over \(\calF\):
 \begin{equation*}\Gbar_{0} = \mathop{\arg\min}_{f_{\theta} \in \calF}
-E_{P_{0}}  \left(L_{a}(f_{\theta})(A,W)\right).\end{equation*}
+\Exp_{P_{0}}   \left(L_{a}(f_{\theta})(A,W)\right).\end{equation*}
 Therefore, the estimator \(\Gbar_{n}\) output by \texttt{estimate\_G}
 and obtained by minimizing the empirical risk
-\begin{equation*} E_{P_{n}} \left(L_{a}(f_{\theta})(A,W)\right)
-=  \frac{1}{n}   \sum_{i=1}^{n}  L_{a}(f_{\theta})(A_{i},W_{i})\end{equation*}
-over \(\calF\) consistently estimates \(\Gbar_{0}\).
+\begin{equation*}        \Exp_{P_{n}}
+\left(L_{a}(f_{\theta})(A,W)\right)      =     \frac{1}{n}      \sum_{i=1}^{n}
+L_{a}(f_{\theta})(A_{i},W_{i})\end{equation*} over \(\calF\)
+consistently estimates \(\Gbar_{0}\).
 
 In light of \eqref{eq:psi:n:b}, introduce
 \begin{equation}\psi_{n}^{c} \equiv
@@ -1299,16 +1372,21 @@ drawn from \(P_{0}\) as in Section \ref{subsec:known:gbar:one}:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{psi_hat_c <-}\StringTok{ }\NormalTok{obs }\OperatorTok{%>%}\StringTok{ }\KeywordTok{as_tibble}\NormalTok{() }\OperatorTok{%>%}\StringTok{ }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{id =} \DecValTok{1}\OperatorTok{:}\KeywordTok{n}\NormalTok{() }\OperatorTok{%%}\StringTok{ }\NormalTok{iter) }\OperatorTok{%>%}
+\NormalTok{learned_features_fixed_sample_size <-}
+\StringTok{  }\NormalTok{obs }\OperatorTok{%>%}\StringTok{ }\KeywordTok{as_tibble}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{id =} \DecValTok{1}\OperatorTok{:}\KeywordTok{n}\NormalTok{() }\OperatorTok{%%}\StringTok{ }\NormalTok{iter) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{nest}\NormalTok{(}\OperatorTok{-}\NormalTok{id, }\DataTypeTok{.key =} \StringTok{"obs"}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{Ghat =} \KeywordTok{map}\NormalTok{(obs, }\OperatorTok{~}\StringTok{ }\KeywordTok{estimate_G}\NormalTok{(., }\DataTypeTok{algorithm =}\NormalTok{ working_model_G_one))) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{lGAW =} \KeywordTok{map2}\NormalTok{(Ghat, obs, }\OperatorTok{~}\StringTok{ }\KeywordTok{compute_lGhatAW}\NormalTok{(.y}\OperatorTok{$}\NormalTok{A, .y}\OperatorTok{$}\NormalTok{W, .x)))}
+
+
+\NormalTok{psi_hat_abc <-}
+\StringTok{  }\NormalTok{learned_features_fixed_sample_size }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{unnest}\NormalTok{(obs, lGAW) }\OperatorTok{%>%}
 \StringTok{  }\KeywordTok{group_by}\NormalTok{(id) }\OperatorTok{%>%}
-\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{lgAW =} \KeywordTok{predict_lGAW}\NormalTok{(A, W, working_model_G_one)) }\OperatorTok{%>%}
-\StringTok{  }\KeywordTok{summarize}\NormalTok{(}\DataTypeTok{est =} \KeywordTok{mean}\NormalTok{(Y }\OperatorTok{*}\StringTok{ }\NormalTok{(}\DecValTok{2} \OperatorTok{*}\StringTok{ }\NormalTok{A }\OperatorTok{-}\StringTok{ }\DecValTok{1}\NormalTok{) }\OperatorTok{/}\StringTok{ }\NormalTok{lgAW),}
-            \DataTypeTok{try =} \KeywordTok{sd}\NormalTok{(Y }\OperatorTok{*}\StringTok{ }\NormalTok{(}\DecValTok{2} \OperatorTok{*}\StringTok{ }\NormalTok{A }\OperatorTok{-}\StringTok{ }\DecValTok{1}\NormalTok{) }\OperatorTok{/}\StringTok{ }\NormalTok{lgAW) }\OperatorTok{/}\StringTok{ }\KeywordTok{sqrt}\NormalTok{(}\KeywordTok{n}\NormalTok{()))}
-\NormalTok{std_c <-}\StringTok{ }\KeywordTok{sd}\NormalTok{(psi_hat_c}\OperatorTok{$}\NormalTok{est)}
-\NormalTok{psi_hat_abc <-}\StringTok{ }\NormalTok{psi_hat_c }\OperatorTok{%>%}
-\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{std =}\NormalTok{ std_c,}
-         \DataTypeTok{try =}\NormalTok{ try,}
-         \DataTypeTok{clt =}\NormalTok{ (est }\OperatorTok{-}\StringTok{ }\NormalTok{psi_hat) }\OperatorTok{/}\StringTok{ }\NormalTok{std,}
+\StringTok{  }\KeywordTok{summarize}\NormalTok{(}\DataTypeTok{est =} \KeywordTok{mean}\NormalTok{(Y }\OperatorTok{*}\StringTok{ }\NormalTok{(}\DecValTok{2} \OperatorTok{*}\StringTok{ }\NormalTok{A }\OperatorTok{-}\StringTok{ }\DecValTok{1}\NormalTok{) }\OperatorTok{/}\StringTok{ }\NormalTok{lGAW)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{std =} \KeywordTok{sd}\NormalTok{(est),}
+         \DataTypeTok{clt =}\NormalTok{ (est }\OperatorTok{-}\StringTok{ }\NormalTok{psi_approx) }\OperatorTok{/}\StringTok{ }\NormalTok{std,}
          \DataTypeTok{type =} \StringTok{"c"}\NormalTok{) }\OperatorTok{%>%}
 \StringTok{  }\KeywordTok{full_join}\NormalTok{(psi_hat_ab)}
 
@@ -1318,21 +1396,22 @@ drawn from \(P_{0}\) as in Section \ref{subsec:known:gbar:one}:
 
 \begin{verbatim}
 ## # A tibble: 3 x 2
-##   type      bias
-##   <chr>    <dbl>
-## 1 a     -0.258  
-## 2 b      0.0961 
-## 3 c      0.00724
+##   type    bias
+##   <chr>  <dbl>
+## 1 a     1.46  
+## 2 b     0.0696
+## 3 c     0.0435
 \end{verbatim}
 
 Note how we exploit the independent realizations of \(\psi_{n}^{c}\) to
 estimate the asymptotic variance of the estimator with \(v_{n}^{c}/n\).
 By the above chunk of code, the average of
 \(\sqrt{n/v_{n}^{c}} (\psi_{n}^{c} - \psi_{0})\) computed across the
-realizations is equal to 0.007 (rounded to three decimal places --- see
+realizations is equal to 0.043 (rounded to three decimal places --- see
 \texttt{bias\_abc}). We represent the empirical laws of the recentered
-and renormalized \(\psi_{n}^{a}\), \(\psi_{n}^{b}\) and \(\psi_{n}^{c}\)
-in Figures \ref{fig:unknown-Gbar-three} (kernel density estimators) and
+(with respect to \(\\psi_{0}\)) and renormalized \(\psi_{n}^{a}\),
+\(\psi_{n}^{b}\) and \(\psi_{n}^{c}\) in Figures
+\ref{fig:unknown-Gbar-three} (kernel density estimators) and
 \ref{fig:unknown-Gbar-four} (quantile-quantile plots).
 
 \begin{Shaded}
@@ -1341,7 +1420,7 @@ in Figures \ref{fig:unknown-Gbar-three} (kernel density estimators) and
 \StringTok{  }\KeywordTok{geom_density}\NormalTok{(}\KeywordTok{aes}\NormalTok{(clt, }\DataTypeTok{fill =}\NormalTok{ type, }\DataTypeTok{colour =}\NormalTok{ type), psi_hat_abc, }\DataTypeTok{alpha =} \FloatTok{0.1}\NormalTok{) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{geom_vline}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{xintercept =}\NormalTok{ bias, }\DataTypeTok{colour =}\NormalTok{ type),}
 \NormalTok{             bias_abc, }\DataTypeTok{size =} \FloatTok{1.5}\NormalTok{, }\DataTypeTok{alpha =} \FloatTok{0.5}\NormalTok{) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{xlim}\NormalTok{(}\OperatorTok{-}\DecValTok{3}\NormalTok{, }\DecValTok{3}\NormalTok{) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{xlim}\NormalTok{(}\OperatorTok{-}\DecValTok{3}\NormalTok{, }\DecValTok{4}\NormalTok{) }\OperatorTok{+}\StringTok{ }
 \StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{x =} \KeywordTok{expression}\NormalTok{(}\KeywordTok{paste}\NormalTok{(}\KeywordTok{sqrt}\NormalTok{(n}\OperatorTok{/}\NormalTok{v[n]}\OperatorTok{^}\NormalTok{\{}\KeywordTok{list}\NormalTok{(a, b, c)\})}\OperatorTok{*}
 \StringTok{                            }\NormalTok{(psi[n]}\OperatorTok{^}\NormalTok{\{}\KeywordTok{list}\NormalTok{(a, b, c)\} }\OperatorTok{-}\StringTok{ }\NormalTok{psi[}\DecValTok{0}\NormalTok{]))))}
 \end{Highlighting}
@@ -1351,12 +1430,12 @@ in Figures \ref{fig:unknown-Gbar-three} (kernel density estimators) and
 \centering
 \includegraphics{img/unknown-Gbar-three-1.pdf}
 \caption{\label{fig:unknown-Gbar-three}Kernel density estimators of the law
-of three estimators of \(\psi_{0}\) (recentered and renormalized), one
-of them misconceived (a), one assuming that \(\Gbar_{0}\) is known (b)
-and one that hinges on the estimation of \(\Gbar_{0}\) (c). The present
-figure includes Figure \ref{fig:known-Gbar-one-b} (but the colors
-differ). Built based on \texttt{iter} independent realizations of each
-estimator.}
+of three estimators of \(\psi_{0}\) (recentered with respect to
+\(\psi_{0}\), and renormalized), one of them misconceived (a), one
+assuming that \(\Gbar_{0}\) is known (b) and one that hinges on the
+estimation of \(\Gbar_{0}\) (c). The present figure includes Figure
+\ref{fig:known-Gbar-one-b} (but the colors differ). Built based on
+\texttt{iter} independent realizations of each estimator.}
 \end{figure}
 
 \begin{Shaded}
@@ -1386,11 +1465,15 @@ variance.
 \subsection{\gear Exercises.}
 \label{subsec:exo:one}
 
-The questions are asked in the context of Sections
+The problems come within the context of Sections
 \ref{subsec:known:gbar:one} and \ref{subsec:known:gbar:two}.
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
+\item
+  Compute a numerical approximation of
+  \(\Exp_{P_{0}} (Y | A=1) - \Exp_{P_{0}} (Y | A=0)\). How accurate is
+  it?
 \item
   Building upon the piece of code devoted to the repeated computation of
   \(\psi_{n}^{b}\) and its companion quantities, construct confidence
@@ -1403,10 +1486,10 @@ The questions are asked in the context of Sections
   about the probability of success in a Bernoulli experiment against its
   three one-sided and two-sided alternatives.
 \item
-  The wrapper \texttt{predict\_lGAW} makes predictions by fitting a
-  working model on the same data points as those for which predictions
-  are sought. Why could that be problematic? Can you think of a simple
-  workaround, implement and test it?
+  The call to \texttt{compute\_lGhatAW} makes predictions on the same
+  data points as those exploited to learn \(\Gbar_{0}\) by fitting the
+  user-supplied working model. Why could that be problematic? Can you
+  think of a simple workaround, implement and test it?
 \item
   Discuss what happens when the dimension of the (still well-specified)
   working model grows. You could use the following chunk of code
@@ -1420,7 +1503,9 @@ The questions are asked in the context of Sections
   \DataTypeTok{model =} \ControlFlowTok{function}\NormalTok{(...) \{}\KeywordTok{glm}\NormalTok{(}\DataTypeTok{family =} \KeywordTok{binomial}\NormalTok{(), ...)\},}
   \DataTypeTok{formula =} \KeywordTok{as.formula}\NormalTok{(}
     \KeywordTok{paste}\NormalTok{(}\StringTok{"A ~"}\NormalTok{,}
-          \KeywordTok{paste}\NormalTok{(}\StringTok{"I(W^"}\NormalTok{, powers, }\DataTypeTok{sep =} \StringTok{""}\NormalTok{, }\DataTypeTok{collapse =} \StringTok{") + "}\NormalTok{),}
+          \KeywordTok{paste}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{"I(W^"}\NormalTok{, }\StringTok{"I(abs(W - 5/12)^"}\NormalTok{),}
+                \KeywordTok{rep}\NormalTok{(powers, }\DataTypeTok{each =} \DecValTok{2}\NormalTok{),}
+                \DataTypeTok{sep =} \StringTok{""}\NormalTok{, }\DataTypeTok{collapse =} \StringTok{") + "}\NormalTok{),}
           \StringTok{")"}\NormalTok{)}
 \NormalTok{  ))}
 \KeywordTok{attr}\NormalTok{(working_model_G_two, }\StringTok{"ML"}\NormalTok{) <-}\StringTok{ }\OtherTok{FALSE}
@@ -1434,7 +1519,7 @@ presented in Figures \ref{fig:unknown-Gbar-three} and
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{3}
+\setcounter{enumi}{4}
 \tightlist
 \item
   Discuss what happens when the working model is mis-specified. You
@@ -1462,7 +1547,7 @@ presented in Figures \ref{fig:unknown-Gbar-three} and
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{4}
+\setcounter{enumi}{5}
 \tightlist
 \item
   \textdbend  Drawing inspiration from \eqref{eq:v:n:b}, one may
@@ -1474,15 +1559,27 @@ presented in Figures \ref{fig:unknown-Gbar-three} and
   be legitimate.
 \end{enumerate}
 
-\subsection{Targeted inference.}
-\label{subsec:tmle}
+\subsection[Inference based on the estimation of $\Qbar_{0}$.]{Inference based
+on the estimation of $\boldsymbol{\Qbar_{0}}$.} 
+\label{subsec:inf:Q0}
+
+\tcg{Comment on structure of} \texttt{estimate\_Q}, similar to that of
+\texttt{estimate\_G}.
+
+\tcg{Demonstrating the  inference of} \(\psi_{0}\)
+\tcg{based  on the estimation
+of} \(\Qbar_{0}\) \tcg{(and of the marginal  law of}
+\(W\)\tcg{).  Once based on a
+(mis-specified) working model, and once based on a non-parametric algorithm.}
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{estimate_Q <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(dat, algorithm, ...) \{}
   \ControlFlowTok{if}\NormalTok{ (}\OperatorTok{!}\KeywordTok{attr}\NormalTok{(algorithm, }\StringTok{"ML"}\NormalTok{)) \{}
+\NormalTok{    dat <-}\StringTok{ }\KeywordTok{as.data.frame}\NormalTok{(dat)}
 \NormalTok{    fit <-}\StringTok{ }\NormalTok{algorithm[[}\DecValTok{1}\NormalTok{]](}\DataTypeTok{formula =}\NormalTok{ algorithm[[}\DecValTok{2}\NormalTok{]], }\DataTypeTok{data =}\NormalTok{ dat)}
 \NormalTok{    Qhat <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(newdata) \{}
+\NormalTok{      newdata <-}\StringTok{ }\KeywordTok{as.data.frame}\NormalTok{(newdata)}
       \KeywordTok{predict}\NormalTok{(fit, newdata, }\DataTypeTok{type =} \StringTok{"response"}\NormalTok{)}
 \NormalTok{    \}}
 \NormalTok{  \} }\ControlFlowTok{else}\NormalTok{ \{}
@@ -1494,30 +1591,34 @@ presented in Figures \ref{fig:unknown-Gbar-three} and
   \KeywordTok{return}\NormalTok{(Qhat)}
 \NormalTok{\}}
 
-\NormalTok{predict_QAW <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(Y, A, W, algorithm, }\DataTypeTok{blip =} \OtherTok{FALSE}\NormalTok{, ...) \{}
-\NormalTok{  ## a wrapper to use in a call to 'mutate'}
-\NormalTok{  ## (a) carry out the estimation based on 'algorithm'}
-\NormalTok{  dat <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{Y =}\NormalTok{ Y, }\DataTypeTok{A =}\NormalTok{ A, }\DataTypeTok{W =}\NormalTok{ W)}
-\NormalTok{  Qhat <-}\StringTok{ }\KeywordTok{estimate_Q}\NormalTok{(dat, algorithm, ...)}
-\NormalTok{  ## (b) make predictions based on the fit}
+\NormalTok{compute_QhatAW <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(Y, A, W, Qhat, }\DataTypeTok{blip =} \OtherTok{FALSE}\NormalTok{) \{}
   \ControlFlowTok{if}\NormalTok{ (}\OperatorTok{!}\NormalTok{blip) \{}
+\NormalTok{    dat <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{Y =}\NormalTok{ Y, }\DataTypeTok{A =}\NormalTok{ A, }\DataTypeTok{W =}\NormalTok{ W)}
 \NormalTok{    pred <-}\StringTok{ }\KeywordTok{Qhat}\NormalTok{(dat)}
 \NormalTok{  \} }\ControlFlowTok{else}\NormalTok{ \{}
 \NormalTok{    pred <-}\StringTok{ }\KeywordTok{Qhat}\NormalTok{(}\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{A =} \DecValTok{1}\NormalTok{, }\DataTypeTok{W =}\NormalTok{ W)) }\OperatorTok{-}\StringTok{ }\KeywordTok{Qhat}\NormalTok{(}\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{A =} \DecValTok{0}\NormalTok{, }\DataTypeTok{W =}\NormalTok{ W))}
 \NormalTok{  \}}
-  \KeywordTok{return}\NormalTok{(pred)}
+  \KeywordTok{return}\NormalTok{(pred)  }
 \NormalTok{\}}
 
 \NormalTok{working_model_Q_one <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}
   \DataTypeTok{model =} \ControlFlowTok{function}\NormalTok{(...) \{}\KeywordTok{glm}\NormalTok{(}\DataTypeTok{family =} \KeywordTok{binomial}\NormalTok{(), ...)\},}
   \DataTypeTok{formula =} \KeywordTok{as.formula}\NormalTok{(}
     \KeywordTok{paste}\NormalTok{(}\StringTok{"Y ~ A * ("}\NormalTok{,}
-          \KeywordTok{paste}\NormalTok{(}\StringTok{"I(W^"}\NormalTok{, }\KeywordTok{seq}\NormalTok{(}\DecValTok{1}\OperatorTok{/}\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DataTypeTok{by =} \DecValTok{1}\OperatorTok{/}\DecValTok{2}\NormalTok{), }\DataTypeTok{sep =} \StringTok{""}\NormalTok{, }\DataTypeTok{collapse =} \StringTok{") + "}\NormalTok{),}
+          \KeywordTok{paste}\NormalTok{(}\StringTok{"I(W^"}\NormalTok{, }\KeywordTok{seq}\NormalTok{(}\DecValTok{1}\OperatorTok{/}\DecValTok{2}\NormalTok{, }\DecValTok{3}\OperatorTok{/}\DecValTok{2}\NormalTok{, }\DataTypeTok{by =} \DecValTok{1}\OperatorTok{/}\DecValTok{2}\NormalTok{), }\DataTypeTok{sep =} \StringTok{""}\NormalTok{, }\DataTypeTok{collapse =} \StringTok{") + "}\NormalTok{),}
           \StringTok{"))"}\NormalTok{)}
 \NormalTok{  ))}
 \KeywordTok{attr}\NormalTok{(working_model_Q_one, }\StringTok{"ML"}\NormalTok{) <-}\StringTok{ }\OtherTok{FALSE}
 \NormalTok{working_model_Q_one}\OperatorTok{$}\NormalTok{formula}
+\end{Highlighting}
+\end{Shaded}
 
+\begin{verbatim}
+## Y ~ A * (I(W^0.5) + I(W^1) + I(W^1.5))
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \NormalTok{## k-NN}
 \NormalTok{kknn_algo <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(dat, ...) \{}
 \NormalTok{  args <-}\StringTok{ }\KeywordTok{list}\NormalTok{(...)}
@@ -1532,34 +1633,54 @@ presented in Figures \ref{fig:unknown-Gbar-three} and
 \NormalTok{               ...)}
 \NormalTok{\}}
 \KeywordTok{attr}\NormalTok{(kknn_algo, }\StringTok{"ML"}\NormalTok{) <-}\StringTok{ }\OtherTok{TRUE}
-\NormalTok{kknn_grid <-}\StringTok{ }\KeywordTok{expand.grid}\NormalTok{(}\DataTypeTok{kmax =} \KeywordTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DecValTok{5}\NormalTok{), }\DataTypeTok{distance =} \DecValTok{2}\NormalTok{, }\DataTypeTok{kernel =} \StringTok{"gaussian"}\NormalTok{)}
+\NormalTok{kknn_grid <-}\StringTok{ }\KeywordTok{expand.grid}\NormalTok{(}\DataTypeTok{kmax =} \DecValTok{5}\NormalTok{, }\DataTypeTok{distance =} \DecValTok{2}\NormalTok{, }\DataTypeTok{kernel =} \StringTok{"gaussian"}\NormalTok{)}
 \NormalTok{control <-}\StringTok{ }\KeywordTok{trainControl}\NormalTok{(}\DataTypeTok{method =} \StringTok{"cv"}\NormalTok{, }\DataTypeTok{number =} \DecValTok{2}\NormalTok{,}
                         \DataTypeTok{predictionBounds =} \KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{),}
                         \DataTypeTok{allowParallel =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
-\NormalTok{psi_hat_de <-}\StringTok{ }\NormalTok{obs }\OperatorTok{%>%}\StringTok{ }\KeywordTok{as_tibble}\NormalTok{() }\OperatorTok{%>%}\StringTok{ }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{id =} \DecValTok{1}\OperatorTok{:}\KeywordTok{n}\NormalTok{() }\OperatorTok{%%}\StringTok{ }\NormalTok{iter) }\OperatorTok{%>%}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{learned_features_fixed_sample_size <-}
+\StringTok{  }\NormalTok{learned_features_fixed_sample_size }\OperatorTok{%>%}\StringTok{ }\CommentTok{# head(n = 100) %>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{Qhat_d =} \KeywordTok{map}\NormalTok{(obs, }\OperatorTok{~}\StringTok{ }\KeywordTok{estimate_Q}\NormalTok{(., }\DataTypeTok{algorithm =}\NormalTok{ working_model_Q_one)),}
+         \DataTypeTok{Qhat_e =} \KeywordTok{map}\NormalTok{(obs, }\OperatorTok{~}\StringTok{ }\KeywordTok{estimate_Q}\NormalTok{(., }\DataTypeTok{algorithm =}\NormalTok{ kknn_algo,}
+                                        \DataTypeTok{trControl =}\NormalTok{ control,}
+                                        \DataTypeTok{tuneGrid =}\NormalTok{ kknn_grid))) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{blip_QW_d =} \KeywordTok{map2}\NormalTok{(Qhat_d, obs,}
+                          \OperatorTok{~}\StringTok{ }\KeywordTok{compute_QhatAW}\NormalTok{(.y}\OperatorTok{$}\NormalTok{Y, .y}\OperatorTok{$}\NormalTok{A, .y}\OperatorTok{$}\NormalTok{W, .x, }\DataTypeTok{blip =} \OtherTok{TRUE}\NormalTok{)),}
+         \DataTypeTok{blip_QW_e =} \KeywordTok{map2}\NormalTok{(Qhat_e, obs,}
+                          \OperatorTok{~}\StringTok{ }\KeywordTok{compute_QhatAW}\NormalTok{(.y}\OperatorTok{$}\NormalTok{Y, .y}\OperatorTok{$}\NormalTok{A, .y}\OperatorTok{$}\NormalTok{W, .x, }\DataTypeTok{blip =} \OtherTok{TRUE}\NormalTok{)))}
+
+\NormalTok{psi_hat_de <-}
+\StringTok{  }\NormalTok{learned_features_fixed_sample_size }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{unnest}\NormalTok{(blip_QW_d, blip_QW_e) }\OperatorTok{%>%}
 \StringTok{  }\KeywordTok{group_by}\NormalTok{(id) }\OperatorTok{%>%}
-\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{blipQW_d =} \KeywordTok{predict_QAW}\NormalTok{(Y, A, W, working_model_Q_one, }\DataTypeTok{blip =} \OtherTok{TRUE}\NormalTok{),}
-         \DataTypeTok{blipQW_e =} \KeywordTok{predict_QAW}\NormalTok{(Y, A, W, kknn_algo, }\DataTypeTok{blip =} \OtherTok{TRUE}\NormalTok{,}
-                                \DataTypeTok{trControl =}\NormalTok{ control,}
-                                \DataTypeTok{tuneGrid =}\NormalTok{ kknn_grid,}
-                                \DataTypeTok{Subsample =} \DecValTok{100}\NormalTok{)) }\OperatorTok{%>%}
-\StringTok{  }\KeywordTok{summarize}\NormalTok{(}\DataTypeTok{est_d =} \KeywordTok{mean}\NormalTok{(blipQW_d),}
-            \DataTypeTok{est_e =} \KeywordTok{mean}\NormalTok{(blipQW_e))}
-
-\NormalTok{std_d <-}\StringTok{ }\KeywordTok{sd}\NormalTok{(psi_hat_de}\OperatorTok{$}\NormalTok{est_d)}
-\NormalTok{std_e <-}\StringTok{ }\KeywordTok{sd}\NormalTok{(psi_hat_de}\OperatorTok{$}\NormalTok{est_e)}
-\NormalTok{psi_hat_de <-}\StringTok{ }\NormalTok{psi_hat_de }\OperatorTok{%>%}
-\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{std_d =}\NormalTok{ std_d,}
-         \DataTypeTok{clt_d =}\NormalTok{ (est_d }\OperatorTok{-}\StringTok{ }\NormalTok{psi_hat) }\OperatorTok{/}\StringTok{ }\NormalTok{std_d,}
-         \DataTypeTok{std_e =}\NormalTok{ std_e,}
-         \DataTypeTok{clt_e =}\NormalTok{ (est_e }\OperatorTok{-}\StringTok{ }\NormalTok{psi_hat) }\OperatorTok{/}\StringTok{ }\NormalTok{std_e) }\OperatorTok{%>%}\StringTok{ }
-\StringTok{  }\KeywordTok{gather}\NormalTok{(key, value, }\OperatorTok{-}\NormalTok{id) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{summarize}\NormalTok{(}\DataTypeTok{est_d =} \KeywordTok{mean}\NormalTok{(blip_QW_d),}
+            \DataTypeTok{est_e =} \KeywordTok{mean}\NormalTok{(blip_QW_e)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{std_d =} \KeywordTok{sd}\NormalTok{(est_d),}
+         \DataTypeTok{std_e =} \KeywordTok{sd}\NormalTok{(est_e),}
+         \DataTypeTok{clt_d =}\NormalTok{ (est_d }\OperatorTok{-}\StringTok{ }\NormalTok{psi_approx) }\OperatorTok{/}\StringTok{ }\NormalTok{std_d,}
+         \DataTypeTok{clt_e =}\NormalTok{ (est_e }\OperatorTok{-}\StringTok{ }\NormalTok{psi_approx) }\OperatorTok{/}\StringTok{ }\NormalTok{std_e) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{gather}\NormalTok{(}\StringTok{"key"}\NormalTok{, }\StringTok{"value"}\NormalTok{, }\OperatorTok{-}\NormalTok{id) }\OperatorTok{%>%}
 \StringTok{  }\KeywordTok{extract}\NormalTok{(key, }\KeywordTok{c}\NormalTok{(}\StringTok{"what"}\NormalTok{, }\StringTok{"type"}\NormalTok{), }\StringTok{"([^_]+)_([de])"}\NormalTok{) }\OperatorTok{%>%}
 \StringTok{  }\KeywordTok{spread}\NormalTok{(what, value)}
 
 \NormalTok{(bias_de <-}\StringTok{ }\NormalTok{psi_hat_de }\OperatorTok{%>%}\StringTok{ }\KeywordTok{group_by}\NormalTok{(type) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{summarize}\NormalTok{(}\DataTypeTok{bias =} \KeywordTok{mean}\NormalTok{(clt)))}
+\end{Highlighting}
+\end{Shaded}
 
+\begin{verbatim}
+## # A tibble: 2 x 2
+##   type    bias
+##   <chr>  <dbl>
+## 1 d     0.304 
+## 2 e     0.0881
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \NormalTok{fig <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{() }\OperatorTok{+}
 \StringTok{  }\KeywordTok{geom_line}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ x, }\DataTypeTok{y =}\NormalTok{ y), }
             \DataTypeTok{data =} \KeywordTok{tibble}\NormalTok{(}\DataTypeTok{x =} \KeywordTok{seq}\NormalTok{(}\OperatorTok{-}\DecValTok{3}\NormalTok{, }\DecValTok{3}\NormalTok{, }\DataTypeTok{length.out =} \FloatTok{1e3}\NormalTok{),}
@@ -1574,6 +1695,128 @@ presented in Figures \ref{fig:unknown-Gbar-three} and
 \StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{x =} \KeywordTok{expression}\NormalTok{(}\KeywordTok{paste}\NormalTok{(}\KeywordTok{sqrt}\NormalTok{(n}\OperatorTok{/}\NormalTok{v[n]}\OperatorTok{^}\NormalTok{\{}\KeywordTok{list}\NormalTok{(d, e)\})}\OperatorTok{*}\NormalTok{(psi[n]}\OperatorTok{^}\NormalTok{\{}\KeywordTok{list}\NormalTok{(d, e)\} }\OperatorTok{-}\StringTok{ }\NormalTok{psi[}\DecValTok{0}\NormalTok{]))))}
 \end{Highlighting}
 \end{Shaded}
+
+\includegraphics{img/estimating-Qbar-one-bis-1.pdf}
+
+\tcg{No that bad!   Yet, we know that} \(\sqrt{n}\)
+\tcg{times  bias is bound to
+increase with sample size. To see this, check out the next chunks of code.}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sample_size <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\FloatTok{1e3}\NormalTok{, }\FloatTok{4e3}\NormalTok{, }\FloatTok{9e3}\NormalTok{)}
+\NormalTok{block_size <-}\StringTok{ }\KeywordTok{sum}\NormalTok{(sample_size)}
+
+\NormalTok{label <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(xx, }\DataTypeTok{sample_size =} \KeywordTok{c}\NormalTok{(}\FloatTok{1e3}\NormalTok{, }\FloatTok{2e3}\NormalTok{)) \{}
+\NormalTok{  by <-}\StringTok{ }\KeywordTok{sum}\NormalTok{(sample_size)}
+\NormalTok{  xx <-}\StringTok{ }\NormalTok{xx[}\KeywordTok{seq_len}\NormalTok{((}\KeywordTok{length}\NormalTok{(xx) }\OperatorTok{%/%}\StringTok{ }\NormalTok{by) }\OperatorTok{*}\StringTok{ }\NormalTok{by)] }\OperatorTok{-}\StringTok{ }\DecValTok{1}
+\NormalTok{  prefix <-}\StringTok{ }\NormalTok{xx }\OperatorTok{%/%}\StringTok{ }\NormalTok{by}
+\NormalTok{  suffix <-}\StringTok{ }\KeywordTok{findInterval}\NormalTok{(xx }\OperatorTok{%%}\StringTok{ }\NormalTok{by, }\KeywordTok{cumsum}\NormalTok{(sample_size))}
+  \KeywordTok{paste}\NormalTok{(prefix }\OperatorTok{+}\StringTok{ }\DecValTok{1}\NormalTok{, suffix }\OperatorTok{+}\StringTok{ }\DecValTok{1}\NormalTok{, }\DataTypeTok{sep =} \StringTok{"_"}\NormalTok{)}
+\NormalTok{\}}
+
+\NormalTok{learned_features_varying_sample_size <-}\StringTok{ }\NormalTok{obs }\OperatorTok{%>%}\StringTok{ }\NormalTok{as.tibble }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{head}\NormalTok{(}\DataTypeTok{n =}\NormalTok{ (}\KeywordTok{nrow}\NormalTok{(.) }\OperatorTok{%/%}\StringTok{ }\NormalTok{block_size) }\OperatorTok{*}\StringTok{ }\NormalTok{block_size) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{block =} \KeywordTok{label}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\KeywordTok{nrow}\NormalTok{(.), sample_size)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{nest}\NormalTok{(}\OperatorTok{-}\NormalTok{block, }\DataTypeTok{.key =} \StringTok{"obs"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+First, we cut the data set into independent sub-data sets of sample size
+\(n\) in \(\{\) 1000, 4000, 9000 \(\}\). Second, we infer \(\psi_{0}\)
+as shown two chunks earlier. We thus obtain 71 independent realizations
+of each estimator derived on data sets of 3, increasing sample sizes.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{learned_features_varying_sample_size <-}
+\StringTok{  }\NormalTok{learned_features_varying_sample_size }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{Qhat_d =} \KeywordTok{map}\NormalTok{(obs, }\OperatorTok{~}\StringTok{ }\KeywordTok{estimate_Q}\NormalTok{(., }\DataTypeTok{algorithm =}\NormalTok{ working_model_Q_one)),}
+         \DataTypeTok{Qhat_e =} \KeywordTok{map}\NormalTok{(obs, }\OperatorTok{~}\StringTok{ }\KeywordTok{estimate_Q}\NormalTok{(., }\DataTypeTok{algorithm =}\NormalTok{ kknn_algo,}
+                                        \DataTypeTok{trControl =}\NormalTok{ control,}
+                                        \DataTypeTok{tuneGrid =}\NormalTok{ kknn_grid))) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{blip_QW_d =} \KeywordTok{map2}\NormalTok{(Qhat_d, obs,}
+                          \OperatorTok{~}\StringTok{ }\KeywordTok{compute_QhatAW}\NormalTok{(.y}\OperatorTok{$}\NormalTok{Y, .y}\OperatorTok{$}\NormalTok{A, .y}\OperatorTok{$}\NormalTok{W, .x, }\DataTypeTok{blip =} \OtherTok{TRUE}\NormalTok{)),}
+         \DataTypeTok{blip_QW_e =} \KeywordTok{map2}\NormalTok{(Qhat_e, obs,}
+                          \OperatorTok{~}\StringTok{ }\KeywordTok{compute_QhatAW}\NormalTok{(.y}\OperatorTok{$}\NormalTok{Y, .y}\OperatorTok{$}\NormalTok{A, .y}\OperatorTok{$}\NormalTok{W, .x, }\DataTypeTok{blip =} \OtherTok{TRUE}\NormalTok{)))}
+
+\NormalTok{root_n_bias <-}\StringTok{ }\NormalTok{learned_features_varying_sample_size }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{unnest}\NormalTok{(blip_QW_d, blip_QW_e) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(block) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{summarize}\NormalTok{(}\DataTypeTok{clt_d =} \KeywordTok{sqrt}\NormalTok{(}\KeywordTok{n}\NormalTok{())}\OperatorTok{*}\NormalTok{(}\KeywordTok{mean}\NormalTok{(blip_QW_d) }\OperatorTok{-}\StringTok{ }\NormalTok{psi_approx),}
+            \DataTypeTok{clt_e =} \KeywordTok{sqrt}\NormalTok{(}\KeywordTok{n}\NormalTok{())}\OperatorTok{*}\NormalTok{(}\KeywordTok{mean}\NormalTok{(blip_QW_e) }\OperatorTok{-}\StringTok{ }\NormalTok{psi_approx)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{gather}\NormalTok{(}\StringTok{"key"}\NormalTok{, }\StringTok{"value"}\NormalTok{, }\OperatorTok{-}\NormalTok{block) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{extract}\NormalTok{(key, }\KeywordTok{c}\NormalTok{(}\StringTok{"what"}\NormalTok{, }\StringTok{"type"}\NormalTok{), }\StringTok{"([^_]+)_([de])"}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{spread}\NormalTok{(what, value) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{block =} \KeywordTok{unlist}\NormalTok{(}\KeywordTok{map}\NormalTok{(}\KeywordTok{strsplit}\NormalTok{(block, }\StringTok{"_"}\NormalTok{), }\OperatorTok{~}\NormalTok{.x[}\DecValTok{2}\NormalTok{])),}
+         \DataTypeTok{sample_size =}\NormalTok{ sample_size[}\KeywordTok{as.integer}\NormalTok{(block)])}
+\end{Highlighting}
+\end{Shaded}
+
+The \texttt{tibble} called \texttt{root\_n\_bias} reports root-\(n\)
+times bias for all combinations of estimator and sample size. The next
+chunk of code presents visually our findings. Note how we include the
+realizations of the estimators derived earlier and contained in
+\texttt{psi\_hat\_de} (thus breaking the independence between components
+of \texttt{root\_n\_bias}, a small price to pay here).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{root_n_bias <-}\StringTok{ }\NormalTok{learned_features_fixed_sample_size }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{sample_size =}\NormalTok{ B}\OperatorTok{/}\NormalTok{iter) }\OperatorTok{%>%}\StringTok{  }\CommentTok{# because *fixed* sample size}
+\StringTok{  }\KeywordTok{unnest}\NormalTok{(blip_QW_d, blip_QW_e) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(id) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{summarize}\NormalTok{(}\DataTypeTok{clt_d =} \KeywordTok{sqrt}\NormalTok{(}\KeywordTok{n}\NormalTok{()) }\OperatorTok{*}\StringTok{ }\NormalTok{(}\KeywordTok{mean}\NormalTok{(blip_QW_d) }\OperatorTok{-}\StringTok{ }\NormalTok{psi_approx),}
+            \DataTypeTok{clt_e =} \KeywordTok{sqrt}\NormalTok{(}\KeywordTok{n}\NormalTok{()) }\OperatorTok{*}\StringTok{ }\NormalTok{(}\KeywordTok{mean}\NormalTok{(blip_QW_e) }\OperatorTok{-}\StringTok{ }\NormalTok{psi_approx),}
+            \DataTypeTok{sample_size =}\NormalTok{ sample_size[}\DecValTok{1}\NormalTok{]) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{gather}\NormalTok{(}\StringTok{"key"}\NormalTok{, }\StringTok{"clt"}\NormalTok{, }\OperatorTok{-}\NormalTok{id, }\OperatorTok{-}\NormalTok{sample_size) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{extract}\NormalTok{(key, }\KeywordTok{c}\NormalTok{(}\StringTok{"what"}\NormalTok{, }\StringTok{"type"}\NormalTok{), }\StringTok{"([^_]+)_([de])"}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{block =} \StringTok{"0"}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{select}\NormalTok{(}\OperatorTok{-}\NormalTok{id, }\OperatorTok{-}\NormalTok{what) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{full_join}\NormalTok{(root_n_bias)}
+
+\NormalTok{root_n_bias }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ sample_size, }\DataTypeTok{y =}\NormalTok{ clt,}
+                   \DataTypeTok{group =} \KeywordTok{interaction}\NormalTok{(sample_size, type),}
+                   \DataTypeTok{color =}\NormalTok{ type),}
+               \DataTypeTok{fun.data =}\NormalTok{ mean_se, }\DataTypeTok{fun.args =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{mult =} \DecValTok{2}\NormalTok{),}
+               \DataTypeTok{position =} \KeywordTok{position_dodge}\NormalTok{(}\DataTypeTok{width =} \DecValTok{250}\NormalTok{), }\DataTypeTok{cex =} \DecValTok{1}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ sample_size, }\DataTypeTok{y =}\NormalTok{ clt,}
+                   \DataTypeTok{group =} \KeywordTok{interaction}\NormalTok{(sample_size, type),}
+                   \DataTypeTok{color =}\NormalTok{ type),}
+               \DataTypeTok{fun.data =}\NormalTok{ mean_se, }\DataTypeTok{fun.args =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{mult =} \DecValTok{2}\NormalTok{),}
+               \DataTypeTok{position =} \KeywordTok{position_dodge}\NormalTok{(}\DataTypeTok{width =} \DecValTok{250}\NormalTok{), }\DataTypeTok{cex =} \DecValTok{1}\NormalTok{,}
+               \DataTypeTok{geom =} \StringTok{"errorbar"}\NormalTok{, }\DataTypeTok{width =} \DecValTok{750}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ sample_size, }\DataTypeTok{y =}\NormalTok{ clt,}
+                   \DataTypeTok{color =}\NormalTok{ type),}
+               \DataTypeTok{fun.y =}\NormalTok{ mean, }
+               \DataTypeTok{position =} \KeywordTok{position_dodge}\NormalTok{(}\DataTypeTok{width =} \DecValTok{250}\NormalTok{),}
+               \DataTypeTok{geom =} \StringTok{"polygon"}\NormalTok{, }\DataTypeTok{fill =} \OtherTok{NA}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ sample_size, }\DataTypeTok{y =}\NormalTok{ clt,}
+                 \DataTypeTok{group =} \KeywordTok{interaction}\NormalTok{(sample_size, type),}
+                 \DataTypeTok{color =}\NormalTok{ type),}
+             \DataTypeTok{position =} \KeywordTok{position_dodge}\NormalTok{(}\DataTypeTok{width =} \DecValTok{250}\NormalTok{),}
+             \DataTypeTok{alpha =} \FloatTok{0.1}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_continuous}\NormalTok{(}\DataTypeTok{breaks =} \KeywordTok{unique}\NormalTok{(sample_size)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{x =} \StringTok{"sample size n"}\NormalTok{,}
+       \DataTypeTok{y =} \KeywordTok{expression}\NormalTok{(}\KeywordTok{paste}\NormalTok{(}\KeywordTok{sqrt}\NormalTok{(n)}\OperatorTok{*}\NormalTok{(psi[n]}\OperatorTok{^}\NormalTok{\{}\KeywordTok{list}\NormalTok{(d, e)\} }\OperatorTok{-}\StringTok{ }\NormalTok{psi[}\DecValTok{0}\NormalTok{]))))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+\centering
+\includegraphics{img/estimating-Qbar-four-1.pdf}
+\caption{\label{fig:estimating-Qbar-four}Evolution of root-\(n\) times bias
+versus sample size for two inference methodology of \(\psi_{0}\) based
+on the estimation of \(\Qbar_{0}\). Big dots represent the average
+biases and vertical lines represent twice the standard error.}
+\end{figure}
+
+\subsection{One-step estimation.}
+\label{subsec:one:step}
+
+\subsection{Targeted inference.}
+\label{subsec:tmle}
 
 For later\(\ldots{}\)
 
@@ -1675,8 +1918,6 @@ For later\(\ldots{}\)
                          \DataTypeTok{stringsAsFactors =} \OtherTok{FALSE}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
-
---\textgreater{}
 
 
 \end{document}

@@ -176,15 +176,11 @@ the  conditional  density   of  $Y$  given  $A$  and  $W$.    For  each  $y\in
 \interval[open]{0}{1}$,  we  denote  by  $q_{0,Y}(y, A,  W)$  the  conditional
 density evaluated at  $y$ of $Y$ given $A$ and  $W$.  Similarly, the attribute
 `Qbar` describes the conditional mean of $Y$  given $A$ and $W$, and we denote
-$\Qbar_0(A,W) = \Exp_{P_{0}}(Y|A,W$ the conditional  mean of $Y$ given $A$ and
+$\Qbar_0(A,W) = \Exp_{P_{0}}(Y|A,W)$ the conditional  mean of $Y$ given $A$ and
 $W$.
-
-\tcg{For consistency, I removed the $A=a$ and $W=w$.}
 
 \subsection{\gear Visualizing infinite-dimensional features of the experiment}
 \label{subsec:visualizing}
-
-
 
 1.  Run the following chunk of code.  It visualizes the conditional mean
    $\Qbar_{0}$.
@@ -222,8 +218,7 @@ It happens that we especially care for a finite-dimensional feature of $P_{0}$
 that  we   denote  by  $\psi_{0}$.    Its  definition  involves  two   of  the
 aforementioned  infinite-dimensional  features: \begin{align}  \label{eq:psi0}
 \psi_{0}  &\equiv   \int  \left(\Qbar_{0}(1,   w)  -   \Qbar_{0}(0,  w)\right)
-dQ_{0,W}(w)\\  \notag  &=  \Exp_{P_{0}}   \left(\Qbar_{0}(1,  W)  -  \Qbar_{0}(0,
-W)\right).   \end{align} Acting  as  oracles, we  can  compute explicitly  the
+dQ_{0,W}(w)\\  \notag  &=  \Exp_{P_{0}}   \left(\Exp_{P_0}(Y \mid A = 1,  W)  -  \Exp_{P_0}(Y \mid A = 0,  W) \right).   \end{align} Acting  as  oracles, we  can  compute explicitly  the
 numerical value of  $\psi_{0}$.  
 
 ```{r approx-psi-0-a-one}
@@ -248,7 +243,7 @@ and, for some deterministic functions $f_w$, $f_a$, $f_y$ and independent
 sources of randomness $U_w$, $U_a$, $U_y$,
 \begin{enumerate}
 \item sample  the context where the  rest of the experiment
-  will take place, $W = f_{w}(U_w)$;
+  will take place \tcg{Not sure I understand this sentence}, $W = f_{w}(U_w)$;
 \item  sample the  two counterfactual  rewards of  the two
   actions  that   can  be   undertaken,  $Y_{0}  =   f_{y}(0,  W,   U_y)$  and
   $Y_{1} = f_{y}(1, W, U_y)$;
@@ -269,25 +264,27 @@ experiment eventually.  In light  of the above  enumeration, $\bbO  \equiv (W,
 Y_{0}, Y_{1}, A,  Y)$ is output, as  opposed to its summary  measure $O$. This
 defines another experiment and its law, that we denote $\bbP_{0}$.
 
-
-
-It is well known \tcg{(do we give the proof or refer to other articles?)} that
+It is straightforward to show\footnote{For $a = 0,1$, \begin{align*}
+\Exp_{\bbP_0}(Y_a) &= \int \Exp_{\bbP_0}(Y_a \mid W = w) dQ_{0,W}(w) = \int \Exp_{\bbP_0}(Y_a \mid A = a, W = w) dQ_{0,W}(w) \\
+&= \int \Exp_{P_0}(Y \mid A = a, W = w) dQ_{0,W}(w) = \int \Qbar_0(a,W) dQ_{0,W}(w). 
+\end{align*}} that under assumptions\footnote{The second equality in the above footnote is the result of the randomization assumption, which states that $(Y_0,Y_1) \perp A \mid W$. The third equality results from two assumptions: consistency and positivity. Consistency states that $Y_a = Y \mid A = a$; that is, the counterfactual of interest $Y_a$ is equal to the observed value $Y$ when $A = a$. Positivity states that for $a = 0,1$, $\Pr_{P_0}\{\ell\Gbar_0(a,W) > 0\} = 1$, and is needed for $\Exp_{P_0}(Y \mid A = a, W = w)$ to be well-defined.}
 \begin{equation} \label{eq:psi:zero}    
 \psi_{0} = \Exp_{\bbP_{0}} \left(Y_{1} - Y_{0}\right) = \Exp_{\bbP_{0}}(Y_1) -
-\Exp_{\bbP_{0}}(Y_0).  \end{equation}  Thus, $\psi_{0}$ describes  the average
+\Exp_{\bbP_{0}}(Y_0).  \end{equation}  Thus, under these assumptions, 
+$\psi_{0}$ describes  the average
 difference in of  the two counterfactual rewards.  In  other words, $\psi_{0}$
 quantifies the difference  in average of the  reward one would get  in a world
 where one would always enforce action $a=1$ with the reward one would get in a
 world where  one would always  enforce action $a=0$.   This said, it  is worth
-emphasizing  that $\psi_{0}$  is a  well defined  parameter beyond  its causal
-interpretation.
+emphasizing  that $\psi_{0}$  is a  well-defined  parameter beyond  its causal
+interpretation and describes a standardized association between the action $A$ 
+and the reward $Y$. 
 
-
-To conclude this  subsection, we take advantage of our  position as oracles to
+To conclude this  subsection, we use our  position as oracles to
 sample observations from the  ideal experiment. We call `draw_from_experiment`
 with its  argument `ideal` set to  `TRUE` in order to  numerically approximate
-$\psi_{0}$.   By  the law  of  large  numbers,  the  following chunk  of  code
-approximates $\psi_{0}$ and shows it approximate value:
+$\psi_{0}$.   By  the law  of  large  numbers,  the  following code
+approximates $\psi_{0}$ and shows it approximate value.
 
 ```{r approx-psi-zero-a-two}
 B <- 1e6 ## Antoine: 1e6 eventually
@@ -295,8 +292,11 @@ ideal_obs <- draw_from_experiment(B, ideal = TRUE)
 (psi_approx <- mean(ideal_obs[, "Yone"] - ideal_obs[, "Yzero"]))
 ```
 
-In fact, the central limit theorem and Slutsky's lemma allow us to build a
-confidence interval with asymptotic level 95\% for $\psi_{0}$:
+The object `psi_approx` contains an approximation to $\psi_0$ based on `B` 
+observations from the ideal experiment. The random sampling of observations
+results in uncertainty in the numerical approximation of $\psi_0$. 
+This uncertainty can be quantified 
+by constructing a 95\% confidence interval for $\psi_0$. The central limit theorem and Slutsky's lemma allow us to build such an interval as follows. 
 
 ```{r approx-psi-zero-b}
 sd_approx <- sd(ideal_obs[, "Yone"] - ideal_obs[, "Yzero"])
@@ -304,7 +304,9 @@ alpha <- 0.05
 (psi_approx_CI <- psi_approx + c(-1, 1) * qnorm(1 - alpha / 2) * sd_approx / sqrt(B))
 ```
 
-
+We note that the interpretation of this confidence interval is that in 95\% of 
+draws of size `B` from the ideal data generating experiment, the true value of 
+$\psi_0$ will be contained in the generated confidence interval. 
 
 \subsection{\gear Difference in covariate-adjusted quantile rewards, first
 pass.}  
@@ -359,7 +361,9 @@ zero and one $Q_{W}$-almost surely, where $Q_{W}$ is the marginal law of $W$
 under $P$.  
 
 Let us also define generically $\Qbar$ as \begin{equation*} \Qbar (A,W) \equiv
-\Exp_{P}  (Y|A,  W).   \end{equation*}  Central to  our  approach  is  viewing
+\Exp_{P}  (Y|A,  W) \ ,   \end{equation*}  
+where, for simplicity, we have suppressed the dependence of $\Qbar$ on $P$.
+Central to  our  approach  is  viewing
 $\psi_{0}$ as  the value  at $P_{0}$  of the  statistical mapping  $\Psi$ from
 $\calM$  to  $[0,1]$  characterized  by \begin{align*}  \Psi(P)  &\equiv  \int
 \left(\Qbar(1, w) - \Qbar(0, w)\right) dQ_{W}(w) \\ &= \Exp_{P} \left(\Qbar(1,
@@ -465,6 +469,7 @@ $\Delta_c(P) \equiv \Gamma_{1,c}(P) - \Gamma_{0,c}(P)$.
    interval for $F^{-1}(p)$ with asymptotic level $1 - 2\alpha$.}
 
 
+
 \subsection{The parameter of interest, third pass.}
 \label{subsec:parameter:third}
 
@@ -472,31 +477,47 @@ In the previous subsection, we reoriented our view of the target parameter to
 be a statistical functional of the distribution of the observed data. Specifically,
 we viewed the parameter as a function of specific features of the observed data
 distribution, namely $Q_{W}$ and $\Qbar$. It is straightforward\footnote{
-  For $a = 0,1$, \begin{align*}
-    \Exp_{P_0}\left(\frac{I(A = a)Y}{\ell\Gbar{a,W}}\right) &= \Exp_{P_0}\left\{\Exp_{P_0}\left(\frac{I(A = a)Y}{\ell\Gbar{a,W}} \mid A, W\right) \right\} = \Exp_{P_0}\left\{\frac{I(A = a)}{\ell\Gbar{a,W}} \Exp_{P_0}(Y \mid A, W) \right\} \\
-    &= \Exp_{P_0}\left\{\frac{I(A = a)}{\ell\Gbar{a,W}} \Exp_{P_0}(Y \mid A = 1, W) \right\} 
-    = \Exp_{P_0}\left\{\Exp_{P_0}\left(\frac{I(A = a)}{\ell\Gbar{a,W}} \Exp_{P_0}(Y \mid A = 1, W) \mid W \right) \right\} \\
-    &=  \Exp_{P_0}\left(\ell\Gbar{a,W}}{\ell\Gbar{a,W}} \Exp_{P_0}(Y \mid A = 1, W) \mid W \right) = \Exp_{P_0} \left( \Exp_{P_0}(Y \mid A = 1, W) \right) \ . 
+  We temporarily drop the subscript $P_0$ to save space. For $a = 0,1$, \begin{align*}
+    \Exp\left(\frac{I(A = a)Y}{\ell\Gbar(a,W)}\right) &= \Exp\left\{\Exp\left(\frac{I(A = a)Y}{\ell\Gbar(a,W)} \bigg| A, W \right) \right\} 
+    = \Exp\left\{\frac{I(A = a)}{\ell\Gbar(a,W)} \Exp(Y \mid A, W) \right\}
+    = \Exp\left\{\frac{I(A = a)}{\ell\Gbar(a,W)} \Exp(Y \mid A = a, W) \right\} \\
+    &= \Exp\left\{\Exp\left(\frac{I(A = a)}{\ell\Gbar(a,W)} \Exp(Y \mid A = a, W) \mid W \right) \right\} =  \Exp\left(\frac{\ell\Gbar(a,W)}{\ell\Gbar(a,W)} \Exp(Y \mid A = a, W) \mid W \right) = \Exp \left( \Exp(Y \mid A = a, W) \right) \ . 
     \end{align*}
 } to show an equivalent
-representation of the parameter as \begin{equation}\label{eq:psi0:b} 
-\psi_{0} = \Exp_{P_{0}}    \left\{\frac{I(A = 1)}{\ell\Gbar_{0}(1,W)} - \frac{I(A = 0)}{\ell\Gbar_{0}(0,W)} \right) Y \right\}   \ , 
-\end{equation}
+representation of the parameter as \begin{align}\label{eq:psi0:b} 
+\psi_{0} &= \int \left(\frac{I(a = 1)}{\ell\Gbar_0(1,w)} - \frac{I(a = 0)}{\ell\Gbar_0(0,w)} \right) y \ dP_0(o)  \\
+&= \Exp_{P_0} \left\{ \left(\frac{I(A = 1)}{\Pr_{P_0}(A = 1 \mid W)} - \frac{I(A = 0)}{\Pr_{P_0}(A = 0 \mid W)} \right) Y  \right\} \notag
+\end{align}
 or, viewing the parameter as a statistical functional, for a given $P$ in the model 
-\begin{equation} \label{eq:psi0:c}
-\Psi(P) = \Exp_{P}\left\{\frac{I(A = 1)}{\mbox{Pr}_P(A = 1 \mid W)} - \frac{I(A = 0)}{\mbox{Pr}_P(A = 1 \mid W)} \right) Y \right\} \ . 
-\end{equation}
+\begin{align} \label{eq:psi0:c}
+\Psi(P) &= \Exp_{P}\left\{\left(\frac{I(A = 1)}{\Pr_P(A = 1 \mid W)} - \frac{I(A = 0)}{\Pr_P(A = 1 \mid W)} \right) Y \right\} \\
+&= \int \left(\frac{I(a = 1)}{\ell\Gbar(1,w)} - \frac{I(a = 0)}{\ell\Gbar(0,w)} \right) y \ dP(o)
+\end{align}
+
+Our reason for introducing this alternative view of the target parameter will become clear when we discuss estimation of the target parameter. Specifically, the representations (\ref{eq:psi0}) and (\ref{eq:psi0:b}) naturally suggest different estimation strategies for $\psi_0$. The former suggests building an estimator of $\psi_0$ using estimators of $\Qbar_0$ and of $Q_{W,0}$. The latter suggests building an estimator of $\psi_0$ using estimators of $\ell\Gbar_0$ and of $P_0$. We return to these ideas in later sections. 
+
+\subsection{\gear  Difference in  covariate-adjusted quantile  rewards, third
+pass.}  
+\label{subsec:exo:dave:two}
+
+We  continue with  the exercise  from Section  \ref{subsec:exo:dave:one}.
+
+1. \textdbend Show that for $a' = 0,1$, $\gamma_{0,a',c}$ as defined in (\ref{def_quantile}) can be equivalently expressed as $$\inf    \left\{z     \in
+\interval[open]{0}{1}  : \int  \frac{I(a = a')}{\ell\Gbar(a',W)} I(y \le z) dP_0(o)  \ge c  \right\}.$$
 
 
-
-
-\subsection{Being smooth, first pass.}
+\subsection{Smooth parameters, first pass.}
 \label{subsec:being:smooth:one}
 
 
-Luckily, the statistical mapping $\Psi$ is well behaved, or smooth.  Here,
-this colloquial expression refers to the fact that, for each $P \in \calM$, if
-$P_{h} \to_{h} P$ in  $\calM$ from a direction $s$ when  the real parameter $h
+Within our view of the target parameter as a statistical functional, it is natural
+to inquire of properties this functional. For example, we may be interested in  
+asking how the value of $\Psi(P)$ changes for distributions that are, in a loose sense,
+near to $P$ in $\mathcal{M}$. If small changes in the data distribution result in 
+large changes in the parameter value, we might hypothesize that it will be difficult
+to produce good estimators of $\psi_0$. Fortunately, this turns out not to be the case
+for $\Psi$, and so we say that $\Psi$ is a smooth parameter mapping. This colloquial expression refers to the fact that, for each $P \in \calM$, if
+$P_{h} \to_{h} P$ in  $\calM$ from a direction $s$ \tcg{Will the meaning of this statement be clear? Maybe add a reference to the next subsection where these things are formalized. Or perhaps add a more low level description?} when  the real parameter $h
 \to 0$,  then not  only $\Psi(P_{h}) \to_{h}  \Psi(P)$ (continuity),  but also
 $h^{-1} [\Psi(P_{h}) - \Psi(P)] \to_{h} c$,  where the real number $c$ depends
 on $P$ and $s$ (differentiability).
@@ -538,52 +559,68 @@ The dotted curve  represents the function $h \mapsto  \Psi(\Pi_{h})$. The blue
 line represents  the tangent to the  previous curve at $h=0$,  which is indeed
 differentiable around $h=0$.  It is  derived by simple geometric arguments. In
 the  next  subsection,  we formalize  what  it  means  to  be smooth  for  the
-statistical mapping $\Psi$. Once the presentation is complete, we will be able
-to derive a  closed-form expression for the  slope of the blue  curve from the
-chunk of code where `draw_from_another_experiment` is defined.
+statistical mapping $\Psi$. This allows us to derive a  closed-form expression 
+for the  slope of the blue  curve from the chunk of code where 
+`draw_from_another_experiment` is defined.
 
 \subsection{\textdbend Being smooth, second pass.}
 \label{subsec:being:smooth:two}
 
 Let us now describe what it means  for statistical mapping $\Psi$ to be smooth
-at  every $P  \in \calM$.   The description  necessitates the  introduction of
-fluctuations.
-
-For every direction\footnote{A direction is a measurable function.} $s : \calO
-\to \bbR$ such that  $s \neq 0$\footnote{That is, $s(O)$ is  not equal to zero
-$P$-almost surely.}, $\Exp_{P}  (s(O)) = 0$ and $s$ bounded  by, say, $M$, for
-every $h \in  H \equiv \interval[open]{-M^{-1}}{M^{-1}}$, we can  define a law
+at  every $P  \in \calM$.  To describe the rate of change of a statistical 
+parameter at $P$ as we approach $P$ in our model, we must formalize 
+what is meant by "approach $P$". Toward that end, we introduce the idea of
+fluctuations of $P$. For every $h \in  H \equiv \interval[open]{-M^{-1}}{M^{-1}}$, we 
+can  define a law
 $P_{h}  \in \calM$  by  setting  $P_{h} \ll  P$\footnote{That  is, $P_{h}$  is
 dominated  by $P$:  if an  event $A$  satisfies $P(A)  = 0$,  then necessarily
-$P_{h} (A) = 0$ too.}  and
+$P_{h} (A) = 0$ too.}  and \tcg{Necessary to have $(O)$ in this equation? Ditto following equation.}
 
 \begin{equation}\label{eq:fluct}\frac{dP_{h}}{dP}(O)    \equiv     1    +    h
-s(O),\end{equation}
+s(O) \ , \end{equation}
 
-that is, $P_{h}$ has density $(1 + h s)$ with respect to (w.r.t.) $P$. We call
-$\{P_{h}  :  h  \in  H\}$  a  fluctuation of  $P$  in  direction  $s$  because
-
+where $s : \calO\to \bbR$ is a $P$-measurable function of $O$ 
+such that $s(O)$ is not equal to zero $P$-almost surely, $\Exp_{P}  (s(O)) = 0$, 
+and $s$ bounded by $M$. We make the observation that 
 \begin{equation}\label{eq:score}(i)  \;  P_{h}|_{h=0}  =   P,  \quad  (ii)  \;
 \left.\frac{d}{dh}       \log        \frac{dP_{h}}{dP}(O)\right|_{h=0}       =
 s(O).\end{equation} 
 
-The fluctuation is a one-dimensional parametric submodel of $\calM$. 
+Because of (i), we say that $\{P_{h}  :  h  \in  H\}$ is a *fluctuation* of $P$. 
+The fluctuation is a one-dimensional submodel of $\calM$ with univariate parameter
+$h \in H$. We note that (ii) indicates that the score of this submodel at $h = 0$ is $s$. 
+Thus, we say that our fluctuation is *in the direction* of $s$, because $s$ characterizes 
+the local behavior of our fluctuation around $P$. 
 
-Statistical mapping $\Psi$ is smooth at  every $P \in \calM$ because, for each
-$P \in \calM$, there exists  a so called efficient influence curve\footnote{It
-is  a   measurable  function.}   $D^{*}(P)   :  \calO  \to  \bbR$   such  that
-$\Exp_{P}(D^{*}(P)(O)) = 0$ and, for any direction $s$ as above, if $\{P_{h} :
-h \in H\}$ is defined as  in \eqref{eq:fluct}, then the real-valued mapping $h
-\mapsto \Psi(P_{h})$ is differentiable at $h=0$, with a derivative equal to
-
-\begin{equation}\label{eq:derivative}\Exp_{P}                \left(D^{*}(P)(O)
-s(O)\right).\end{equation}
+We are now prepared to provide a formal definition of smoothness of statistical 
+mappings. \tcg{Please check these modifications.} We say that a statistical mapping $\Psi$ is smooth at  every $P \in \calM$ if for each $P \in \calM$, there exists  a $P$-measurable function $D^{*}(P)   :  \calO  \to  \bbR$ such that $\Exp_{P}(D^{*}(P)(O)) = 0$ 
+and, for every fluctuation $\{P_{h}  :  h  \in  H\}$ with score $s$ at $h = 0$, the real-valued mapping $h \mapsto \Psi(P_{h})$ is differentiable at $h=0$, with a derivative equal to \begin{equation}
+\label{eq:derivative}\Exp_{P}\left(D^{*}(P)(O) s(O)\right) \ .
+\end{equation}
 
 Interestingly,   if  a   fluctuation   $\{P_{h}  :   h   \in  H\}$   satisfies
 \eqref{eq:score} for a direction $s$ such that $s\neq 0$, $\Exp_{P}(s(O)) = 0$
 and  $\Var_{P}  (s(O))  <  \infty$,  then $h  \mapsto  \Psi(P_{h})$  is  still
 differentiable  at  $h=0$ with  a  derivative  equal to  \eqref{eq:derivative}
-(beyond fluctuations of the form \eqref{eq:fluct}).
+(beyond fluctuations of the form \eqref{eq:fluct}). \tcg{Maybe this needs reconciliation 
+with my above modifications, as I'm defining things for a general fluctuation. Hmm...}
+
+The object $D^*(P)$ in (\ref{eq:derivative}) is called a gradient of $\Psi$ at $P$. 
+This terminology has a direct parallel to directional derivatives in the 
+calculus of Euclidean geometry. That is, if $f: \mathbb{R}^p \rightarrow \mathbb{R}$, 
+$u$ is a unit vector in $\mathbb{R}^p$, and $x$ is a point in $\mathbb{R}^p$, the 
+directional derivative at $x$ in the direction $u$ is the dot product
+of the gradient of $f$ and $u$. That is, the derivative can be represented as an inner product of the direction that we approach $x$ and the change of the function's value at $x$. In the 
+present problem, the distribution $P$ is the point at which we evaluate the function, 
+the score $s$ of the fluctuation is the "direction" in which we approach the point, and
+the gradient describes the change in the function's value at the point. 
+
+\tcg{Need a transition to calling this an influence function or influence curve.
+Right now, it seems a little out of place to be talking about estimation at this 
+point since the section is all about being smooth, which is a property of parameters, 
+not estimators. Maybe we move the next paragraphs to the following section 
+and re-title it something like "Influence functions and efficient influence functions" 
+or something? Not sure. Need to think about it more.}
 
 The influence curves $D^{*}(P)$ convey valuable information about $\Psi$. For
 instance,  an  important  result  from   the  theory  of  inference  based  on
