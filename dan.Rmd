@@ -40,15 +40,17 @@ knitr::opts_chunk$set(
 \section{Introduction}
 
 ```{r redo}
-redo <- c(TRUE, FALSE)[2]
-## if 'redo' then recompute 'learned_features_fixed_sample_size' and
-## 'learned_features_varying_sample_size', otherwise upload them if they
-## not already in the environment.
-if (redo) {
+redo_fixed <- c(TRUE, FALSE)[2]
+redo_varying <- c(TRUE, FALSE)[2]
+## if  'redo_$'  then  recompute  'learned_features_$_sample_size',  otherwise
+## upload it if it is not already in the environment.
+if (!redo_fixed) {
   if (!exists("learned_features_fixed_sample_size")) {
     learned_features_fixed_sample_size <-
       loadObject("data/learned_features_fixed_sample_size.xdr")
   }
+}
+if (!redo_varying) {
   if (!exists("learned_features_varying_sample_size")) {
     learned_features_varying_sample_size <-
       loadObject("data/learned_features_varying_sample_size.xdr")
@@ -225,8 +227,9 @@ It happens that we especially care for a finite-dimensional feature of $P_{0}$
 that  we   denote  by  $\psi_{0}$.    Its  definition  involves  two   of  the
 aforementioned  infinite-dimensional  features: \begin{align}  \label{eq:psi0}
 \psi_{0}  &\equiv   \int  \left(\Qbar_{0}(1,   w)  -   \Qbar_{0}(0,  w)\right)
-dQ_{0,W}(w)\\  \notag  &=  \Exp_{P_{0}}   \left(\Exp_{P_0}(Y \mid A = 1,  W)  -  \Exp_{P_0}(Y \mid A = 0,  W) \right).   \end{align} Acting  as  oracles, we  can  compute explicitly  the
-numerical value of  $\psi_{0}$.  
+dQ_{0,W}(w)\\  \notag &=  \Exp_{P_{0}} \left(\Exp_{P_0}(Y  \mid  A =  1, W)  -
+\Exp_{P_0}(Y \mid  A = 0, W)  \right).  \end{align} Acting as  oracles, we can
+compute explicitly the numerical value of $\psi_{0}$.
 
 ```{r approx-psi-0-a-one}
 integrand <- function(w) {
@@ -356,21 +359,23 @@ cumulative distribution of  reward $Y$ given $A$ and $W$,  evaluated at $y \in
 \interval[open]{0}{1}  : \int  Q_{0,Y}(y, a,  w) dQ_{0,W}(w)  \ge c  \right\}.
 \end{equation}
 
-It is not difficult to check that \tcg{do  we give the proof or refer to other
-articles?}      \begin{equation*}\gamma_{0,a,c}     =     \inf\left\{y     \in
-\interval[open]{0}{1}      :      \Pr_{\bbP_{0}}(Y_a     \leq      y)      \geq
-c\right\}.\end{equation*}  Thus,  $\gamma_{0,a,c}$  can be  interpreted  as  a
+It   is    not   difficult   to    check   (see   Problem   1    below)   that
+\begin{equation}\label{eq:alter:gamma:zero}\gamma_{0,a,c}  = \inf\left\{y  \in
+\interval[open]{0}{1}      :     \Pr_{\bbP_{0}}(Y_a      \leq     y)      \geq
+c\right\}.\end{equation}  Thus,  $\gamma_{0,a,c}$  can  be  interpreted  as  a
 covariate-adjusted $c$-th  quantile reward when  action $a$ is  enforced.  The
 difference     \begin{equation*}\delta_{0,c}    \equiv     \gamma_{0,1,c}    -
 \gamma_{0,0,c}\end{equation*} is the $c$-th  quantile counterpart to parameter
 $\psi_{0}$ \eqref{eq:psi:zero}.
 
-1. \textdbend Compute the numerical  value of $\gamma_{0,a,c}$ for each $(a,c)
+1. \textdbend Prove \eqref{eq:alter:gamma:zero}.
+
+2. \textdbend Compute the numerical value of $\gamma_{0,a,c}$ for each $(a,c)
    \in \{0,1\} \times  \{1/4, 1/2, 3/4\}$ using the  appropriate attributes of
    `five_obs`.   Based  on  these  results,  report  the  numerical  value  of
    $\delta_{0,c}$ for each $c \in \{1/4, 1/2, 3/4\}$.
    
-2. Approximate  the numerical values  of $\gamma_{0,a,c}$ for each  $(a,c) \in
+3. Approximate  the numerical values  of $\gamma_{0,a,c}$ for each  $(a,c) \in
    \{0,1\}  \times \{1/4,  1/2,  3/4\}$ by  drawing a  large  sample from  the
    "ideal"  data experiment  and using  empirical quantile  estimates.  Deduce
    from these results  a numerical approximation to $\delta_{0,c}$  for $c \in
@@ -552,19 +557,19 @@ a'\}}{\ell\Gbar(a',W)}     \one\{y    \le     z\}     dP_0(w,a,y)    \ge     c
 
 
 Within  our view  of the  target  parameter as  a statistical  mapping, it  is
-natural to inquire  of properties this functional  \tcg{enjoys}.  For example,
-we may  be interested in  asking how the value  of $\Psi(P)$ changes  for laws
-that are, in a loose sense, near  to $P$ in $\mathcal{M}$. If small changes in
-the  law  result in  large  changes  in the  parameter  value,  then we  might
-hypothesize  that it  will  be  difficult to  produce  ``good estimators''  of
-$\psi_0$. Fortunately, this turns out not to be the case for $\Psi$, and so we
-say  that $\Psi$  is a  smooth parameter  mapping. This  colloquial expression
-refers to  the fact  that, for  each $P \in  \calM$, if  $P_{h} \to_{h}  P$ in
-$\calM$ from a direction $s$ when the  real parameter $h \to 0$ (the notion of
-convergence     from    a     direction    is     formalized    in     Section
-\ref{subsec:being:smooth:two}),  then not  only $\Psi(P_{h})  \to_{h} \Psi(P)$
-(continuity), but also  $h^{-1} [\Psi(P_{h}) - \Psi(P)] \to_{h}  c$, where the
-real number $c$ depends on $P$ and $s$ (differentiability).
+natural to inquire of properties this  functional enjoys.  For example, we may
+be interested in asking how the value  of $\Psi(P)$ changes for laws that are,
+in a loose  sense, near to $P$  in $\mathcal{M}$. If small changes  in the law
+result in large changes in the parameter value, then we might hypothesize that
+it will be difficult to  produce ``good estimators'' of $\psi_0$. Fortunately,
+this turns out not to  be the case for $\Psi$, and so we  say that $\Psi$ is a
+smooth parameter mapping. This colloquial  expression refers to the fact that,
+for each $P \in  \calM$, if $P_{h} \to_{h} P$ in $\calM$  from a direction $s$
+when the real parameter $h \to 0$  (the notion of convergence from a direction
+is  formalized  in  Section   \ref{subsec:being:smooth:two}),  then  not  only
+$\Psi(P_{h}) \to_{h}  \Psi(P)$ (continuity),  but also $h^{-1}  [\Psi(P_{h}) -
+\Psi(P)]  \to_{h}  c$, where  the  real  number $c$  depends  on  $P$ and  $s$
+(differentiability).
 
 
 For   instance,   let   $\Pi_{h}   \in   \calM$  be   the   law   encoded   in
@@ -632,18 +637,21 @@ Because  of   \textit{(i)},  we  say  that   $\{P_{h}  :  h  \in   H\}$  is  a
 \textit{fluctuation} of $P$.  The fluctuation is a one-dimensional submodel of
 $\calM$  with univariate  parameter $h  \in  H$.  We  note that  \textit{(ii)}
 indicates that  the score of this  submodel at $h =  0$ is $s$.  Thus,  we say
-that  the  fluctuation  is  \textit{in  the direction}  of  $s$,  because  $s$
-characterizes the local behavior of the fluctuation around $P$.
+that the fluctuation is \textit{in the  direction} of $s$. Fluctuations of $P$
+do not  necessarily take the same  form as in \eqref{eq:fluct}.  No matter how
+the  fluctuation is  built, what  really  matters is  its local  shape in  the
+neighborhood of $P$. 
+
 
 We  are  now  prepared  to  provide  a  formal  definition  of  smoothness  of
 statistical mappings.  \tcg{Please  check these modifications.} We  say that a
 statistical mapping $\Psi$ is smooth at every $P \in \calM$ if for each $P \in
 \calM$, there  exists a  $P$-measurable function $D^{*}(P)  : \calO  \to \bbR$
-such that $\Exp_{P}(D^{*}(P)(O)) = 0$ and,  for every fluctuation $\{P_{h} : h
-\in  H\}$ with  score $s$  at  $h =  0$,  the real-valued  mapping $h  \mapsto
-\Psi(P_{h})$  is  differentiable   at  $h=0$,  with  a   derivative  equal  to
-\begin{equation}  \label{eq:derivative}\Exp_{P}\left(D^{*}(P)(O)  s(O)\right).
-\end{equation}
+such that $\Exp_{P}(D^{*}(P)(O)) = 0$, $\Var_{P}(D^{*}(P)(O))$ finite and, for
+every  fluctuation $\{P_{h}  : h  \in H\}$  with  score $s$  at $h  = 0$,  the
+real-valued mapping $h \mapsto \Psi(P_{h})$ is differentiable at $h=0$, with a
+derivative               equal               to               \begin{equation}
+\label{eq:derivative}\Exp_{P}\left(D^{*}(P)(O) s(O)\right).  \end{equation}
 
 Interestingly,   if  a   fluctuation   $\{P_{h}  :   h   \in  H\}$   satisfies
 \eqref{eq:score} for a direction $s$ such that $s\neq 0$, $\Exp_{P}(s(O)) = 0$
@@ -721,10 +729,11 @@ eic <- function(obs, psi) {
   Qbar <- attr(obs, "Qbar")
   Gbar <- attr(obs, "Gbar")
   QAW <- Qbar(obs[, c("A", "W")])
-  GW <- Gbar(obs[, "W"])
+  QoneW <- Qbar(cbind(A = 1, W = obs[, "W"]))
+  QzeroW <- Qbar(cbind(A = 0, W = obs[, "W"]))
+  GW <- Gbar(obs[, "W", drop = FALSE])
   lGAW <- obs[, "A"] * GW + (1 - obs[, "A"]) * (1 - GW)
-  ( Qbar(cbind(1, obs[, "W"])) - Qbar(cbind(0, obs[, "W"])) - psi ) +
-    (2 * obs[, "A"] - 1) / lGAW * (obs[, "Y"] - QAW)
+  (QoneW - QzeroW - psi) + (2 * obs[, "A"] - 1) / lGAW * (obs[, "Y"] - QAW)
 }
 
 (eic(five_obs, psi = psi_approx))
@@ -938,7 +947,8 @@ fig <- ggplot() +
              bias_ab, size = 1.5, alpha = 0.5)
   
 fig +
-  labs(x = expression(paste(sqrt(n/v[n]^{list(a, b)})*(psi[n]^{list(a, b)} - psi[0]))))
+  labs(y = "",
+       x = expression(paste(sqrt(n/v[n]^{list(a, b)})*(psi[n]^{list(a, b)} - psi[0]))))
 ```
 
 Let $v_{n}^{a}$ be $n$ times the empirical variance of the `iter` realizations
@@ -1054,7 +1064,7 @@ samples  of  independent  observations  drawn   from  $P_{0}$  as  in  Section
 \ref{subsec:known:gbar:one}:
 
 ```{r unknown-Gbar-two-bis}
-if (redo) {
+if (redo_fixed) {
   learned_features_fixed_sample_size <-
     obs %>% as_tibble() %>%
     mutate(id = 1:n() %% iter) %>%
@@ -1092,7 +1102,8 @@ fig +
   geom_vline(aes(xintercept = bias, colour = type),
              bias_abc, size = 1.5, alpha = 0.5) +
   xlim(-3, 4) + 
-  labs(x = expression(paste(sqrt(n/v[n]^{list(a, b, c)})*
+  labs(y = "",
+       x = expression(paste(sqrt(n/v[n]^{list(a, b, c)})*
                             (psi[n]^{list(a, b, c)} - psi[0]))))
 ```
 
@@ -1241,7 +1252,7 @@ control <- trainControl(method = "cv", number = 2,
 ```
 
 ```{r estimating-Qbar-one-bis, cache = FALSE}
-if(redo) {
+if(redo_fixed) {
   learned_features_fixed_sample_size <-
     learned_features_fixed_sample_size %>% # head(n = 100) %>%
     mutate(Qhat_d = map(obs, ~ estimate_Q(., algorithm = working_model_Q_one)),
@@ -1254,8 +1265,7 @@ if(redo) {
                             ~ compute_QhatAW(.y$Y, .y$A, .y$W, .x, blip = TRUE)))
 }
 
-psi_hat_de <-
-  learned_features_fixed_sample_size %>%
+psi_hat_de <- learned_features_fixed_sample_size %>%
   unnest(blip_QW_d, blip_QW_e) %>%
   group_by(id) %>%
   summarize(est_d = mean(blip_QW_d),
@@ -1281,7 +1291,8 @@ fig <- ggplot() +
              bias_de, size = 1.5, alpha = 0.5)
   
 fig +
-  labs(x = expression(paste(sqrt(n/v[n]^{list(d, e)})*(psi[n]^{list(d, e)} - psi[0]))))
+  labs(y = "",
+       x = expression(paste(sqrt(n/v[n]^{list(d, e)})*(psi[n]^{list(d, e)} - psi[0]))))
 ```
 
 \tcg{No that bad!   Yet, we know that} $\sqrt{n}$ \tcg{times  bias is bound to
@@ -1290,7 +1301,7 @@ increase with sample size. To see this, check out the next chunks of code.}
 
 
 ```{r estimating-Qbar-two, eval = TRUE}
-sample_size <- c(1e3, 4e3, 9e3)
+sample_size <- c(4e3, 9e3)
 block_size <- sum(sample_size)
 
 label <- function(xx, sample_size = c(1e3, 2e3)) {
@@ -1301,7 +1312,7 @@ label <- function(xx, sample_size = c(1e3, 2e3)) {
   paste(prefix + 1, suffix + 1, sep = "_")
 }
 
-if (redo) {
+if (redo_varying) {
   learned_features_varying_sample_size <- obs %>% as.tibble %>% 
     head(n = (nrow(.) %/% block_size) * block_size) %>% 
     mutate(block = label(1:nrow(.), sample_size)) %>%
@@ -1316,7 +1327,7 @@ of each estimator derived on  data sets of `r length(sample_size)`, increasing
 sample sizes.
 
 ```{r estimating-Qbar-three, eval = TRUE}
-if(redo) {
+if(redo_varying) {
   learned_features_varying_sample_size <-
     learned_features_varying_sample_size %>% 
     mutate(Qhat_d = map(obs, ~ estimate_Q(., algorithm = working_model_Q_one)),
@@ -1383,30 +1394,79 @@ root_n_bias %>%
                  color = type),
              position = position_dodge(width = 250),
              alpha = 0.1) +
-  scale_x_continuous(breaks = unique(sample_size)) +
+  scale_x_continuous(breaks = unique(c(B / iter, sample_size))) +
   labs(x = "sample size n",
        y = expression(paste(sqrt(n)*(psi[n]^{list(d, e)} - psi[0]))))
+
+## execute
+## rm(learned_features_fixed_sample_size)
+## as soon as possible!
 ```	
 
 \subsection{One-step estimation.}
 \label{subsec:one:step}
 
-
+Function  `set_Qbar_Gbar`  implements the  change  of  the `Qbar`  and  `Gbar`
+attributes of `obs` (which are accessible only by oracles).
 
 ```{r one-step-one}
-set_Qbar_Gbar<- function(obs, Qbar, Gbar) {
+set_Qbar_Gbar <- function(obs, Qbar, Gbar) {
   attr(obs, "Qbar") <- Qbar
   attr(obs, "Gbar") <- Gbar
   return(obs)
 }
 ```
 
-```{r one-step-two}
-one_realization <- learned_features_fixed_sample_size %>%
-  head(1) %>% rename(data = obs)
-attach(one_realization)
+First, we call function `set_Qbar_Gbar` to  replace the true `Qbar` and `Gbar`
+attributes   of  `obs`   by  their   estimated  counterparts   as  stored   in
+`learned_features_fixed_sample_size`.  Second,  we   call  function  `eic`  to
+compute the values of the estimated efficient influence at the observations in
+`obs`. Constructing the one-step estimators is then straightforward.
 
-detach(one_realization)
+```{r one-step-two, fig.cap = "Write caption."}
+psi_hat_de_one_step <- learned_features_fixed_sample_size %>%
+  mutate(obs_d = pmap(list(obs = obs, Qbar = Qhat_d, Gbar = Ghat),
+                      set_Qbar_Gbar),
+         obs_e = pmap(list(obs = obs, Qbar = Qhat_e, Gbar = Ghat),
+                      set_Qbar_Gbar)) %>%
+  mutate(eic_obs_d = map2(obs_d, blip_QW_d, ~ eic(as.data.frame(.x), mean(.y))),
+         eic_obs_e = map2(obs_e, blip_QW_e, ~ eic(as.data.frame(.x), mean(.y)))) %>%
+  unnest(blip_QW_d, eic_obs_d,
+         blip_QW_e, eic_obs_e) %>%
+  group_by(id) %>%
+  summarize(est_d = mean(blip_QW_d) + mean(eic_obs_d),
+            std_d = sd(eic_obs_d),
+            clt_d = sqrt(n()) * (est_d - psi_approx) / std_d,
+            est_e = mean(blip_QW_e) + mean(eic_obs_e),
+            std_e = sd(eic_obs_e),
+            clt_e = sqrt(n()) * (est_e - psi_approx) / std_e) %>%
+  gather("key", "value", -id) %>%
+  extract(key, c("what", "type"), "([^_]+)_([de])") %>%
+  spread(what, value) %>%
+  mutate(type = paste0(type, "_one_step"))
+  
+(bias_de_one_step <- psi_hat_de_one_step %>%
+   group_by(type) %>% summarize(bias = mean(clt)))
+
+ggplot() +
+  geom_line(aes(x = x, y = y), 
+            data = tibble(x = seq(-3, 3, length.out = 1e3),
+                          y = dnorm(x)),
+            linetype = 1, alpha = 0.5) +
+  geom_density(aes(clt, fill = type, colour = type),
+               psi_hat_de_one_step, alpha = 0.1) +
+  geom_vline(aes(xintercept = bias, colour = type),
+             bias_de_one_step, size = 1.5, alpha = 0.5) +  
+  labs(y = "",
+       x = expression(paste(sqrt(n/v[n]^{list(dos, eos)})*(psi[n]^{list(dos, eos)} - psi[0]))))
+
+```
+
+It seems  that the one-step correction  is quite good (in  particular, compare
+`bias_de` with `bias_de_one_step`):
+
+```{r remove-soon}
+bind_rows(bias_de, bias_de_one_step)
 ```
 
 \subsection{Targeted inference.}
