@@ -1,7 +1,7 @@
 ---
 title: "A guided tour in targeted learning territory"
 author: "David Benkeser, Antoine Chambaz, Nima Hejazi"
-date: "08/25/2018"
+date: "08/24/2018"
 encoding: "UTF-8"
 output:
   bookdown::pdf_document2:
@@ -47,13 +47,13 @@ redo_varying <- c(TRUE, FALSE)[2]
 if (!redo_fixed) {
   if (!exists("learned_features_fixed_sample_size")) {
     learned_features_fixed_sample_size <-
-      loadObject("data/learned_features_fixed_sample_size.xdr")
+      loadObject("data/learned_features_fixed_sample_size_NEW.xdr")
   }
 }
 if (!redo_varying) {
   if (!exists("learned_features_varying_sample_size")) {
     learned_features_varying_sample_size <-
-      loadObject("data/learned_features_varying_sample_size.xdr")
+      loadObject("data/learned_features_varying_sample_size_NEW.xdr")
   }
 } 
 ```
@@ -628,9 +628,9 @@ event $A$ satisfies $P(A) = 0$, then necessarily $P_{h} (A) = 0$ too.}  and
 \begin{equation}\label{eq:fluct}\frac{dP_{h}}{dP}    \equiv   1    +   h    s,
 \end{equation}
 
-where $s : \calO\to \bbR$ is a $P$-measurable function of $O$ such that $s(O)$
+where $s : \calO\to  \bbR$ is a (measurable) function of  $O$ such that $s(O)$
 is not equal to zero $P$-almost surely, $\Exp_{P} (s(O)) = 0$, and $s$ bounded
-by $M$.  We make  the observation that  \begin{equation}\label{eq:score}(i) \;
+by $M$.   We make the observation  that \begin{equation}\label{eq:score}(i) \;
 P_{h}|_{h=0}    =     P,    \quad    (ii)    \;     \left.\frac{d}{dh}    \log
 \frac{dP_{h}}{dP}(O)\right|_{h=0} = s(O).\end{equation}
 
@@ -647,8 +647,8 @@ neighborhood of $P$.
 We  are  now  prepared  to  provide  a  formal  definition  of  smoothness  of
 statistical mappings.  \tcg{Please  check these modifications.} We  say that a
 statistical mapping $\Psi$ is smooth at every $P \in \calM$ if for each $P \in
-\calM$, there  exists a  $P$-measurable function $D^{*}(P)  : \calO  \to \bbR$
-such that $\Exp_{P}(D^{*}(P)(O)) = 0$, $\Var_{P}(D^{*}(P)(O))$ finite and, for
+\calM$, there exists a (measurable) function  $D^{*}(P) : \calO \to \bbR$ such
+that  $\Exp_{P}(D^{*}(P)(O)) =  0$,  $\Var_{P}(D^{*}(P)(O))$  finite and,  for
 every  fluctuation $\{P_{h}  : h  \in H\}$  with  score $s$  at $h  = 0$,  the
 real-valued mapping $h \mapsto \Psi(P_{h})$ is differentiable at $h=0$, with a
 derivative               equal               to               \begin{equation}
@@ -924,7 +924,8 @@ obvious fact that $\psi_{n}^{a}$ does not estimate $\psi_{0}$.
 
 
 ```{r known-Gbar-one-b, fig.cap = "Kernel density estimators of the law of two estimators of $\\psi_{0}$ (recentered with respect to $\\psi_{0}$, and renormalized), one of them misconceived (a), the other assuming that $\\Gbar_{0}$ is known (b). Built based on `iter` independent realizations of each estimator."}
-psi_hat_ab <- obs %>% as_tibble() %>% mutate(id = 1:n() %% iter) %>%
+psi_hat_ab <- obs %>% as_tibble() %>%
+  mutate(id = (seq_len(n()) - 1) %% iter) %>%
   mutate(lGAW = A * Gbar(W) + (1 - A) * (1 - Gbar(W))) %>% group_by(id) %>%
   summarize(est_a = mean(Y[A==1]) - mean(Y[A==0]),
             est_b = mean(Y * (2 * A - 1) / lGAW),
@@ -992,25 +993,21 @@ risk associated to the user-specified loss function and provided data.
 
 ```{r unknown-Gbar-one}
 estimate_G <- function(dat, algorithm, ...) {
-  if (!attr(algorithm, "ML")) {
+  if (!is.data.frame(dat)) {
     dat <- as.data.frame(dat)
-    fit <- algorithm[[1]](formula = algorithm[[2]], data = dat)
-    Ghat <- function(newdata) {
-      newdata <- as.data.frame(newdata)
-      predict(fit, newdata, type = "response")
-    }
-  } else {
-    fit <- algorithm(dat, ...)
-    Qhat <- function(newdata) {
-      caret::predict.train(fit, newdata)
-    }
   }
-  return(Ghat)
+  if (!attr(algorithm, "ML")) {
+    fit <- algorithm[[1]](formula = algorithm[[2]], data = dat)
+  } else {
+    fit <- algorithm[[1]](dat, ...)
+  }
+  fit$type_of_preds <- algorithm$type_of_preds
+  return(fit)
 }
 
 compute_lGhatAW <- function(A, W, Ghat, threshold = 0.05) {
   dat <- data.frame(A = A, W = W)
-  Ghat_W <- Ghat(dat)
+  Ghat_W <- predict(Ghat, newdata = dat, type = Ghat$type_of_preds)
   lGAW <- A * Ghat_W + (1 - A) * (1 - Ghat_W)
   pred <- pmin(1 - threshold, pmax(lGAW, threshold))
   return(pred)
@@ -1027,15 +1024,18 @@ For sake of illustration, we choose argument `working_model_G_one` of function
 `estimate_G` as follows:
 
 ```{r unknown-Gbar-two}
+trim_glm_fit <- caret::getModelInfo("glm")$glm$trim
 working_model_G_one <- list(
-  model = function(...) {glm(family = binomial(), ...)},
+  model = function(...) {trim_glm_fit(glm(family = binomial(), ...))},
   formula = as.formula(
     paste("A ~",
           paste(c("I(W^", "I(abs(W - 5/12)^"),
                 rep(seq(1/2, 3/2, by = 1/2), each = 2),
                 sep = "", collapse = ") + "),
           ")")
-  ))
+  ),
+  type_of_preds = "response"
+)
 attr(working_model_G_one, "ML") <- FALSE
 working_model_G_one$formula
 ```
@@ -1069,7 +1069,7 @@ samples  of  independent  observations  drawn   from  $P_{0}$  as  in  Section
 if (redo_fixed) {
   learned_features_fixed_sample_size <-
     obs %>% as_tibble() %>%
-    mutate(id = 1:n() %% iter) %>%
+    mutate(id = (seq_len(n()) - 1) %% iter) %>%
     nest(-id, .key = "obs") %>%
     mutate(Ghat = map(obs, ~ estimate_G(., algorithm = working_model_G_one))) %>%
     mutate(lGAW = map2(Ghat, obs, ~ compute_lGhatAW(.y$A, .y$W, .x)))
@@ -1149,14 +1149,16 @@ working model grows. You could use the following chunk of code
 powers <- ## make sure '1/2' and '1' belong to 'powers', eg
   seq(1/4, 3, by = 1/4)
 working_model_G_two <- list(
-  model = function(...) {glm(family = binomial(), ...)},
+  model = function(...) {trim_glm_fit(glm(family = binomial(), ...))},
   formula = as.formula(
     paste("A ~",
           paste(c("I(W^", "I(abs(W - 5/12)^"),
                 rep(powers, each = 2),
                 sep = "", collapse = ") + "),
           ")")
-  ))
+  ),
+  type_of_preds = "response"
+)
 attr(working_model_G_two, "ML") <- FALSE
 ```
 play around with  argument `powers` (making sure that `1/2`  and `1` belong to
@@ -1168,12 +1170,14 @@ use the following chunk of code:
 ```{r exercises-two, eval = TRUE}
 transform <- c("cos", "sin", "sqrt", "log", "exp")
 working_model_G_three <- list(
-  model = function(...) {glm(family = binomial(), ...)},
+  model = function(...) {trim_glm_fit(glm(family = binomial(), ...))},
   formula = as.formula(
     paste("A ~",
           paste("I(", transform, sep = "", collapse = "(W)) + "),
           "(W))")
-  ))
+  ),
+  type_of_preds = "response"
+)
 attr(working_model_G_three, "ML") <- FALSE
 (working_model_G_three$formula)
 ```
@@ -1197,59 +1201,64 @@ of} $\Qbar_{0}$ \tcg{(and of the marginal  law of} $W$\tcg{).  Once based on a
 
 ```{r estimating-Qbar-one}
 estimate_Q <- function(dat, algorithm, ...) {
-  if (!attr(algorithm, "ML")) {
+  if (!is.data.frame(dat)) {
     dat <- as.data.frame(dat)
-    fit <- algorithm[[1]](formula = algorithm[[2]], data = dat)
-    Qhat <- function(newdata) {
-      newdata <- as.data.frame(newdata)
-      predict(fit, newdata, type = "response")
-    }
-  } else {
-    fit <- algorithm(dat, ...)
-    Qhat <- function(newdata) {
-      caret::predict.train(fit, newdata)
-    }    
   }
-  return(Qhat)
+  if (!attr(algorithm, "ML")) {
+    fit <- algorithm[[1]](formula = algorithm[[2]], data = dat)
+  } else {
+    fit <- algorithm[[1]](dat, ...)
+  }
+  fit$type_of_preds <- algorithm$type_of_preds
+  return(fit)
 }
 
 compute_QhatAW <- function(Y, A, W, Qhat, blip = FALSE) {
   if (!blip) {
     dat <- data.frame(Y = Y, A = A, W = W)
-    pred <- Qhat(dat)
+    pred <- predict(Qhat, newdata = dat, type = Qhat$type_of_preds)
   } else {
-    pred <- Qhat(data.frame(A = 1, W = W)) - Qhat(data.frame(A = 0, W = W))
+    pred <- predict(Qhat, newdata = data.frame(A = 1, W = W),
+                    type = Qhat$type_of_preds) -
+      predict(Qhat, newdata = data.frame(A = 0, W = W),
+              type = Qhat$type_of_preds)
   }
   return(pred)  
 }
 
 working_model_Q_one <- list(
-  model = function(...) {glm(family = binomial(), ...)},
+  model = function(...) {trim_glm_fit(glm(family = binomial(), ...))},
   formula = as.formula(
     paste("Y ~ A * (",
           paste("I(W^", seq(1/2, 3/2, by = 1/2), sep = "", collapse = ") + "),
           "))")
-  ))
+  ),
+  type_of_preds = "response"
+)
 attr(working_model_Q_one, "ML") <- FALSE
 working_model_Q_one$formula
 
 ## k-NN
-kknn_algo <- function(dat, ...) {
-  args <- list(...)
-  if ("Subsample" %in% names(args)) {
-    keep <- sample.int(nrow(dat), args$Subsample)
-    dat <- dat[keep, ]
-  }
-  caret::train(Y ~ I(10*A) + W, ## a tweak
-               data = dat,
-               method = "kknn",
-               verbose = FALSE,
-               ...)
-}
+kknn_algo <- list(
+  algo = function(dat, ...) {
+    args <- list(...)
+    if ("Subsample" %in% names(args)) {
+      keep <- sample.int(nrow(dat), args$Subsample)
+      dat <- dat[keep, ]
+    }
+    caret::train(Y ~ I(10*A) + W, ## a tweak
+                 data = dat,
+                 method = "kknn",
+                 verbose = FALSE,
+                 ...)    
+  },
+  type_of_preds = "raw"
+)
 attr(kknn_algo, "ML") <- TRUE
 kknn_grid <- expand.grid(kmax = 5, distance = 2, kernel = "gaussian")
 control <- trainControl(method = "cv", number = 2,
                         predictionBounds = c(0, 1),
+                        trim = TRUE,
                         allowParallel = TRUE)
 ```
 
@@ -1345,8 +1354,8 @@ if(redo_varying) {
 root_n_bias <- learned_features_varying_sample_size %>%
   unnest(blip_QW_d, blip_QW_e) %>%
   group_by(block) %>%
-  summarize(clt_d = sqrt(n())*(mean(blip_QW_d) - psi_approx),
-            clt_e = sqrt(n())*(mean(blip_QW_e) - psi_approx)) %>%
+  summarize(clt_d = sqrt(n()) * (mean(blip_QW_d) - psi_approx),
+            clt_e = sqrt(n()) * (mean(blip_QW_e) - psi_approx)) %>%
   gather("key", "value", -block) %>%
   extract(key, c("what", "type"), "([^_]+)_([de])") %>%
   spread(what, value) %>%
@@ -1398,7 +1407,7 @@ root_n_bias %>%
              alpha = 0.1) +
   scale_x_continuous(breaks = unique(c(B / iter, sample_size))) +
   labs(x = "sample size n",
-       y = expression(paste(sqrt(n)*(psi[n]^{list(d, e)} - psi[0]))))
+       y = expression(paste(sqrt(n) * (psi[n]^{list(d, e)} - psi[0]))))
 
 ## execute
 ## rm(learned_features_fixed_sample_size)
@@ -1412,10 +1421,22 @@ Function  `set_Qbar_Gbar`  implements the  change  of  the `Qbar`  and  `Gbar`
 attributes of `obs` (which are accessible only by oracles).
 
 ```{r one-step-one}
-set_Qbar_Gbar <- function(obs, Qbar, Gbar) {
-  attr(obs, "Qbar") <- Qbar
-  attr(obs, "Gbar") <- Gbar
+set_Qbar_Gbar <- function(obs, Qhat, Ghat) {
+  attr(obs, "Qbar") <- function(newdata) {
+    if (!is.data.frame(newdata)) {
+      newdata <- as.data.frame(newdata)
+    }
+    predict(Qhat, newdata = newdata, type = Qhat$type_of_preds)
+  }
+  attr(obs, "Gbar") <- function(newdata) {
+    if (!is.data.frame(newdata)) {
+      newdata <- as.data.frame(newdata)
+    }
+    predict(Ghat, newdata = newdata, type = Ghat$type_of_preds)
+  }
   return(obs)
+}
+eic_bar <- function(obs, Qbar, Gbar) {
 }
 ```
 
@@ -1427,9 +1448,9 @@ compute the values of the estimated efficient influence at the observations in
 
 ```{r one-step-two, fig.cap = "Write caption."}
 psi_hat_de_one_step <- learned_features_fixed_sample_size %>%
-  mutate(obs_d = pmap(list(obs = obs, Qbar = Qhat_d, Gbar = Ghat),
+  mutate(obs_d = pmap(list(obs = obs, Qhat = Qhat_d, Ghat = Ghat),
                       set_Qbar_Gbar),
-         obs_e = pmap(list(obs = obs, Qbar = Qhat_e, Gbar = Ghat),
+         obs_e = pmap(list(obs = obs, Qhat = Qhat_e, Ghat = Ghat),
                       set_Qbar_Gbar)) %>%
   mutate(eic_obs_d = map2(obs_d, blip_QW_d, ~ eic(as.data.frame(.x), mean(.y))),
          eic_obs_e = map2(obs_e, blip_QW_e, ~ eic(as.data.frame(.x), mean(.y)))) %>%
@@ -1484,12 +1505,14 @@ For later$\ldots{}$
 
 
 working_model_Q_two <- list(
-  model = function(...) {glm(family = binomial(), ...)},
+  model = function(...) {trim_glm_fit(glm(family = binomial(), ...))},
   formula = as.formula(
     paste("Y ~ A * (",
           paste("I(W^", seq(1/2, 3, by = 1/2), sep = "", collapse = ") + "),
           "))")
-  ))
+  ),
+  type_of_preds = "response"
+)
 attr(working_model_Q_two, "ML") <- FALSE
 
 ## xgboost based on trees
