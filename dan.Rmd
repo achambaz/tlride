@@ -1,7 +1,7 @@
 ---
 title: "A guided tour in targeted learning territory"
 author: "David Benkeser, Antoine Chambaz, Nima Hejazi"
-date: "08/23/2018"
+date: "08/24/2018"
 encoding: "UTF-8"
 output:
   bookdown::pdf_document2:
@@ -180,13 +180,14 @@ law  of $W$  to make  it easier  later on  to drive  home important  messages.
 Specifically, $\ldots{}$ (do we explain  what happens?)}  The attribute `Gbar`
 describes the conditional  probability of action $A = 1$  given $W$.  For each
 $a  \in \{0,1\}$,  we denote  $\Gbar_0(W)  \equiv \Pr_{P_0}(A  = 1  | W)$  and
-$\ell\Gbar_0(a,W) \equiv \Pr_{P_0}(A = a  | W)$.  The attribute `qY` describes
-the  conditional  density   of  $Y$  given  $A$  and  $W$.    For  each  $y\in
-\interval[open]{0}{1}$,  we  denote  by  $q_{0,Y}(y, A,  W)$  the  conditional
-density evaluated at  $y$ of $Y$ given $A$ and  $W$.  Similarly, the attribute
-`Qbar` describes the conditional mean of $Y$  given $A$ and $W$, and we denote
-$\Qbar_0(A,W) = \Exp_{P_{0}}(Y|A,W)$ the conditional  mean of $Y$ given $A$ and
-$W$.
+$\ell\Gbar_0(a,W)    \equiv   \Pr_{P_0}(A    =   a    |   W)$.     Obvisously,
+$\ell\Gbar_{0}(A,W)  \equiv  A\Gbar_{0}(W)  +  (1-A)  (1-\Gbar_{0}(W))$.   The
+attribute `qY`  describes the conditional  density of  $Y$ given $A$  and $W$.
+For each  $y\in \interval[open]{0}{1}$,  we denote by  $q_{0,Y}(y, A,  W)$ the
+conditional density evaluated at $y$ of $Y$ given $A$ and $W$.  Similarly, the
+attribute `Qbar` describes the conditional mean  of $Y$ given $A$ and $W$, and
+we denote  $\Qbar_0(A,W) =  \Exp_{P_{0}}(Y|A,W)$ the  conditional mean  of $Y$
+given $A$ and $W$.
 
 \subsection{\gear Visualizing infinite-dimensional features of the experiment}
 \label{subsec:visualizing}
@@ -716,10 +717,9 @@ influence curve  $D^{*}(P)$ of  $\Psi$ at  $P \in  \calM$ writes  as $D^{*}(P)
 
 \begin{align*}D_{1}^{*}(P) (O)  &\equiv \Qbar(1,W)  - \Qbar(0,W)  - \Psi(P),\\
 D_{2}^{*}(P)     (O)     &\equiv      \frac{2A-1}{\ell\Gbar(A,W)}     (Y     -
-\Qbar(A,W)),\end{align*}
+\Qbar(A,W)).\end{align*}
 
-with   shorthand   notation   $\ell\Gbar(A,W)   \equiv   A\Gbar(W)   +   (1-A)
-(1-\Gbar(W))$.  The  following chunk  of code enables  the computation  of the
+The  following chunk  of code enables  the computation  of the
 values of the efficient influence  curve $D^{*}(P)$ at observations drawn from
 $P$  (note that  it is  necessary  to provide  the  value of  $\Psi(P)$, or  a
 numerical approximation thereof, through argument `psi`).
@@ -733,7 +733,9 @@ eic <- function(obs, psi) {
   QzeroW <- Qbar(cbind(A = 0, W = obs[, "W"]))
   GW <- Gbar(obs[, "W", drop = FALSE])
   lGAW <- obs[, "A"] * GW + (1 - obs[, "A"]) * (1 - GW)
-  (QoneW - QzeroW - psi) + (2 * obs[, "A"] - 1) / lGAW * (obs[, "Y"] - QAW)
+  out <- (QoneW - QzeroW - psi) + (2 * obs[, "A"] - 1) / lGAW * (obs[, "Y"] - QAW)
+  out <- as.vector(out)
+  return(out)
 }
 
 (eic(five_obs, psi = psi_approx))
