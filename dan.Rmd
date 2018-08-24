@@ -64,6 +64,7 @@ set.seed(54321) ## because reproducibility matters...
 suppressMessages(library(R.utils)) ## make sure it is installed
 suppressMessages(library(tidyverse)) ## make sure it is installed
 suppressMessages(library(caret)) ## make sure it is installed
+suppressMessages(library(ggdag)) ## make sure it is installed
 expit <- plogis
 logit <- qlogis
 ```
@@ -246,8 +247,21 @@ Our  interest in  $\psi_{0}$ is  of  causal nature.  Taking a  closer look  at
 $O$ drawn  from $P_{0}$ can  be summarized by  the following causal  graph and
 nonparametric system of structural equations:
 
-```{r DAG}
-## plot the causal diagram
+```{r DAG, out.width = '70%', fig.align = 'center', fig.width = 8, fig.height = 6, fig.cap = "Causal graph summarizing the inner causal mechanism at play in `drawFromExperiment`."}
+dagify(
+  Y ~ A + Y1 + Y0, A ~ W, Y1 ~ W, Y0 ~ W,
+  labels = c(Y = "Actual reward",
+             A = "Action",
+             Y1 = "Counterfactual reward\n of action 1",
+             Y0 = "Counterfactual reward\n of action 0",
+             W = "Context of action"),
+  coords = list(
+    x = c(W = 0, A = -1, Y1 = 1.5, Y0 = 0.25, Y = 1),
+    y = c(W = 0, A = -1, Y1 = -0.5, Y0 = -0.5, Y = -1)),
+  outcome = "Y",
+  exposure = "A",
+  latent = c("Y0", "Y1")) %>% tidy_dagitty %>%
+  ggdag(text = TRUE, use_labels = "label") + theme_dag_grey()
 ```
 
 and, for some deterministic functions $f_w$, $f_a$, $f_y$ and independent
@@ -1262,7 +1276,7 @@ control <- trainControl(method = "cv", number = 2,
                         allowParallel = TRUE)
 ```
 
-```{r estimating-Qbar-one-bis, cache = FALSE}
+```{r estimating-Qbar-one-bis, fig.cap = "Write caption."}
 if(redo_fixed) {
   learned_features_fixed_sample_size <-
     learned_features_fixed_sample_size %>% # head(n = 100) %>%
