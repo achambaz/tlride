@@ -40,8 +40,8 @@ knitr::opts_chunk$set(
 \section{Introduction}
 
 ```{r redo}
-redo_fixed <- c(TRUE, FALSE)[2]
-redo_varying <- c(TRUE, FALSE)[2]
+redo_fixed <- c(TRUE, FALSE)[1]
+redo_varying <- c(TRUE, FALSE)[1]
 ## if  'redo_$'  then  recompute  'learned_features_$_sample_size',  otherwise
 ## upload it if it is not already in the environment.
 if (!redo_fixed) {
@@ -1260,11 +1260,18 @@ kknn_algo <- list(
       keep <- sample.int(nrow(dat), args$Subsample)
       dat <- dat[keep, ]
     }
-    caret::train(Y ~ I(10*A) + W, ## a tweak
-                 data = dat,
-                 method = "kknn",
-                 verbose = FALSE,
-                 ...)    
+    fit <- caret::train(Y ~ I(10*A) + W, ## a tweak
+                        data = dat,
+                        method = "kknn",
+                        verbose = FALSE,
+                        ...)
+    fit$finalModel$fitted.values <- NULL
+    ## nms <- names(fit$finalModel$data)
+    ## for (ii in match(setdiff(nms, ".outcome"), nms)) {
+    ##   fit$finalModel$data[[ii]] <- NULL
+    ## }
+    fit$trainingData <- NULL    
+    return(fit)
   },
   type_of_preds = "raw"
 )
@@ -1495,8 +1502,8 @@ ggplot() +
   geom_vline(aes(xintercept = bias, colour = type),
              bias_de_one_step, size = 1.5, alpha = 0.5) +  
   labs(y = "",
-       x = expression(paste(sqrt(n/v[n]^{list(dos, eos)})*(psi[n]^{list(dos, eos)} - psi[0]))))
-
+       x = expression(
+         paste(sqrt(n/v[n]^{list(dos, eos)}) * (psi[n]^{list(dos, eos)} - psi[0]))))
 ```
 
 It seems  that the one-step correction  is quite good (in  particular, compare
@@ -1530,14 +1537,17 @@ working_model_Q_two <- list(
 attr(working_model_Q_two, "ML") <- FALSE
 
 ## xgboost based on trees
-xgb_tree_algo <- function(dat, ...) {
-  caret::train(Y ~ I(10*A) + W,
-               data = dat,
-               method = "xgbTree",
-               trControl = control,
-               tuneGrid = grid,
-               verbose = FALSE)  
-}
+xgb_tree_algo <- list(
+  algo = function(dat, ...) {
+    caret::train(Y ~ I(10*A) + W,
+                 data = dat,
+                 method = "xgbTree",
+                 trControl = control,
+                 tuneGrid = grid,
+                 verbose = FALSE)  
+  },
+  type_of_preds = "response"
+)
 attr(xgb_tree_algo, "ML") <- TRUE
 xgb_tree_grid <- expand.grid(nrounds = 350,
                              max_depth = c(4, 6),
@@ -1601,13 +1611,16 @@ npreg <- list(
   loop = NULL, prob = NULL, levels = NULL
 )
 
-npreg_algo <- function(dat, ...) {
-  caret::train(working_model_Q_one$formula,
-               data = dat,
-               method = npreg, # no quotes!
-               verbose = FALSE,
-               ...)
-}
+npreg_algo <- list(
+  algo = function(dat, ...) {
+    caret::train(working_model_Q_one$formula,
+                 data = dat,
+                 method = npreg, # no quotes!
+                 verbose = FALSE,
+                 ...)
+  },
+  type_of_preds = "response"
+)
 attr(npreg_algo, "ML") <- TRUE
 npreg_grid <- data.frame(subsample = 100,
                          regtype = "lc",

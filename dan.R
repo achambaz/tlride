@@ -17,13 +17,13 @@ redo_varying <- c(TRUE, FALSE)[1]
 if (!redo_fixed) {
   if (!exists("learned_features_fixed_sample_size")) {
     learned_features_fixed_sample_size <-
-      loadObject("data/learned_features_fixed_sample_size.xdr")
+      loadObject("data/learned_features_fixed_sample_size_NEW.xdr")
   }
 }
 if (!redo_varying) {
   if (!exists("learned_features_varying_sample_size")) {
     learned_features_varying_sample_size <-
-      loadObject("data/learned_features_varying_sample_size.xdr")
+      loadObject("data/learned_features_varying_sample_size_NEW.xdr")
   }
 } 
 
@@ -32,6 +32,7 @@ set.seed(54321) ## because reproducibility matters...
 suppressMessages(library(R.utils)) ## make sure it is installed
 suppressMessages(library(tidyverse)) ## make sure it is installed
 suppressMessages(library(caret)) ## make sure it is installed
+suppressMessages(library(ggdag)) ## make sure it is installed
 expit <- plogis
 logit <- qlogis
 
@@ -131,11 +132,24 @@ integrand <- function(w) {
 }
 (psi_zero <- integrate(integrand, lower = 0, upper = 1)$val)
 
-## ----DAG-----------------------------------------------------------------
-## plot the causal diagram
+## ----DAG, out.width = '70%', fig.align = 'center', fig.width = 8, fig.height = 6, fig.cap = "Causal graph summarizing the inner causal mechanism at play in `drawFromExperiment`."----
+dagify(
+  Y ~ A + Y1 + Y0, A ~ W, Y1 ~ W, Y0 ~ W,
+  labels = c(Y = "Actual reward",
+             A = "Action",
+             Y1 = "Counterfactual reward\n of action 1",
+             Y0 = "Counterfactual reward\n of action 0",
+             W = "Context of action"),
+  coords = list(
+    x = c(W = 0, A = -1, Y1 = 1.5, Y0 = 0.25, Y = 1),
+    y = c(W = 0, A = -1, Y1 = -0.5, Y0 = -0.5, Y = -1)),
+  outcome = "Y",
+  exposure = "A",
+  latent = c("Y0", "Y1")) %>% tidy_dagitty %>%
+  ggdag(text = TRUE, use_labels = "label") + theme_dag_grey()
 
 ## ----approx-psi-zero-a-two-----------------------------------------------
-B <- 1e6
+B <- 1e5
 ideal_obs <- draw_from_experiment(B, ideal = TRUE)
 (psi_approx <- mean(ideal_obs[, "Yone"] - ideal_obs[, "Yzero"]))
 
@@ -268,7 +282,7 @@ sd_hat <- sd(vars)
 ## ----known-Gbar-one-a----------------------------------------------------
 Gbar <- attr(obs, "Gbar")
 
-iter <- 1e3
+iter <- 1e2
 
 ## ----known-Gbar-one-b, fig.cap = "Kernel density estimators of the law of two estimators of $\\psi_{0}$ (recentered with respect to $\\psi_{0}$, and renormalized), one of them misconceived (a), the other assuming that $\\Gbar_{0}$ is known (b). Built based on `iter` independent realizations of each estimator."----
 psi_hat_ab <- obs %>% as_tibble() %>%
@@ -452,11 +466,13 @@ kknn_algo <- list(
       keep <- sample.int(nrow(dat), args$Subsample)
       dat <- dat[keep, ]
     }
-    caret::train(Y ~ I(10*A) + W, ## a tweak
-                 data = dat,
-                 method = "kknn",
-                 verbose = FALSE,
-                 ...)    
+    fit <- caret::train(Y ~ I(10*A) + W, ## a tweak
+                        data = dat,
+                        method = "kknn",
+                        verbose = FALSE,
+                        ...)
+    fit$fitted.values <- NULL
+    return(fit)
   },
   type_of_preds = "raw"
 )
@@ -467,12 +483,12 @@ control <- trainControl(method = "cv", number = 2,
                         trim = TRUE,
                         allowParallel = TRUE)
 
-## ----estimating-Qbar-one-bis, cache = FALSE------------------------------
+## ----estimating-Qbar-one-bis, fig.cap = "Write caption."-----------------
 if(redo_fixed) {
   learned_features_fixed_sample_size <-
     learned_features_fixed_sample_size %>% # head(n = 100) %>%
     mutate(Qhat_d = map(obs, ~ estimate_Q(., algorithm = working_model_Q_one)),
-           Qhat_e = map(obs, ~ estimate_Q(., algorithm = kknn_algo,
+           Qhat_e = map(obs, ~ estimate_Q(., algorithm = kknn_algo$algo,
                                           trControl = control,
                                           tuneGrid = kknn_grid))) %>%
     mutate(blip_QW_d = map2(Qhat_d, obs,
@@ -534,7 +550,7 @@ if(redo_varying) {
   learned_features_varying_sample_size <-
     learned_features_varying_sample_size %>% 
     mutate(Qhat_d = map(obs, ~ estimate_Q(., algorithm = working_model_Q_one)),
-           Qhat_e = map(obs, ~ estimate_Q(., algorithm = kknn_algo,
+           Qhat_e = map(obs, ~ estimate_Q(., algorithm = kknn_algo$algo,
                                           trControl = control,
                                           tuneGrid = kknn_grid))) %>%
     mutate(blip_QW_d = map2(Qhat_d, obs,
@@ -615,16 +631,13 @@ set_Qbar_Gbar <- function(obs, Qhat, Ghat) {
   return(obs)
 }
 eic_bar <- function(obs, Qbar, Gbar) {
-  attr(obs, "Qbar") <- Qbar
-  attr(obs, "Gbar") <- Gbar
-  eic()
 }
 
 ## ----one-step-two, fig.cap = "Write caption."----------------------------
 psi_hat_de_one_step <- learned_features_fixed_sample_size %>%
-  mutate(obs_d = pmap(list(obs = obs, Qbar = Qhat_d, Gbar = Ghat),
+  mutate(obs_d = pmap(list(obs = obs, Qhat = Qhat_d, Ghat = Ghat),
                       set_Qbar_Gbar),
-         obs_e = pmap(list(obs = obs, Qbar = Qhat_e, Gbar = Ghat),
+         obs_e = pmap(list(obs = obs, Qhat = Qhat_e, Ghat = Ghat),
                       set_Qbar_Gbar)) %>%
   mutate(eic_obs_d = map2(obs_d, blip_QW_d, ~ eic(as.data.frame(.x), mean(.y))),
          eic_obs_e = map2(obs_e, blip_QW_e, ~ eic(as.data.frame(.x), mean(.y)))) %>%
@@ -655,8 +668,8 @@ ggplot() +
   geom_vline(aes(xintercept = bias, colour = type),
              bias_de_one_step, size = 1.5, alpha = 0.5) +  
   labs(y = "",
-       x = expression(paste(sqrt(n/v[n]^{list(dos, eos)})*(psi[n]^{list(dos, eos)} - psi[0]))))
-
+       x = expression(
+         paste(sqrt(n/v[n]^{list(dos, eos)}) * (psi[n]^{list(dos, eos)} - psi[0]))))
 
 ## ----remove-soon---------------------------------------------------------
 bind_rows(bias_de, bias_de_one_step)
@@ -676,14 +689,17 @@ bind_rows(bias_de, bias_de_one_step)
 ## attr(working_model_Q_two, "ML") <- FALSE
 ## 
 ## ## xgboost based on trees
-## xgb_tree_algo <- function(dat, ...) {
-##   caret::train(Y ~ I(10*A) + W,
-##                data = dat,
-##                method = "xgbTree",
-##                trControl = control,
-##                tuneGrid = grid,
-##                verbose = FALSE)
-## }
+## xgb_tree_algo <- list(
+##   algo = function(dat, ...) {
+##     caret::train(Y ~ I(10*A) + W,
+##                  data = dat,
+##                  method = "xgbTree",
+##                  trControl = control,
+##                  tuneGrid = grid,
+##                  verbose = FALSE)
+##   },
+##   type_of_preds = "response"
+## )
 ## attr(xgb_tree_algo, "ML") <- TRUE
 ## xgb_tree_grid <- expand.grid(nrounds = 350,
 ##                              max_depth = c(4, 6),
@@ -747,13 +763,16 @@ bind_rows(bias_de, bias_de_one_step)
 ##   loop = NULL, prob = NULL, levels = NULL
 ## )
 ## 
-## npreg_algo <- function(dat, ...) {
-##   caret::train(working_model_Q_one$formula,
-##                data = dat,
-##                method = npreg, # no quotes!
-##                verbose = FALSE,
-##                ...)
-## }
+## npreg_algo <- list(
+##   algo = function(dat, ...) {
+##     caret::train(working_model_Q_one$formula,
+##                  data = dat,
+##                  method = npreg, # no quotes!
+##                  verbose = FALSE,
+##                  ...)
+##   },
+##   type_of_preds = "response"
+## )
 ## attr(npreg_algo, "ML") <- TRUE
 ## npreg_grid <- data.frame(subsample = 100,
 ##                          regtype = "lc",
