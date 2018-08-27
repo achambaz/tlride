@@ -1,7 +1,7 @@
 ---
 title: "A guided tour in targeted learning territory"
 author: "David Benkeser, Antoine Chambaz, Nima Hejazi"
-date: "08/24/2018"
+date: "08/27/2018"
 encoding: "UTF-8"
 output:
   bookdown::pdf_document2:
@@ -40,20 +40,20 @@ knitr::opts_chunk$set(
 \section{Introduction}
 
 ```{r redo}
-redo_fixed <- c(TRUE, FALSE)[1]
-redo_varying <- c(TRUE, FALSE)[1]
+redo_fixed <- c(TRUE, FALSE)[2]
+redo_varying <- c(TRUE, FALSE)[2]
 ## if  'redo_$'  then  recompute  'learned_features_$_sample_size',  otherwise
 ## upload it if it is not already in the environment.
 if (!redo_fixed) {
   if (!exists("learned_features_fixed_sample_size")) {
     learned_features_fixed_sample_size <-
-      loadObject("data/learned_features_fixed_sample_size_NEW.xdr")
+      loadObject("data/learned_features_fixed_sample_size_new.xdr")
   }
 }
 if (!redo_varying) {
   if (!exists("learned_features_varying_sample_size")) {
     learned_features_varying_sample_size <-
-      loadObject("data/learned_features_varying_sample_size_NEW.xdr")
+      loadObject("data/learned_features_varying_sample_size_new.xdr")
   }
 } 
 ```
@@ -243,11 +243,11 @@ integrand <- function(w) {
 ```
 
 Our  interest in  $\psi_{0}$ is  of  causal nature.  Taking a  closer look  at
-`drawFromExperiment` reveals indeed  that the random making  of an observation
+`run_experiment` reveals indeed  that the random making  of an observation
 $O$ drawn  from $P_{0}$ can  be summarized by  the following causal  graph and
 nonparametric system of structural equations:
 
-```{r DAG, out.width = '70%', fig.align = 'center', fig.width = 8, fig.height = 6, fig.cap = "Causal graph summarizing the inner causal mechanism at play in `drawFromExperiment`."}
+```{r DAG, out.width = '70%', fig.align = 'center', fig.width = 8, fig.height = 6, fig.cap = "Causal graph summarizing the inner causal mechanism at play in `run\\_experiment`."}
 dagify(
   Y ~ A + Y1 + Y0, A ~ W, Y1 ~ W, Y0 ~ W,
   labels = c(Y = "Actual reward",
@@ -1512,6 +1512,29 @@ It seems  that the one-step correction  is quite good (in  particular, compare
 ```{r remove-soon}
 bind_rows(bias_de, bias_de_one_step)
 ```
+
+What about the  estimation of the asymptotic variance, and  of the mean-square
+errors of the estimators?
+
+```{r enhance}
+psi_hat_de %>%
+  full_join(psi_hat_de_one_step) %>% group_by(type) %>%
+  summarize(sd = mean(std * ifelse(str_detect(type, "one_step"), 1, NA),
+                      se = sd(est) * sqrt(n()),
+                      mse = mean((est - psi_approx)^2) * n()))
+```
+
+The `sd`  (\textit{estimator} of the  asymptotic standard deviation)  and `se`
+(\textit{empirical} standard deviation) entries for type `d_one_step` are very
+similar: this indicates  that the inference of the asymptotic  variance of the
+`d`-variant  of the  one-step estimator  based  on the  influence function  is
+accurate.   \textit{This  comes as  a  surprise,  since theory  suggests  that
+estimation should be conservative, that  is, that the estimator should produce
+an  upper bound  to the  actual asymptotic  variance.}  On  the contrary,  the
+influence function-based estimator of the  asymptotic variance is clearly very
+conservative  for type  `e_one-step`.  As  for the  mean square  error, it  is
+diminished by  the one-step  update for  type `d` and  enlarged for  type `e`,
+the `d_one_step` estimator exhibiting the smallest mean square error.
 
 \subsection{Targeted inference.}
 \label{subsec:tmle}
