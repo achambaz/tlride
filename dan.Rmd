@@ -1457,24 +1457,42 @@ set_Qbar_Gbar <- function(obs, Qhat, Ghat) {
   }
   return(obs)
 }
-eic_bar <- function(obs, Qbar, Gbar) {
+eic_hat <- function(obs, Qhat, Ghat, psi_hat) {
+  Qbar <- function(newdata) {
+    if (!is.data.frame(newdata)) {
+      newdata <- as.data.frame(newdata)
+    }
+    predict(Qhat, newdata = newdata, type = Qhat$type_of_preds)
+  }
+  Gbar <- function(newdata) {
+    if (!is.data.frame(newdata)) {
+      newdata <- as.data.frame(newdata)
+    }
+    predict(Ghat, newdata = newdata, type = Ghat$type_of_preds)
+  }
+  QAW <- Qbar(obs[, c("A", "W")])
+  QoneW <- Qbar(cbind(A = 1, W = obs[, "W"]))
+  QzeroW <- Qbar(cbind(A = 0, W = obs[, "W"]))
+  GW <- Gbar(obs[, "W", drop = FALSE])
+  lGAW <- obs[, "A"] * GW + (1 - obs[, "A"]) * (1 - GW)
+  out <- (QoneW - QzeroW - psi_hat) + (2 * obs[, "A"] - 1) / lGAW * (obs[, "Y"] - QAW)
+  out <- out[[1]]
+  return(out)
 }
 ```
 
-First, we call function `set_Qbar_Gbar` to  replace the true `Qbar` and `Gbar`
-attributes   of  `obs`   by  their   estimated  counterparts   as  stored   in
-`learned_features_fixed_sample_size`.  Second,  we   call  function  `eic`  to
-compute the values of the estimated efficient influence at the observations in
-`obs`. Constructing the one-step estimators is then straightforward.
+We  first call  function  `eic_hat` to  compute the  values  of the  estimated
+efficient influence  at the observations  in `obs`. Constructing  the one-step
+estimators is then straightforward.
 
 ```{r one-step-two, fig.cap = "Write caption."}
 psi_hat_de_one_step <- learned_features_fixed_sample_size %>%
-  mutate(obs_d = pmap(list(obs = obs, Qhat = Qhat_d, Ghat = Ghat),
-                      set_Qbar_Gbar),
-         obs_e = pmap(list(obs = obs, Qhat = Qhat_e, Ghat = Ghat),
-                      set_Qbar_Gbar)) %>%
-  mutate(eic_obs_d = map2(obs_d, blip_QW_d, ~ eic(as.data.frame(.x), mean(.y))),
-         eic_obs_e = map2(obs_e, blip_QW_e, ~ eic(as.data.frame(.x), mean(.y)))) %>%
+  mutate(est_d = map(blip_QW_d, mean),
+         est_e = map(blip_QW_e, mean)) %>%
+  mutate(eic_obs_d = pmap(list(obs, Qhat_d, Ghat, est_d),
+                          eic_hat),
+         eic_obs_e = pmap(list(obs, Qhat_e, Ghat, est_e),
+                          eic_hat)) %>%
   unnest(blip_QW_d, eic_obs_d,
          blip_QW_e, eic_obs_e) %>%
   group_by(id) %>%
@@ -1538,6 +1556,8 @@ the `d_one_step` estimator exhibiting the smallest mean square error.
 
 \subsection{Targeted inference.}
 \label{subsec:tmle}
+
+
 
 \subsection{Appendix.}
 \label{subsec:appendix}
