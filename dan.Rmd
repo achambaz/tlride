@@ -95,7 +95,7 @@ will put very few restrictions on the candidate laws.
 Consider the following chunk of code:
 
 ```{r simulation}
-draw_from_experiment <- function(n, ideal = FALSE) {
+run_experiment <- function(n, ideal = FALSE) {
   ## preliminary
   n <- Arguments$getInteger(n, c(1, Inf))
   ideal <- Arguments$getLogical(ideal)
@@ -158,7 +158,7 @@ draw_from_experiment <- function(n, ideal = FALSE) {
 }
 ```
 
-We can interpret `draw_from_experiment` as a  law $P_{0}$ since we can use the
+We can interpret `run_experiment` as a  law $P_{0}$ since we can use the
 function to sample observations  from a common law.  It is  even a little more
 than that, because we can tweak the experiment, by setting its `ideal` argument
 to  `TRUE`, in  order  to  get what  appear  as intermediary  (counterfactual)
@@ -167,7 +167,7 @@ variables  in  the regular  experiment.   The  next  chunk  of code  runs  the
 observations: 
 
 ```{r draw-five-obs} 
-(five_obs <- draw_from_experiment(5))
+(five_obs <- run_experiment(5))
 ``` 
 
 We can view the `attributes` of object `five_obs` because, in this section, we
@@ -281,9 +281,9 @@ f_{w}(U_w)$;
   Y)$, thus concealing $Y_{0}$ and $Y_{1}$. 
 \end{enumerate}
 
-The above  description of the  experiment `draw_from_experiment` is  useful to
+The above  description of the  experiment `run_experiment` is  useful to
 reinforce what it means to run the "ideal" experiment by setting argument `ideal`
-to  `TRUE`  in   a  call  to  `draw_from_experiment`.  Doing   so  triggers  a
+to  `TRUE`  in   a  call  to  `run_experiment`.  Doing   so  triggers  a
 modification   of  the   nature  of   the  experiment,   enforcing  that   the
 counterfactual  rewards $Y_{0}$  and $Y_{1}$  be part  of the  summary of  the
 experiment eventually.  In light  of the above  enumeration, $\bbO  \equiv (W,
@@ -316,14 +316,14 @@ interpretation and describes a standardized association between the action $A$
 and the reward $Y$. 
 
 To conclude this  subsection, we use our  position as oracles to
-sample observations from the  ideal experiment. We call `draw_from_experiment`
+sample observations from the  ideal experiment. We call `run_experiment`
 with its  argument `ideal` set to  `TRUE` in order to  numerically approximate
 $\psi_{0}$.   By  the law  of  large  numbers,  the  following code
 approximates $\psi_{0}$ and shows it approximate value.
 
 ```{r approx-psi-zero-a-two}
 B <- 1e6
-ideal_obs <- draw_from_experiment(B, ideal = TRUE)
+ideal_obs <- run_experiment(B, ideal = TRUE)
 (psi_approx <- mean(ideal_obs[, "Yone"] - ideal_obs[, "Yzero"]))
 ```
 
@@ -422,7 +422,7 @@ For  instance,  although  the  law  $\Pi_{0} \in  \calM$  encoded  by  default
 differs starkly from $P_{0}$,
 
 ```{r another-simulation}
-draw_from_another_experiment <- function(n, h = 0) {
+run_another_experiment <- function(n, h = 0) {
   ## preliminary
   n <- Arguments$getInteger(n, c(1, Inf))
   h <- Arguments$getNumeric(h)
@@ -465,7 +465,7 @@ the parameter $\Psi(\Pi_{0})$ is well defined, and numerically approximated by
 `psi_Pi_zero` as follows. 
 
 ```{r approx-psi-one}
-five_obs_from_another_experiment <- draw_from_another_experiment(5)
+five_obs_from_another_experiment <- run_another_experiment(5)
 another_integrand <- function(w) {
   Qbar <- attr(five_obs_from_another_experiment, "Qbar")
   QW <- attr(five_obs_from_another_experiment, "QW")
@@ -588,7 +588,7 @@ $\Psi(P_{h}) \to_{h}  \Psi(P)$ (continuity),  but also $h^{-1}  [\Psi(P_{h}) -
 
 
 For   instance,   let   $\Pi_{h}   \in   \calM$  be   the   law   encoded   in
-`draw_from_another_experiment` with  `h` ranging over  $\interval{-1}{1}$.  We
+`run_another_experiment` with  `h` ranging over  $\interval{-1}{1}$.  We
 will argue shortly that $\Pi_{h} \to_{h}  \Pi_{0}$ in $\calM$ from a direction
 $s$ when  $h \to  0$.  The  following chunk of  code evaluates  and represents
 $\Psi(\Pi_{h})$   for   $h$   ranging   in   a   discrete   approximation   of
@@ -597,7 +597,7 @@ $\interval{-1}{1}$:
 ```{r psi-approx-psi-one,  fig.cap =  "Evolution of statistical parameter $\\Psi$ along fluctuation $\\{\\Pi_{h} : h \\in H\\}$."}
 approx <- seq(-1, 1, length.out = 1e2)
 psi_Pi_h <- sapply(approx, function(t) {
-  obs_from_another_experiment <- draw_from_another_experiment(1, h = t)
+  obs_from_another_experiment <- run_another_experiment(1, h = t)
   integrand <- function(w) {
     Qbar <- attr(obs_from_another_experiment, "Qbar")
     QW <- attr(obs_from_another_experiment, "QW")
@@ -625,7 +625,7 @@ differentiable around $h=0$.  It is  derived by simple geometric arguments. In
 the  next  subsection,  we formalize  what  it  means  to  be smooth  for  the
 statistical mapping $\Psi$. This allows us to derive a  closed-form expression 
 for the  slope of the blue  curve from the chunk of code where 
-`draw_from_another_experiment` is defined.
+`run_another_experiment` is defined.
 
 \subsection{\textdbend Being smooth, second pass.}
 \label{subsec:being:smooth:two}
@@ -761,14 +761,14 @@ eic <- function(obs, psi) {
 We can use `eic` to numerically approximate the Cramér-Rao bound at $P_{0}$:
 
 ```{r cramer-rao}
-obs <- draw_from_experiment(B)
+obs <- run_experiment(B)
 (cramer_rao_hat <- var(eic(obs, psi = psi_approx)))
 ```
 
 and the Cramér-Rao bound at $\Pi_{0}$:
 
 ```{r cramer-rao-another-experiment}
-obs_from_another_experiment <- draw_from_another_experiment(B)
+obs_from_another_experiment <- run_another_experiment(B)
 (cramer_rao_Pi_zero_hat <- var(eic(obs_from_another_experiment, psi = 59/300)))
 (ratio <- sqrt(cramer_rao_Pi_zero_hat/cramer_rao_hat))
 ```
@@ -802,12 +802,12 @@ Consequently,    the    slope    of     the    dotted    curve    in    Figure
 to a constant is not problematic). 
 
 Let  us check  this numerically.   In  the next  chunk of  code, we  implement
-direction  $\sigma_{0}$  with `sigma0_draw_from_another_experiment`,  then  we
+direction  $\sigma_{0}$  with `sigma0_run_another_experiment`,  then  we
 numerically approximate  \eqref{eq:slope:Pi} (pointwise and with  a confidence
 interval of asymptotic level 95\%):
 
 ```{r recover-slope}
-sigma0_draw_from_another_experiment <- function(obs) { 
+sigma0_run_another_experiment <- function(obs) { 
   ## preliminary
   Qbar <- attr(obs, "Qbar")
   QAW <- Qbar(obs[, c("A", "W")])
@@ -824,7 +824,7 @@ sigma0_draw_from_another_experiment <- function(obs) {
 }
 
 vars <- eic(obs_from_another_experiment, psi = 59/300) *
-  sigma0_draw_from_another_experiment(obs_from_another_experiment)
+  sigma0_run_another_experiment(obs_from_another_experiment)
 sd_hat <- sd(vars)
 (slope_hat <- mean(vars))
 (slope_CI <- slope_hat + c(-1, 1) * qnorm(1 - alpha / 2) * sd_hat / sqrt(B))
