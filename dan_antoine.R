@@ -36,9 +36,16 @@ suppressMessages(library(ggdag)) ## make sure it is installed
 expit <- plogis
 logit <- qlogis
 
-## ANTOINE: hide the four methods?
+## ANTOINE: hide the five methods?
 setMethodS3("print", "law", function(this, ...) {
-  cat("An experiment. Use method 'run' to run it.\n")
+  str_c("An experiment, or law. Use method 'run' to run it. ",
+        "If you built it, or if you are an _oracle_, ",
+        " you can also use methods ",
+        "'uncover' to discover some of its relevant features, ",
+        "'evaluate_psi' to obtain the value of 'Psi' at this law, ",
+        "'evaluate_eic' to obtain the efficient influence curve of ",
+        "'Psi' at this law.") %>%
+    str_wrap(indent = 2, width = 60) %>% str_c("\n") %>% cat
 })
 
 setMethodS3("run", "law", function(this, n, ...) {
@@ -57,55 +64,87 @@ setMethodS3("uncover", "law", function(this, ...) {
 ## ## (started with 'Psi')
 ## ##
 ## ## if made visible, may define later than 'print',
-## ## 'run', and 'uncover' 
+## ## 'run', and 'uncover'
+
+## ## CERTAINLY HIDE THAT ONE! (although it is very useful)
+setMethodS3(".get_feature", "law", function(this, what, ...){
+  if (!(what %in% c("Qbar", "Gbar", "QW", "qY"))) {
+    stop(str_c("Argument 'what' should be one of 'Qbar', 'Gbar', 'QW', 'qY', not ",
+               deparse(substitute(what)),
+               "\n"))
+  }
+  some_relevant_features <- uncover(this)
+  ellipsis <- list(...)
+  feature <- eval(substitute(some_relevant_features$a, list(a = what)))
+  if (length(formals(feature)) > 1) {
+    ##    first_arg <- names(formals(feature))
+    params <- formals(feature)[-1]
+    params <- params[sapply(params, is.symbol)]
+    if (length(params) > 0) {
+      if (!all(names(params) %in% names(ellipsis))) {
+        stop(str_c("Is law '", deparse(substitute(this)),
+                   "' fully characterized?\n"))
+      } else {
+        idx <- which(names(ellipsis) %in% names(params))
+        feature <- function(X) {
+          feat <- eval(substitute(some_relevant_features$a, list(a = what)))     
+          do.call(feat, c(ellipsis[idx], list(X)))
+        }
+      }
+    }
+  }
+  return(feature)
+})
+
 setMethodS3("evaluate_psi", "law", function(this, ...) {
   some_relevant_features <- uncover(this)
   ellipsis <- list(...)
   if (length(intersect(names(some_relevant_features), c("Qbar", "QW"))) != 2) {
-    throw("Is law '", deparse(substitute(this)),
-          "' an element of the model where 'Psi' is defined?")
+    stop(str_c("Is law '", deparse(substitute(this)),
+               "' an element of the model where 'Psi' is defined?\n"))
   } else {
-    Qbar <- some_relevant_features$Qbar
-    if (length(formals(Qbar)) > 1) {
-      params_Qbar <- formals(Qbar)[-1]
-      params_Qbar <- params_Qbar[sapply(params_Qbar, is.symbol)]
-      if (length(params_Qbar) > 0) {
-        if (!all(names(params_Qbar) %in% names(ellipsis))) {
-          throw("Is law '", deparse(substitute(this)),
-                "' fully characterized?")
-        } else {
-          idx <- which(names(ellipsis) %in% names(params_Qbar))
-          Qbar <- function(AW) {
-            do.call(some_relevant_features$Qbar,
-                    rlist::list.merge(list(AW = AW), ellipsis[idx]))
-          }
-        }
-      }
-    }
-    QW <- some_relevant_features$QW
-    if (length(formals(QW)) > 1) {
-      params_QW <- formals(QW)[-1]
-      params_QW <- params_QW[sapply(params_QW, is.symbol)]
-      if (length(params_QW) > 0) {
-        if (!all(names(params_QW) %in% names(ellipsis))) {
-          throw("Is law '", deparse(substitute(this)),
-                "' fully characterized?")
-        } else {
-          idx <- which(names(ellipsis) %in% names(params_QW))
-          QW <- function(W) {
-            do.call(some_relevant_features$QW,
-                    rlist::list.merge(list(W = W), ellipsis[idx]))
-          }
-        }
-      }
-    }
+    Qbar <- .get_feature(this, "Qbar", ...)
+    QW <- .get_feature(this, "QW", ...)
     integrand <- function(w) {
-      ( Qbar(cbind(1, w)) - Qbar(cbind(0, w)) ) * QW(w)
+      ( Qbar(cbind(A = 1, W = w)) - Qbar(cbind(A = 0, W = w)) ) * QW(w)
     }
     out <- integrate(integrand, lower = 0, upper = 1)$val
     return(out)
   }
 })
+
+
+setMethodS3("evaluate_eic", "law", function(this, psi = NULL, ...) {
+  if (is.null(psi)) {
+    psi <- evaluate_psi(this, ...)
+  }
+  some_relevant_features <- uncover(this)
+  ellipsis <- list(...)
+  if (length(intersect(names(some_relevant_features), c("Qbar", "QW"))) != 2) {
+    stop(str_c("Is law '", deparse(substitute(this)),
+               "' an element of the model where 'Psi' is defined?\n"))
+  } else {
+    Qbar <- .get_feature(this, "Qbar", ...)
+    Gbar <- .get_feature(this, "Gbar", ...)
+    eic <- function(obs) {
+      if (length(intersect(c("W", "A", "Y"), names(obs))) == 3) {
+        stop(str_c("Argument 'obs' of ",
+                   deparse(substitute(this)),
+                   " should contain columns named 'W', 'A' and 'Y'.\n"))
+      } 
+      QAW <- Qbar(obs[, c("A", "W")])
+      QoneW <- Qbar(cbind(A = 1, W = obs[, "W"]))
+      QzeroW <- Qbar(cbind(A = 0, W = obs[, "W"]))
+      GW <- Gbar(obs[, "W", drop = FALSE])
+      lGAW <- obs[, "A"] * GW + (1 - obs[, "A"]) * (1 - GW)
+      out <- (QoneW - QzeroW - psi) + (2 * obs[, "A"] - 1) / lGAW * (obs[, "Y"] - QAW)
+      out <- as.vector(out)
+      return(out)
+    }
+    return(eic)
+  }
+})
+
 
 
 ## ANTOINE: hide this too?
@@ -118,14 +157,14 @@ sample_from_mixture_of_uniforms <-
     maxs <- Arguments$getNumerics(maxs)
     if (!(length(mixture_weights) == length(mins) &
           length(mins) == length(maxs))) {
-      throw(paste0("Arguments 'mixture_weights', 'mins' and 'maxs' ",
-                   "must have the same length."))
+      stop(str_c("Arguments 'mixture_weights', 'mins' and 'maxs' ",
+                 "must have the same length.\n"))
     }
     if (!sum(mixture_weights) == 1) {
-      throw("The entries of 'mixture_weights' must sum up to one.")
+      stop("The entries of 'mixture_weights' must sum up to one.\n")
     }
     if (!all(mins <= maxs)) {
-      throw("Caution: 'mins[i]' must be smaller than 'maxs[i]' for all 'i'.")
+      stop("Caution: 'mins[i]' must be smaller than 'maxs[i]' for all 'i'.\n")
     }
     ##
     latent <- findInterval(runif(n), cumsum(mixture_weights)) + 1
@@ -142,8 +181,8 @@ experiment <- list(
       expit(1 + 2 * W - 4 * sqrt(abs((W - 5/12))))
     },
     Qbar =  function(AW) {
-      A <- AW[, 1]
-      W <- AW[, 2]
+      A <- AW[, "A"]
+      W <- AW[, "W"]
       A * (cos((-1/2 + W) * pi) * 2/5 + 1/5 + (1/3 <= W & W <= 1/2) / 5 +
            (W >= 3/4) * (W - 3/4) * 2) +
         (1 - A) * (sin(4 * W^2 * pi) / 4 + 1/2) 
@@ -159,12 +198,12 @@ experiment <- list(
                     })
       return(rowSums(out))
     },
-    qY = function(AW, Y, Qbar){
-      A <- AW[, 1]
-      W <- AW[, 2]
-      Qbar_AW <- do.call(Qbar, list(AW)) # is call to 'do.call' necessary?
-      shape1 <- ifelse(A == 0, 2, 3)
-      dbeta(Y, shape1 = shape1, shape2 = shape1 * (1 - Qbar_AW) / Qbar_AW)
+    qY = function(obs, Qbar, shape10 = 2, shape11 = 3){
+      A <- obs[, "A"]
+      AW <- obs[, c("A", "W")]
+      QAW <- do.call(Qbar, list(AW)) # is call to 'do.call' necessary?
+      shape1 <- ifelse(A == 0, shape10, shape11)
+      dbeta(Y, shape1 = shape1, shape2 = shape1 * (1 - QAW) / QAW)
     }
   )  
 )
@@ -275,17 +314,16 @@ another_experiment <- list(
       sin((1 + W) * pi / 6)
     },
     Qbar =   function(AW, h) {
-      A <- AW[, 1]
-      W <- AW[, 2]
+      A <- AW[, "A"]
+      W <- AW[, "W"]
       expit( logit( A *  W + (1 - A) * W^2 ) +
              h * 10 * sqrt(W) * A )
     },
     QW = function(x, min = 1/10, max = 9/10){dunif(x, min = min, max = max)},
-    qY = function(AW, Y, Qbar, shape1 = 4){
-      A <- AW[, 1]
-      W <- AW[, 2]
-      Qbar_AW <- do.call(Qbar, list(AW))
-      dbeta(Y, shape1 = shape1, shape2 = shape1 * (1 - Qbar_AW) / Qbar_AW)
+    qY = function(obs, Qbar, shape1 = 4){
+      AW <- obs[, c("A", "W")]
+      QAW <- do.call(Qbar, list(AW))
+      dbeta(Y, shape1 = shape1, shape2 = shape1 * (1 - QAW) / QAW)
     }
   )  
 )
@@ -307,8 +345,8 @@ another_experiment$.run_experiment <- function(n, h) {
   ## ## reward
   params <- formals(another_experiment$.some_relevant_features$qY)
   shape1 <- eval(params$shape1)
-  Qbar_AW <- Qbar(cbind(A, W), h = h)
-  Y <- rbeta(n, shape1 = shape1, shape2 = shape1 * (1 - Qbar_AW) / Qbar_AW)
+  QAW <- Qbar(cbind(A = A, W = W), h = h)
+  Y <- rbeta(n, shape1 = shape1, shape2 = shape1 * (1 - QAW) / QAW)
   ## ## observation
   obs <- cbind(W = W, A = A, Y = Y)
   return(obs)
@@ -317,7 +355,7 @@ another_experiment$.run_experiment <- function(n, h) {
 ## ----approx-psi-one------------------------------------------------------
 
 ## ANTOINE: new version
-(five_obs_from_another_experiment <- run(another_experiment, 5, h = 0))
+(five_obs_another_experiment <- run(another_experiment, 5, h = 0))
 (psi_Pi_zero <- evaluate_psi(another_experiment, h = 0))
 
 
@@ -342,40 +380,55 @@ ggplot() +
   geom_hline(yintercept = psi_Pi_zero, color = "#66CC99") +
   labs(x = "h", y = expression(Psi(Pi[h]))) 
 
-stop("Stopping here...\n")
+
 
 ## ----eic-----------------------------------------------------------------
-eic <- function(obs, psi) {
-  Qbar <- attr(obs, "Qbar")
-  Gbar <- attr(obs, "Gbar")
-  QAW <- Qbar(obs[, c("A", "W")])
-  QoneW <- Qbar(cbind(A = 1, W = obs[, "W"]))
-  QzeroW <- Qbar(cbind(A = 0, W = obs[, "W"]))
-  GW <- Gbar(obs[, "W", drop = FALSE])
-  lGAW <- obs[, "A"] * GW + (1 - obs[, "A"]) * (1 - GW)
-  out <- (QoneW - QzeroW - psi) + (2 * obs[, "A"] - 1) / lGAW * (obs[, "Y"] - QAW)
-  out <- as.vector(out)
-  return(out)
-}
 
-(eic(five_obs, psi = psi_approx))
-(eic(five_obs_from_another_experiment, psi = psi_Pi_zero))
+## ANTOINE: modified, see new method 'evaluate_eic'
+
+## eic <- function(obs, psi) {
+##   Qbar <- attr(obs, "Qbar")
+##   Gbar <- attr(obs, "Gbar")
+##   QAW <- Qbar(obs[, c("A", "W")])
+##   QoneW <- Qbar(cbind(A = 1, W = obs[, "W"]))
+##   QzeroW <- Qbar(cbind(A = 0, W = obs[, "W"]))
+##   GW <- Gbar(obs[, "W", drop = FALSE])
+##   lGAW <- obs[, "A"] * GW + (1 - obs[, "A"]) * (1 - GW)
+##   out <- (QoneW - QzeroW - psi) + (2 * obs[, "A"] - 1) / lGAW * (obs[, "Y"] - QAW)
+##   out <- as.vector(out)
+##   return(out)
+## }
+
+eic_experiment <- evaluate_eic(experiment)
+(eic_experiment(five_obs))
+
+eic_another_experiment <- evaluate_eic(another_experiment, h = 0)
+(eic_another_experiment(five_obs_another_experiment))
 
 ## ----cramer-rao----------------------------------------------------------
-obs <- run_experiment(B)
-(cramer_rao_hat <- var(eic(obs, psi = psi_approx)))
+
+## ANTOINE: new version
+obs <- run(experiment, B)
+(cramer_rao_hat <- var(eic_experiment(obs)))
 
 ## ----cramer-rao-another-experiment---------------------------------------
-obs_from_another_experiment <- run_another_experiment(B)
-(cramer_rao_Pi_zero_hat <- var(eic(obs_from_another_experiment, psi = 59/300)))
+
+## ANTOINE: new version
+obs_another_experiment <- run(another_experiment, B, h = 0)
+(cramer_rao_Pi_zero_hat <- var(eic_another_experiment(obs_another_experiment)))
 (ratio <- sqrt(cramer_rao_Pi_zero_hat/cramer_rao_hat))
 
 ## ----recover-slope-------------------------------------------------------
-sigma0_run_another_experiment <- function(obs) { 
+
+stop("Stopping here...\n")
+
+## ANTOINE: new version
+sigma0 <- function(obs) {
   ## preliminary
-  Qbar <- attr(obs, "Qbar")
+  Qbar <- .get_feature(another_experiment, "Qbar", h = 0)
   QAW <- Qbar(obs[, c("A", "W")])
-  shape1 <- Arguments$getInteger(attr(obs, "shape1"), c(1, Inf))
+  params <- formals(.get_feature(another_experiment, "qY", h = 0))
+  shape1 <- eval(params$shape1)
   ## computations
   betaAW <- shape1 * (1 - QAW) / QAW
   out <- log(1 - obs[, "Y"])
@@ -387,8 +440,8 @@ sigma0_run_another_experiment <- function(obs) {
   return(out)
 }
 
-vars <- eic(obs_from_another_experiment, psi = 59/300) *
-  sigma0_run_another_experiment(obs_from_another_experiment)
+vars <- eic_another_experiment(obs_another_experiment) *
+  sigma0(obs_another_experiment)
 sd_hat <- sd(vars)
 (slope_hat <- mean(vars))
 (slope_CI <- slope_hat + c(-1, 1) * qnorm(1 - alpha / 2) * sd_hat / sqrt(B))
@@ -444,8 +497,8 @@ estimate_G <- function(dat, algorithm, ...) {
 
 compute_lGhatAW <- function(A, W, Ghat, threshold = 0.05) {
   dat <- data.frame(A = A, W = W)
-  Ghat_W <- predict(Ghat, newdata = dat, type = Ghat$type_of_preds)
-  lGAW <- A * Ghat_W + (1 - A) * (1 - Ghat_W)
+  GW <- predict(Ghat, newdata = dat, type = Ghat$type_of_preds)
+  lGAW <- A * GW + (1 - A) * (1 - GW)
   pred <- pmin(1 - threshold, pmax(lGAW, threshold))
   return(pred)
 }
