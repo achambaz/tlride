@@ -10,20 +10,20 @@ knitr::opts_chunk$set(
 )
 
 ## ----redo----------------------------------------------------------------
-redo_fixed <- c(TRUE, FALSE)[1]
-redo_varying <- c(TRUE, FALSE)[1]
+redo_fixed <- c(TRUE, FALSE)[2]
+redo_varying <- c(TRUE, FALSE)[2]
 ## if  'redo_$'  then  recompute  'learned_features_$_sample_size',  otherwise
 ## upload it if it is not already in the environment.
 if (!redo_fixed) {
   if (!exists("learned_features_fixed_sample_size")) {
     learned_features_fixed_sample_size <-
-      loadObject("data/learned_features_fixed_sample_size_NEW.xdr")
+      loadObject("data/learned_features_fixed_sample_size_new.xdr")
   }
 }
 if (!redo_varying) {
   if (!exists("learned_features_varying_sample_size")) {
     learned_features_varying_sample_size <-
-      loadObject("data/learned_features_varying_sample_size_NEW.xdr")
+      loadObject("data/learned_features_varying_sample_size_new.xdr")
   }
 } 
 
@@ -37,7 +37,7 @@ expit <- plogis
 logit <- qlogis
 
 ## ----simulation----------------------------------------------------------
-draw_from_experiment <- function(n, ideal = FALSE) {
+run_experiment <- function(n, ideal = FALSE) {
   ## preliminary
   n <- Arguments$getInteger(n, c(1, Inf))
   ideal <- Arguments$getLogical(ideal)
@@ -100,7 +100,7 @@ draw_from_experiment <- function(n, ideal = FALSE) {
 }
 
 ## ----draw-five-obs-------------------------------------------------------
-(five_obs <- draw_from_experiment(5))
+(five_obs <- run_experiment(5))
 
 ## ----exercise:visualize, eval = TRUE-------------------------------------
 Gbar <- attr(five_obs, "Gbar")
@@ -132,7 +132,7 @@ integrand <- function(w) {
 }
 (psi_zero <- integrate(integrand, lower = 0, upper = 1)$val)
 
-## ----DAG, out.width = '70%', fig.align = 'center', fig.width = 8, fig.height = 6, fig.cap = "Causal graph summarizing the inner causal mechanism at play in `drawFromExperiment`."----
+## ----DAG, out.width = '70%', fig.align = 'center', fig.width = 8, fig.height = 6, fig.cap = "Causal graph summarizing the inner causal mechanism at play in `run\\_experiment`."----
 dagify(
   Y ~ A + Y1 + Y0, A ~ W, Y1 ~ W, Y0 ~ W,
   labels = c(Y = "Actual reward",
@@ -149,8 +149,8 @@ dagify(
   ggdag(text = TRUE, use_labels = "label") + theme_dag_grey()
 
 ## ----approx-psi-zero-a-two-----------------------------------------------
-B <- 1e5
-ideal_obs <- draw_from_experiment(B, ideal = TRUE)
+B <- 1e6
+ideal_obs <- run_experiment(B, ideal = TRUE)
 (psi_approx <- mean(ideal_obs[, "Yone"] - ideal_obs[, "Yzero"]))
 
 ## ----approx-psi-zero-b---------------------------------------------------
@@ -159,7 +159,7 @@ alpha <- 0.05
 (psi_approx_CI <- psi_approx + c(-1, 1) * qnorm(1 - alpha / 2) * sd_approx / sqrt(B))
 
 ## ----another-simulation--------------------------------------------------
-draw_from_another_experiment <- function(n, h = 0) {
+run_another_experiment <- function(n, h = 0) {
   ## preliminary
   n <- Arguments$getInteger(n, c(1, Inf))
   h <- Arguments$getNumeric(h)
@@ -198,7 +198,7 @@ draw_from_another_experiment <- function(n, h = 0) {
 }
 
 ## ----approx-psi-one------------------------------------------------------
-five_obs_from_another_experiment <- draw_from_another_experiment(5)
+five_obs_from_another_experiment <- run_another_experiment(5)
 another_integrand <- function(w) {
   Qbar <- attr(five_obs_from_another_experiment, "Qbar")
   QW <- attr(five_obs_from_another_experiment, "QW")
@@ -209,7 +209,7 @@ another_integrand <- function(w) {
 ## ----psi-approx-psi-one,  fig.cap =  "Evolution of statistical parameter $\\Psi$ along fluctuation $\\{\\Pi_{h} : h \\in H\\}$."----
 approx <- seq(-1, 1, length.out = 1e2)
 psi_Pi_h <- sapply(approx, function(t) {
-  obs_from_another_experiment <- draw_from_another_experiment(1, h = t)
+  obs_from_another_experiment <- run_another_experiment(1, h = t)
   integrand <- function(w) {
     Qbar <- attr(obs_from_another_experiment, "Qbar")
     QW <- attr(obs_from_another_experiment, "QW")
@@ -248,16 +248,16 @@ eic <- function(obs, psi) {
 (eic(five_obs_from_another_experiment, psi = psi_Pi_zero))
 
 ## ----cramer-rao----------------------------------------------------------
-obs <- draw_from_experiment(B)
+obs <- run_experiment(B)
 (cramer_rao_hat <- var(eic(obs, psi = psi_approx)))
 
 ## ----cramer-rao-another-experiment---------------------------------------
-obs_from_another_experiment <- draw_from_another_experiment(B)
+obs_from_another_experiment <- run_another_experiment(B)
 (cramer_rao_Pi_zero_hat <- var(eic(obs_from_another_experiment, psi = 59/300)))
 (ratio <- sqrt(cramer_rao_Pi_zero_hat/cramer_rao_hat))
 
 ## ----recover-slope-------------------------------------------------------
-sigma0_draw_from_another_experiment <- function(obs) { 
+sigma0_run_another_experiment <- function(obs) { 
   ## preliminary
   Qbar <- attr(obs, "Qbar")
   QAW <- Qbar(obs[, c("A", "W")])
@@ -274,7 +274,7 @@ sigma0_draw_from_another_experiment <- function(obs) {
 }
 
 vars <- eic(obs_from_another_experiment, psi = 59/300) *
-  sigma0_draw_from_another_experiment(obs_from_another_experiment)
+  sigma0_run_another_experiment(obs_from_another_experiment)
 sd_hat <- sd(vars)
 (slope_hat <- mean(vars))
 (slope_CI <- slope_hat + c(-1, 1) * qnorm(1 - alpha / 2) * sd_hat / sqrt(B))
@@ -282,7 +282,7 @@ sd_hat <- sd(vars)
 ## ----known-Gbar-one-a----------------------------------------------------
 Gbar <- attr(obs, "Gbar")
 
-iter <- 1e2
+iter <- 1e3
 
 ## ----known-Gbar-one-b, fig.cap = "Kernel density estimators of the law of two estimators of $\\psi_{0}$ (recentered with respect to $\\psi_{0}$, and renormalized), one of them misconceived (a), the other assuming that $\\Gbar_{0}$ is known (b). Built based on `iter` independent realizations of each estimator."----
 psi_hat_ab <- obs %>% as_tibble() %>%
@@ -471,7 +471,12 @@ kknn_algo <- list(
                         method = "kknn",
                         verbose = FALSE,
                         ...)
-    fit$fitted.values <- NULL
+    fit$finalModel$fitted.values <- NULL
+    ## nms <- names(fit$finalModel$data)
+    ## for (ii in match(setdiff(nms, ".outcome"), nms)) {
+    ##   fit$finalModel$data[[ii]] <- NULL
+    ## }
+    fit$trainingData <- NULL    
     return(fit)
   },
   type_of_preds = "raw"
@@ -488,7 +493,7 @@ if(redo_fixed) {
   learned_features_fixed_sample_size <-
     learned_features_fixed_sample_size %>% # head(n = 100) %>%
     mutate(Qhat_d = map(obs, ~ estimate_Q(., algorithm = working_model_Q_one)),
-           Qhat_e = map(obs, ~ estimate_Q(., algorithm = kknn_algo$algo,
+           Qhat_e = map(obs, ~ estimate_Q(., algorithm = kknn_algo,
                                           trControl = control,
                                           tuneGrid = kknn_grid))) %>%
     mutate(blip_QW_d = map2(Qhat_d, obs,
@@ -550,7 +555,7 @@ if(redo_varying) {
   learned_features_varying_sample_size <-
     learned_features_varying_sample_size %>% 
     mutate(Qhat_d = map(obs, ~ estimate_Q(., algorithm = working_model_Q_one)),
-           Qhat_e = map(obs, ~ estimate_Q(., algorithm = kknn_algo$algo,
+           Qhat_e = map(obs, ~ estimate_Q(., algorithm = kknn_algo,
                                           trControl = control,
                                           tuneGrid = kknn_grid))) %>%
     mutate(blip_QW_d = map2(Qhat_d, obs,
@@ -630,17 +635,37 @@ set_Qbar_Gbar <- function(obs, Qhat, Ghat) {
   }
   return(obs)
 }
-eic_bar <- function(obs, Qbar, Gbar) {
+eic_hat <- function(obs, Qhat, Ghat, psi_hat) {
+  Qbar <- function(newdata) {
+    if (!is.data.frame(newdata)) {
+      newdata <- as.data.frame(newdata)
+    }
+    predict(Qhat, newdata = newdata, type = Qhat$type_of_preds)
+  }
+  Gbar <- function(newdata) {
+    if (!is.data.frame(newdata)) {
+      newdata <- as.data.frame(newdata)
+    }
+    predict(Ghat, newdata = newdata, type = Ghat$type_of_preds)
+  }
+  QAW <- Qbar(obs[, c("A", "W")])
+  QoneW <- Qbar(cbind(A = 1, W = obs[, "W"]))
+  QzeroW <- Qbar(cbind(A = 0, W = obs[, "W"]))
+  GW <- Gbar(obs[, "W", drop = FALSE])
+  lGAW <- obs[, "A"] * GW + (1 - obs[, "A"]) * (1 - GW)
+  out <- (QoneW - QzeroW - psi_hat) + (2 * obs[, "A"] - 1) / lGAW * (obs[, "Y"] - QAW)
+  out <- out[[1]]
+  return(out)
 }
 
 ## ----one-step-two, fig.cap = "Write caption."----------------------------
 psi_hat_de_one_step <- learned_features_fixed_sample_size %>%
-  mutate(obs_d = pmap(list(obs = obs, Qhat = Qhat_d, Ghat = Ghat),
-                      set_Qbar_Gbar),
-         obs_e = pmap(list(obs = obs, Qhat = Qhat_e, Ghat = Ghat),
-                      set_Qbar_Gbar)) %>%
-  mutate(eic_obs_d = map2(obs_d, blip_QW_d, ~ eic(as.data.frame(.x), mean(.y))),
-         eic_obs_e = map2(obs_e, blip_QW_e, ~ eic(as.data.frame(.x), mean(.y)))) %>%
+  mutate(est_d = map(blip_QW_d, mean),
+         est_e = map(blip_QW_e, mean)) %>%
+  mutate(eic_obs_d = pmap(list(obs, Qhat_d, Ghat, est_d),
+                          eic_hat),
+         eic_obs_e = pmap(list(obs, Qhat_e, Ghat, est_e),
+                          eic_hat)) %>%
   unnest(blip_QW_d, eic_obs_d,
          blip_QW_e, eic_obs_e) %>%
   group_by(id) %>%
@@ -673,6 +698,13 @@ ggplot() +
 
 ## ----remove-soon---------------------------------------------------------
 bind_rows(bias_de, bias_de_one_step)
+
+## ----enhance-------------------------------------------------------------
+psi_hat_de %>%
+  full_join(psi_hat_de_one_step) %>% group_by(type) %>%
+  summarize(sd = mean(std * ifelse(str_detect(type, "one_step"), 1, NA),
+                      se = sd(est) * sqrt(n()),
+                      mse = mean((est - psi_approx)^2) * n()))
 
 ## ----estimating-Qbar-appendix, eval = FALSE------------------------------
 ## 
