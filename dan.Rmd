@@ -39,6 +39,17 @@ knitr::opts_chunk$set(
 
 \section{Introduction}
 
+
+```{r visible-setup}
+set.seed(54321) ## because reproducibility matters...
+suppressMessages(library(R.utils)) ## make sure it is installed
+suppressMessages(library(tidyverse)) ## make sure it is installed
+suppressMessages(library(caret)) ## make sure it is installed
+suppressMessages(library(ggdag)) ## make sure it is installed
+expit <- plogis
+logit <- qlogis
+```
+
 ```{r redo}
 redo_fixed <- c(TRUE, FALSE)[2]
 redo_varying <- c(TRUE, FALSE)[2]
@@ -58,16 +69,6 @@ if (!redo_varying) {
 } 
 ```
 
-
-```{r visible-setup}
-set.seed(54321) ## because reproducibility matters...
-suppressMessages(library(R.utils)) ## make sure it is installed
-suppressMessages(library(tidyverse)) ## make sure it is installed
-suppressMessages(library(caret)) ## make sure it is installed
-suppressMessages(library(ggdag)) ## make sure it is installed
-expit <- plogis
-logit <- qlogis
-```
 
 Function `expit` implements the link function  $\expit : \bbR \to ]0,1[$ given
 by  $\expit(x) \equiv  (1 +  e^{-x})^{-1}$.  Function  `logit` implements  its
@@ -190,8 +191,7 @@ attribute `Qbar` describes the conditional mean  of $Y$ given $A$ and $W$, and
 we denote  $\Qbar_0(A,W) =  \Exp_{P_{0}}(Y|A,W)$ the  conditional mean  of $Y$
 given $A$ and $W$.
 
-\subsection{\gear Visualizing infinite-dimensional features of the experiment}
-\label{subsec:visualizing}
+\gear __Exercises__
 
 1.  Run the following chunk of code.  It visualizes the conditional mean
    $\Qbar_{0}$.
@@ -305,15 +305,14 @@ $\bbP_{0}$)  and that  $\Pr_{P_0}(\ell\Gbar_0(a,W) >  0) =  1$ (in  words, the
 $\Exp_{P_0}(Y \mid A = a, W)$ to be well-defined).}  that
 \begin{equation} \label{eq:psi:zero}    
 \psi_{0} = \Exp_{\bbP_{0}} \left(Y_{1} - Y_{0}\right) = \Exp_{\bbP_{0}}(Y_1) -
-\Exp_{\bbP_{0}}(Y_0).  \end{equation}  Thus, 
-$\psi_{0}$ describes  the average
-difference in of  the two counterfactual rewards.  In  other words, $\psi_{0}$
+\Exp_{\bbP_{0}}(Y_0).  \end{equation}  Thus, $\psi_{0}$ describes  the average
+difference  of the  two counterfactual  rewards.  In  other words,  $\psi_{0}$
 quantifies the difference  in average of the  reward one would get  in a world
 where one would always enforce action $a=1$ with the reward one would get in a
 world where  one would always  enforce action $a=0$.   This said, it  is worth
-emphasizing  that $\psi_{0}$  is a  well-defined  parameter beyond  its causal
-interpretation and describes a standardized association between the action $A$ 
-and the reward $Y$. 
+emphasizing  that $\psi_{0}$  is a  well-defined parameter  beyond its  causal
+interpretation, and that  it describes a standardized  association between the
+action $A$ and reward $Y$.
 
 To conclude this  subsection, we use our  position as oracles to
 sample observations from the  ideal experiment. We call `run_experiment`
@@ -355,11 +354,7 @@ We note that the interpretation of this confidence interval is that in 95\% of
 draws of size `B` from the ideal data generating experiment, the true value of 
 $\psi_0$ will be contained in the generated confidence interval. 
 
-\subsection{\gear Difference in covariate-adjusted quantile rewards, first
-pass.}  
-\label{subsec:exo:dave:one}
-
-The problems come within the scope of Sections \ref{subsec:parameter:first}.
+\gear __Exercises__
 
 As discussed  above, parameter $\psi_0$ \eqref{eq:psi:zero}  is the difference
 in average  rewards if  we enforce  action $a  = 1$  rather than  $a =  0$. An
@@ -418,7 +413,7 @@ $\calM$  to  $[0,1]$  characterized  by \begin{align*}  \Psi(P)  &\equiv  \int
 \left(\Qbar(1, w) - \Qbar(0, w)\right) dQ_{W}(w) \\ &= \Exp_{P} \left(\Qbar(1,
 W) -  \Qbar(0, W)\right), \end{align*}  a clear extension  of \eqref{eq:psi0}.
 For  instance,  although  the  law  $\Pi_{0} \in  \calM$  encoded  by  default
-(\textit{i.e.},  with  `h=0`)  in  `drawFromAnotherExperiment`  defined  below
+(\textit{i.e.},  with  `h=0`)  in  `run_another_experiment`  defined  below
 differs starkly from $P_{0}$,
 
 ```{r another-simulation}
@@ -461,8 +456,7 @@ run_another_experiment <- function(n, h = 0) {
 }
 ```
 
-the parameter $\Psi(\Pi_{0})$ is well defined, and numerically approximated by
-`psi_Pi_zero` as follows. 
+the parameter $\Psi(\Pi_{0})$ is well defined. Straightforward algebra confirms that $\Psi(\Pi_{0}) = 59/300$, which is confirmed by our numeric computation below. 
 
 ```{r approx-psi-one}
 five_obs_from_another_experiment <- run_another_experiment(5)
@@ -474,14 +468,7 @@ another_integrand <- function(w) {
 (psi_Pi_zero <- integrate(another_integrand, lower = 0, upper = 1)$val)
 ```
 
-Straightforward algebra confirms that indeed $\Psi(\Pi_{0}) = 59/300$.
-
-\subsection{\gear  Difference in  covariate-adjusted quantile  rewards, second
-pass.}  
-\label{subsec:exo:dave:two}
-
-We  continue with  the exercise  from Section  \ref{subsec:exo:dave:one}.  The
-problems come within the scope of Section \ref{subsec:parameter:first}.
+\gear __Exercises__
 
 As above, we define $q_{Y}(y,A,W)$ to  be the conditional density of $Y$ given
 $A$ and  $W$, evaluated at $y$,  that is implied  by a generic $P  \in \calM$.
@@ -523,7 +510,7 @@ $\Delta_c(P) \equiv \Gamma_{1,c}(P) - \Gamma_{0,c}(P)$.
 \label{subsec:parameter:third}
 
 In the previous subsection, we reoriented  our view of the target parameter to
-be a statistical functional of the  law of the observed data. Specifically, we
+be that of a statistical functional of the  law of the observed data. Specifically, we
 viewed the parameter  as a function of specific features  of the observed data
 law,   namely  $Q_{W}$   and  $\Qbar$.    It  is   straightforward\footnote{We
 temporarily drop  the subscript  $P_0$ to  save space and  note, for  the same
@@ -554,11 +541,7 @@ estimator  of $\psi_0$  using estimators  of $\Qbar_0$  and of  $Q_{W,0}$. The
 latter  suggests  building  an  estimator  of  $\psi_0$  using  estimators  of
 $\ell\Gbar_0$ and of $P_0$. We return to these ideas in later sections.
 
-\subsection{\gear  Difference in  covariate-adjusted quantile  rewards, third
-pass.}  
-\label{subsec:exo:dave:two}
-
-We  continue with  the exercise  from Section  \ref{subsec:exo:dave:one}.
+\gear __Exercises__
 
 1.   \textdbend  Show that  for $a'  = 0,1$,  $\gamma_{0,a',c}$ as  defined in
 (\ref{def_quantile})  can be  equivalently expressed  as \begin{equation*}\inf
@@ -573,26 +556,38 @@ a'\}}{\ell\Gbar(a',W)}     \one\{y    \le     z\}     dP_0(w,a,y)    \ge     c
 
 Within  our view  of the  target  parameter as  a statistical  mapping, it  is
 natural to inquire of properties this  functional enjoys.  For example, we may
-be interested in asking how the value  of $\Psi(P)$ changes for laws that are,
-in a loose  sense, near to $P$  in $\mathcal{M}$. If small changes  in the law
-result in large changes in the parameter value, then we might hypothesize that
-it will be difficult to  produce ``good estimators'' of $\psi_0$. Fortunately,
-this turns out not to  be the case for $\Psi$, and so we  say that $\Psi$ is a
-smooth parameter mapping. This colloquial  expression refers to the fact that,
-for each $P \in  \calM$, if $P_{h} \to_{h} P$ in $\calM$  from a direction $s$
-when the real parameter $h \to 0$  (the notion of convergence from a direction
-is  formalized  in  Section   \ref{subsec:being:smooth:two}),  then  not  only
-$\Psi(P_{h}) \to_{h}  \Psi(P)$ (continuity),  but also $h^{-1}  [\Psi(P_{h}) -
-\Psi(P)]  \to_{h}  c$, where  the  real  number $c$  depends  on  $P$ and  $s$
-(differentiability).
+be interested in asking how the value of $\Psi(P)$ changes as we consider laws
+that *get  nearer to* $P$ in  $\calM$. If small  deviations from $P_0$ result in
+large changes in $\Psi(P_0)$, then we might  hypothesize that it will
+be difficult to produce stable estimators of $\psi_0$. Fortunately, this turns
+out not to be the case for the mapping  $\Psi$, and so we say that $\Psi$ is a
+*smooth*   parameter   mapping.   We   formalize   this   notion  in   Section
+\ref{subsec:being:smooth:two},  and here  provide an  informal description  of
+smoothness.
 
+To discuss how $\Psi(P)$ changes for distributions *near* $P$ in the model, we 
+require a more concrete definition of nearness.  To that end, consider the law 
+encoded in `run_another_experiment`  as a function of the  input parameter `h`.  
+Let $\Pi_{h} \in \calM$ be the law encoded by `run_another_experiment` for a 
+given `h`  $\in  \interval{-1}{1}$.   Note  that  $\calP  \equiv  \{\Pi_h  :  h  \in
+\interval{-1}{1}\}$  defines a  collection  of laws,  that  is, a  statistical
+model.  We say that $\calP$ is  a *submodel* of $\calM$ because $\calP \subset
+\calM$.   Moreover, we  say  that  this submodel  is  *through $\Pi_0$*  since
+$\Pi_{h}  \to \Pi_{0}$  as  $h  \to 0$.   One  could  enumerate many  possible
+submodels in $\calM$  through $\Pi_0$. It turns out that all that matters for
+our purposes is the form of the submodel in a neighborhood of $\Pi_0$. We 
+informally say that this local behavior describes the *direction* of a submodel
+through $\Pi_0$. We formalize this notion in the next subsection.
 
-For   instance,   let   $\Pi_{h}   \in   \calM$  be   the   law   encoded   in
-`run_another_experiment` with  `h` ranging over  $\interval{-1}{1}$.  We
-will argue shortly that $\Pi_{h} \to_{h}  \Pi_{0}$ in $\calM$ from a direction
-$s$ when  $h \to  0$.  The  following chunk of  code evaluates  and represents
-$\Psi(\Pi_{h})$   for   $h$   ranging   in   a   discrete   approximation   of
-$\interval{-1}{1}$:
+We now  have a notion of how to move through the model space $P \in \calM$ and 
+can study how the value of the parameter changes as we move away from a law $P$. 
+Above,  we said  that  $\Psi$  is a  smooth
+parameter if  it does not change  "too much" as we  move towards $P$  in any
+particular direction.  That  is, we should hope that  $\Psi$ is differentiable
+along our  submodel at $P$. This idea too is formalized in the next subsection, and
+we now turn to illustrating this idea numerically. The code below evaluates  how the  parameter changes  for laws  in $\calP$,  and
+approximates the  derivative of  the parameter along  the submodel  $\calP$ at
+$\Pi_0$.
 
 ```{r psi-approx-psi-one,  fig.cap =  "Evolution of statistical parameter $\\Psi$ along fluctuation $\\{\\Pi_{h} : h \\in H\\}$."}
 approx <- seq(-1, 1, length.out = 1e2)
@@ -620,21 +615,48 @@ ggplot() +
 ```
 
 The dotted curve  represents the function $h \mapsto  \Psi(\Pi_{h})$. The blue
-line represents  the tangent to the  previous curve at $h=0$,  which is indeed
-differentiable around $h=0$.  It is  derived by simple geometric arguments. In
-the  next  subsection,  we formalize  what  it  means  to  be smooth  for  the
-statistical mapping $\Psi$. This allows us to derive a  closed-form expression 
+line represents  the tangent to the  previous curve at $h=0$,  which indeed appears to be
+differentiable around $h=0$.  In
+the  next  subsection,  we derive a  closed-form expression 
 for the  slope of the blue  curve from the chunk of code where 
 `run_another_experiment` is defined.
+
+\gear __Exercises__
+
+1.    Adapt  the code  from problem 1  in Section  \ref{subsec:visualizing} to
+visualize $\Exp_{\Pi_h}(Y  \mid A = 1,  W)$, $\Exp_{\Pi_h}(Y \mid A  = 0, W)$,
+and $\Exp_{\Pi_h}(Y \mid  A = 1, W) -  \Exp_{\Pi_h}(Y \mid A = 0,  W)$, for $h
+\in \{-1/2, 0, 1/2\}$.
+
+Define a new experiment with law $\Pi_0'$  by adapting the code used to define
+`run_another_experiment`.  Leave  all aspects of the  new experiment identical
+to $\Pi_0$, but set
+
+```{r set-Q-bar, eval = FALSE}
+Qbar = function(AW, hh = h){
+  A <- AW[,1]
+  W <- AW[,2]
+  expit( logit( A * W + (1 - A) * W^2 ) + 
+         hh * (2*A - 1) / ifelse(A == 1, sin((1 + W) * pi / 6), 
+                                 1 - sin((1 + W) * pi / 6)) *
+         (Y - A * W + (1 - A) * W^2))
+}
+```
+
+2.  Repeat the  previous  problem  for this  new  experiment.  Comment on  the
+   similarities  and differences  between $\Pi_0$  and $\Pi_0'$  for different
+   values of $h$.
+
+3.  Re-produce Figure  1 for  law $\Pi_0'$.  Comment on  the similarities  and
+   differences between  this figure for  $\Pi_0$ and $\Pi_0'$.  In particular,
+   how  does the  behavior of  the  target parameter  around $h  = 0$  compare
+   between laws $\Pi_0$ and $\Pi_0'$?
 
 \subsection{\textdbend Being smooth, second pass.}
 \label{subsec:being:smooth:two}
 
-Let us now describe what it means  for statistical mapping $\Psi$ to be smooth
-at every  $P \in  \calM$.  To  describe the  rate of  change of  a statistical
-parameter at $P$ as $P$ is approached in model $\calM$, we must formalize what
-is  meant by  "approach  $P$".  Toward  that  end, we  introduce  the idea  of
-fluctuations     of     $P$.      For     every    $h     \in     H     \equiv
+Let us now formally define what it means  for statistical mapping $\Psi$ to be smooth
+at every  $P \in  \calM$.  For     every    $h     \in     H     \equiv
 \interval[open]{-M^{-1}}{M^{-1}}$, we  can define a  law $P_{h} \in  \calM$ by
 setting $P_{h}  \ll P$\footnote{That is,  $P_{h}$ is  dominated by $P$:  if an
 event $A$ satisfies $P(A) = 0$, then necessarily $P_{h} (A) = 0$ too.}  and
@@ -648,143 +670,66 @@ by $M$.   We make the observation  that \begin{equation}\label{eq:score}(i) \;
 P_{h}|_{h=0}    =     P,    \quad    (ii)    \;     \left.\frac{d}{dh}    \log
 \frac{dP_{h}}{dP}(O)\right|_{h=0} = s(O).\end{equation}
 
-Because  of   \textit{(i)},  we  say  that   $\{P_{h}  :  h  \in   H\}$  is  a
-\textit{fluctuation} of $P$.  The fluctuation is a one-dimensional submodel of
+Because  of   \textit{(i)},  $\{P_{h}  :  h  \in   H\}$  is  a submodel through $P$
+(also referred to as a \textit{fluctuation} of $P$).  As above note that the 
+fluctuation is a one-dimensional submodel of
 $\calM$  with univariate  parameter $h  \in  H$.  We  note that  \textit{(ii)}
 indicates that  the score of this  submodel at $h =  0$ is $s$.  Thus,  we say
 that the fluctuation is \textit{in the  direction} of $s$. Fluctuations of $P$
 do not  necessarily take the same  form as in \eqref{eq:fluct}.  No matter how
-the  fluctuation is  built, what  really  matters is  its local  shape in  the
-neighborhood of $P$. 
-
+the  fluctuation is  built, for our purposes the most important feature of the 
+fluctuation is its local  shape in a neighborhood of $P$. 
 
 We  are  now  prepared  to  provide  a  formal  definition  of  smoothness  of
-statistical mappings.  \tcg{Please  check these modifications.} We  say that a
+statistical mappings.  We  say that a
 statistical mapping $\Psi$ is smooth at every $P \in \calM$ if for each $P \in
 \calM$, there exists a (measurable) function  $D^{*}(P) : \calO \to \bbR$ such
-that  $\Exp_{P}(D^{*}(P)(O)) =  0$,  $\Var_{P}(D^{*}(P)(O))$  finite and,  for
+that  $\Exp_{P}(D^{*}(P)(O)) =  0$,  $\Var_{P}(D^{*}(P)(O)) < \infty$, and,  for
 every  fluctuation $\{P_{h}  : h  \in H\}$  with  score $s$  at $h  = 0$,  the
 real-valued mapping $h \mapsto \Psi(P_{h})$ is differentiable at $h=0$, with a
 derivative               equal               to               \begin{equation}
 \label{eq:derivative}\Exp_{P}\left(D^{*}(P)(O) s(O)\right).  \end{equation}
 
-Interestingly,   if  a   fluctuation   $\{P_{h}  :   h   \in  H\}$   satisfies
+<!-- Interestingly,   if  a   fluctuation   $\{P_{h}  :   h   \in  H\}$   satisfies
 \eqref{eq:score} for a direction $s$ such that $s\neq 0$, $\Exp_{P}(s(O)) = 0$
 and  $\Var_{P}  (s(O))  <  \infty$,  then $h  \mapsto  \Psi(P_{h})$  is  still
 differentiable  at  $h=0$ with  a  derivative  equal to  \eqref{eq:derivative}
-(beyond  fluctuations of  the  form \eqref{eq:fluct}).  \tcg{Maybe this  needs
-reconciliation  with my  above modifications,  as  I'm defining  things for  a
-general fluctuation. Hmm...}
+(beyond  fluctuations of  the  form \eqref{eq:fluct}).   -->
 
 The object $D^*(P)$ in (\ref{eq:derivative}) is called a gradient of $\Psi$ at
-$P$.  This terminology has a direct parallel to directional derivatives in the
-calculus  of Euclidean  geometry.  That  is, if  $f: \mathbb{R}^p  \rightarrow
-\mathbb{R}$, $u$  is a unit  vector in $\mathbb{R}^p$, and  $x$ is a  point in
-$\mathbb{R}^p$, the directional derivative at $x$  in the direction $u$ is the
-dot product of  the gradient of $f$  and $u$.  That is, the  derivative can be
-represented as an inner product of the  direction that we approach $x$ and the
-change of the function's value at $x$.  In the present problem, the law $P$ is
-the point at which we evaluate the  function, the score $s$ of the fluctuation
-is the "direction" in which we  approach the point, and the gradient describes
-the change in the function's value at the point.
+$P$.  
 
-\tcg{Need a transition to calling this an influence function or influence curve.
-Right now, it seems a little out of place to be talking about estimation at this 
-point since the section is all about being smooth, which is a property of parameters, 
-not estimators. Maybe we move the next paragraphs to the following section 
-and re-title it something like "Influence functions and efficient influence functions" 
-or something? Not sure. Need to think about it more.}
+This  terminology has  a direct  parallel  to directional  derivatives in  the
+calculus  of Euclidean  geometry.   Recall  that if  $f$  is a  differentiable
+mapping from $\bbR^p$ to $\bbR$, then the directional derivative of $f$ at $x$
+(a point in $\bbR^p$) in direction $u$  (a unit vector in $\bbR^p$) is the dot
+product of the gradient of $f$  and $u$.  In words, the directional derivative
+of $f$ at $x$ can be represented as  an inner product of the direction that we
+approach $x$ and  the change of the  function's value at $x$.   In the present
+problem, the law  $P$ is the point  at which we evaluate  the function $\Psi$,
+the score $s$ of  the fluctuation is the "direction" in  which we approach the
+point, and  the gradient describes the  change in the function's  value at the
+point.
 
-The influence curves $D^{*}(P)$ convey valuable information about $\Psi$. For
-instance,  an  important  result  from   the  theory  of  inference  based  on
-semiparametric models  guarantees that if $\psi_{n}$  is a regular\footnote{We
-can view  $\psi_{n}$ as the  by product of  an algorithm $\Psihat$  trained on
-independent observations $O_{1}$, \ldots, $O_{n}$ drawn from $P$.  
-% or, equivalently, trained on the empirical measure $P_{n} = n^{-1}
-% \sum_{i=1}^{n} \Dirac(O_{i})$: $\psi_{n} = \Psihat(P_{n})$.  
-The estimator is regular at $P$ (w.r.t. the maximal tangent space) if, for any
-direction $s\neq  0$ such that  $\Exp_{P} (s(O)) =  0$ and $\Var_{P}  (s(O)) <
-\infty$ and fluctuation $\{P_{h} : h \in H\}$ satisfying \eqref{eq:score}, the
-estimator $\psi_{n,1/\sqrt{n}}$ of $\Psi(P_{1/\sqrt{n}})$ obtained by training
-$\Psihat$  on independent  observations  $O_{1}$, \ldots,  $O_{n}$ drawn  from
-$P_{1/\sqrt{n}}$    is   such    that    $\sqrt{n}   (\psi_{n,1/\sqrt{n}}    -
-\Psi(P_{1/\sqrt{n}}))$ converges  in law to  a limit  that does not  depend on
-$s$.} estimator  of $\Psi(P)$  built from  $n$ independent  observations drawn
-from $P$, then the asymptotic variance  of the centered and rescaled $\sqrt{n}
-(\psi_{n} - \Psi(P))$ cannot be smaller  than the variance of the $P$-specific
-efficient influence curve, that is,
 
-\begin{equation}\label{eq:CR}\Var_{P}(D^{*}(P)(O)).\end{equation}
 
-In   this   light,   an   estimator    $\psi_{n}$   of   $\Psi(P)$   is   said
-\textit{asymptotically efficient} at $P$ if it is regular at $P$ and such that
-$\sqrt{n} (\psi_{n} - \Psi(P))$ converges in  law to the centered Gaussian law
-with variance \eqref{eq:CR}, which is called the Cramér-Rao bound.
-
-\subsection{The efficient influence curve.}
-\label{subsec:parameter:third}
-
-It is not difficult to check \tcg{(do  we give the proof?)} that the efficient
-influence curve  $D^{*}(P)$ of  $\Psi$ at  $P \in  \calM$ writes  as $D^{*}(P)
-\equiv D_{1}^{*}  (P) +  D_{2}^{*} (P)$ where  $D_{1}^{*} (P)$  and $D_{2}^{*}
-(P)$ are given by
-
-\begin{align*}D_{1}^{*}(P) (O)  &\equiv \Qbar(1,W)  - \Qbar(0,W)  - \Psi(P),\\
-D_{2}^{*}(P)     (O)     &\equiv      \frac{2A-1}{\ell\Gbar(A,W)}     (Y     -
-\Qbar(A,W)).\end{align*}
-
-The  following chunk  of code enables  the computation  of the
-values of the efficient influence  curve $D^{*}(P)$ at observations drawn from
-$P$  (note that  it is  necessary  to provide  the  value of  $\Psi(P)$, or  a
-numerical approximation thereof, through argument `psi`).
-
-```{r eic}
-eic <- function(obs, psi) {
-  Qbar <- attr(obs, "Qbar")
-  Gbar <- attr(obs, "Gbar")
-  QAW <- Qbar(obs[, c("A", "W")])
-  QoneW <- Qbar(cbind(A = 1, W = obs[, "W"]))
-  QzeroW <- Qbar(cbind(A = 0, W = obs[, "W"]))
-  GW <- Gbar(obs[, "W", drop = FALSE])
-  lGAW <- obs[, "A"] * GW + (1 - obs[, "A"]) * (1 - GW)
-  out <- (QoneW - QzeroW - psi) + (2 * obs[, "A"] - 1) / lGAW * (obs[, "Y"] - QAW)
-  out <- as.vector(out)
-  return(out)
-}
-
-(eic(five_obs, psi = psi_approx))
-(eic(five_obs_from_another_experiment, psi = psi_Pi_zero))
-```
-
-\subsection{Computing and comparing Cramér-Rao bounds.}
-
-We can use `eic` to numerically approximate the Cramér-Rao bound at $P_{0}$:
-
-```{r cramer-rao}
-obs <- run_experiment(B)
-(cramer_rao_hat <- var(eic(obs, psi = psi_approx)))
-```
-
-and the Cramér-Rao bound at $\Pi_{0}$:
-
-```{r cramer-rao-another-experiment}
-obs_from_another_experiment <- run_another_experiment(B)
-(cramer_rao_Pi_zero_hat <- var(eic(obs_from_another_experiment, psi = 59/300)))
-(ratio <- sqrt(cramer_rao_Pi_zero_hat/cramer_rao_hat))
-```
-
-We  thus  discover  that  of  the  statistical  parameters  $\Psi(P_{0})$  and
-$\Psi(\Pi_{0})$,   the  latter   is  easier   to  target   than  the   former.
-Heuristically, for  large sample  sizes, the narrowest  (efficient) confidence
-intervals for  $\Psi(\Pi_{0})$ are approximately `r  round(ratio, 2)` (rounded
-to two decimal places) smaller than their counterparts for $\Psi(P_{0})$.
+In general, it is possible for many gradients to exist\footnote{This may be at
+first  surprising given  the previous  parallel drawn  to Euclidean  geometry.
+However, it is  important to remember that the model  dictates fluctuations of
+$P$ that  are valid submodels  with respect to the  full model. In  turn, this
+determines  the possible  directions from  which we  may approach  $P$.  Thus,
+depending  on the  direction,  \eqref{eq:derivative} may  hold with  different
+choices  of  $D^*$.}.   However,  in  the  special  case  that  the  model  is
+nonparametric, only a  single gradient exists, which is  sometimes referred to
+as the canonical gradient. In the more general setting, the canonical gradient
+may be defined as the minimizer of  $D\mapsto \Var_{P} (D(O))$ over the set of
+all gradients.
 
 \subsection{Revisiting Section~\ref{subsec:being:smooth:one}.}
 
-It is not difficult either (though a little cumbersome) \tcg{(do we give the
-proof? I'd rather not)} to verify  that $\{\Pi_{h} : h \in \interval{-1}{1}\}$
-is a fluctuation  of $\Pi_{0}$ in the direction of  $\sigma_{0}$ (in the sense
-of \eqref{eq:fluct}) given, up to a constant, by
+It  is not difficult (though cumbersome) to  verify that,  up to  a constant,
+$\{\Pi_{h} :  h \in \interval{-1}{1}\}$ is  a fluctuation of $\Pi_{0}$  in the
+direction (in the sense of \eqref{eq:fluct}) of
 
 \begin{align*}\sigma_{0}(O)  &\equiv -  10  \sqrt{W}  A \times  \beta_{0}(A,W)
 \left(\log(1    -     Y)    +     \sum_{k=0}^{3}    \left(k     +    \beta_{0}
@@ -801,10 +746,10 @@ Consequently,    the    slope    of     the    dotted    curve    in    Figure
 (since $D^{*}(\Pi_{0})$  is centered under $\Pi_{0}$,  knowing $\sigma_{0}$ up
 to a constant is not problematic). 
 
-Let  us check  this numerically.   In  the next  chunk of  code, we  implement
-direction  $\sigma_{0}$  with `sigma0_run_another_experiment`,  then  we
-numerically approximate  \eqref{eq:slope:Pi} (pointwise and with  a confidence
-interval of asymptotic level 95\%):
+In the following code, we check this numerically by implementing the direction
+$\sigma_{0}$ with  `R` function `sigma0_run_another_experiment`, which  we use
+to  numerically   approximate  \eqref{eq:slope:Pi}   (pointwise  and   with  a
+confidence interval of asymptotic level 95\%):
 
 ```{r recover-slope}
 sigma0_run_another_experiment <- function(obs) { 
@@ -823,6 +768,24 @@ sigma0_run_another_experiment <- function(obs) {
   return(out)
 }
 
+## DEBUGGING:
+## 1) drawing 'obs_from_another_experiment' here (duplicated)
+## 2) adding definition of 'eic'  here (duplicated)
+obs_from_another_experiment <- run_another_experiment(B)
+eic <- function(obs, psi) {
+  Qbar <- attr(obs, "Qbar")
+  Gbar <- attr(obs, "Gbar")
+  QAW <- Qbar(obs[, c("A", "W")])
+  QoneW <- Qbar(cbind(A = 1, W = obs[, "W"]))
+  QzeroW <- Qbar(cbind(A = 0, W = obs[, "W"]))
+  GW <- Gbar(obs[, "W", drop = FALSE])
+  lGAW <- obs[, "A"] * GW + (1 - obs[, "A"]) * (1 - GW)
+  out <- (QoneW - QzeroW - psi) + (2 * obs[, "A"] - 1) / lGAW * (obs[, "Y"] - QAW)
+  out <- as.vector(out)
+  return(out)
+}
+
+
 vars <- eic(obs_from_another_experiment, psi = 59/300) *
   sigma0_run_another_experiment(obs_from_another_experiment)
 sd_hat <- sd(vars)
@@ -832,6 +795,73 @@ sd_hat <- sd(vars)
 
 Equal to  `r round(slope_approx,  3)` (rounded to  three decimal  places), the
 first numerical approximation `slope_approx` is not too off.
+
+\subsection{\textdbend  Influence   functions  and  the   efficient  influence
+function.}  \label{subsec:parameter:third}
+
+If an estimator $\psi_n$ of $\Psi(P)$ can be written as 
+
+\begin{equation*}  \psi_n  =  \Psi(P) +  \frac{1}{n}\sum_{i=1}^n  \IF(O_i)  +
+o_P(1/\sqrt{n})\end{equation*}
+
+for some function $\IF : \calO \to \bbR$ such that $\Exp_P(\IF(O)) =
+0$  and  $\Var_{P}(\IF(O)) <  \infty$,  then  we  say that  $\psi_n$  is
+*asymptotically  linear* with  *influence function*  $\IF$.  We note that weak convergence of asymptotically 
+linear estimators is implied by the central limit theorem. That is, if $\psi_n$ is asymptotically linear with influence function $\IF$, then $\sqrt(n) (\psi_n - \Psi(P)) = \frac{1}{\sqrt(n)} \sum_{i=1}^n  \IF(O_i) + o_P(1)$. The central limit theorem implies 
+the the right-hand-side converges in law to a centered Gaussian distribution with
+variance $\Var_P(\IF(O))$. 
+
+As  it happens,
+influence  functions of  regular\footnote{We  can view  $\psi_{n}$  as the  by
+product of an algorithm $\Psihat$ trained on independent observations $O_{1}$,
+\ldots,  $O_{n}$  drawn from  $P$.  We say that the estimator  is  regular at  $P$ 
+if, for any direction $s\neq 0$ such that $\Exp_{P} (s(O)) = 0$
+and  $\Var_{P}  (s(O))  <  \infty$  and fluctuation  $\{P_{h}  :  h  \in  H\}$
+satisfying   \eqref{eq:score},   the    estimator   $\psi_{n,1/\sqrt{n}}$   of
+$\Psi(P_{1/\sqrt{n}})$   obtained  by   training   $\Psihat$  on   independent
+observations $O_{1}$, \ldots, $O_{n}$ drawn from $P_{1/\sqrt{n}}$ is such that
+$\sqrt{n} (\psi_{n,1/\sqrt{n}} - \Psi(P_{1/\sqrt{n}}))$  converges in law to a
+limit that  does not  depend on  $s$.}  estimators  are intimately  related to
+gradients.   In fact,  if $\psi_n$  is a  regular, asymptotically linear 
+estimator  of $\Psi(P)$  with
+influence  function $\IF$,  then it  must be  true that  $\Psi$ is  a smooth
+at $P$ and  that $\IF$  is a  gradient of $\Psi$  at $P$.   Moreover, the
+converse is also  true: given a gradient $D^*$ of $\Psi$  at $P$, under regularity
+conditions, it is  possible to construct an estimator  with influence function
+equal to $D^*(P)$. 
+
+These results, combined with the definition of the canonical gradient, imply that  
+if $\psi_{n}$  is a
+regular, asymptotically linear estimator of  $\Psi(P)$ built from $n$  independent observations drawn from $P$, then the asymptotic variance  of $\sqrt{n} (\psi_{n} -  \Psi(P))$ cannot be  smaller than  the variance of  the canonical
+gradient        of        $\Psi$         at        $P$, 
+\begin{equation}\label{eq:CR}\Var_{P}(D^{*}(P)(O)) . \end{equation}
+That is, (\ref{eq:CR}) is the lower bound on the asymptotic variance of any regular, asymptotically linear estimator
+of $\Psi(P)$. This bound is   referred  to   as  the   \textit{Cramér-Rao
+bound}. Any regular estimator that achieves this variance bound is said to be 
+\textit{asymptotically efficient} at $P$. Since, the canonical gradient is the influence
+function of an asymptotically efficient estimator, it is often  referred  to as  the *efficient  influence
+function* or the *efficient influence curve*.
+
+It is not difficult to check \tcg{(do  we give the proof?)} that the efficient
+influence function of  $\Psi$ at  $P \in  \calM$ can be written as $D^{*}(P)
+\equiv D_{1}^{*}  (P) +  D_{2}^{*} (P)$ where 
+
+\begin{align*}D_{1}^{*}(P) (O)  &\equiv \Qbar(1,W)  - \Qbar(0,W)  - \Psi(P),\\
+D_{2}^{*}(P)     (O)     &\equiv      \frac{2A-1}{\ell\Gbar(A,W)}     (Y     -
+\Qbar(A,W)).\end{align*}
+
+
+\gear __Exercises__
+
+1. Numerically approximate the Cramér-Rao bound at $P_{0}$ and at
+   $\Pi_0$. With  a large  sample and  using regular  estimators, can  we more
+   precisely estimate $\Psi(P_0)$ or $\Psi(\Pi_0)$?
+
+2.  Numerically approximate  the Cramér-Rao  bound  at the  law
+   encoded      for      problems      2       and      3      of      Section
+   \ref{subsec:exo:dave:three}. Compare  this bound  with those  computed in
+   problem 1.
+
 
 \subsection{Double-robustness}
 \label{subsec:double:robustness}
@@ -893,6 +923,8 @@ indeed if  $P_{0}$ was a  controlled experiment.  Note that, on  the contrary,
 assuming $\Qbar_{0}$ known would be difficult to justify. 
 
 ```{r known-Gbar-one-a}
+## Debug -- couldn't find obs when I tried to compile
+obs <- run_experiment(1e3)
 Gbar <- attr(obs, "Gbar")
 
 iter <- 1e3
@@ -1099,6 +1131,7 @@ psi_hat_abc <-
          type = "c") %>%
   full_join(psi_hat_ab)
 
+## DEBUG : This was breaking when I compiled.
 (bias_abc <- psi_hat_abc %>% group_by(type) %>% summarise(bias = mean(clt)))
 ```
 
@@ -1133,11 +1166,7 @@ Figures \@ref(fig:unknown-Gbar-three)  and \@ref(fig:unknown-Gbar-four) reveal
 that $\psi_{n}^{c}$ behaves as well as $\psi_{n}^{b}$ --- but remember that we
 did not discuss how to estimate its asymptotic variance.
 
-\subsection{\gear Exercises.}
-\label{subsec:exo:one}
-
-The problems  come within the context  of Sections \ref{subsec:known:gbar:one}
-and \ref{subsec:known:gbar:two}.
+\gear __Exercises__
 
 1. Compute a numerical approximation of $\Exp_{P_{0}} (Y | A=1) - \Exp_{P_{0}}
 (Y | A=0)$. How accurate is it?
@@ -1671,4 +1700,3 @@ npreg_grid <- data.frame(subsample = 100,
                          ckerorder = 4,
                          stringsAsFactors = FALSE)
 ```
-
