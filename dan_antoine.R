@@ -1,3 +1,5 @@
+## ANTOINE: changed all 'Qhat' to 'Qbar_hat' and 'Ghat' to 'Gbar_hat' for consistency...
+
 ## ----setup, echo = FALSE-------------------------------------------------
 knitr::opts_chunk$set(
   fig.height = 4, 
@@ -36,38 +38,61 @@ suppressMessages(library(ggdag)) ## make sure it is installed
 expit <- plogis
 logit <- qlogis
 
-## ANTOINE: hide the five methods?
-setMethodS3("print", "law", function(this, ...) {
-  str_c("An experiment, or law. Use method 'run' to run it. ",
+## ANTOINE:
+R.oo::setConstructorS3("LAW", function(Gbar = NA, Qbar = NA, QW = NA,
+                                       qY= NA, sample_from = NA) {
+  extend(Object(), "LAW",
+         .QW = QW,
+         .Gbar = Gbar,
+         .Qbar = Qbar,
+         .qY = qY,
+         .sample_from = sample_from)
+})
+
+## ANTOINE: hide the six methods?
+R.methodsS3::setMethodS3("as.character", "LAW", function(this, ...) {
+  str_c("A law. If it is fully characterized, you can use method ",
+        "'sample_from' to sample from it. ",
         "If you built it, or if you are an _oracle_, ",
         " you can also use methods ",
         "'uncover' to discover some of its relevant features, ",
+        "'update' to change one of its features, ",
         "'evaluate_psi' to obtain the value of 'Psi' at this law, ",
         "'evaluate_eic' to obtain the efficient influence curve of ",
         "'Psi' at this law.") %>%
     str_wrap(indent = 2, width = 60) %>% str_c("\n") %>% cat
 })
 
-setMethodS3("run", "law", function(this, n, ...) {
+R.methodsS3::setMethodS3("sample_from", "LAW", function(this, n = 1, ...) {
   n <- Arguments$getInteger(n, c(1, Inf))
-  this$.run_experiment(n, ...)
+  is_na <- suppressWarnings(is.na(this$.sample_from))
+  if (is_na) {
+    message(str_c("Cannot sample from _underdetermined_ law '",
+                  deparse(substitute(this)),"'."))
+    NULL
+  } else{
+    this$.sample_from(n, ...)
+  }
 })
 
 ## ## 'uncover', because I'm looking for a **verb**
 ## ## (started with 'oracle' then 'view_as_oracle')
 ## ## possible alternatives: 'grasp', 'discern'
-setMethodS3("uncover", "law", function(this, ...) {
-  this$.some_relevant_features
+R.methodsS3::setMethodS3("uncover", "LAW", function(this, ...) {
+  list(QW = this$.QW,
+       Gbar = this$.Gbar,
+       Qbar = this$.Qbar,
+       qY = this$.qY)       
 })
 
 ## ## 'evaluate_psi', because I'm looking for a **verb**
 ## ## (started with 'Psi')
 ## ##
 ## ## if made visible, may define later than 'print',
-## ## 'run', and 'uncover'
+## ## 'sample_from', and 'uncover'
 
 ## ## CERTAINLY HIDE THAT ONE! (although it is very useful)
-setMethodS3(".get_feature", "law", function(this, what, ...){
+R.methodsS3::setMethodS3(".get_feature", "LAW", function(this, what, ...){
   if (!(what %in% c("Qbar", "Gbar", "QW", "qY"))) {
     stop(str_c("Argument 'what' should be one of 'Qbar', 'Gbar', 'QW', 'qY', not ",
                deparse(substitute(what)),
@@ -76,19 +101,36 @@ setMethodS3(".get_feature", "law", function(this, what, ...){
   some_relevant_features <- uncover(this)
   ellipsis <- list(...)
   feature <- eval(substitute(some_relevant_features$a, list(a = what)))
-  if (length(formals(feature)) > 1) {
-    ##    first_arg <- names(formals(feature))
-    params <- formals(feature)[-1]
-    params <- params[sapply(params, is.symbol)]
-    if (length(params) > 0) {
-      if (!all(names(params) %in% names(ellipsis))) {
-        stop(str_c("Is law '", deparse(substitute(this)),
-                   "' fully characterized?\n"))
-      } else {
-        idx <- which(names(ellipsis) %in% names(params))
-        feature <- function(X) {
-          feat <- eval(substitute(some_relevant_features$a, list(a = what)))     
-          do.call(feat, c(ellipsis[idx], list(X)))
+  if (what == "QW" & !is.function(feature)) {
+    if (length(setdiff(c("value", "weight"), names(feature))) > 0) {
+      stop(str_c("Argument 'QW' of law '",
+                 deparse(substitute(this)),
+                 "' is not a function. Is it well characterized as",
+                 " a 'matrix', 'tibble' or 'data.frame' with columns",
+                 " named 'value' and 'weight'?\n") %>%
+           str_wrap(indent = 2, width = 60) %>% str_c("\n"))
+    } 
+  } else {
+    len <- ifelse(what == "qY", 2, 1)
+    if (length(formals(feature)) > len) {
+      params <- formals(feature)[-(1:len)]
+      params <- params[sapply(params, is.symbol)]
+      if (length(params) > 0) {
+        if (!all(names(params) %in% names(ellipsis))) {
+          stop(str_c("Is law '", deparse(substitute(this)),
+                     "' fully characterized?\n"))
+        } else {
+          idx <- which(names(ellipsis) %in% names(params))
+          feature <-
+            ifelse(what == "qY",
+                   function(X, Y) {
+                     feat <- eval(substitute(some_relevant_features$a, list(a = what)))     
+                     do.call(feat, c(ellipsis[idx], list(X, Y)))
+                   },
+                   function(X) {
+                     feat <- eval(substitute(some_relevant_features$a, list(a = what)))     
+                     do.call(feat, c(ellipsis[idx], list(X)))
+                   })
         }
       }
     }
@@ -96,7 +138,7 @@ setMethodS3(".get_feature", "law", function(this, what, ...){
   return(feature)
 })
 
-setMethodS3("evaluate_psi", "law", function(this, ...) {
+R.methodsS3::setMethodS3("evaluate_psi", "LAW", function(this, ...) {
   some_relevant_features <- uncover(this)
   ellipsis <- list(...)
   if (length(intersect(names(some_relevant_features), c("Qbar", "QW"))) != 2) {
@@ -105,16 +147,26 @@ setMethodS3("evaluate_psi", "law", function(this, ...) {
   } else {
     Qbar <- .get_feature(this, "Qbar", ...)
     QW <- .get_feature(this, "QW", ...)
-    integrand <- function(w) {
-      ( Qbar(cbind(A = 1, W = w)) - Qbar(cbind(A = 0, W = w)) ) * QW(w)
+    if (is.function(QW)) {
+      integrand <- function(w) {
+        ( Qbar(cbind(A = 1, W = w)) - Qbar(cbind(A = 0, W = w)) ) * QW(w)
+      }
+      out <- integrate(integrand, lower = 0, upper = 1)$val
+    } else {
+      if (!identical(names(QW), c("value", "weight"))) {
+        stop(str_c("Argument 'QW' is neither a function nor a valid",
+                   " discrete law.\n"))
+      }
+      W <- pull(QW, value)
+      out <- Qbar(cbind(A = 1, W = W)) - Qbar(cbind(A = 0, W = W))
+      out <- weighted.mean(out, pull(QW, weight))
     }
-    out <- integrate(integrand, lower = 0, upper = 1)$val
     return(out)
   }
 })
 
 
-setMethodS3("evaluate_eic", "law", function(this, psi = NULL, ...) {
+R.methodsS3::setMethodS3("evaluate_eic", "LAW", function(this, psi = NULL, ...) {
   if (is.null(psi)) {
     psi <- evaluate_psi(this, ...)
   }
@@ -145,7 +197,27 @@ setMethodS3("evaluate_eic", "law", function(this, psi = NULL, ...) {
   }
 })
 
+R.methodsS3::setMethodS3("update", "LAW", function(this, ...) {
+  sys_call <- as.list(sys.call())
+  ellipsis <- list(...)
+  valid <- c("Qbar", "Gbar", "QW", "qY", "sample_from")
+  invalid <- setdiff(names(ellipsis), valid)
+  if (length(invalid) > 0) {
+    stop(str_c("Can update one among '",
+               str_flatten(valid, "', '"),
+               "' not '",
+               str_flatten(invalid, "', '"),
+               "'.", sep = ""))
+  } else {
+    what <- names(ellipsis)
+    for (ii in 1:length(ellipsis)) {
+      value <- eval(sys_call[[what[ii]]])
+      eval(parse(text = paste0("this$.", what[ii], " <- value")))
+    }
+  }
+})
 
+# debug(update.LAW)
 
 ## ANTOINE: hide this too?
 sample_from_mixture_of_uniforms <-
@@ -175,79 +247,148 @@ sample_from_mixture_of_uniforms <-
 ## ----simulation----------------------------------------------------------
 
 ## ANTOINE: hide also the definition of the experiment, at least temporarily?
-experiment <- list(
-  .some_relevant_features = list(
-    Gbar = function(W) {
-      expit(1 + 2 * W - 4 * sqrt(abs((W - 5/12))))
-    },
-    Qbar =  function(AW) {
-      A <- AW[, "A"]
-      W <- AW[, "W"]
-      A * (cos((-1/2 + W) * pi) * 2/5 + 1/5 + (1/3 <= W & W <= 1/2) / 5 +
-           (W >= 3/4) * (W - 3/4) * 2) +
-        (1 - A) * (sin(4 * W^2 * pi) / 4 + 1/2) 
-    },
-    QW = function(W,
-                  mixture_weights = c(1/10, 9/10, 0),
-                  mins = c(0, 11/30, 0),
-                  maxs = c(1, 14/30, 1)) {
-      out <- sapply(1:length(mixture_weights),
-                    function(ii){
-                      mixture_weights[ii] *
-                        dunif(W, min = mins[ii], max = maxs[ii])
-                    })
-      return(rowSums(out))
-    },
-    qY = function(obs, Qbar, shape10 = 2, shape11 = 3){
-      A <- obs[, "A"]
-      AW <- obs[, c("A", "W")]
-      QAW <- do.call(Qbar, list(AW)) # is call to 'do.call' necessary?
-      shape1 <- ifelse(A == 0, shape10, shape11)
-      dbeta(Y, shape1 = shape1, shape2 = shape1 * (1 - QAW) / QAW)
-    }
-  )  
-)
-class(experiment) <- c(class(experiment), "law")
-experiment$.run_experiment <- function(n, ideal = FALSE) {
-  ## preliminary
-  n <- Arguments$getInteger(n, c(1, Inf))
-  ideal <- Arguments$getLogical(ideal)
-  ## ## 'Gbar' and 'Qbar' factors
-  Gbar <- experiment$.some_relevant_features$Gbar
-  Qbar <- experiment$.some_relevant_features$Qbar
-  ## sampling
-  ## ## context
-  params <- formals(experiment$.some_relevant_features$QW)
-  mixture_weights <- eval(params$mixture_weights)
-  mins <- eval(params$mins)
-  maxs <- eval(params$maxs)
-  W <- sample_from_mixture_of_uniforms(n, mixture_weights,
-                                       mins, maxs)
-  ## ## counterfactual rewards
-  zeroW <- cbind(A = 0, W)
-  oneW <- cbind(A = 1, W)
-  Qbar_zeroW <- Qbar(zeroW)
-  Qbar_oneW <- Qbar(oneW)
-  Yzero <- rbeta(n, shape1 = 2, shape2 = 2 * (1 - Qbar_zeroW) / Qbar_zeroW)
-  Yone <- rbeta(n, shape1 = 3, shape2 = 3 * (1 - Qbar_oneW) / Qbar_oneW)
-  ## ## action undertaken
-  A <- rbinom(n, size = 1, prob = Gbar(W))
-  ## ## actual reward
-  Y <- A * Yone + (1 - A) * Yzero
-  ## ## observation
-  if (ideal) {
-    obs <- cbind(W = W, Yzero = Yzero, Yone = Yone, A = A, Y = Y)
-  } else {
-    obs <- cbind(W = W, A = A, Y = Y)
-  }
-  return(obs)
-}
+
+experiment <- LAW()
+update(experiment,
+       Gbar = function(W) {
+         expit(1 + 2 * W - 4 * sqrt(abs((W - 5/12))))
+       },
+       Qbar =  function(AW) {
+         A <- AW[, "A"]
+         W <- AW[, "W"]
+         A * (cos((-1/2 + W) * pi) * 2/5 + 1/5 + (1/3 <= W & W <= 1/2) / 5 +
+              (W >= 3/4) * (W - 3/4) * 2) +
+           (1 - A) * (sin(4 * W^2 * pi) / 4 + 1/2) 
+       },
+       QW = function(W,
+                     mixture_weights = c(1/10, 9/10, 0),
+                     mins = c(0, 11/30, 0),
+                     maxs = c(1, 14/30, 1)) {
+         out <- sapply(1:length(mixture_weights),
+                       function(ii){
+                         mixture_weights[ii] *
+                           dunif(W, min = mins[ii], max = maxs[ii])
+                       })
+         return(rowSums(out))
+       },
+       qY = function(obs, Qbar, shape10 = 2, shape11 = 3){
+         A <- obs[, "A"]
+         AW <- obs[, c("A", "W")]
+         QAW <- Qbar(AW)
+         shape1 <- ifelse(A == 0, shape10, shape11)
+         dbeta(Y, shape1 = shape1, shape2 = shape1 * (1 - QAW) / QAW)
+       },
+       sample_from = function(n, ideal = FALSE) {
+         ## preliminary
+         n <- Arguments$getInteger(n, c(1, Inf))
+         ideal <- Arguments$getLogical(ideal)
+         ## ## 'Gbar' and 'Qbar' factors
+         Gbar <- experiment$.Gbar
+         Qbar <- experiment$.Qbar
+         ## sampling
+         ## ## context
+         params <- formals(experiment$.QW)
+         mixture_weights <- eval(params$mixture_weights)
+         mins <- eval(params$mins)
+         maxs <- eval(params$maxs)
+         W <- sample_from_mixture_of_uniforms(n, mixture_weights,
+                                              mins, maxs)
+         ## ## counterfactual rewards
+         zeroW <- cbind(A = 0, W)
+         oneW <- cbind(A = 1, W)
+         Qbar_zeroW <- Qbar(zeroW)
+         Qbar_oneW <- Qbar(oneW)
+         Yzero <- rbeta(n, shape1 = 2, shape2 = 2 * (1 - Qbar_zeroW) / Qbar_zeroW)
+         Yone <- rbeta(n, shape1 = 3, shape2 = 3 * (1 - Qbar_oneW) / Qbar_oneW)
+         ## ## action undertaken
+         A <- rbinom(n, size = 1, prob = Gbar(W))
+         ## ## actual reward
+         Y <- A * Yone + (1 - A) * Yzero
+         ## ## observation
+         if (ideal) {
+           obs <- cbind(W = W, Yzero = Yzero, Yone = Yone, A = A, Y = Y)
+         } else {
+           obs <- cbind(W = W, A = A, Y = Y)
+         }
+         return(obs)
+       }       
+       )
+
+## old version below
+
+## experiment <- list(
+##   .some_relevant_features = list(
+##     Gbar = function(W) {
+##       expit(1 + 2 * W - 4 * sqrt(abs((W - 5/12))))
+##     },
+##     Qbar =  function(AW) {
+##       A <- AW[, "A"]
+##       W <- AW[, "W"]
+##       A * (cos((-1/2 + W) * pi) * 2/5 + 1/5 + (1/3 <= W & W <= 1/2) / 5 +
+##            (W >= 3/4) * (W - 3/4) * 2) +
+##         (1 - A) * (sin(4 * W^2 * pi) / 4 + 1/2) 
+##     },
+##     QW = function(W,
+##                   mixture_weights = c(1/10, 9/10, 0),
+##                   mins = c(0, 11/30, 0),
+##                   maxs = c(1, 14/30, 1)) {
+##       out <- sapply(1:length(mixture_weights),
+##                     function(ii){
+##                       mixture_weights[ii] *
+##                         dunif(W, min = mins[ii], max = maxs[ii])
+##                     })
+##       return(rowSums(out))
+##     },
+##     qY = function(obs, Qbar, shape10 = 2, shape11 = 3){
+##       A <- obs[, "A"]
+##       AW <- obs[, c("A", "W")]
+##       QAW <- Qbar(AW)
+##       shape1 <- ifelse(A == 0, shape10, shape11)
+##       dbeta(Y, shape1 = shape1, shape2 = shape1 * (1 - QAW) / QAW)
+##     }
+##   )  
+## )
+## class(experiment) <- c(class(experiment), "LAW")
+## experiment$.sample_from <- function(n, ideal = FALSE) {
+##   ## preliminary
+##   n <- Arguments$getInteger(n, c(1, Inf))
+##   ideal <- Arguments$getLogical(ideal)
+##   ## ## 'Gbar' and 'Qbar' factors
+##   Gbar <- experiment$.some_relevant_features$Gbar
+##   Qbar <- experiment$.some_relevant_features$Qbar
+##   ## sampling
+##   ## ## context
+##   params <- formals(experiment$.some_relevant_features$QW)
+##   mixture_weights <- eval(params$mixture_weights)
+##   mins <- eval(params$mins)
+##   maxs <- eval(params$maxs)
+##   W <- sample_from_mixture_of_uniforms(n, mixture_weights,
+##                                        mins, maxs)
+##   ## ## counterfactual rewards
+##   zeroW <- cbind(A = 0, W)
+##   oneW <- cbind(A = 1, W)
+##   Qbar_zeroW <- Qbar(zeroW)
+##   Qbar_oneW <- Qbar(oneW)
+##   Yzero <- rbeta(n, shape1 = 2, shape2 = 2 * (1 - Qbar_zeroW) / Qbar_zeroW)
+##   Yone <- rbeta(n, shape1 = 3, shape2 = 3 * (1 - Qbar_oneW) / Qbar_oneW)
+##   ## ## action undertaken
+##   A <- rbinom(n, size = 1, prob = Gbar(W))
+##   ## ## actual reward
+##   Y <- A * Yone + (1 - A) * Yzero
+##   ## ## observation
+##   if (ideal) {
+##     obs <- cbind(W = W, Yzero = Yzero, Yone = Yone, A = A, Y = Y)
+##   } else {
+##     obs <- cbind(W = W, A = A, Y = Y)
+##   }
+##   return(obs)
+## }
 
 
 ## ----draw-five-obs-------------------------------------------------------
 
 ## ANTOINE: new version
-(five_obs <- run(experiment, 5))
+(five_obs <- sample_from(experiment, 5))
 
 ## ----exercise:visualize, eval = TRUE-------------------------------------
 
@@ -297,7 +438,7 @@ dagify(
 
 ## ----approx-psi-zero-a-two-----------------------------------------------
 B <- 1e6
-ideal_obs <- run(experiment, B, ideal = TRUE)
+ideal_obs <- sample_from(experiment, B, ideal = TRUE)
 (psi_approx <- mean(ideal_obs[, "Yone"] - ideal_obs[, "Yzero"]))
 
 ## ----approx-psi-zero-b---------------------------------------------------
@@ -308,54 +449,51 @@ alpha <- 0.05
 ## ----another-simulation--------------------------------------------------
 
 ## ANTOINE: new version
-another_experiment <- list(
-  .some_relevant_features = list(
-    Gbar = function(W) {
-      sin((1 + W) * pi / 6)
-    },
-    Qbar =   function(AW, h) {
-      A <- AW[, "A"]
-      W <- AW[, "W"]
-      expit( logit( A *  W + (1 - A) * W^2 ) +
-             h * 10 * sqrt(W) * A )
-    },
-    QW = function(x, min = 1/10, max = 9/10){dunif(x, min = min, max = max)},
-    qY = function(obs, Qbar, shape1 = 4){
-      AW <- obs[, c("A", "W")]
-      QAW <- do.call(Qbar, list(AW))
-      dbeta(Y, shape1 = shape1, shape2 = shape1 * (1 - QAW) / QAW)
-    }
-  )  
-)
-class(another_experiment) <- c(class(another_experiment), "law")
-another_experiment$.run_experiment <- function(n, h) {
-  ## preliminary
-  n <- Arguments$getInteger(n, c(1, Inf))
-  h <- Arguments$getNumeric(h)
-  ## ## 'Gbar' and 'Qbar' factors
-  Gbar <- another_experiment$.some_relevant_features$Gbar
-  Qbar <- another_experiment$.some_relevant_features$Qbar
-  ## sampling
-  ## ## context
-  params <- formals(another_experiment$.some_relevant_features$QW)
-  W <- runif(n, min = eval(params$min),
-             max = eval(params$max))
-  ## ## action undertaken
-  A <- rbinom(n, size = 1, prob = Gbar(W))
-  ## ## reward
-  params <- formals(another_experiment$.some_relevant_features$qY)
-  shape1 <- eval(params$shape1)
-  QAW <- Qbar(cbind(A = A, W = W), h = h)
-  Y <- rbeta(n, shape1 = shape1, shape2 = shape1 * (1 - QAW) / QAW)
-  ## ## observation
-  obs <- cbind(W = W, A = A, Y = Y)
-  return(obs)
-}
-
+another_experiment <- LAW()
+update(another_experiment,
+       Gbar = function(W) {
+         sin((1 + W) * pi / 6)
+       },
+       Qbar =   function(AW, h) {
+         A <- AW[, "A"]
+         W <- AW[, "W"]
+         expit( logit( A *  W + (1 - A) * W^2 ) +
+                h * 10 * sqrt(W) * A )
+       },
+       QW = function(x, min = 1/10, max = 9/10){dunif(x, min = min, max = max)},
+       qY = function(obs, Qbar, shape1 = 4){
+         AW <- obs[, c("A", "W")]
+         QAW <- Qbar(AW)
+         dbeta(Y, shape1 = shape1, shape2 = shape1 * (1 - QAW) / QAW)
+       },
+       sample_from = function(n, h) {
+         ## preliminary
+         n <- Arguments$getInteger(n, c(1, Inf))
+         h <- Arguments$getNumeric(h)
+         ## ## 'Gbar' and 'Qbar' factors
+         Gbar <- another_experiment$.Gbar
+         Qbar <- another_experiment$.Qbar
+         ## sampling
+         ## ## context
+         params <- formals(another_experiment$.QW)
+         W <- runif(n, min = eval(params$min),
+                    max = eval(params$max))
+         ## ## action undertaken
+         A <- rbinom(n, size = 1, prob = Gbar(W))
+         ## ## reward
+         params <- formals(another_experiment$.qY)
+         shape1 <- eval(params$shape1)
+         QAW <- Qbar(cbind(A = A, W = W), h = h)
+         Y <- rbeta(n, shape1 = shape1, shape2 = shape1 * (1 - QAW) / QAW)
+         ## ## observation
+         obs <- cbind(W = W, A = A, Y = Y)
+         return(obs)
+       }
+       )
 ## ----approx-psi-one------------------------------------------------------
 
 ## ANTOINE: new version
-(five_obs_another_experiment <- run(another_experiment, 5, h = 0))
+(five_obs_another_experiment <- sample_from(another_experiment, 5, h = 0))
 (psi_Pi_zero <- evaluate_psi(another_experiment, h = 0))
 
 
@@ -408,19 +546,17 @@ eic_another_experiment <- evaluate_eic(another_experiment, h = 0)
 ## ----cramer-rao----------------------------------------------------------
 
 ## ANTOINE: new version
-obs <- run(experiment, B)
+obs <- sample_from(experiment, B)
 (cramer_rao_hat <- var(eic_experiment(obs)))
 
 ## ----cramer-rao-another-experiment---------------------------------------
 
 ## ANTOINE: new version
-obs_another_experiment <- run(another_experiment, B, h = 0)
+obs_another_experiment <- sample_from(another_experiment, B, h = 0)
 (cramer_rao_Pi_zero_hat <- var(eic_another_experiment(obs_another_experiment)))
 (ratio <- sqrt(cramer_rao_Pi_zero_hat/cramer_rao_hat))
 
 ## ----recover-slope-------------------------------------------------------
-
-stop("Stopping here...\n")
 
 ## ANTOINE: new version
 sigma0 <- function(obs) {
@@ -446,8 +582,12 @@ sd_hat <- sd(vars)
 (slope_hat <- mean(vars))
 (slope_CI <- slope_hat + c(-1, 1) * qnorm(1 - alpha / 2) * sd_hat / sqrt(B))
 
+
+
 ## ----known-Gbar-one-a----------------------------------------------------
-Gbar <- attr(obs, "Gbar")
+
+## ANTOINE: new version
+Gbar <- uncover(experiment)$Gbar
 
 iter <- 1e3
 
@@ -482,7 +622,7 @@ fig +
        x = expression(paste(sqrt(n/v[n]^{list(a, b)})*(psi[n]^{list(a, b)} - psi[0]))))
 
 ## ----unknown-Gbar-one----------------------------------------------------
-estimate_G <- function(dat, algorithm, ...) {
+estimate_Gbar <- function(dat, algorithm, ...) {
   if (!is.data.frame(dat)) {
     dat <- as.data.frame(dat)
   }
@@ -495,9 +635,9 @@ estimate_G <- function(dat, algorithm, ...) {
   return(fit)
 }
 
-compute_lGhatAW <- function(A, W, Ghat, threshold = 0.05) {
+compute_lGbar_hatAW <- function(A, W, Gbar_hat, threshold = 0.05) {
   dat <- data.frame(A = A, W = W)
-  GW <- predict(Ghat, newdata = dat, type = Ghat$type_of_preds)
+  GW <- predict(Gbar_hat, newdata = dat, type = Gbar_hat$type_of_preds)
   lGAW <- A * GW + (1 - A) * (1 - GW)
   pred <- pmin(1 - threshold, pmax(lGAW, threshold))
   return(pred)
@@ -525,8 +665,8 @@ if (redo_fixed) {
     obs %>% as_tibble() %>%
     mutate(id = (seq_len(n()) - 1) %% iter) %>%
     nest(-id, .key = "obs") %>%
-    mutate(Ghat = map(obs, ~ estimate_G(., algorithm = working_model_G_one))) %>%
-    mutate(lGAW = map2(Ghat, obs, ~ compute_lGhatAW(.y$A, .y$W, .x)))
+    mutate(Gbar_hat = map(obs, ~ estimate_Gbar(., algorithm = working_model_G_one))) %>%
+    mutate(lGAW = map2(Gbar_hat, obs, ~ compute_lGbar_hatAW(.y$A, .y$W, .x)))
 }
 
 psi_hat_abc <-
@@ -587,7 +727,7 @@ attr(working_model_G_three, "ML") <- FALSE
 (working_model_G_three$formula)
 
 ## ----estimating-Qbar-one-------------------------------------------------
-estimate_Q <- function(dat, algorithm, ...) {
+estimate_Qbar <- function(dat, algorithm, ...) {
   if (!is.data.frame(dat)) {
     dat <- as.data.frame(dat)
   }
@@ -600,18 +740,20 @@ estimate_Q <- function(dat, algorithm, ...) {
   return(fit)
 }
 
-compute_QhatAW <- function(Y, A, W, Qhat, blip = FALSE) {
+compute_Qbar_hatAW <- function(Y, A, W, Qbar_hat, blip = FALSE) {
   if (!blip) {
     dat <- data.frame(Y = Y, A = A, W = W)
-    pred <- predict(Qhat, newdata = dat, type = Qhat$type_of_preds)
+    pred <- predict(Qbar_hat, newdata = dat, type = Qbar_hat$type_of_preds)
   } else {
-    pred <- predict(Qhat, newdata = data.frame(A = 1, W = W),
-                    type = Qhat$type_of_preds) -
-      predict(Qhat, newdata = data.frame(A = 0, W = W),
-              type = Qhat$type_of_preds)
+    pred <- predict(Qbar_hat, newdata = data.frame(A = 1, W = W),
+                    type = Qbar_hat$type_of_preds) -
+      predict(Qbar_hat, newdata = data.frame(A = 0, W = W),
+              type = Qbar_hat$type_of_preds)
   }
   return(pred)  
 }
+
+
 
 working_model_Q_one <- list(
   model = function(...) {trim_glm_fit(glm(family = binomial(), ...))},
@@ -655,18 +797,49 @@ control <- trainControl(method = "cv", number = 2,
                         trim = TRUE,
                         allowParallel = TRUE)
 
+
+
+
+## ANTOINE: new functions
+
+estimate_QW <- function(dat) {
+  dat %>% as.tibble %>% select(value = W) %>%
+    mutate(weight = 1/n())
+}
+
+wrapper <- function(fit) {
+  pryr::unenclose(function(obs) {
+    obs <- as.data.frame(obs)
+    predict(fit, newdata = obs, type = fit$type_of_preds)
+  })
+}
+
+
+empirical_law <- LAW()
+QW_hat <- obs %>% as.tibble %>% head(n = 1e3) %>%
+  estimate_QW
+Qbar_hat <- obs %>% as.tibble %>% head(n = 1e3) %>%
+  estimate_Qbar(algorithm = working_model_Q_one)
+update(empirical_law, QW = QW_hat, Qbar = wrapper(Qbar_hat))
+debug(.get_feature)
+psi_hat <- evaluate_psi(empirical_law)
+
+
+
+stop("Stopping here...\n")
+
 ## ----estimating-Qbar-one-bis, fig.cap = "Write caption."-----------------
 if(redo_fixed) {
   learned_features_fixed_sample_size <-
     learned_features_fixed_sample_size %>% # head(n = 100) %>%
-    mutate(Qhat_d = map(obs, ~ estimate_Q(., algorithm = working_model_Q_one)),
-           Qhat_e = map(obs, ~ estimate_Q(., algorithm = kknn_algo,
+    mutate(Qbar_hat_d = map(obs, ~ estimate_Qbar(., algorithm = working_model_Q_one)),
+           Qbar_hat_e = map(obs, ~ estimate_Qbar(., algorithm = kknn_algo,
                                           trControl = control,
                                           tuneGrid = kknn_grid))) %>%
-    mutate(blip_QW_d = map2(Qhat_d, obs,
-                            ~ compute_QhatAW(.y$Y, .y$A, .y$W, .x, blip = TRUE)),
-           blip_QW_e = map2(Qhat_e, obs,
-                            ~ compute_QhatAW(.y$Y, .y$A, .y$W, .x, blip = TRUE)))
+    mutate(blip_QW_d = map2(Qbar_hat_d, obs,
+                            ~ compute_Qbar_hatAW(.y$Y, .y$A, .y$W, .x, blip = TRUE)),
+           blip_QW_e = map2(Qbar_hat_e, obs,
+                            ~ compute_Qbar_hatAW(.y$Y, .y$A, .y$W, .x, blip = TRUE)))
 }
 
 psi_hat_de <- learned_features_fixed_sample_size %>%
@@ -721,14 +894,14 @@ if (redo_varying) {
 if(redo_varying) {
   learned_features_varying_sample_size <-
     learned_features_varying_sample_size %>% 
-    mutate(Qhat_d = map(obs, ~ estimate_Q(., algorithm = working_model_Q_one)),
-           Qhat_e = map(obs, ~ estimate_Q(., algorithm = kknn_algo,
+    mutate(Qbar_hat_d = map(obs, ~ estimate_Qbar(., algorithm = working_model_Q_one)),
+           Qbar_hat_e = map(obs, ~ estimate_Qbar(., algorithm = kknn_algo,
                                           trControl = control,
                                           tuneGrid = kknn_grid))) %>%
-    mutate(blip_QW_d = map2(Qhat_d, obs,
-                            ~ compute_QhatAW(.y$Y, .y$A, .y$W, .x, blip = TRUE)),
-           blip_QW_e = map2(Qhat_e, obs,
-                            ~ compute_QhatAW(.y$Y, .y$A, .y$W, .x, blip = TRUE)))
+    mutate(blip_QW_d = map2(Qbar_hat_d, obs,
+                            ~ compute_Qbar_hatAW(.y$Y, .y$A, .y$W, .x, blip = TRUE)),
+           blip_QW_e = map2(Qbar_hat_e, obs,
+                            ~ compute_Qbar_hatAW(.y$Y, .y$A, .y$W, .x, blip = TRUE)))
 }
 
 root_n_bias <- learned_features_varying_sample_size %>%
@@ -787,33 +960,33 @@ root_n_bias %>%
 ## as soon as possible!
 
 ## ----one-step-one--------------------------------------------------------
-set_Qbar_Gbar <- function(obs, Qhat, Ghat) {
+set_Qbar_Gbar <- function(obs, Qbar_hat, Gbar_hat) {
   attr(obs, "Qbar") <- function(newdata) {
     if (!is.data.frame(newdata)) {
       newdata <- as.data.frame(newdata)
     }
-    predict(Qhat, newdata = newdata, type = Qhat$type_of_preds)
+    predict(Qbar_hat, newdata = newdata, type = Qbar_hat$type_of_preds)
   }
   attr(obs, "Gbar") <- function(newdata) {
     if (!is.data.frame(newdata)) {
       newdata <- as.data.frame(newdata)
     }
-    predict(Ghat, newdata = newdata, type = Ghat$type_of_preds)
+    predict(Gbar_hat, newdata = newdata, type = Gbar_hat$type_of_preds)
   }
   return(obs)
 }
-eic_hat <- function(obs, Qhat, Ghat, psi_hat) {
+eic_hat <- function(obs, Qbar_hat, Gbar_hat, psi_hat) {
   Qbar <- function(newdata) {
     if (!is.data.frame(newdata)) {
       newdata <- as.data.frame(newdata)
     }
-    predict(Qhat, newdata = newdata, type = Qhat$type_of_preds)
+    predict(Qbar_hat, newdata = newdata, type = Qbar_hat$type_of_preds)
   }
   Gbar <- function(newdata) {
     if (!is.data.frame(newdata)) {
       newdata <- as.data.frame(newdata)
     }
-    predict(Ghat, newdata = newdata, type = Ghat$type_of_preds)
+    predict(Gbar_hat, newdata = newdata, type = Gbar_hat$type_of_preds)
   }
   QAW <- Qbar(obs[, c("A", "W")])
   QoneW <- Qbar(cbind(A = 1, W = obs[, "W"]))
@@ -829,9 +1002,9 @@ eic_hat <- function(obs, Qhat, Ghat, psi_hat) {
 psi_hat_de_one_step <- learned_features_fixed_sample_size %>%
   mutate(est_d = map(blip_QW_d, mean),
          est_e = map(blip_QW_e, mean)) %>%
-  mutate(eic_obs_d = pmap(list(obs, Qhat_d, Ghat, est_d),
+  mutate(eic_obs_d = pmap(list(obs, Qbar_hat_d, Gbar_hat, est_d),
                           eic_hat),
-         eic_obs_e = pmap(list(obs, Qhat_e, Ghat, est_e),
+         eic_obs_e = pmap(list(obs, Qbar_hat_e, Gbar_hat, est_e),
                           eic_hat)) %>%
   unnest(blip_QW_d, eic_obs_d,
          blip_QW_e, eic_obs_e) %>%
