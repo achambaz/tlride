@@ -821,7 +821,6 @@ QW_hat <- obs %>% as.tibble %>% head(n = 1e3) %>%
 Qbar_hat <- obs %>% as.tibble %>% head(n = 1e3) %>%
   estimate_Qbar(algorithm = working_model_Q_one)
 update(empirical_law, QW = QW_hat, Qbar = wrapper(Qbar_hat))
-debug(.get_feature)
 psi_hat <- evaluate_psi(empirical_law)
 
 
