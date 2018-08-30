@@ -825,10 +825,7 @@ limit that  does not  depend on  $s$.}  estimators  are intimately  related to
 gradients.   In fact,  if $\psi_n$  is a  regular, asymptotically linear 
 estimator  of $\Psi(P)$  with
 influence  function $\IF$,  then it  must be  true that  $\Psi$ is  a smooth
-at $P$ and  that $\IF$  is a  gradient of $\Psi$  at $P$.   Moreover, the
-converse is also  true: given a gradient $D^*$ of $\Psi$  at $P$, under regularity
-conditions, it is  possible to construct an estimator  with influence function
-equal to $D^*(P)$. 
+at $P$ and  that $\IF$  is a  gradient of $\Psi$  at $P$.  
 
 These results, combined with the definition of the canonical gradient, imply that  
 if $\psi_{n}$  is a
@@ -861,6 +858,41 @@ D_{2}^{*}(P)     (O)     &\equiv      \frac{2A-1}{\ell\Gbar(A,W)}     (Y     -
    encoded      for      problems      2       and      3      of      Section
    \ref{subsec:exo:dave:three}. Compare  this bound  with those  computed in
    problem 1.
+
+\subsection{Linear approximations of parameters}
+\label{subsec:linearapprox}
+
+In the last subsection, we learned that the stochastic behavior of a regular, 
+asymptotically linear estimator of $\Psi(P)$ can be characterized by its
+influence function. Moreover, we said that this influence function must in fact
+be a gradient of $\Psi$ at $P$. In this section, we show that the converse
+is also true: given a gradient $D^*$ of $\Psi$  at $P$, under regularity
+conditions, it is  possible to construct an estimator  with influence function
+equal to $D^*(P)$. This fact suggests concrete strategies for generating efficient 
+estimators of smooth parameters.
+
+Drawing another parallel to Euclidean geometry, recall that if $f$  
+is a  differentiable mapping from $\bbR^p$ to $\bbR$, we can use a Taylor series 
+to approximate $f$ at a point $x_0 \in \bbR^p$, $f(x_0) \approx f(x) + (x_0 - x)
+\cdot \nabla f(x)$, where $x$ is a point in $\bbR^p$ and $\nabla f(x)$ is the 
+gradient of $f$ evaluated at $x$. As the distance between $x$ and $x_0$ decreases, 
+the *linear approximation* to $f(x_0)$ becomes more accurate. 
+
+Returning to the present problem with this in mind, we find that indeed a similar 
+approximation strategy may be applied. In particular, if $\Psi$ is pathwise 
+differentiable uniformly over directions, then for any given $P \in \calM$, we can write \begin{align} \label{taylor_expansion}
+  \Psi(P_0) = \Psi(P) + (P_0 - P) D^*(P) - R_2(P, P_0),
+\end{align}
+where $R_2(P,P_0)$ is a *remainder term* satisfying that \begin{align*}
+  \frac{R_2(P, P_0)}{d(P, P_0)} \rightarrow 0 \ \mbox{as} \ d(P, P_0) \rightarrow 0 ,
+\end{align*}
+where $d$ is a measure of discrepancy for distributions in $\calM$. In (\ref{taylor_expansion}), we introduced a new shorthand notation. For any measurable function $g$ 
+of the observed data $O$, we will write $P g \equiv \Exp_P(g(O))$. Thus, \ref{taylor_expansion} could be equivalently written as \begin{align*}
+\Psi(P_0) = \Psi(P) + \Exp_{P_0}(D^*(P)(O)) - \Exp_P(D^*(P)(O)) - R_2(P, P_0).
+\end{align*}
+The remainder term formalizes the notion that if $P$ is ``close'' to $P_0$ (i.e., $d(P,P_0)$
+is small) then the linear approximation of $\Psi(P_0)$ is more accurate. 
+
 
 
 \subsection{Double-robustness}
