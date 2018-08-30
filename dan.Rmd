@@ -924,7 +924,7 @@ assuming $\Qbar_{0}$ known would be difficult to justify.
 
 ```{r known-Gbar-one-a}
 ## Debug -- couldn't find obs when I tried to compile
-obs <- run_experiment(1e3)
+obs <- run_experiment(B)
 Gbar <- attr(obs, "Gbar")
 
 iter <- 1e3

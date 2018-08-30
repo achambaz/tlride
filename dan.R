@@ -9,6 +9,15 @@ knitr::opts_chunk$set(
   warnings = FALSE
 )
 
+## ----visible-setup-------------------------------------------------------
+set.seed(54321) ## because reproducibility matters...
+suppressMessages(library(R.utils)) ## make sure it is installed
+suppressMessages(library(tidyverse)) ## make sure it is installed
+suppressMessages(library(caret)) ## make sure it is installed
+suppressMessages(library(ggdag)) ## make sure it is installed
+expit <- plogis
+logit <- qlogis
+
 ## ----redo----------------------------------------------------------------
 redo_fixed <- c(TRUE, FALSE)[2]
 redo_varying <- c(TRUE, FALSE)[2]
@@ -26,15 +35,6 @@ if (!redo_varying) {
       loadObject("data/learned_features_varying_sample_size_new.xdr")
   }
 } 
-
-## ----visible-setup-------------------------------------------------------
-set.seed(54321) ## because reproducibility matters...
-suppressMessages(library(R.utils)) ## make sure it is installed
-suppressMessages(library(tidyverse)) ## make sure it is installed
-suppressMessages(library(caret)) ## make sure it is installed
-suppressMessages(library(ggdag)) ## make sure it is installed
-expit <- plogis
-logit <- qlogis
 
 ## ----simulation----------------------------------------------------------
 run_experiment <- function(n, ideal = FALSE) {
@@ -230,31 +230,15 @@ ggplot() +
   geom_hline(yintercept = psi_Pi_zero, color = "#66CC99") +
   labs(x = "h", y = expression(Psi(Pi[h]))) 
 
-## ----eic-----------------------------------------------------------------
-eic <- function(obs, psi) {
-  Qbar <- attr(obs, "Qbar")
-  Gbar <- attr(obs, "Gbar")
-  QAW <- Qbar(obs[, c("A", "W")])
-  QoneW <- Qbar(cbind(A = 1, W = obs[, "W"]))
-  QzeroW <- Qbar(cbind(A = 0, W = obs[, "W"]))
-  GW <- Gbar(obs[, "W", drop = FALSE])
-  lGAW <- obs[, "A"] * GW + (1 - obs[, "A"]) * (1 - GW)
-  out <- (QoneW - QzeroW - psi) + (2 * obs[, "A"] - 1) / lGAW * (obs[, "Y"] - QAW)
-  out <- as.vector(out)
-  return(out)
-}
-
-(eic(five_obs, psi = psi_approx))
-(eic(five_obs_from_another_experiment, psi = psi_Pi_zero))
-
-## ----cramer-rao----------------------------------------------------------
-obs <- run_experiment(B)
-(cramer_rao_hat <- var(eic(obs, psi = psi_approx)))
-
-## ----cramer-rao-another-experiment---------------------------------------
-obs_from_another_experiment <- run_another_experiment(B)
-(cramer_rao_Pi_zero_hat <- var(eic(obs_from_another_experiment, psi = 59/300)))
-(ratio <- sqrt(cramer_rao_Pi_zero_hat/cramer_rao_hat))
+## ----set-Q-bar, eval = FALSE---------------------------------------------
+## Qbar = function(AW, hh = h){
+##   A <- AW[,1]
+##   W <- AW[,2]
+##   expit( logit( A * W + (1 - A) * W^2 ) +
+##          hh * (2*A - 1) / ifelse(A == 1, sin((1 + W) * pi / 6),
+##                                  1 - sin((1 + W) * pi / 6)) *
+##          (Y - A * W + (1 - A) * W^2))
+## }
 
 ## ----recover-slope-------------------------------------------------------
 sigma0_run_another_experiment <- function(obs) { 
@@ -273,6 +257,24 @@ sigma0_run_another_experiment <- function(obs) {
   return(out)
 }
 
+## DEBUGGING:
+## 1) drawing 'obs_from_another_experiment' here (duplicated)
+## 2) adding definition of 'eic'  here (duplicated)
+obs_from_another_experiment <- run_another_experiment(B)
+eic <- function(obs, psi) {
+  Qbar <- attr(obs, "Qbar")
+  Gbar <- attr(obs, "Gbar")
+  QAW <- Qbar(obs[, c("A", "W")])
+  QoneW <- Qbar(cbind(A = 1, W = obs[, "W"]))
+  QzeroW <- Qbar(cbind(A = 0, W = obs[, "W"]))
+  GW <- Gbar(obs[, "W", drop = FALSE])
+  lGAW <- obs[, "A"] * GW + (1 - obs[, "A"]) * (1 - GW)
+  out <- (QoneW - QzeroW - psi) + (2 * obs[, "A"] - 1) / lGAW * (obs[, "Y"] - QAW)
+  out <- as.vector(out)
+  return(out)
+}
+
+
 vars <- eic(obs_from_another_experiment, psi = 59/300) *
   sigma0_run_another_experiment(obs_from_another_experiment)
 sd_hat <- sd(vars)
@@ -280,6 +282,8 @@ sd_hat <- sd(vars)
 (slope_CI <- slope_hat + c(-1, 1) * qnorm(1 - alpha / 2) * sd_hat / sqrt(B))
 
 ## ----known-Gbar-one-a----------------------------------------------------
+## Debug -- couldn't find obs when I tried to compile
+obs <- run_experiment(1e6)
 Gbar <- attr(obs, "Gbar")
 
 iter <- 1e3
@@ -372,6 +376,7 @@ psi_hat_abc <-
          type = "c") %>%
   full_join(psi_hat_ab)
 
+## DEBUG : This was breaking when I compiled.
 (bias_abc <- psi_hat_abc %>% group_by(type) %>% summarise(bias = mean(clt)))
 
 ## ----unknown-Gbar-three, fig.cap = "Kernel density estimators of the law of three estimators of $\\psi_{0}$  (recentered with respect to $\\psi_{0}$, and renormalized), one of them misconceived (a), one assuming that $\\Gbar_{0}$ is known (b) and one that hinges on the estimation of $\\Gbar_{0}$ (c). The present figure includes Figure \\@ref(fig:known-Gbar-one-b) (but the colors differ). Built based on `iter` independent realizations of each estimator."----
