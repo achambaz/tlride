@@ -32,4 +32,5 @@ if (requireNamespace("pryr", quietly = TRUE)) {
   object.size(fit_light)
 }
 predict(fit_light, newdata = dat)
+
 }

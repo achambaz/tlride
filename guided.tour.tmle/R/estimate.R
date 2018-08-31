@@ -3,7 +3,9 @@
 #' Imported from the 'glm' 'model' of the 'caret' package, trims the fat from a 'glm' object.
 #' 
 #' @param x A \code{glm} fit.
+#'
 #' @return Object 'fit' stripped of components that are not required to make predictions.
+#'
 #' @examples
 #'
 #' ## Dobson (1990) Page 93: Randomized Controlled Trial (see 'example(glm)'):
@@ -21,11 +23,28 @@
 #'   object.size(fit_light)
 #'}
 #' predict(fit_light, newdata = dat)
-#' @export
+#'
+#' @export trim_glm_fit
 trim_glm_fit <- caret::getModelInfo("glm")$glm$trim
 
-
-#' @export
+#' Does this
+#'
+#' Does this.
+#' 
+#' @param dat ...
+#'
+#' @param algorithm ...
+#'
+#' @param ... Additional parameters passed to the algorithm.
+#'
+#' @seealso \code{\link{estimate_QW}}, \code{\link{estimate_Qbar}}
+#'
+#' @return something
+#'
+#' @examples
+#'
+#' ## do this and that
+#' @export estimate_Gbar
 estimate_Gbar <- function(dat, algorithm, ...) {
   if (!is.data.frame(dat)) {
     dat <- as.data.frame(dat)
@@ -39,44 +58,26 @@ estimate_Gbar <- function(dat, algorithm, ...) {
   return(fit)
 }
 
-#' @export
-compute_lGbar_hatAW <- function(A, W, Gbar_hat, threshold = 0.05) {
-  dat <- data.frame(A = A, W = W)
-  GW <- predict(Gbar_hat, newdata = dat, type = Gbar_hat$type_of_preds)
-  lGAW <- A * GW + (1 - A) * (1 - GW)
-  pred <- pmin(1 - threshold, pmax(lGAW, threshold))
-  return(pred)
-}
 
-#' @export
-working_model_G_one <- list(
-  model = function(...) {trim_glm_fit(glm(family = binomial(), ...))},
-  formula = as.formula(
-    paste("A ~",
-          paste(c("I(W^", "I(abs(W - 5/12)^"),
-                rep(seq(1/2, 3/2, by = 1/2), each = 2),
-                sep = "", collapse = ") + "),
-          ")")
-  ),
-  type_of_preds = "response"
-)
-attr(working_model_G_one, "ML") <- FALSE
-working_model_G_one$formula
-
-#' @export
-working_model_G_three <- list(
-  model = function(...) {trim_glm_fit(glm(family = binomial(), ...))},
-  formula = as.formula(
-    paste("A ~",
-          paste("I(", c("cos", "sin", "sqrt", "log", "exp"), sep = "", collapse = "(W)) + "),
-          "(W))")
-  ),
-  type_of_preds = "response"
-)
-attr(working_model_G_three, "ML") <- FALSE
-(working_model_G_three$formula)
-
-#' @export
+#' Does this
+#'
+#' Does this.
+#' 
+#' @param dat ...
+#'
+#' @param algorithm ...
+#'
+#' @param ... Additional parameters passed to the algorithm.
+#'
+#' @seealso \code{\link{estimate_QW}}, \code{\link{estimate_Gbar}}
+#'
+#' @return something
+#'
+#' @examples
+#'
+#' ## do this and that (refer to working models and knn)
+#'
+#' @export estimate_Qbar
 estimate_Qbar <- function(dat, algorithm, ...) {
   if (!is.data.frame(dat)) {
     dat <- as.data.frame(dat)
@@ -90,83 +91,23 @@ estimate_Qbar <- function(dat, algorithm, ...) {
   return(fit)
 }
 
-#' @export
-compute_Qbar_hatAW <- function(Y, A, W, Qbar_hat, blip = FALSE) {
-  if (!blip) {
-    dat <- data.frame(Y = Y, A = A, W = W)
-    pred <- predict(Qbar_hat, newdata = dat, type = Qbar_hat$type_of_preds)
-  } else {
-    pred <- predict(Qbar_hat, newdata = data.frame(A = 1, W = W),
-                    type = Qbar_hat$type_of_preds) -
-      predict(Qbar_hat, newdata = data.frame(A = 0, W = W),
-              type = Qbar_hat$type_of_preds)
-  }
-  return(pred)  
-}
-
-#' @export
-working_model_Q_one <- list(
-  model = function(...) {trim_glm_fit(glm(family = binomial(), ...))},
-  formula = as.formula(
-    paste("Y ~ A * (",
-          paste("I(W^", seq(1/2, 3/2, by = 1/2), sep = "", collapse = ") + "),
-          "))")
-  ),
-  type_of_preds = "response"
-)
-attr(working_model_Q_one, "ML") <- FALSE
-working_model_Q_one$formula
-
-
-#' @export
-kknn_algo <- list(
-  algo = function(dat, ...) {
-    args <- list(...)
-    if ("Subsample" %in% names(args)) {
-      keep <- sample.int(nrow(dat), args$Subsample)
-      dat <- dat[keep, ]
-    }
-    fit <- caret::train(Y ~ I(10*A) + W, ## a tweak
-                        data = dat,
-                        method = "kknn",
-                        verbose = FALSE,
-                        ...)
-    fit$finalModel$fitted.values <- NULL
-    ## nms <- names(fit$finalModel$data)
-    ## for (ii in match(setdiff(nms, ".outcome"), nms)) {
-    ##   fit$finalModel$data[[ii]] <- NULL
-    ## }
-    fit$trainingData <- NULL    
-    return(fit)
-  },
-  type_of_preds = "raw"
-)
-attr(kknn_algo, "ML") <- TRUE
-#' @export
-kknn_grid <- expand.grid(kmax = 5, distance = 2, kernel = "gaussian")
-#' @export
-control <- caret::trainControl(method = "cv", number = 2,
-                               predictionBounds = c(0, 1),
-                               trim = TRUE,
-                               allowParallel = TRUE)
-
-
-
-
-
-
-#' @export
+#' Estimates the marginal law of W non-parametrically
+#'
+#' Estimates the marginal law of W non-parametrically.
+#' 
+#' @param dat ...
+#'
+#' @seealso \code{\link{estimate_Gbar}}, \code{\link{estimate_Qbar}}
+#'
+#' @return A  \code{tibble}  with  columns named  'value'  and 'weight'  that
+#'   describes the empirical law of 'W' in data set 'dat'.
+#'
+#' @examples
+#' 
+#' ## do this and that
+#' @export estimate_QW
 estimate_QW <- function(dat) {
-  dat %>% as.tibble %>% select(value = W) %>%
-    mutate(weight = 1/n())
+  dat %>% tibble::as.tibble %>%
+    dplyr::select(value = "W") %>%
+    dplyr::mutate(weight = 1/dplyr::n())
 }
-
-
-#' @export
-wrapper <- function(fit) {
-  pryr::unenclose(function(obs) {
-    obs <- as.data.frame(obs)
-    predict(fit, newdata = obs, type = fit$type_of_preds)
-  })
-}
-

@@ -10,7 +10,8 @@
 \item{\dots}{Not used.}
 }
 \value{
-A character string recalling what can be done with an object of class \code{LAW}.
+A character string  recalling what can be  done with an  object of
+  class \code{LAW}.
 }
 \description{
 Prints an object of class LAW.

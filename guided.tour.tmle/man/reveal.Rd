@@ -3,17 +3,12 @@
 \name{reveal}
 \alias{reveal}
 \alias{reveal.LAW}
-\alias{@seealso}
-\alias{\code{\link{sample_from}},}
-\alias{\code{\link{update}},}
-\alias{\code{\link{evaluate_psi}},}
-\alias{\code{\link{evaluate_eic}}}
 \title{Reveals an object of class LAW}
 \arguments{
-\item{this}{An object of class \code{LAW}}
+\item{this}{An object of class \code{LAW}.}
 
-\item{\dots}{Additional parameters possibly needed to  fully determine the
-law.}
+\item{\dots}{Additional parameters  possibly needed to  fully characterize
+the law.}
 }
 \value{
 A \code{list} with tags\itemize{\item  'QW', marginal law of 'W', a
@@ -22,8 +17,15 @@ A \code{list} with tags\itemize{\item  'QW', marginal law of 'W', a
   probability  that  'A=1'  given  'W',  a  \code{function}  \item  'Qbar',
   conditional  mean of  'Y' given  '(A,W)', a  \code{function} \item  'qY',
   conditional density  of 'Y' given  '(A,W)', a \code{function}.}   Each of
-  them equals 'NA' if it is not determined.
+  them equals 'NA' if it is not characterized.
 }
 \description{
-Reveals an object of class \code{LAW} by exhibiting a selection of relevant features. Can be performed if one has built the object or if one acts as an oracle.
+Reveals an object of class \code{LAW} by exhibiting a selection of relevant
+features of the  law for (W,A,Y) in  [0,1] x {0,1} x [0,1]  that the object
+characterizes. Can be performed if one has  built the object or if one acts
+as an \emph{oracle}.
+}
+\seealso{
+\code{\link{sample_from}},       \code{\link{alter}},
+  \code{\link{evaluate_psi}}, \code{\link{evaluate_eic}}
 }

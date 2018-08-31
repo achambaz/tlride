@@ -3,20 +3,26 @@
 \name{sample_from}
 \alias{sample_from}
 \alias{sample_from.LAW}
-\title{Samples from an object of class LAW.}
+\alias{@seealso}
+\alias{\code{\link{reveal}},}
+\alias{\code{\link{alter}},}
+\alias{\code{\link{evaluate_psi}},}
+\alias{\code{\link{evaluate_eic}}}
+\title{Samples from an object of class LAW}
 \arguments{
-\item{this}{An object of class \code{LAW}}
+\item{this}{An object of class \code{LAW}.}
 
 \item{n}{An \code{integer}, the wished sample size. Defaults to 'n = 1'.}
 
-\item{\dots}{Additional parameters possibly needed to fully determine the law.}
+\item{\dots}{Additional parameters  possibly needed to  fully characterize
+the law.}
 }
 \value{
-Either \code{NULL} if the law is undetermined or the data set sampled, a \code{tibble} or \code{data.frame} with columns named 'W', 'A' and 'Y'.
+Either  \code{NULL} if  the law  is undetermined  or the  data set
+  sampled, a \code{tibble} or \code{data.frame} with columns named 'W', 'A'
+  and 'Y'.
 }
 \description{
-Samples from an object of class \code{LAW} when it is not underdetermined.
-}
-\seealso{
-\code{\link{reveal}}, \code{\link{update}}, \code{\link{evaluate_psi}}, \code{\link{evaluate_eic}}
+Samples data of the form (W,A,Y) in [0,1] x {0,1} x [0,1] from an object of
+class \code{LAW} when it fully characterizes a law.
 }
