@@ -20,15 +20,6 @@ one-dimensional parametric model (a \emph{fluctuation}).
 Built-in \code{function}  \code{sigma0} implements the  \emph{direction} of
 the fluctuation characterized by \code{another_experiment}.
 }
-\examples{
-
-experiment
-
-another_experiment
-
-sigma0
-
-}
 \references{
 Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
 }

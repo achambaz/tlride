@@ -26,11 +26,6 @@ A \code{vector} of numerics, the sample.
 Samples  from the  mixture of  uniform laws  characterized by  the provided
 weights and corresponding intervals.
 }
-\examples{
-
-sample_from_mixture_of_uniforms(7, c(1/3, 2/3), mins = c(0, 1/2), maxs = c(2/3, 3/4))
-
-}
 \references{
 Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
 }

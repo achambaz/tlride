@@ -40,12 +40,6 @@ k-nearest  neighbors  non-parametric  procedure as  implement  in  'method'
 \code{kknn} of  the 'caret'  package (its \code{attribute}  'ML' is  set to
 \code{TRUE}).
 }
-\examples{
-
-(working_model_G_one)
-(kknn_algo)
-
-}
 \references{
 Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
 }

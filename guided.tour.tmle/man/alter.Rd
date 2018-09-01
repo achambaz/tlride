@@ -10,10 +10,25 @@
 \item{\dots}{...}
 }
 \value{
-something
+An object of class \code{LAW}, with modified features.
 }
 \description{
-Alters an object of class \code{LAW} by ...
+Alters  an object  of class  \code{LAW} by  changing some  of the  relevant
+features of the  law for (W,A,Y) in  [0,1] x {0,1} x [0,1]  that the object
+characterizes. Can be performed if one has built the object.
+}
+\details{
+Specifically,  the relevant  features  can be  chosen among  \itemize{\item
+'QW',  the marginal  law  of 'W',  a \code{function}  (the  density), or  a
+\code{tibble} with columns named 'value' and 'weight' (a discrete law)\item
+'Gbar', the conditional probability that 'A=1' given 'W', a \code{function}
+\item 'Qbar', the conditional mean  of 'Y' given '(A,W)', a \code{function}
+\item   'qY',   the  conditional   density   of   'Y'  given   '(A,W)',   a
+\code{function}.} Setting  any of them to  \code{NA} \emph{uncharacterizes}
+it.
+
+Caution should be exercised, since changing some features of the object may
+put the \code{sample_from} method at odds with the modified features.
 }
 \seealso{
 \code{\link{sample_from}},       \code{\link{reveal}},

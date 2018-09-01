@@ -3,11 +3,6 @@
 \name{sample_from}
 \alias{sample_from}
 \alias{sample_from.LAW}
-\alias{@seealso}
-\alias{\code{\link{reveal}},}
-\alias{\code{\link{alter}},}
-\alias{\code{\link{evaluate_psi}},}
-\alias{\code{\link{evaluate_eic}}}
 \title{Samples from an object of class LAW}
 \arguments{
 \item{this}{An object of class \code{LAW}.}
@@ -25,4 +20,8 @@ Either  \code{NULL} if  the law  is undetermined  or the  data set
 \description{
 Samples data of the form (W,A,Y) in [0,1] x {0,1} x [0,1] from an object of
 class \code{LAW} when it fully characterizes a law.
+}
+\seealso{
+\code{\link{reveal}},         \code{\link{alter}},
+  \code{\link{evaluate_psi}}, \code{\link{evaluate_eic}}
 }

@@ -6,14 +6,25 @@
 #'
 #' @references Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).  
 #' 
-#' @examples
-#'
-#' label(1:17, c(2, 3))
-#'
 #' @name convenient_functions
 NULL
 
 #' @docType data
+#'
+#' @param xx A \code{vector}.
+#'
+#' @param sample_size A \code{vector} of \code{integer}s.
+#'
+#' @return A \code{vector} of \code{characters}.
+#'
+#' @details Let 'L'  be the length of 'sample_size' and  'Q'be the quotient in
+#'   the Euclidean division of the  length of 'xx' by 'sum(sample_size)'.  The
+#'   \code{function} \code{label}  creates 'Q  x L'  different strings  of the
+#'   form 'q_l'.   Each 'q_l' string  is repeated 'sample_size[l]'  times. The
+#'   function is used to make easily sub-data sets of a data set.
+#'
+#' @references Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
+#' 
 #' @rdname convenient_functions
 "label"
 
@@ -39,8 +50,4 @@ NULL
 #'
 #' @references Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
 #' 
-#' @examples
-#'
-#' sample_from_mixture_of_uniforms(7, c(1/3, 2/3), mins = c(0, 1/2), maxs = c(2/3, 3/4))
-#'
 "sample_from_mixture_of_uniforms"

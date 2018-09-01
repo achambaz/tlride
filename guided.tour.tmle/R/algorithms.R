@@ -18,11 +18,6 @@
 #'
 #' @references Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).  
 #' 
-#' @examples
-#'
-#' (working_model_G_one)
-#' (kknn_algo)
-#'
 #' @name algorithms
 NULL
 

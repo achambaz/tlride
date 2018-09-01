@@ -20,15 +20,27 @@ wrapper(fit)
 
 label(xx, sample_size = c(1000, 2000))
 }
+\arguments{
+\item{xx}{A \code{vector}.}
+
+\item{sample_size}{A \code{vector} of \code{integer}s.}
+}
+\value{
+A \code{vector} of \code{characters}.
+}
 \description{
 Convenient functions.
 }
-\examples{
-
-label(1:17, c(2, 3))
-
+\details{
+Let 'L'  be the length of 'sample_size' and  'Q'be the quotient in
+  the Euclidean division of the  length of 'xx' by 'sum(sample_size)'.  The
+  \code{function} \code{label}  creates 'Q  x L'  different strings  of the
+  form 'q_l'.   Each 'q_l' string  is repeated 'sample_size[l]'  times. The
+  function is used to make easily sub-data sets of a data set.
 }
 \references{
+Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
+
 Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
 
 Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).

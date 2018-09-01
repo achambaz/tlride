@@ -15,14 +15,6 @@
 #'
 #' @references Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).  
 #' 
-#' @examples
-#'
-#' experiment
-#'
-#' another_experiment
-#'
-#' sigma0
-#'
 #' @name experiments
 NULL
 
