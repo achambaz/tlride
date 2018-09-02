@@ -5,7 +5,7 @@
 \alias{evaluate_psi.LAW}
 \title{Evaluates the statistical mapping Psi at an object of class LAW}
 \arguments{
-\item{this}{An object of class \code{LAW}.}
+\item{this}{An object of \code{class} \code{LAW}.}
 
 \item{\dots}{Additional parameters possibly needed to  fully characterize the
 law.}
@@ -17,13 +17,21 @@ A \code{function},  the efficient  infuence curve  of statistical
 }
 \description{
 Evaluates at the law for (W,A,Y) in  [0,1] x {0,1} x [0,1] characterized by
-an object of  class \code{LAW} the statistical mapping  \eqn{\Psi} given by
+an object of  \code{class} \code{LAW} the statistical mapping  \eqn{\Psi} given by
 \deqn{\Psi(P) = E_P {Qbar(1,W)  - Qbar(0,W)}} where \eqn{Qbar(A,W)
 = E_P (Y|A,W)}. Can be performed if one has built the object or if one acts
 as an  \emph{oracle}.  Works only if  all the relevant features  of the law
 are characterized.
 }
 \seealso{
-\code{\link{sample_from}},       \code{\link{reveal}},
-  \code{\link{alter}}, \code{\link{evaluate_eic}}
+\code{\link{sample_from}}  to sample from the law (if  it is fully
+  characterized), \code{\link{reveal}} to reveal  some relevant features of
+  the law, \code{\link{alter}} to modify some relevant features of the law,
+  and \code{\link{evaluate_eic}} to evaluate  the efficient influence curve
+  of \eqn{Psi} at the law.
+
+Other methods for LAW objects: \code{\link{alter}},
+  \code{\link{evaluate_eic}}, \code{\link{reveal}},
+  \code{\link{sample_from}}
 }
+\concept{methods for LAW objects}

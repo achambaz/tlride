@@ -5,7 +5,7 @@
 \alias{reveal.LAW}
 \title{Reveals an object of class LAW}
 \arguments{
-\item{this}{An object of class \code{LAW}.}
+\item{this}{An object of \code{class} \code{LAW}.}
 
 \item{\dots}{Additional parameters  possibly needed to  fully characterize
 the law.}
@@ -20,12 +20,20 @@ A \code{list} with tags\itemize{\item  'QW', marginal law of 'W', a
   them equals 'NA' if it is not characterized.
 }
 \description{
-Reveals an object of class \code{LAW} by exhibiting a selection of relevant
+Reveals an object of \code{class} \code{LAW} by exhibiting a selection of relevant
 features of the  law for (W,A,Y) in  [0,1] x {0,1} x [0,1]  that the object
 characterizes. Can be performed if one has  built the object or if one acts
 as an \emph{oracle}.
 }
 \seealso{
-\code{\link{sample_from}},       \code{\link{alter}},
-  \code{\link{evaluate_psi}}, \code{\link{evaluate_eic}}
+\code{\link{sample_from}}  to sample from the law (if  it is fully
+  characterized), \code{\link{alter}}  to modify some relevant  features of
+  the law, \code{\link{evaluate_psi}} to evaluate the value of \eqn{Psi} at
+  the  law,  and  \code{\link{evaluate_eic}}   to  evaluate  the  efficient
+  influence curve of \eqn{Psi} at the law.
+
+Other methods for LAW objects: \code{\link{alter}},
+  \code{\link{evaluate_eic}}, \code{\link{evaluate_psi}},
+  \code{\link{sample_from}}
 }
+\concept{methods for LAW objects}

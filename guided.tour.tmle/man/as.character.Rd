@@ -5,14 +5,14 @@
 \alias{as.character.LAW}
 \title{Prints an object of class LAW}
 \arguments{
-\item{x}{An object of class \code{LAW}.}
+\item{x}{An object of \code{class} \code{LAW}.}
 
 \item{\dots}{Not used.}
 }
 \value{
 A character string  recalling what can be  done with an  object of
-  class \code{LAW}.
+  \code{class} \code{LAW}.
 }
 \description{
-Prints an object of class LAW.
+Prints an object of \code{class} \code{LAW}.
 }

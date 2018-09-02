@@ -5,7 +5,7 @@
 \alias{sample_from.LAW}
 \title{Samples from an object of class LAW}
 \arguments{
-\item{this}{An object of class \code{LAW}.}
+\item{this}{An object of \code{class} \code{LAW}.}
 
 \item{n}{An \code{integer}, the wished sample size. Defaults to 'n = 1'.}
 
@@ -19,9 +19,17 @@ Either  \code{NULL} if  the law  is undetermined  or the  data set
 }
 \description{
 Samples data of the form (W,A,Y) in [0,1] x {0,1} x [0,1] from an object of
-class \code{LAW} when it fully characterizes a law.
+\code{class} \code{LAW} when it fully characterizes a law.
 }
 \seealso{
-\code{\link{reveal}},         \code{\link{alter}},
-  \code{\link{evaluate_psi}}, \code{\link{evaluate_eic}}
+\code{\link{reveal}} to reveal  some relevant features of the law,
+  \code{\link{alter}}   to  modify   them,  \code{\link{evaluate_psi}}   to
+  evaluate    the     value    of    \eqn{Psi}    at     the    law,    and
+  \code{\link{evaluate_eic}} to  evaluate the efficient influence  curve of
+  \eqn{Psi} at the law.
+
+Other methods for LAW objects: \code{\link{alter}},
+  \code{\link{evaluate_eic}}, \code{\link{evaluate_psi}},
+  \code{\link{reveal}}
 }
+\concept{methods for LAW objects}

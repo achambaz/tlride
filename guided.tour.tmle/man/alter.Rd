@@ -5,15 +5,15 @@
 \alias{alter.LAW}
 \title{Alters an object of class LAW}
 \arguments{
-\item{this}{An object of class \code{LAW}.}
+\item{this}{An object of \code{class} \code{LAW}.}
 
 \item{\dots}{...}
 }
 \value{
-An object of class \code{LAW}, with modified features.
+An object of \code{class} \code{LAW}, with modified features.
 }
 \description{
-Alters  an object  of class  \code{LAW} by  changing some  of the  relevant
+Alters  an object  of \code{class} \code{LAW} by  changing some  of the  relevant
 features of the  law for (W,A,Y) in  [0,1] x {0,1} x [0,1]  that the object
 characterizes. Can be performed if one has built the object.
 }
@@ -31,6 +31,18 @@ Caution should be exercised, since changing some features of the object may
 put the \code{sample_from} method at odds with the modified features.
 }
 \seealso{
-\code{\link{sample_from}},       \code{\link{reveal}},
-  \code{\link{evaluate_psi}}, \code{\link{evaluate_eic}}
+\code{\link{sample_from}}  to sample from the law (if  it is fully
+  characterized), \code{\link{reveal}} to reveal  some relevant features of
+  the law, \code{\link{evaluate_psi}} to evaluate the value of \eqn{Psi} at
+  the  law,  and  \code{\link{evaluate_eic}}   to  evaluate  the  efficient
+  influence curve of \eqn{Psi} at the law.
+
+Other methods for LAW objects: \code{\link{evaluate_eic}},
+  \code{\link{evaluate_psi}}, \code{\link{reveal}},
+  \code{\link{sample_from}}
+
+Other methods for LAW objects: \code{\link{evaluate_eic}},
+  \code{\link{evaluate_psi}}, \code{\link{reveal}},
+  \code{\link{sample_from}}
 }
+\concept{methods for LAW objects}

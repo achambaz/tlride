@@ -6,7 +6,7 @@ Authors@R: as.person(c(
   "David Benkeser <benkeser@emory.edu> [aut]"))
 Description: The companion package to the article "A Guided Tour in Targeted Learning Territory" provides simple objects and methods to define statistical experiments, run and learn from them. See the article.
 Depends: R (>= 3.4.4)
-License: MIT
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1.9000
