@@ -30,6 +30,9 @@ it.
 Caution should be exercised, since changing some features of the object may
 put the \code{sample_from} method at odds with the modified features.
 }
+\references{
+Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
+}
 \seealso{
 \code{\link{sample_from}}  to sample from the law (if  it is fully
   characterized), \code{\link{reveal}} to reveal  some relevant features of
@@ -37,11 +40,8 @@ put the \code{sample_from} method at odds with the modified features.
   the  law,  and  \code{\link{evaluate_eic}}   to  evaluate  the  efficient
   influence curve of \eqn{Psi} at the law.
 
-Other methods for LAW objects: \code{\link{evaluate_eic}},
-  \code{\link{evaluate_psi}}, \code{\link{reveal}},
-  \code{\link{sample_from}}
-
-Other methods for LAW objects: \code{\link{evaluate_eic}},
+Other methods for LAW objects: \code{\link{LAW}},
+  \code{\link{as.character}}, \code{\link{evaluate_eic}},
   \code{\link{evaluate_psi}}, \code{\link{reveal}},
   \code{\link{sample_from}}
 }

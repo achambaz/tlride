@@ -30,6 +30,9 @@ The evaluation can be performed if one  has built the object or if one acts
 as an  \emph{oracle}.  Works only if  all the relevant features  of the law
 are characterized.
 }
+\references{
+Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
+}
 \seealso{
 \code{\link{sample_from}}  to sample from the law (if  it is fully
   characterized), \code{\link{reveal}} to reveal  some relevant features of
@@ -37,7 +40,8 @@ are characterized.
   and \code{\link{evaluate_psi}} to evaluate the  value of \eqn{Psi} at the
   law.
 
-Other methods for LAW objects: \code{\link{alter}},
+Other methods for LAW objects: \code{\link{LAW}},
+  \code{\link{alter}}, \code{\link{as.character}},
   \code{\link{evaluate_psi}}, \code{\link{reveal}},
   \code{\link{sample_from}}
 }

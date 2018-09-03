@@ -23,6 +23,9 @@ an object of  \code{class} \code{LAW} the statistical mapping  \eqn{\Psi} given 
 as an  \emph{oracle}.  Works only if  all the relevant features  of the law
 are characterized.
 }
+\references{
+Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
+}
 \seealso{
 \code{\link{sample_from}}  to sample from the law (if  it is fully
   characterized), \code{\link{reveal}} to reveal  some relevant features of
@@ -30,7 +33,8 @@ are characterized.
   and \code{\link{evaluate_eic}} to evaluate  the efficient influence curve
   of \eqn{Psi} at the law.
 
-Other methods for LAW objects: \code{\link{alter}},
+Other methods for LAW objects: \code{\link{LAW}},
+  \code{\link{alter}}, \code{\link{as.character}},
   \code{\link{evaluate_eic}}, \code{\link{reveal}},
   \code{\link{sample_from}}
 }

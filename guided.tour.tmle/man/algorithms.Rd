@@ -16,7 +16,7 @@
   \code{list} with entries 'algo' and 'type_of_preds' (with \code{attribue}
   'ML' set to \code{TRUE}).}
 \usage{
-data(guided.tour.tmle)
+data(algorithms)
 
 working_model_G_one
 

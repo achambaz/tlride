@@ -21,6 +21,9 @@ Either  \code{NULL} if  the law  is undetermined  or the  data set
 Samples data of the form (W,A,Y) in [0,1] x {0,1} x [0,1] from an object of
 \code{class} \code{LAW} when it fully characterizes a law.
 }
+\references{
+Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
+}
 \seealso{
 \code{\link{reveal}} to reveal  some relevant features of the law,
   \code{\link{alter}}   to  modify   them,  \code{\link{evaluate_psi}}   to
@@ -28,7 +31,13 @@ Samples data of the form (W,A,Y) in [0,1] x {0,1} x [0,1] from an object of
   \code{\link{evaluate_eic}} to  evaluate the efficient influence  curve of
   \eqn{Psi} at the law.
 
-Other methods for LAW objects: \code{\link{alter}},
+Other methods for LAW objects: \code{\link{LAW}},
+  \code{\link{alter}}, \code{\link{as.character}},
+  \code{\link{evaluate_eic}}, \code{\link{evaluate_psi}},
+  \code{\link{reveal}}
+
+Other methods for LAW objects: \code{\link{LAW}},
+  \code{\link{alter}}, \code{\link{as.character}},
   \code{\link{evaluate_eic}}, \code{\link{evaluate_psi}},
   \code{\link{reveal}}
 }

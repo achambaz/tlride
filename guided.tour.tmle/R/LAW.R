@@ -3,6 +3,8 @@
 #' Initializes an object of \code{class} \code{LAW}.
 #'
 #' @name LAW
+#'
+#' @family methods for LAW objects
 #' 
 #' @export 
 R.oo::setConstructorS3("LAW", function(Gbar = NA, Qbar = NA, QW = NA,
@@ -30,7 +32,11 @@ R.oo::setConstructorS3("LAW", function(Gbar = NA, Qbar = NA, QW = NA,
 #'   \code{class} \code{LAW}.
 #' 
 #' @aliases as.character.LAW
-#'  
+#'
+#' @references Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
+#'
+#' @family methods for LAW objects
+#' 
 #' @export as.character.LAW
 R.methodsS3::setMethodS3(
   "as.character", "LAW",
@@ -87,6 +93,9 @@ R.methodsS3::setMethodS3(
 #'   sampled, a \code{tibble} or \code{data.frame} with columns named 'W', 'A'
 #'   and 'Y'.
 #'
+#' @references Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
+#'
+#' @family methods for LAW objects
 #' 
 #' @export sample_from
 #' 
@@ -122,6 +131,10 @@ R.methodsS3::setMethodS3(
 #'
 #' @aliases reveal.LAW
 #'
+#' @family methods for LAW objects
+#' 
+#' @references Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
+#'
 #' @seealso \code{\link{sample_from}}  to sample from the law (if  it is fully
 #'   characterized), \code{\link{alter}}  to modify some relevant  features of
 #'   the law, \code{\link{evaluate_psi}} to evaluate the value of \eqn{Psi} at
@@ -129,7 +142,7 @@ R.methodsS3::setMethodS3(
 #'   influence curve of \eqn{Psi} at the law.
 #'
 #' @family methods for LAW objects
-#' 
+#'
 #' @return A \code{list} with tags\itemize{\item  'QW', marginal law of 'W', a
 #'   \code{function}  (the  density) or  a  \code{tibble}  with columns  named
 #'   'value'   and  'weight'   (a  discrete   law)\item  'Gbar',   conditional
@@ -218,6 +231,8 @@ R.methodsS3::setMethodS3(
 #'
 #' @aliases evaluate_psi.LAW
 #'
+#' @references Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
+#' 
 #' @seealso \code{\link{sample_from}}  to sample from the law (if  it is fully
 #'   characterized), \code{\link{reveal}} to reveal  some relevant features of
 #'   the law, \code{\link{alter}} to modify some relevant features of the law,
@@ -287,7 +302,9 @@ R.methodsS3::setMethodS3(
 #'   law.
 #'
 #' @aliases evaluate_eic.LAW
-#'
+#' 
+#' @references Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
+#' 
 #' @seealso \code{\link{sample_from}}  to sample from the law (if  it is fully
 #'   characterized), \code{\link{reveal}} to reveal  some relevant features of
 #'   the law, \code{\link{alter}} to modify some relevant features of the law,
@@ -364,14 +381,14 @@ R.methodsS3::setMethodS3(
 #'
 #' @aliases alter.LAW
 #'
+#' @references Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
+#' 
 #' @seealso \code{\link{sample_from}}  to sample from the law (if  it is fully
 #'   characterized), \code{\link{reveal}} to reveal  some relevant features of
 #'   the law, \code{\link{evaluate_psi}} to evaluate the value of \eqn{Psi} at
 #'   the  law,  and  \code{\link{evaluate_eic}}   to  evaluate  the  efficient
 #'   influence curve of \eqn{Psi} at the law.
 #'
-#' @family methods for LAW objects
-#' 
 #' @family methods for LAW objects
 #' 
 #' @return An object of \code{class} \code{LAW}, with modified features.
