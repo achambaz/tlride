@@ -1,14 +1,7 @@
-#' Convenient functions
-#' 
-#' @docType data
+#' Labels the elements of a data set
 #'
-#' @format \code{Functions}.
-#'
-#' @references Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).  
+#' Labels the elements of a data set to prepare subsamples.
 #' 
-#' @name convenient_functions
-NULL
-
 #' @docType data
 #'
 #' @param xx A \code{vector}.
@@ -24,8 +17,6 @@ NULL
 #'   function is used to make easily sub-data sets of a data set.
 #'
 #' @references Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
-#' 
-#' @rdname convenient_functions
 "label"
 
 #' Samples from a mixture of uniform laws
@@ -49,5 +40,4 @@ NULL
 #' @return A \code{vector} of numerics, the sample.
 #'
 #' @references Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
-#' 
 "sample_from_mixture_of_uniforms"

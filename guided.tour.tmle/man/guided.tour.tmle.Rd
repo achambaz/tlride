@@ -10,24 +10,34 @@ The  'guided.tour.tmle'  package  provides   two  categories  of  important
 functions:
 }
 \section{Methods  for  \code{LAW}  objects}{
-  An  object  of  \code{class}
-  \code{LAW}  describes  a law  for  (W,A,Y)  in  [0,1]  x {0,1}  x  [0,1].
-  \code{Methods} \code{\link{sample_from}}  samples from the law  (if it is
-  fully characterized), \code{\link{reveal}} reveals some relevant features
-  of the  law, \code{\link{alter}} modifies  some relevant features  of the
-  law.  Method \code{\link{evaluate_psi}} evaluates the value at the law of
-  \eqn{Psi}  given by  \deqn{\Psi(P) =  E_P {Qbar(1,W)  - Qbar(0,W)}}  with
-  \eqn{Qbar(A,W)   =  E_P   (Y|A,W)}.   Method   \code{\link{evaluate_eic}}
-  evaluates the efficient influence curve of \eqn{Psi} at the law, which is
-  given by \eqn{D^* (P) = D_1^* (P) + D_2^*(P)} where \deqn{D_1^*(P)(W,A,Y)
-  =  Qbar(1,W)   -  Qbar(0,W)   -  \Psi(P)}  and   \deqn{D_2^*(P)(W,A,Y)  =
-  \frac{2A-1}{lGbar(A,W)} (Y  - Qbar(A,W))} with \eqn{Gbar(W)  = P (A=1|W)}
-  and \eqn{lGbar(A,W) = A * Gbar(W) + (1 - A) * (1 - Gbar(W))}.
+
+An object of \code{class} \code{LAW} describes a law for (W,A,Y) in [0,1] x
+{0,1} x  [0,1].  \code{Methods} \code{\link{sample_from}} samples  from the
+law  (if  it is  fully  characterized),  \code{\link{reveal}} reveals  some
+relevant features  of the  law, \code{\link{alter}} modifies  some relevant
+features of the law.  Method \code{\link{evaluate_psi}} evaluates the value
+at  the  law  of  \eqn{Psi}  given by  \deqn{\Psi(P)  =  E_P  {Qbar(1,W)  -
+Qbar(0,W)}}    with     \eqn{Qbar(A,W)    =    E_P     (Y|A,W)}.     Method
+\code{\link{evaluate_eic}}  evaluates  the  efficient  influence  curve  of
+\eqn{Psi}  at the  law,  which is  given  by  \eqn{D^* (P)  =  D_1^* (P)  +
+D_2^*(P)} where  \deqn{D_1^*(P)(W,A,Y) =  Qbar(1,W) - Qbar(0,W)  - \Psi(P)}
+and \deqn{D_2^*(P)(W,A,Y)  = \frac{2A-1}{lGbar(A,W)} (Y -  Qbar(A,W))} with
+\eqn{Gbar(W) = P (A=1|W)} and \eqn{lGbar(A,W) = A  * Gbar(W) + (1 - A) * (1
+- Gbar(W))}.
 }
 
 \section{Estimation routines}{
 
-Functions to learn  from data  sets sampled  from an object of \code{class} \code{LAW}.
+Functions to  learn from data sets  sampled from an object  of \code{class}
+\code{LAW}.    Functions   \code{estimate_QW},   \code{estimate_Gbar}   and
+\code{estimate_Qbar} respectively  estimate the marginal distribution  of W
+non-parametrically,  conditional  probability  that  A=1  given  W  (a.k.a.
+'Gbar')  and conditional  expectation of  Y given  (A,W) (a.k.a.   'Qbar').
+Functions    \code{compute_lGbar_hatAW}    and    \code{compute_Qbar_hatAW}
+respectively  compute  the conditional  likelihood  of  A_i given  W_i  and
+conditional expectation of Y given (A,W)=(A_i,W_i) at given (A_i,W_i) based
+on  the  fit  obtained   by  invoking  functions  \code{estimate_Gbar}  and
+\code{estimate_Qbar}.
 }
 
 \examples{
