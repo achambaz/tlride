@@ -21,6 +21,16 @@ Either  \code{NULL} if  the law  is undetermined  or the  data set
 Samples data of the form (W,A,Y) in [0,1] x {0,1} x [0,1] from an object of
 \code{class} \code{LAW} when it fully characterizes a law.
 }
+\examples{
+
+## create an experiment
+example(guided.tour.tmle, echo = FALSE)
+experiment
+
+## sample three observations from it
+sample_from(experiment, n = 3)
+
+}
 \references{
 Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
 }

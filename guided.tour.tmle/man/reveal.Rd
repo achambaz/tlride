@@ -25,6 +25,14 @@ features of the  law for (W,A,Y) in  [0,1] x {0,1} x [0,1]  that the object
 characterizes. Can be performed if one has  built the object or if one acts
 as an \emph{oracle}.
 }
+\examples{
+
+## create then reveal an experiment
+example(guided.tour.tmle, echo = FALSE)
+reveal(experiment)
+
+
+}
 \references{
 Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
 }

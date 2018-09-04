@@ -30,6 +30,20 @@ The evaluation can be performed if one  has built the object or if one acts
 as an  \emph{oracle}.  Works only if  all the relevant features  of the law
 are characterized.
 }
+\examples{
+
+## create an experiment
+example(guided.tour.tmle, echo = FALSE)
+experiment
+
+## evaluate the efficient influence curve of Psi at this experiment
+eic <- evaluate_eic(experiment)
+
+## sample five observations from the experiment, then evaluate 'eic' at them
+obs <- sample_from(experiment, n = 5)
+eic(obs)
+
+}
 \references{
 Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
 }

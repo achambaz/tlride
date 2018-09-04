@@ -29,7 +29,7 @@ the law.
 \examples{
 
 ## create an experiment and draw a data set from it
-invisible(example(guided.tour.tmle))
+example(guided.tour.tmle, echo = FALSE)
 obs <- sample_from(experiment, n = 250)
 
 ## load the built-in algorithms

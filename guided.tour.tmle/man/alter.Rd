@@ -23,12 +23,23 @@ Specifically,  the relevant  features  can be  chosen among  \itemize{\item
 \code{tibble} with columns named 'value' and 'weight' (a discrete law)\item
 'Gbar', the conditional probability that 'A=1' given 'W', a \code{function}
 \item 'Qbar', the conditional mean  of 'Y' given '(A,W)', a \code{function}
-\item   'qY',   the  conditional   density   of   'Y'  given   '(A,W)',   a
-\code{function}.} Setting  any of them to  \code{NA} \emph{uncharacterizes}
-it.
+\item 'qY', the conditional density of 'Y' given '(A,W)', a \code{function}
+\item 'sample_from', a \code{function} to sample from the law.} Setting any
+of them to \code{NA} \emph{uncharacterizes} it.
 
 Caution should be exercised, since changing some features of the object may
 put the \code{sample_from} method at odds with the modified features.
+}
+\examples{
+
+## create an experiment
+example(guided.tour.tmle, echo = FALSE)
+
+## reveal the original experiment, alert and reveal it again
+reveal(experiment)
+alter(experiment, Gbar = function(W){rep_len(1/2, length(W))})
+reveal(experiment)
+
 }
 \references{
 Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).

@@ -55,7 +55,7 @@ trim_glm_fit <- caret::getModelInfo("glm")$glm$trim
 #' @examples
 #'
 #' ## create an experiment and draw a data set from it
-#' invisible(example(guided.tour.tmle))
+#' example(guided.tour.tmle, echo = FALSE)
 #' obs <- sample_from(experiment, n = 250)
 #'
 #' ## load the built-in algorithms
@@ -108,7 +108,7 @@ estimate_Gbar <- function(dat, algorithm, ...) {
 #' @examples
 #'
 #' ## create an experiment and draw a data set from it
-#' invisible(example(guided.tour.tmle))
+#' example(guided.tour.tmle, echo = FALSE)
 #' obs <- sample_from(experiment, n = 250)
 #'
 #' ## load the built-in algorithms
@@ -154,7 +154,7 @@ estimate_Qbar <- function(dat, algorithm, ...) {
 #' @examples
 #'
 #' ## create an experiment and draw a data set from it
-#' invisible(example(guided.tour.tmle))
+#' example(guided.tour.tmle, echo = FALSE)
 #' obs <- sample_from(experiment, n = 250)
 #'
 #' ## estimate 'QW'

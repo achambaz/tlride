@@ -23,6 +23,16 @@ an object of  \code{class} \code{LAW} the statistical mapping  \eqn{\Psi} given 
 as an  \emph{oracle}.  Works only if  all the relevant features  of the law
 are characterized.
 }
+\examples{
+
+## create an experiment
+example(guided.tour.tmle, echo = FALSE)
+experiment
+
+## evaluate Psi at this experiment
+evaluate_psi(experiment)
+
+}
 \references{
 Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
 }

@@ -23,7 +23,7 @@ parametrically the marginal law of W, the so called 'QW' feature.
 \examples{
 
 ## create an experiment and draw a data set from it
-invisible(example(guided.tour.tmle))
+example(guided.tour.tmle, echo = FALSE)
 obs <- sample_from(experiment, n = 250)
 
 ## estimate 'QW'
