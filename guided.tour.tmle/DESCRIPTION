@@ -1,22 +1,22 @@
 Package: guided.tour.tmle
 Title: A Companion Package to the Article "A Guided Tour in Targeted Learning Territory"
-Version: 0.0.0.9000
+Version: 0.0.1
 Authors@R: as.person(c(
   "Antoine Chambaz <antoine.chambaz@parisdescartes.fr> [aut, cre]",
   "David Benkeser <benkeser@emory.edu> [aut]"))
 Description: The companion package to the article "A Guided Tour in Targeted Learning Territory" provides simple objects and methods to define statistical experiments, run and learn from them. See the article.
-Depends: R (>= 3.4.4)
-License: MIT
+Depends: R (>= 3.4.0)
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.0.1.9000
+RoxygenNote: 6.1.0
 Imports: caret,
     dplyr,
     magrittr,
     pryr,
+    R.methodsS3,
     R.oo,
     R.utils,
     stats,
     stringr,
     tibble
-

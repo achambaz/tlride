@@ -3,14 +3,9 @@
 \name{sample_from}
 \alias{sample_from}
 \alias{sample_from.LAW}
-\alias{@seealso}
-\alias{\code{\link{reveal}},}
-\alias{\code{\link{alter}},}
-\alias{\code{\link{evaluate_psi}},}
-\alias{\code{\link{evaluate_eic}}}
 \title{Samples from an object of class LAW}
 \arguments{
-\item{this}{An object of class \code{LAW}.}
+\item{this}{An object of \code{class} \code{LAW}.}
 
 \item{n}{An \code{integer}, the wished sample size. Defaults to 'n = 1'.}
 
@@ -24,5 +19,36 @@ Either  \code{NULL} if  the law  is undetermined  or the  data set
 }
 \description{
 Samples data of the form (W,A,Y) in [0,1] x {0,1} x [0,1] from an object of
-class \code{LAW} when it fully characterizes a law.
+\code{class} \code{LAW} when it fully characterizes a law.
 }
+\examples{
+
+## create an experiment
+example(guided.tour.tmle, echo = FALSE)
+experiment
+
+## sample three observations from it
+sample_from(experiment, n = 3)
+
+}
+\references{
+Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
+}
+\seealso{
+\code{\link{reveal}} to reveal  some relevant features of the law,
+  \code{\link{alter}}   to  modify   them,  \code{\link{evaluate_psi}}   to
+  evaluate    the     value    of    \eqn{Psi}    at     the    law,    and
+  \code{\link{evaluate_eic}} to  evaluate the efficient influence  curve of
+  \eqn{Psi} at the law.
+
+Other methods for LAW objects: \code{\link{LAW}},
+  \code{\link{alter}}, \code{\link{as.character}},
+  \code{\link{evaluate_eic}}, \code{\link{evaluate_psi}},
+  \code{\link{reveal}}
+
+Other methods for LAW objects: \code{\link{LAW}},
+  \code{\link{alter}}, \code{\link{as.character}},
+  \code{\link{evaluate_eic}}, \code{\link{evaluate_psi}},
+  \code{\link{reveal}}
+}
+\concept{methods for LAW objects}

@@ -1,33 +1,3 @@
-compute_lGbar_hatAW <- function(A, W, Gbar_hat, threshold = 0.05) {
-  dat <- data.frame(A = A, W = W)
-  GW <- predict(Gbar_hat, newdata = dat, type = Gbar_hat$type_of_preds)
-  lGAW <- A * GW + (1 - A) * (1 - GW)
-  pred <- pmin(1 - threshold, pmax(lGAW, threshold))
-  return(pred)
-}
-
-compute_Qbar_hatAW <- function(Y, A, W, Qbar_hat, blip = FALSE) {
-  if (!blip) {
-    dat <- data.frame(Y = Y, A = A, W = W)
-    pred <- predict(Qbar_hat, newdata = dat, type = Qbar_hat$type_of_preds)
-  } else {
-    pred <- predict(Qbar_hat, newdata = data.frame(A = 1, W = W),
-                    type = Qbar_hat$type_of_preds) -
-      predict(Qbar_hat, newdata = data.frame(A = 0, W = W),
-              type = Qbar_hat$type_of_preds)
-  }
-  return(pred)  
-}
-
-
-wrapper <- function(fit) {
-  pryr::unenclose(function(obs) {
-    obs <- as.data.frame(obs)
-    predict(fit, newdata = obs, type = fit$type_of_preds)
-  })
-}
-
-
 working_model_G_one <- list(
   model = function(...) {trim_glm_fit(glm(family = binomial(), ...))},
   formula = stats::as.formula(

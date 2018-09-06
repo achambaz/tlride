@@ -5,17 +5,55 @@
 \alias{alter.LAW}
 \title{Alters an object of class LAW}
 \arguments{
-\item{this}{An object of class \code{LAW}.}
+\item{this}{An object of \code{class} \code{LAW}.}
 
 \item{\dots}{...}
 }
 \value{
-something
+An object of \code{class} \code{LAW}, with modified features.
 }
 \description{
-Alters an object of class \code{LAW} by ...
+Alters  an object  of \code{class} \code{LAW} by  changing some  of the  relevant
+features of the  law for (W,A,Y) in  [0,1] x {0,1} x [0,1]  that the object
+characterizes. Can be performed if one has built the object.
+}
+\details{
+Specifically,  the relevant  features  can be  chosen among  \itemize{\item
+'QW',  the marginal  law  of 'W',  a \code{function}  (the  density), or  a
+\code{tibble} with columns named 'value' and 'weight' (a discrete law)\item
+'Gbar', the conditional probability that 'A=1' given 'W', a \code{function}
+\item 'Qbar', the conditional mean  of 'Y' given '(A,W)', a \code{function}
+\item 'qY', the conditional density of 'Y' given '(A,W)', a \code{function}
+\item 'sample_from', a \code{function} to sample from the law.} Setting any
+of them to \code{NA} \emph{uncharacterizes} it.
+
+Caution should be exercised, since changing some features of the object may
+put the \code{sample_from} method at odds with the modified features.
+}
+\examples{
+
+## create an experiment
+example(guided.tour.tmle, echo = FALSE)
+
+## reveal the original experiment, alert and reveal it again
+reveal(experiment)
+alter(experiment, Gbar = function(W){rep_len(1/2, length(W))})
+reveal(experiment)
+
+}
+\references{
+Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
 }
 \seealso{
-\code{\link{sample_from}},       \code{\link{reveal}},
-  \code{\link{evaluate_psi}}, \code{\link{evaluate_eic}}
+\code{\link{sample_from}}  to sample from the law (if  it is fully
+  characterized), \code{\link{reveal}} to reveal  some relevant features of
+  the law, \code{\link{evaluate_psi}} to evaluate the value of \eqn{Psi} at
+  the  law,  and  \code{\link{evaluate_eic}}   to  evaluate  the  efficient
+  influence curve of \eqn{Psi} at the law.
+
+Other methods for LAW objects: \code{\link{LAW}},
+  \code{\link{as.character}}, \code{\link{evaluate_eic}},
+  \code{\link{evaluate_psi}}, \code{\link{reveal}},
+  \code{\link{sample_from}}
 }
+\concept{methods for LAW objects}

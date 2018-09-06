@@ -16,7 +16,7 @@
   \code{list} with entries 'algo' and 'type_of_preds' (with \code{attribue}
   'ML' set to \code{TRUE}).}
 \usage{
-data(guided.tour.tmle)
+data(algorithms)
 
 working_model_G_one
 
@@ -39,12 +39,6 @@ parametric  working  models  and  the  \code{\link{glm}}  procedure  (their
 k-nearest  neighbors  non-parametric  procedure as  implement  in  'method'
 \code{kknn} of  the 'caret'  package (its \code{attribute}  'ML' is  set to
 \code{TRUE}).
-}
-\examples{
-
-(working_model_G_one)
-(kknn_algo)
-
 }
 \references{
 Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).

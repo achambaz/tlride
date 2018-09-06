@@ -5,14 +5,24 @@
 \alias{as.character.LAW}
 \title{Prints an object of class LAW}
 \arguments{
-\item{x}{An object of class \code{LAW}.}
+\item{x}{An object of \code{class} \code{LAW}.}
 
 \item{\dots}{Not used.}
 }
 \value{
 A character string  recalling what can be  done with an  object of
-  class \code{LAW}.
+  \code{class} \code{LAW}.
 }
 \description{
-Prints an object of class LAW.
+Prints an object of \code{class} \code{LAW}.
 }
+\references{
+Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
+}
+\seealso{
+Other methods for LAW objects: \code{\link{LAW}},
+  \code{\link{alter}}, \code{\link{evaluate_eic}},
+  \code{\link{evaluate_psi}}, \code{\link{reveal}},
+  \code{\link{sample_from}}
+}
+\concept{methods for LAW objects}

@@ -9,7 +9,7 @@
 #' 
 #' @docType data
 #'
-#' @usage data(guided.tour.tmle)
+#' @usage data(algorithms)
 #'
 #' @format  Either  a  \code{list}   with  entries  'model',  'formula'  and
 #'   'type_of_preds'  (with \code{attribue}  'ML'  set to  \code{FALSE}) or  a
@@ -18,11 +18,6 @@
 #'
 #' @references Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).  
 #' 
-#' @examples
-#'
-#' (working_model_G_one)
-#' (kknn_algo)
-#'
 #' @name algorithms
 NULL
 
@@ -53,31 +48,4 @@ NULL
 #' @docType data
 #' @rdname algorithms
 "kknn_control"
-
-#' Convenient functions.
-#'
-#' Convenient functions.
-#' 
-#' @docType data
-#'
-#' @usage data(guided.tour.tmle)
-#'
-#' @format A \code{function}.
-#'
-#' @references Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).  
-#' 
-#' @name convenient_functions
-NULL
-
-#' @docType data
-#' @rdname convenient_functions
-"compute_lGbar_hatAW"
-
-#' @docType data
-#' @rdname convenient_functions
-"compute_Qbar_hatAW"
-
-#' @docType data
-#' @rdname convenient_functions
-"wrapper"
 

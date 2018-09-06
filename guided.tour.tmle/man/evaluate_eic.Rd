@@ -5,7 +5,7 @@
 \alias{evaluate_eic.LAW}
 \title{Evaluates the efficient influence curve of Psi at an object of class LAW}
 \arguments{
-\item{this}{An object of class \code{LAW}.}
+\item{this}{An object of \code{class} \code{LAW}.}
 
 \item{\dots}{Additional parameters possibly needed to  fully characterize the
 law.}
@@ -18,7 +18,7 @@ A \code{function},  the efficient  infuence curve  of statistical
 \description{
 Evaluates  at   efficient  influence  curve  of   the  statistical  mapping
 \eqn{\Psi} at the law for (W,A,Y) in [0,1] x {0,1} x [0,1] characterized by
-an object  of class \code{LAW}.   The mapping \eqn{\Psi} and  its efficient
+an object  of \code{class} \code{LAW}.   The mapping \eqn{\Psi} and  its efficient
 influence  curve  at  a  law  \eqn{P} are  given  by  \deqn{\Psi(P)  =  E_P
 {Qbar(1,W) -  Qbar(0,W)}} with \eqn{Qbar(A,W)  = E_P (Y|A,W)}  and \eqn{D^*
 (P)  = D_1^*  (P) +  D_2^*(P)}  where \deqn{D_1^*(P)(W,A,Y)  = Qbar(1,W)  -
@@ -30,7 +30,33 @@ The evaluation can be performed if one  has built the object or if one acts
 as an  \emph{oracle}.  Works only if  all the relevant features  of the law
 are characterized.
 }
-\seealso{
-\code{\link{sample_from}},       \code{\link{reveal}},
-  \code{\link{alter}}, \code{\link{evaluate_psi}}
+\examples{
+
+## create an experiment
+example(guided.tour.tmle, echo = FALSE)
+experiment
+
+## evaluate the efficient influence curve of Psi at this experiment
+eic <- evaluate_eic(experiment)
+
+## sample five observations from the experiment, then evaluate 'eic' at them
+obs <- sample_from(experiment, n = 5)
+eic(obs)
+
 }
+\references{
+Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
+}
+\seealso{
+\code{\link{sample_from}}  to sample from the law (if  it is fully
+  characterized), \code{\link{reveal}} to reveal  some relevant features of
+  the law, \code{\link{alter}} to modify some relevant features of the law,
+  and \code{\link{evaluate_psi}} to evaluate the  value of \eqn{Psi} at the
+  law.
+
+Other methods for LAW objects: \code{\link{LAW}},
+  \code{\link{alter}}, \code{\link{as.character}},
+  \code{\link{evaluate_psi}}, \code{\link{reveal}},
+  \code{\link{sample_from}}
+}
+\concept{methods for LAW objects}
