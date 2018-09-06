@@ -807,7 +807,7 @@ o_P(1/\sqrt{n})\end{equation*}
 for some function $\IF : \calO \to \bbR$ such that $\Exp_P(\IF(O)) =
 0$  and  $\Var_{P}(\IF(O)) <  \infty$,  then  we  say that  $\psi_n$  is
 *asymptotically  linear* with  *influence function*  $\IF$.  We note that weak convergence of asymptotically 
-linear estimators is implied by the central limit theorem. That is, if $\psi_n$ is asymptotically linear with influence function $\IF$, then $\sqrt(n) (\psi_n - \Psi(P)) = \frac{1}{\sqrt(n)} \sum_{i=1}^n  \IF(O_i) + o_P(1)$. The central limit theorem implies 
+linear estimators is implied by the central limit theorem. That is, if $\psi_n$ is asymptotically linear with influence function $\IF$, then $\sqrt(n) (\psi_n - \Psi(P)) = \frac{1}{\sqrt{n}} \sum_{i=1}^n  \IF(O_i) + o_P(1)$. The central limit theorem implies 
 the the right-hand-side converges in law to a centered Gaussian distribution with
 variance $\Var_P(\IF(O))$. 
 
@@ -887,7 +887,7 @@ where $\Rem_{P_0}(P)$ is a *remainder term* satisfying that \begin{align*}
   \frac{\Rem_{P_0}(P)}{d(P, P_0)} \rightarrow 0 \ \mbox{as} \ d(P, P_0) \rightarrow 0 ,
 \end{align*}
 where $d$ is a measure of discrepancy for distributions in $\calM$. In (\ref{taylor_expansion}), we introduced a new shorthand notation. For any measurable function $g$ 
-of the observed data $O$, we will write $P g \equiv \Exp_P(g(O))$. Thus, \ref{taylor_expansion} could be equivalently written as \begin{align*}
+of the observed data $O$, we will write $P g \equiv \Exp_P(g(O))$. Thus, (\ref{taylor_expansion}) could be equivalently written as \begin{align*}
 \Psi(P_0) = \Psi(P) + \Exp_{P_0}(D^*(P)(O)) - \Exp_P(D^*(P)(O)) - \Rem_{P_0}(P).
 \end{align*}
 The remainder term formalizes the notion that if $P$ is ``close'' to $P_0$ (i.e., $d(P,P_0)$
