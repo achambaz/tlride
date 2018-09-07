@@ -941,19 +941,111 @@ Confirm the double-robustness of the efficient influence function by doing the f
 2. \tcg{Will modify to reflect the final structure of `LAW` methods, etc...} Replace `Qbar` in the law of `experiment` with some other function of $W$, and confirm (via numerical approximation) that the mean of the efficient influence function is zero. Repeat for several choices of `Gbar`. 
 
 
-\tcg{I am suggesting that we now start a new section on building estimators. Thus,
-everything in section 2 is about parameters, efficiency theory etc..., i.e., building
-up the theoretical tools we need to construct estimators. Now Section 3 will all be
-about strategies for estimation. Tentative outline (definitely open for discussion):
-Sec. 3.1: Discuss how we can do the above expansion at a $\hat{P}_n$ and go through
-the exercise to isolate $P_n D^*(\hat{P}_n)$. Discuss various strategies for dealing
-with it (i.e., one-step, TMLE, maybe an aside about estimating equations). 
-Sec 3.2: Revisit double-robustness with the below comments?
-Sec 3.3: Discuss IPTW estimators with known/unknown $\Gbar$?
-Sec 3.4: Discuss inference for all the estimators? 
-Sec 3.5: Briefly mention other extensions? Double-robust inference?}
+\section{Building estimators}
+
+The previous section identified our target parameter and developed relevant theory for understanding the properties of certain types of estimators of the parameter. In this section, we illustrate how this theory can be applied to develop estimators of and inference about these quantities. We consider that we have available, $O_{1}$,  \ldots, $O_{n}$, be a sample  of independent  observations drawn from   $P_{0}$, and the goal is to estimate the value of $\psi_0$. Below we generate `B` values \tcg{Maybe change `B` to `n` to keep consistent with the notation?}
+
+```{r draw-a-sample}
+## Debug -- couldn't find obs when I tried to compile
+obs <- run_experiment(B)
+```
+
+Each of the strategies we discuss be described in two steps. In the first step, we obtain estimators of the quantities relevant to evaluating the target parameter and its efficient influence function. Because estimation of these quantities is merely an intermediate step along our path towards an estimate of the target parameter, we refer to these quantities as *nuisance parameters*. In the second step, we combine the estimators of the nuisance parameters in a particular way as to ensure that the resultant estimator of the target parameter enjoys desirable properties. In this second step we will make use of the theory developed in the previous subsection. 
+
+\subsection{Estimating nuisance parameters}
+
+The first step towards obtaining estimates of the target parameter is to propose a method for estimating the nuisance parameters. In the case of $\Psi(P_0)$, these nuisance parameters include $\Gbar_0$, $\Qbar_0$, and $Q_{0,W}$. We will discuss estimation of each of these quantities in turn. 
+
+In the next code block, we define a function that we will use to estimate $\Gbar_0$. The function takes a data set as input and a user-specified algorithm for estimating $\Gbar_0$ and returns the fitted algorithm on the data. We will consider approaches to estimation of $\Gbar_0$ based on machine learning (if the `"ML"` attribute of `algorithm` is `TRUE`) or not (if `FALSE`). 
+
+\tcg{There's a lot to deparse in these code chunks. I worry that it will be overwhelming for the reader. Is it possible to simplify the syntax at all? E.g., could we create an S3 class for algorithms? Not sure what the best strategy is, but as it is I think most readers will have a hard time understanding what these chunks do.}
+
+```{r intro-est-G}
+estimate_G <- function(dat, algorithm, ...) {
+  if (!is.data.frame(dat)) {
+    dat <- as.data.frame(dat)
+  }
+  if (!attr(algorithm, "ML")) {
+    fit <- algorithm[[1]](formula = algorithm[[2]], data = dat)
+  } else {
+    fit <- algorithm[[1]](dat, ...)
+  }
+  fit$type_of_preds <- algorithm$type_of_preds
+  return(fit)
+}
+```
+To make this estimation procedure more concrete, let us provide an algorithm for estimation of $\Gbar_0$. The following code block builds an algorithm. \tcg{Again, this is complicated stuff. Can we simplify?}
+
+```{r unknown-Gbar-two}
+trim_glm_fit <- caret::getModelInfo("glm")$glm$trim
+working_model_G_one <- list(
+  model = function(...) { 
+    trim_glm_fit(glm(family = binomial(), ...))
+  },
+  formula = as.formula(
+    paste("A ~",
+          paste(c("I(W^", "I(abs(W - 5/12)^"),
+                rep(seq(1/2, 3/2, by = 1/2), each = 2),
+                sep = "", collapse = ") + "),
+          ")")
+  ),
+  type_of_preds = "response"
+)
+attr(working_model_G_one, "ML") <- FALSE
+working_model_G_one$formula
+```
+
+The next code chunk illustrates how the algorithm can be used to estimate $\Gbar_0$ based on the observed data `obs`. 
+
+```{r show-estimateG-in-action}
+
+```
+
+Similarly, we can define a function and a method for estimating $\Qbar_0$.
+
+```{r intro-estimateQ-method}
+# introduce code for estimation of $\Qbar_0$ 
+# and show how it works 
+```
+
+To estimate $Q_{0,W}$, the distribution of $W$, we will simply use the empirical measure of $W_1, \dots, W_n$, that is, the law describing sampling from $W_1, \dots, W_n$ with equal probability $n^{-1}$. 
+
+```{r intro-to-estimateQW}
+# not sure how this is being handled in the code 
+# and whether we need to introduce a function for this here?
+```
+In general, we can view an estimator of $\Qbar_0$ (or any other relevant nuisance parameter) as an algorithm $\hat{Q}: \calM \rightarrow \calQ$ that maps a distribution from the model into the nuisance parameter space. In this case, $\calQ$ consists of all functions mapping from $\{0,1\} \times \interval{0}{1}$ to $\bbR$. We can be our estimate $\Qbar_n$ as the algorithm $\hat{Q}$ applied on $P_{n}$, the empirical  measure, \textit{i.e.},  the  law consisting  in  drawing  one among  $O_{1}$,  \ldots,
+$O_{n}$ with equal probabilities $n^{-1}$. Thus, we can write $\Qbar_n = \hat{Q}(P_n)$. 
+
+\subsubsection*{\gear Exercises}
+
+1. \tcg{Depending on how above goes, define your own algorithm for estimating $\Gbar_0$ and/or $\Qbar_0$?}
+
+\tcg{Do we need a remark on simulation studies? I.e., something like: *In order to study the frequentist operating characteristics of the various estimators of the target parameter, we will use Monte Carlo simulation. That is, we will repeatedly sample $n$ independent observations from $P_0$ and build our estimator on each realization of our experiment.* Don't know how much detail we need to go into, but adding something like this would give us an excuse to get all of the estimation of the nuisance parameters out of the way. Again, it all depends on how we/you want to structure the code.}
+
+\subsection{Simple estimation strategies}
+
+\tcg{Discuss G-computation, i.e., plug-in estimation. Discuss IPTW too? Show that it works for parametric models, but fails for machine learning algorithms.}
+
+\subsection{\textdbend Analysis of G-computation estimator}
+
+\tcg{Go through the expansion algebra to generate one-step correction/TMLE term and empirical process term. Highlight that the correction term is the source of the bad behavior. If we have all the fitted nuisance objects, we could use the `compute_eif` function on the estimated nuisance parameters to illustrate that $n^{1/2}$ times EIF at estimated nuisances blows up, which in turn causes the estimator to blow up. In this way, we provide a theoretical explanation and numerical depiction of why G-comp fails.}
+
+\subsection{One-step corrections}
+
+\tcg{Remind the reader about asymptotic linearity; that we need to write estimator minus truth as equal to empirical mean of EIF at true nuisance parameters + negligible term. We saw that plug-in did not yield such a representation, but look, the one-step estimator does. Show that the one-step estimator corrects poor behavior of G-computation estimator. Discuss that we also now have asymptotic linearity and inference via the central limit theorem. Discuss standard error estimation. Show confidence interval coverage?}
+
+\subsection{\textdbend Targeted minimum loss-based estimation}
+
+\tcg{Make point about one-step being able to go outside the parameter space, but plug-in estimator will not do so. Can we do a correction in the model space? Can we pick a new $\Qbar_n$ that satisfies the key equation? We would like the new $\Qbar_n$ to be near to $\Qbar_0$ in some sense. How can we define a set of distributions that are near to a current distribution? Parametric submodels! Define a (local least favorable?) submodel through a current estimate. Pick one data set and visualize some $\Qbar_{\epsilon}$ along that submodel. Make the point that the submodel simply defines different regression estimates of $\Qbar_0$. Now we have a way to select a collection of distributions near to our initial estimate of $\Qbar_0$. Which one should we pick? One that gets us closer to $\Qbar_0$! How do we define close to $\Qbar_0$? Loss functions: define and introduce log likelihood loss for $\Qbar_0$. Say that the MLE along the submodel is the member of the submodel that the data think is closest to $\Qbar_0$. Now we have a way to pick a distribution that moves from $\Qbar_n$ towards $\Qbar_0$ in some sense. Thus, we have a sensible way to move around our model space. But what submodel should we use? Recall the goal is to generate an estimate of $\Qbar$ that solves the specified equation. Remind the reader that at the MLE the derivative of the loss function (i.e., generalized score) equals zero. Thus, if we arrange the submodel and loss function to have derivative equal to the desired equation then at the MLE the desired equation will be solved. Note that its generally difficult (though possible, footnote on universal submodel?) to arrange a submodel with derivative equal to the EIF for every fluctuation parameter value. However, it is easy to arrange a submodel with derivative equal to the EIF at zero. Introduce local least favorable model. Now describe the iterative process. Place a local least favorable model through the current estimate and look for a better fit along the submodel. Eventually we should hope that that there is no better fit in the submodel than the current estimate. That is, the MLE is zero, so the equation (i.e., derivative of the loss) is solved at zero, i.e., at the current estimate. Then we use that estimate. Show that it only takes a single step in the current problem to arrive at that solution. Phew, this section is going to be a lot! TMLE is hard to explain...
+
+Show code for TMLE. Show that it corrects G-computation estimator. Compare MSE of one-step TMLE? Briefly discuss asymptotic linearity and inference. Show confidence intervals.
+}
+
+\tcg{Big questions left in my mind. 1. Do we talk about IPTW at all? 2. Do we discuss double-robustness at all? Maybe just include an aside on DR in the estimator section (after one-step section?) to mirror the DR section in Chapter 2?}
 
 
+\tcg{ !!!DAVID STOPPED HERE!!! }
 <!-- However,   there  is   much   more  to   double-robustness   than  the   above
 straightforward  implication. Indeed,  \ref{eq:rem:one} is  useful to  build a
 consistent etimator of $\Psi(P)$ that,  in addition, satisfies a central limit
@@ -973,18 +1065,11 @@ rates of which \textit{the product} is fast enough.
 $\boldsymbol{\Gbar_{0}}$ known, or not, first pass.} 
 \label{subsec:known:gbar:one}
 
-Let $O_{1}$,  \ldots, $O_{n}$  be a sample  of independent  observations drawn
-from   $P_{0}$.   Let   $P_{n}$  be   the  corresponding   empirical  measure,
-\textit{i.e.},  the  law consisting  in  drawing  one among  $O_{1}$,  \ldots,
-$O_{n}$ with equal probabilities $n^{-1}$. 
-
 Let us  assume for a moment  that we know  $\Gbar_{0}$.  This may be  the case
 indeed if  $P_{0}$ was a  controlled experiment.  Note that, on  the contrary,
 assuming $\Qbar_{0}$ known would be difficult to justify. 
 
 ```{r known-Gbar-one-a}
-## Debug -- couldn't find obs when I tried to compile
-obs <- run_experiment(B)
 Gbar <- attr(obs, "Gbar")
 
 iter <- 1e3
@@ -1128,23 +1213,6 @@ the definition of $\psi_{n}^{b}$ \eqref{eq:psi:n:b}.
 
 For sake of illustration, we choose argument `working_model_G_one` of function
 `estimate_G` as follows:
-
-```{r unknown-Gbar-two}
-trim_glm_fit <- caret::getModelInfo("glm")$glm$trim
-working_model_G_one <- list(
-  model = function(...) {trim_glm_fit(glm(family = binomial(), ...))},
-  formula = as.formula(
-    paste("A ~",
-          paste(c("I(W^", "I(abs(W - 5/12)^"),
-                rep(seq(1/2, 3/2, by = 1/2), each = 2),
-                sep = "", collapse = ") + "),
-          ")")
-  ),
-  type_of_preds = "response"
-)
-attr(working_model_G_one, "ML") <- FALSE
-working_model_G_one$formula
-```
 
 In  words, we  choose  the  so called  logistic  (or  negative binomial)  loss
 function    $L_{a}$    given   by    \begin{equation}    \label{eq:logis:loss}
