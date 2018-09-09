@@ -7,6 +7,8 @@
 \arguments{
 \item{this}{An object of \code{class} \code{LAW}.}
 
+\item{what}{A \code{character}, one among "Qbar", "Gbar", "QW", "qY".}
+
 \item{\dots}{Additional parameters  possibly needed to  fully characterize
 the law.}
 }
@@ -20,10 +22,10 @@ A \code{list} with tags\itemize{\item  'QW', marginal law of 'W', a
   them equals 'NA' if it is not characterized.
 }
 \description{
-Reveals an object of \code{class} \code{LAW} by exhibiting a selection of relevant
-features of the  law for (W,A,Y) in  [0,1] x {0,1} x [0,1]  that the object
-characterizes. Can be performed if one has  built the object or if one acts
-as an \emph{oracle}.
+Reveals an object  of \code{class} \code{LAW} by exhibiting  a selection of
+relevant features of the law for (W,A,Y)  in [0,1] x {0,1} x [0,1] that the
+object characterizes.  Can be performed if  one has built the  object or if
+one acts as an \emph{oracle}.
 }
 \examples{
 
@@ -43,14 +45,11 @@ Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
   the  law,  and  \code{\link{evaluate_eic}}   to  evaluate  the  efficient
   influence curve of \eqn{Psi} at the law.
 
-Other methods for LAW objects: \code{\link{LAW}},
+Other methods and functions for LAW objects: \code{\link{LAW}},
   \code{\link{alter}}, \code{\link{as.character}},
-  \code{\link{evaluate_eic}}, \code{\link{evaluate_psi}},
-  \code{\link{sample_from}}
-
-Other methods for LAW objects: \code{\link{LAW}},
-  \code{\link{alter}}, \code{\link{as.character}},
-  \code{\link{evaluate_eic}}, \code{\link{evaluate_psi}},
-  \code{\link{sample_from}}
+  \code{\link{copy}}, \code{\link{evaluate_eic}},
+  \code{\link{evaluate_psi}},
+  \code{\link{evaluate_remainder}},
+  \code{\link{get_feature}}, \code{\link{sample_from}}
 }
-\concept{methods for LAW objects}
+\concept{methods and functions for LAW objects}

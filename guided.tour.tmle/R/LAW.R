@@ -4,7 +4,7 @@
 #'
 #' @name LAW
 #'
-#' @family methods for LAW objects
+#' @family methods and functions for LAW objects
 #' 
 #' @export 
 R.oo::setConstructorS3("LAW", function(Gbar = NA, Qbar = NA, QW = NA,
@@ -16,6 +16,48 @@ R.oo::setConstructorS3("LAW", function(Gbar = NA, Qbar = NA, QW = NA,
                .qY = qY,
                .sample_from = sample_from)
 })
+
+
+#' Copies an object of class LAW
+#'
+#' Given an  object of class  \code{LAW}, makes a copy  of it in  another such
+#' object.
+#'
+#' @name copy
+#' 
+#' @param this An object of \code{class} \code{LAW}.
+#'
+#' @param ... Not used.
+#' 
+#' @aliases copy.LAW
+#'
+#' @family methods and functions for LAW objects
+#' 
+#' @return A copy of argument \code{this}.
+#'
+#' @examples
+#'
+#' ## create an experiment, make a copy (once)
+#' example(guided.tour.tmle, echo = FALSE)
+#' experiment_bis <- experiment
+#' experiment_ter <- copy(experiment)
+#' identical(experiment, experiment_bis)
+#' identical(experiment, experiment_ter)
+#' 
+#' @references Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
+#'
+#' @export copy
+#' 
+#' @export copy.LAW
+R.methodsS3::setMethodS3(
+  "copy", "LAW", function(this, ...) {
+    LAW(Gbar = this$.Gbar,
+        Qbar = this$.Qbar,
+        QW = this$.QW,
+        qY = this$.qY,
+        sample_from = this$.sample_from)
+  })
+
 
 
 #' Prints an object of class LAW
@@ -35,7 +77,7 @@ R.oo::setConstructorS3("LAW", function(Gbar = NA, Qbar = NA, QW = NA,
 #'
 #' @references Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
 #'
-#' @family methods for LAW objects
+#' @family methods and functions for LAW objects
 #' 
 #' @export as.character.LAW
 R.methodsS3::setMethodS3(
@@ -87,15 +129,13 @@ R.methodsS3::setMethodS3(
 #'   \code{\link{evaluate_eic}} to  evaluate the efficient influence  curve of
 #'   \eqn{Psi} at the law.
 #'
-#' @family methods for LAW objects
+#' @family methods and functions for LAW objects
 #' 
 #' @return Either  \code{NULL} if  the law  is undetermined  or the  data set
 #'   sampled, a \code{tibble} or \code{data.frame} with columns named 'W', 'A'
 #'   and 'Y'.
 #'
 #' @references Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
-#'
-#' @family methods for LAW objects
 #'
 #' @examples
 #'
@@ -126,21 +166,23 @@ R.methodsS3::setMethodS3(
 
 #' Reveals an object of class LAW
 #'
-#' Reveals an object of \code{class} \code{LAW} by exhibiting a selection of relevant
-#' features of the  law for (W,A,Y) in  [0,1] x {0,1} x [0,1]  that the object
-#' characterizes. Can be performed if one has  built the object or if one acts
-#' as an \emph{oracle}.
+#' Reveals an object  of \code{class} \code{LAW} by exhibiting  a selection of
+#' relevant features of the law for (W,A,Y)  in [0,1] x {0,1} x [0,1] that the
+#' object characterizes.  Can be performed if  one has built the  object or if
+#' one acts as an \emph{oracle}.
 #'
 #' @name reveal
 #'
 #' @param this An object of \code{class} \code{LAW}.
+#'
+#' @param what A \code{character}, one among "Qbar", "Gbar", "QW", "qY".
 #'
 #' @param  \dots Additional parameters  possibly needed to  fully characterize
 #'   the law.
 #'
 #' @aliases reveal.LAW
 #'
-#' @family methods for LAW objects
+#' @family methods and functions for LAW objects
 #' 
 #' @references Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
 #'
@@ -149,8 +191,6 @@ R.methodsS3::setMethodS3(
 #'   the law, \code{\link{evaluate_psi}} to evaluate the value of \eqn{Psi} at
 #'   the  law,  and  \code{\link{evaluate_eic}}   to  evaluate  the  efficient
 #'   influence curve of \eqn{Psi} at the law.
-#'
-#' @family methods for LAW objects
 #'
 #' @examples
 #'
@@ -180,6 +220,49 @@ R.methodsS3::setMethodS3(
        qY = this$.qY)       
 })
 
+#' Reveals one feature of an object of class LAW
+#'
+#' Reveals  one  feature   of  an  object  of   \code{class}  \code{LAW}  that
+#' characterizes a law for (W,A,Y) in [0,1]  x {0,1} x [0,1]. Can be performed
+#' if one has built the object or if one acts as an \emph{oracle}.
+#'
+#' @name get_feature
+#'
+#' @param this An object of \code{class} \code{LAW}.
+#'
+#' @param what A \code{character}, one among "Qbar", "Gbar", "QW", "qY".
+#'
+#' @param  \dots Additional parameters  possibly needed to  fully characterize
+#'   the law.
+#'
+#' @aliases get_feature.LAW
+#'
+#' @family methods and functions for LAW objects
+#' 
+#' @references Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
+#'
+#' @seealso \code{\link{reveal}} to reveal  some relevant features of the law.
+#'
+#' @examples
+#'
+#' ## create then reveal an experiment
+#' example(guided.tour.tmle, echo = FALSE)
+#' get_feature(expriment, "Gbar")
+#' 
+#' 
+#'@return  Depending on  argument  'what',  one among  \itemize{\item  'QW',
+#'   marginal law of  'W', a \code{function} (the density)  or a \code{tibble}
+#'   with columns  named 'value'  and 'weight'  (a discrete  law)\item 'Gbar',
+#'   conditional  probability that  'A=1' given  'W', a  \code{function} \item
+#'   'Qbar', conditional  mean of 'Y'  given '(A,W)', a  \code{function} \item
+#'   'qY', conditional density of 'Y' given '(A,W)', a \code{function}.}  Each
+#'   of them equals 'NA' if it is not characterized in object 'this'.
+#'
+#' @export
+#'
+#' @export get_feature
+#'
+#' @export get_feature.LAW
 R.methodsS3::setMethodS3(
   "get_feature", "LAW", function(this, what, ...){
   if (!(what %in% c("Qbar", "Gbar", "QW", "qY"))) {
@@ -198,7 +281,7 @@ R.methodsS3::setMethodS3(
                           "' is not a function. Is it well characterized as",
                           " a 'matrix', 'tibble' or 'data.frame' with columns",
                           " named 'value' and 'weight'?\n") %>%
-           stringr::str_wrap(indent = 2, width = width) %>%
+           stringr::str_wrap(indent = 0, width = width, exdent = 0) %>%
            stringr::str_c("\n"))
     } 
   } else {
@@ -255,7 +338,7 @@ R.methodsS3::setMethodS3(
 #'   and \code{\link{evaluate_eic}} to evaluate  the efficient influence curve
 #'   of \eqn{Psi} at the law.
 #'
-#' @family methods for LAW objects
+#' @family methods and functions for LAW objects
 #' 
 #' @return  A \code{function},  the efficient  infuence curve  of statistical
 #'   mapping \eqn{\Psi} evaluated at the law described by the \code{LAW} object
@@ -308,8 +391,8 @@ R.methodsS3::setMethodS3(
 #'
 #' Evaluates  at   efficient  influence  curve  of   the  statistical  mapping
 #' \eqn{\Psi} at the law for (W,A,Y) in [0,1] x {0,1} x [0,1] characterized by
-#' an object  of \code{class} \code{LAW}.   The mapping \eqn{\Psi} and  its efficient
-#' influence  curve  at  a  law  \eqn{P} are  given  by  \deqn{\Psi(P)  =  E_P
+#' an  object of  \code{class}  \code{LAW}.  The  mapping  \eqn{\Psi} and  its
+#' efficient influence curve at a law \eqn{P} are given by \deqn{\Psi(P) = E_P
 #' {Qbar(1,W) -  Qbar(0,W)}} with \eqn{Qbar(A,W)  = E_P (Y|A,W)}  and \eqn{D^*
 #' (P)  = D_1^*  (P) +  D_2^*(P)}  where \deqn{D_1^*(P)(W,A,Y)  = Qbar(1,W)  -
 #' Qbar(0,W) - \Psi(P)} and  \deqn{D_2^*(P)(W,A,Y) = \frac{2A-1}{Gbar(A,W)} (Y
@@ -336,7 +419,7 @@ R.methodsS3::setMethodS3(
 #'   and \code{\link{evaluate_psi}} to evaluate the  value of \eqn{Psi} at the
 #'   law.
 #'
-#' @family methods for LAW objects
+#' @family methods and functions for LAW objects
 #' 
 #' @return  A \code{function},  the efficient  infuence curve  of statistical
 #'   mapping \eqn{\Psi} evaluated at the law described by the \code{LAW} object
@@ -427,7 +510,7 @@ R.methodsS3::setMethodS3(
 #'   the  law,  and  \code{\link{evaluate_eic}}   to  evaluate  the  efficient
 #'   influence curve of \eqn{Psi} at the law.
 #'
-#' @family methods for LAW objects
+#' @family methods and functions for LAW objects
 #' 
 #' @return An object of \code{class} \code{LAW}, with modified features.
 #'
@@ -469,3 +552,123 @@ R.methodsS3::setMethodS3(
     }
   }
 })
+
+#' Evaluates the remainder term at a law w.r.t. another law
+#' 
+#' Consider two laws \eqn{P} and \eqn{P'} for (W,A,Y) in [0,1] x {0,1} x [0,1]
+#' characterized by  two objects of  \code{class} \code{LAW}. Recall  that the
+#' mapping \eqn{\Psi} and  its efficient influence curve at  \eqn{P} are given
+#' by \deqn{\Psi(P) =  E_P {Qbar(1,W) - Qbar(0,W)}} with  \eqn{Qbar(A,W) = E_P
+#' (Y|A,W)}   and   \eqn{D^*    (P)   =   D_1^*   (P)    +   D_2^*(P)}   where
+#' \deqn{D_1^*(P)(W,A,Y)   =   Qbar(1,W)   -    Qbar(0,W)   -   \Psi(P)}   and
+#' \deqn{D_2^*(P)(W,A,Y) = \frac{2A-1}{Gbar(A,W)} (Y - Qbar(A,W)).}
+#'
+#' This  function evaluates  the remainder  term at  \eqn{P'} w.r.t.  \eqn{P}:
+#' \deqn{Rem_P(P') = \Psi(P') - \Psi(P) - (P - P')D^*(P').}
+#'
+#' The evaluation can be performed if one  has built the two objects or if one
+#' acts as an  \emph{oracle}.  Works only if all the  relevant features of the
+#' laws are characterized.
+#'
+#' @name evaluate_remainder
+#'
+#' @param this An object of \code{class} \code{LAW} describing, say, \eqn{P}.
+#'
+#' @param that An object of \code{class} \code{LAW} describing, say, \eqn{P'}.
+#'
+#' @param params If not  \code{NULL} (default value), a \code{list} consisting
+#'   of  two  \code{list}s,  each specifying  additional  parameters  possibly
+#'   needed to fully characterize the corresponding law.
+#'
+#' @references Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
+#' 
+#' @seealso  \code{\link{evaluate_psi}} to  evaluate \eqn{Psi}  at a  law and
+#'   \code{\link{evaluate_eic}} to  evaluate the efficient influence  curve of
+#'   \eqn{Psi} at a law.
+#' 
+#' @return A  \code{numeric},  the value of the remainder term \eqn{Rem_P(P')}.
+#'
+#' @family methods and functions for LAW objects
+#' 
+#' @examples
+#'
+#' ## create a one-dimensional fluctutation (collection of laws)
+#' example(guided.tour.tmle, echo = FALSE)
+#' (evaluate_psi(another_experiment)) # Psi(P_0)
+#' (evaluate_psi(another_experiment, h = 1)) # Psi(P_1)
+#' 
+#' ## evaluate the remainder term
+#' ## (hint: same 'Gbar' feature, so ...)
+#' evaluate_remainder(another_experiment, another_experiment,
+#'                    list(list(h = 0), list(h = 1)))
+#'
+#' ## create another one-dimensional fluctuation
+#' yet_another_experiment <- copy(another_experiment)
+#' alter(yet_another_experiment, Gbar = function(w){rep_len(1/2, length(w))})
+#'
+#' ## evaluate the remainder term
+#' evaluate_remainder(another_experiment, yet_another_experiment,
+#'                    list(list(h = 0), list(h = 1)))
+#'
+#' @export
+#' 
+#' @export evaluate_remainder
+evaluate_remainder <- function(this, that, params = NULL) {
+  if (!is.null(params)) {
+    if (!length(params) == 2) {
+      width <- floor(0.8 * getOption("width"))
+      stop(stringr::str_wrap("  If not 'NULL', argument 'params'
+                              must be a list consisting of two lists,
+                              each one providing parameters to the
+                              corresponding object of class 'LAW'.
+                              If one of the objects needs no such parameters,
+                              then the corresponding list should be 'list()'.",
+                             indent = 0, width = width, exdent = 0))
+    } else {
+      params_A <- params[[1]]
+      params_B <- params[[2]]
+    }
+  }
+  some_relevant_features_A <- reveal(this)
+  some_relevant_features_B <- reveal(that)
+  if (length(intersect(names(some_relevant_features_A), c("Gbar", "Qbar", "QW"))) != 3) {
+    stop(stringr::str_wrap(
+      stringr::str_c("  The 'QW', 'Gbar' and 'Qbar' features of law'",
+                     deparse(substitute(this)),
+                     "' must be characterized."),
+      indent = 0, width = width, exdent = 0))
+  } else if (length(intersect(names(some_relevant_features_B), c("Gbar", "Qbar"))) != 2) {
+    stop(stringr::str_wrap(
+      stringr::str_c("  The 'Gbar' and 'Qbar' features of law'",
+                     deparse(substitute(that)),
+                     "' must be characterized."),
+      indent = 0, width = width, exdent = 0))    
+  } else {
+    Gbar_A <- do.call(get_feature, c(list(this = this, what = "Gbar"), params_A))
+    Qbar_A <- do.call(get_feature, c(list(this = this, what = "Qbar"), params_A))
+    QW_A <- do.call(get_feature, c(list(this = this, what = "QW"), params_A))
+    Gbar_B <- do.call(get_feature, c(list(this = that, what = "Gbar"), params_B))
+    Qbar_B <- do.call(get_feature, c(list(this = that, what = "Qbar"), params_B))
+    if (is.function(QW_A)) {
+      integrand <- function(w) {
+        fw <- ( Qbar_A(cbind(A = 1, W = w)) - Qbar_B(cbind(A = 1, W = w)) ) / Gbar_B(w) 
+        fw <- fw +
+          ( Qbar_A(cbind(A = 0, W = w)) - Qbar_B(cbind(A = 0, W = w)) ) / (1 - Gbar_B(w))
+        fw <- fw * (Gbar_A(w) - Gbar_B(w)) * QW_A(w)
+        return(fw)
+      }
+      out <- stats::integrate(integrand, lower = 0, upper = 1)$val
+    } else {
+      if (!identical(names(QW_A), c("value", "weight"))) {
+        stop(stringr::str_c("Argument 'QW' is neither a function nor a valid", " discrete law.\n"))
+      }
+      W <- dplyr::pull(QW_A, "value")
+      fw <- ( Qbar_A(cbind(A = 1, W = W)) - Qbar_B(cbind(A = 1, W = W)) ) / Gbar_B(W) 
+      fw <- fw +
+        ( Qbar_A(cbind(A = 0, W = W)) - Qbar_B(cbind(A = 0, W = W)) ) / (1 - Gbar_B(W))
+      fw <- fw * (Gbar_A(W) - Gbar_B(W))
+      out <- stats::weighted.mean(fw, dplyr::pull(QW_A, "weight"))
+    }
+    return(out)
+  }
+}

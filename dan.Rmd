@@ -456,7 +456,9 @@ run_another_experiment <- function(n, h = 0) {
 }
 ```
 
-the parameter $\Psi(\Pi_{0})$ is well defined. Straightforward algebra confirms that $\Psi(\Pi_{0}) = 59/300$, which is confirmed by our numeric computation below. 
+the  parameter  $\Psi(\Pi_{0})$  is   well  defined.  Straightforward  algebra
+confirms  that $\Psi(\Pi_{0})  = 59/300$,  which is  confirmed by  our numeric
+computation below.
 
 ```{r approx-psi-one}
 five_obs_from_another_experiment <- run_another_experiment(5)
@@ -804,12 +806,14 @@ If an estimator $\psi_n$ of $\Psi(P)$ can be written as
 \begin{equation*}  \psi_n  =  \Psi(P) +  \frac{1}{n}\sum_{i=1}^n  \IF(O_i)  +
 o_P(1/\sqrt{n})\end{equation*}
 
-for some function $\IF : \calO \to \bbR$ such that $\Exp_P(\IF(O)) =
-0$  and  $\Var_{P}(\IF(O)) <  \infty$,  then  we  say that  $\psi_n$  is
-*asymptotically  linear* with  *influence function*  $\IF$.  We note that weak convergence of asymptotically 
-linear estimators is implied by the central limit theorem. That is, if $\psi_n$ is asymptotically linear with influence function $\IF$, then $\sqrt(n) (\psi_n - \Psi(P)) = \frac{1}{\sqrt{n}} \sum_{i=1}^n  \IF(O_i) + o_P(1)$. The central limit theorem implies 
-the the right-hand-side converges in law to a centered Gaussian distribution with
-variance $\Var_P(\IF(O))$. 
+for some function  $\IF : \calO \to  \bbR$ such that $\Exp_P(\IF(O))  = 0$ and
+$\Var_{P}(\IF(O))  < \infty$,  then we  say that  $\psi_n$ is  *asymptotically
+linear* with  *influence function*  $\IF$.  We note  that weak  convergence of
+asymptotically linear estimators is implied by the central limit theorem. That
+is, if $\psi_n$  is asymptotically linear with influence  function $\IF$, then
+$\sqrt(n)  (\psi_n -  \Psi(P))  = \frac{1}{\sqrt{n}}  \sum_{i=1}^n \IF(O_i)  +
+o_P(1)$. The central  limit theorem implies the  the right-hand-side converges
+in law to a centered Gaussian distribution with variance $\Var_P(\IF(O))$.
 
 As  it happens,
 influence  functions of  regular\footnote{We  can view  $\psi_{n}$  as the  by
@@ -828,16 +832,18 @@ influence  function $\IF$,  then it  must be  true that  $\Psi$ is  a smooth
 at $P$ and  that $\IF$  is a  gradient of $\Psi$  at $P$.  
 
 These results, combined with the definition of the canonical gradient, imply that  
-if $\psi_{n}$  is a
-regular, asymptotically linear estimator of  $\Psi(P)$ built from $n$  independent observations drawn from $P$, then the asymptotic variance  of $\sqrt{n} (\psi_{n} -  \Psi(P))$ cannot be  smaller than  the variance of  the canonical
-gradient        of        $\Psi$         at        $P$, 
-\begin{equation}\label{eq:CR}\Var_{P}(D^{*}(P)(O)) . \end{equation}
-That is, (\ref{eq:CR}) is the lower bound on the asymptotic variance of any regular, asymptotically linear estimator
-of $\Psi(P)$. This bound is   referred  to   as  the   \textit{Cramér-Rao
-bound}. Any regular estimator that achieves this variance bound is said to be 
-\textit{asymptotically efficient} at $P$. Since, the canonical gradient is the influence
-function of an asymptotically efficient estimator, it is often  referred  to as  the *efficient  influence
-function* or the *efficient influence curve*.
+if $\psi_{n}$ is a regular, asymptotically linear estimator of $\Psi(P)$ built
+from $n$ independent observations drawn from $P$, then the asymptotic variance
+of $\sqrt{n} (\psi_{n} - \Psi(P))$ cannot  be smaller than the variance of the
+canonical         gradient          of         $\Psi$          at         $P$,
+\begin{equation}\label{eq:CR}\Var_{P}(D^{*}(P)(O))  . \end{equation}  That is,
+(\ref{eq:CR}) is  the lower bound on  the asymptotic variance of  any regular,
+asymptotically linear estimator of $\Psi(P)$. This bound is referred to as the
+\textit{Cramér-Rao bound}.  Any regular estimator that  achieves this variance
+bound  is said  to be  \textit{asymptotically  efficient} at  $P$. Since,  the
+canonical gradient  is the influence  function of an  asymptotically efficient
+estimator, it  is often referred to  as the *efficient influence  function* or
+the *efficient influence curve*.
 
 It is not difficult to check \tcg{(do  we give the proof?)} that the efficient
 influence function of  $\Psi$ at  $P \in  \calM$ can be written as $D^{*}(P)
@@ -872,31 +878,36 @@ equal to $D^*(P)$. This fact will suggest concrete strategies for generating eff
 estimators of smooth parameters. In this section, we take the first step towards 
 generating such estimators: linearizing the parameter. 
 
-Drawing another parallel to Euclidean geometry, recall that if $f$ is a  differentiable mapping from $\bbR^p$ to $\bbR$, we can use a Taylor series 
-to approximate $f$ at a point $x_0 \in \bbR^p$, $f(x_0) \approx f(x) + (x_0 - x)
-\cdot \nabla f(x)$, where $x$ is a point in $\bbR^p$ and $\nabla f(x)$ is the 
-gradient of $f$ evaluated at $x$. As the distance between $x$ and $x_0$ decreases, 
-the *linear approximation* to $f(x_0)$ becomes more accurate. 
+Drawing  another parallel  to  Euclidean geometry,  recall that  if  $f$ is  a
+differentiable mapping from $\bbR^p$ to $\bbR$,  we can use a Taylor series to
+approximate $f$ at a point $x_0 \in  \bbR^p$, $f(x_0) \approx f(x) + (x_0 - x)
+\cdot \nabla f(x)$, where $x$ is a  point in $\bbR^p$ and $\nabla f(x)$ is the
+gradient  of $f$  evaluated at  $x$.  As the  distance between  $x$ and  $x_0$
+decreases, the *linear approximation* to $f(x_0)$ becomes more accurate.
 
-Returning to the present problem with this in mind, we find that indeed a similar 
-approximation strategy may be applied. In particular, if $\Psi$ is pathwise 
-differentiable uniformly over directions, then for any given $P \in \calM$, we can write \begin{align} \label{taylor_expansion}
-  \Psi(P_0) = \Psi(P) + (P_0 - P) D^*(P) - \Rem_{P_0}(P),
-\end{align}
-where $\Rem_{P_0}(P)$ is a *remainder term* satisfying that \begin{align*}
-  \frac{\Rem_{P_0}(P)}{d(P, P_0)} \rightarrow 0 \ \mbox{as} \ d(P, P_0) \rightarrow 0 ,
-\end{align*}
-where $d$ is a measure of discrepancy for distributions in $\calM$. In (\ref{taylor_expansion}), we introduced a new shorthand notation. For any measurable function $g$ 
-of the observed data $O$, we will write $P g \equiv \Exp_P(g(O))$. Thus, (\ref{taylor_expansion}) could be equivalently written as \begin{align*}
-\Psi(P_0) = \Psi(P) + \Exp_{P_0}(D^*(P)(O)) - \Exp_P(D^*(P)(O)) - \Rem_{P_0}(P).
-\end{align*}
-The remainder term formalizes the notion that if $P$ is ``close'' to $P_0$ (i.e., $d(P,P_0)$
-is small) then the linear approximation of $\Psi(P_0)$ is more accurate. 
+Returning to  the present  problem with this  in mind, we  find that  indeed a
+similar approximation  strategy may  be applied. In  particular, if  $\Psi$ is
+pathwise differentiable uniformly  over directions, then for any  given $P \in
+\calM$,  we  can  write  \begin{align}  \label{taylor_expansion}  \Psi(P_0)  =
+\Psi(P) + (P_0 - P)  D^*(P) - \Rem_{P_0}(P), \end{align} where $\Rem_{P_0}(P)$
+is a *remainder term* satisfying that \begin{align*} \frac{\Rem_{P_0}(P)}{d(P,
+P_0)} \rightarrow 0 \ \mbox{as} \ d(P, P_0) \rightarrow 0 , \end{align*} where
+$d$  is   a  measure   of  discrepancy  for   distributions  in   $\calM$.  In
+(\ref{taylor_expansion}),  we introduced  a  new shorthand  notation. For  any
+measurable function $g$  of the observed data  $O$, we will write  $P g \equiv
+\Exp_P(g(O))$. Thus, (\ref{taylor_expansion}) could be equivalently written as
+\begin{align*}    \Psi(P_0)    =    \Psi(P)    +    \Exp_{P_0}(D^*(P)(O))    -
+\Exp_P(D^*(P)(O)) - \Rem_{P_0}(P).  \end{align*} The remainder term formalizes
+the notion that if $P$ is ``close''  to $P_0$ (i.e., $d(P,P_0)$ is small) then
+the linear approximation of $\Psi(P_0)$ is more accurate.
 
-The equations for the definition of the parameter (\ref{eq:psimap}), form of the canonical gradient (\ref{eq:eif}), and linearization of parameter (\ref{taylor_expansion}) combine to determine the remainder, \begin{align} 
-\Rem_{P_0}(P) &= \Psi(P) - \Psi(P_0) - (P_0 - P)D^*(P) \notag \\
-              &= \Exp_{P_0} \biggl[ \{\Gbar_0(W) - \Gbar(W)\} \biggl\{\frac{\Qbar_0(1,W) - \Qbar(1,W)}{\ell\Gbar(1,W)} + \frac{\Qbar_0(0,W) - \Qbar(0,W)}{\ell\Gbar(0,W)} \biggr\} \biggr]. \label{remainder}
-\end{align}
+The equations for  the definition of the parameter  (\ref{eq:psimap}), form of
+the  canonical   gradient  (\ref{eq:eif}),  and  linearization   of  parameter
+(\ref{taylor_expansion})  combine to  determine  the remainder,  \begin{align}
+\Rem_{P_0}(P) &= \Psi(P) - \Psi(P_0) - (P_0 - P)D^*(P) \notag \\ &= \Exp_{P_0}
+\biggl[    \{\Gbar_0(W)    -     \Gbar(W)\}    \biggl\{\frac{\Qbar_0(1,W)    -
+\Qbar(1,W)}{\ell\Gbar(1,W)} + \frac{\Qbar_0(0,W) - \Qbar(0,W)}{\ell\Gbar(0,W)}
+\biggr\} \biggr]. \label{remainder} \end{align}
 
 ```{r evaluating-remainder}
 # Could we add a method for evaluating the remainder?
@@ -936,29 +947,62 @@ estimators of $\Psi(P)$.
 
 Confirm the double-robustness of the efficient influence function by doing the following:
 
-1. \tcg{Will modify to reflect the final structure of `LAW` methods, etc...} Replace `Gbar` in the law of `experiment` with some other function of $W$, and confirm (via numerical approximation) that the mean of the efficient influence function is zero. Repeat for several choices of `Gbar`. 
+1. \tcg{Will modify  to reflect the final structure of  `LAW` methods, etc...}
+   Replace `Gbar` in the law of  `experiment` with some other function of $W$,
+   and confirm  (via numerical approximation)  that the mean of  the efficient
+   influence function is zero. Repeat for several choices of `Gbar`.
 
-2. \tcg{Will modify to reflect the final structure of `LAW` methods, etc...} Replace `Qbar` in the law of `experiment` with some other function of $W$, and confirm (via numerical approximation) that the mean of the efficient influence function is zero. Repeat for several choices of `Gbar`. 
+2. \tcg{Will modify  to reflect the final structure of  `LAW` methods, etc...}
+   Replace `Qbar` in the law of  `experiment` with some other function of $W$,
+   and confirm  (via numerical approximation)  that the mean of  the efficient
+   influence function is zero. Repeat for several choices of `Gbar`.
 
 
 \section{Building estimators}
 
-The previous section identified our target parameter and developed relevant theory for understanding the properties of certain types of estimators of the parameter. In this section, we illustrate how this theory can be applied to develop estimators of and inference about these quantities. We consider that we have available, $O_{1}$,  \ldots, $O_{n}$, be a sample  of independent  observations drawn from   $P_{0}$, and the goal is to estimate the value of $\psi_0$. Below we generate `B` values \tcg{Maybe change `B` to `n` to keep consistent with the notation?}
+The previous  section identified our  target parameter and  developed relevant
+theory for understanding the properties of  certain types of estimators of the
+parameter. In  this section, we illustrate  how this theory can  be applied to
+develop estimators of  and inference about these quantities.  We consider that
+we  have available,  $O_{1}$,  \ldots,  $O_{n}$, be  a  sample of  independent
+observations drawn  from $P_{0}$,  and the  goal is to  estimate the  value of
+$\psi_0$. Below  we generate `B` values  \tcg{Maybe change `B` to  `n` to keep
+consistent with the notation?}
 
 ```{r draw-a-sample}
 ## Debug -- couldn't find obs when I tried to compile
 obs <- run_experiment(B)
 ```
 
-Each of the strategies we discuss be described in two steps. In the first step, we obtain estimators of the quantities relevant to evaluating the target parameter and its efficient influence function. Because estimation of these quantities is merely an intermediate step along our path towards an estimate of the target parameter, we refer to these quantities as *nuisance parameters*. In the second step, we combine the estimators of the nuisance parameters in a particular way as to ensure that the resultant estimator of the target parameter enjoys desirable properties. In this second step we will make use of the theory developed in the previous subsection. 
+Each of  the strategies  we discuss be  described in two  steps. In  the first
+step, we obtain estimators of the quantities relevant to evaluating the target
+parameter and  its efficient influence  function. Because estimation  of these
+quantities is merely  an intermediate step along our path  towards an estimate
+of  the  target   parameter,  we  refer  to  these   quantities  as  *nuisance
+parameters*. In  the second step,  we combine  the estimators of  the nuisance
+parameters in  a particular way as  to ensure that the  resultant estimator of
+the target parameter enjoys desirable properties.  In this second step we will
+make use of the theory developed in the previous subsection.
 
 \subsection{Estimating nuisance parameters}
 
-The first step towards obtaining estimates of the target parameter is to propose a method for estimating the nuisance parameters. In the case of $\Psi(P_0)$, these nuisance parameters include $\Gbar_0$, $\Qbar_0$, and $Q_{0,W}$. We will discuss estimation of each of these quantities in turn. 
+The  first step  towards obtaining  estimates of  the target  parameter is  to
+propose  a method  for  estimating the  nuisance parameters.  In  the case  of
+$\Psi(P_0)$,  these  nuisance  parameters include  $\Gbar_0$,  $\Qbar_0$,  and
+$Q_{0,W}$. We will discuss estimation of each of these quantities in turn.
 
-In the next code block, we define a function that we will use to estimate $\Gbar_0$. The function takes a data set as input and a user-specified algorithm for estimating $\Gbar_0$ and returns the fitted algorithm on the data. We will consider approaches to estimation of $\Gbar_0$ based on machine learning (if the `"ML"` attribute of `algorithm` is `TRUE`) or not (if `FALSE`). 
+In the  next code block,  we define  a function that  we will use  to estimate
+$\Gbar_0$.  The function  takes  a  data set  as  input  and a  user-specified
+algorithm for  estimating $\Gbar_0$  and returns the  fitted algorithm  on the
+data. We will consider approaches to  estimation of $\Gbar_0$ based on machine
+learning  (if the  `"ML"`  attribute  of `algorithm`  is  `TRUE`)  or not  (if
+`FALSE`).
 
-\tcg{There's a lot to deparse in these code chunks. I worry that it will be overwhelming for the reader. Is it possible to simplify the syntax at all? E.g., could we create an S3 class for algorithms? Not sure what the best strategy is, but as it is I think most readers will have a hard time understanding what these chunks do.}
+\tcg{There's a lot  to deparse in these  code chunks. I worry that  it will be
+overwhelming for  the reader. Is  it possible to  simplify the syntax  at all?
+E.g., could  we create  an S3  class for  algorithms? Not  sure what  the best
+strategy  is, but  as  it  is I  think  most readers  will  have  a hard  time
+understanding what these chunks do.}
 
 ```{r intro-est-G}
 estimate_G <- function(dat, algorithm, ...) {
@@ -974,7 +1018,9 @@ estimate_G <- function(dat, algorithm, ...) {
   return(fit)
 }
 ```
-To make this estimation procedure more concrete, let us provide an algorithm for estimation of $\Gbar_0$. The following code block builds an algorithm. \tcg{Again, this is complicated stuff. Can we simplify?}
+To make this  estimation procedure more concrete, let us  provide an algorithm
+for   estimation  of   $\Gbar_0$.   The  following   code   block  builds   an
+algorithm. \tcg{Again, this is complicated stuff. Can we simplify?}
 
 ```{r unknown-Gbar-two}
 trim_glm_fit <- caret::getModelInfo("glm")$glm$trim
@@ -1008,41 +1054,106 @@ Similarly, we can define a function and a method for estimating $\Qbar_0$.
 # and show how it works 
 ```
 
-To estimate $Q_{0,W}$, the distribution of $W$, we will simply use the empirical measure of $W_1, \dots, W_n$, that is, the law describing sampling from $W_1, \dots, W_n$ with equal probability $n^{-1}$. 
+To  estimate $Q_{0,W}$,  the  distribution  of $W$,  we  will  simply use  the
+empirical measure of  $W_1, \dots, W_n$, that is, the  law describing sampling
+from $W_1, \dots, W_n$ with equal probability $n^{-1}$.
 
 ```{r intro-to-estimateQW}
 # not sure how this is being handled in the code 
 # and whether we need to introduce a function for this here?
 ```
-In general, we can view an estimator of $\Qbar_0$ (or any other relevant nuisance parameter) as an algorithm $\hat{Q}: \calM \rightarrow \calQ$ that maps a distribution from the model into the nuisance parameter space. In this case, $\calQ$ consists of all functions mapping from $\{0,1\} \times \interval{0}{1}$ to $\bbR$. We can be our estimate $\Qbar_n$ as the algorithm $\hat{Q}$ applied on $P_{n}$, the empirical  measure, \textit{i.e.},  the  law consisting  in  drawing  one among  $O_{1}$,  \ldots,
-$O_{n}$ with equal probabilities $n^{-1}$. Thus, we can write $\Qbar_n = \hat{Q}(P_n)$. 
+In  general, we  can view  an estimator  of $\Qbar_0$  (or any  other relevant
+nuisance parameter)  as an algorithm  $\hat{Q}: \calM \rightarrow  \calQ$ that
+maps a distribution from the model  into the nuisance parameter space. In this
+case,  $\calQ$  consists  of  all   functions  mapping  from  $\{0,1\}  \times
+\interval{0}{1}$ to $\bbR$. We can be  our estimate $\Qbar_n$ as the algorithm
+$\hat{Q}$ applied  on $P_{n}$, the  empirical measure, \textit{i.e.},  the law
+consisting  in  drawing   one  among  $O_{1}$,  \ldots,   $O_{n}$  with  equal
+probabilities $n^{-1}$. Thus, we can write $\Qbar_n = \hat{Q}(P_n)$.
 
 \subsubsection*{\gear Exercises}
 
-1. \tcg{Depending on how above goes, define your own algorithm for estimating $\Gbar_0$ and/or $\Qbar_0$?}
+1. \tcg{Depending on how above goes,  define your own algorithm for estimating
+   $\Gbar_0$ and/or $\Qbar_0$?}
 
-\tcg{Do we need a remark on simulation studies? I.e., something like: *In order to study the frequentist operating characteristics of the various estimators of the target parameter, we will use Monte Carlo simulation. That is, we will repeatedly sample $n$ independent observations from $P_0$ and build our estimator on each realization of our experiment.* Don't know how much detail we need to go into, but adding something like this would give us an excuse to get all of the estimation of the nuisance parameters out of the way. Again, it all depends on how we/you want to structure the code.}
+\tcg{Do we  need a  remark on  simulation studies?  I.e., something  like: *In
+order  to  study the  frequentist  operating  characteristics of  the  various
+estimators of the  target parameter, we will use Monte  Carlo simulation. That
+is,  we will  repeatedly sample  $n$ independent  observations from  $P_0$ and
+build our  estimator on each  realization of  our experiment.* Don't  know how
+much detail we need  to go into, but adding something like  this would give us
+an excuse to get  all of the estimation of the nuisance  parameters out of the
+way. Again, it all depends on how we/you want to structure the code.}
 
 \subsection{Simple estimation strategies}
 
-\tcg{Discuss G-computation, i.e., plug-in estimation. Discuss IPTW too? Show that it works for parametric models, but fails for machine learning algorithms.}
+\tcg{Discuss G-computation,  i.e., plug-in estimation. Discuss  IPTW too? Show
+that  it  works  for  parametric   models,  but  fails  for  machine  learning
+algorithms.}
 
 \subsection{\textdbend Analysis of G-computation estimator}
 
-\tcg{Go through the expansion algebra to generate one-step correction/TMLE term and empirical process term. Highlight that the correction term is the source of the bad behavior. If we have all the fitted nuisance objects, we could use the `compute_eif` function on the estimated nuisance parameters to illustrate that $n^{1/2}$ times EIF at estimated nuisances blows up, which in turn causes the estimator to blow up. In this way, we provide a theoretical explanation and numerical depiction of why G-comp fails.}
+\tcg{Go  through the  expansion algebra  to generate  one-step correction/TMLE
+term and  empirical process term.  Highlight that  the correction term  is the
+source of  the bad behavior.  If we have all  the fitted nuisance  objects, we
+could  use   the}  `compute_eif`  \tcg{function  on   the  estimated  nuisance
+parameters to  illustrate that root-n  times EIF at estimated  nuisances blows
+up, which in turn  causes the estimator to blow up. In this  way, we provide a
+theoretical explanation and numerical depiction of why G-comp fails.}
 
 \subsection{One-step corrections}
 
-\tcg{Remind the reader about asymptotic linearity; that we need to write estimator minus truth as equal to empirical mean of EIF at true nuisance parameters + negligible term. We saw that plug-in did not yield such a representation, but look, the one-step estimator does. Show that the one-step estimator corrects poor behavior of G-computation estimator. Discuss that we also now have asymptotic linearity and inference via the central limit theorem. Discuss standard error estimation. Show confidence interval coverage?}
+\tcg{Remind  the reader  about asymptotic  linearity;  that we  need to  write
+estimator  minus truth  as equal  to empirical  mean of  EIF at  true nuisance
+parameters  + negligible  term.  We saw  that  plug-in did  not  yield such  a
+representation, but look, the one-step  estimator does. Show that the one-step
+estimator corrects poor  behavior of G-computation estimator.  Discuss that we
+also  now  have asymptotic  linearity  and  inference  via the  central  limit
+theorem.  Discuss   standard  error   estimation.  Show   confidence  interval
+coverage?}
 
 \subsection{\textdbend Targeted minimum loss-based estimation}
 
-\tcg{Make point about one-step being able to go outside the parameter space, but plug-in estimator will not do so. Can we do a correction in the model space? Can we pick a new $\Qbar_n$ that satisfies the key equation? We would like the new $\Qbar_n$ to be near to $\Qbar_0$ in some sense. How can we define a set of distributions that are near to a current distribution? Parametric submodels! Define a (local least favorable?) submodel through a current estimate. Pick one data set and visualize some $\Qbar_{\epsilon}$ along that submodel. Make the point that the submodel simply defines different regression estimates of $\Qbar_0$. Now we have a way to select a collection of distributions near to our initial estimate of $\Qbar_0$. Which one should we pick? One that gets us closer to $\Qbar_0$! How do we define close to $\Qbar_0$? Loss functions: define and introduce log likelihood loss for $\Qbar_0$. Say that the MLE along the submodel is the member of the submodel that the data think is closest to $\Qbar_0$. Now we have a way to pick a distribution that moves from $\Qbar_n$ towards $\Qbar_0$ in some sense. Thus, we have a sensible way to move around our model space. But what submodel should we use? Recall the goal is to generate an estimate of $\Qbar$ that solves the specified equation. Remind the reader that at the MLE the derivative of the loss function (i.e., generalized score) equals zero. Thus, if we arrange the submodel and loss function to have derivative equal to the desired equation then at the MLE the desired equation will be solved. Note that its generally difficult (though possible, footnote on universal submodel?) to arrange a submodel with derivative equal to the EIF for every fluctuation parameter value. However, it is easy to arrange a submodel with derivative equal to the EIF at zero. Introduce local least favorable model. Now describe the iterative process. Place a local least favorable model through the current estimate and look for a better fit along the submodel. Eventually we should hope that that there is no better fit in the submodel than the current estimate. That is, the MLE is zero, so the equation (i.e., derivative of the loss) is solved at zero, i.e., at the current estimate. Then we use that estimate. Show that it only takes a single step in the current problem to arrive at that solution. Phew, this section is going to be a lot! TMLE is hard to explain...
+\tcg{Make point about  one-step being able to go outside  the parameter space,
+but plug-in  estimator will not do  so.  Can we  do a correction in  the model
+space? Can we pick  a new $\Qbar_n$ that satisfies the  key equation? We would
+like the  new $\Qbar_n$  to be  near to $\Qbar_0$  in some  sense. How  can we
+define  a set  of  distributions  that are  near  to  a current  distribution?
+Parametric submodels!   Define a (local  least favorable?) submodel  through a
+current  estimate. Pick  one data  set and  visualize some  $\Qbar_{\epsilon}$
+along that submodel. Make the point that the submodel simply defines different
+regression estimates of $\Qbar_0$. Now we have a way to select a collection of
+distributions near to  our initial estimate of $\Qbar_0$. Which  one should we
+pick?   One that  gets us  closer to  $\Qbar_0$!  How  do we  define close  to
+$\Qbar_0$?   Loss functions:  define  and introduce  log  likelihood loss  for
+$\Qbar_0$. Say that the  MLE along the submodel is the  member of the submodel
+that the  data think  is closest to  $\Qbar_0$. Now  we have a  way to  pick a
+distribution that moves from $\Qbar_n$  towards $\Qbar_0$ in some sense. Thus,
+we have  a sensible  way to  move around  our model  space. But  what submodel
+should we  use? Recall  the goal is  to generate an  estimate of  $\Qbar$ that
+solves  the  specified equation.   Remind  the  reader  that  at the  MLE  the
+derivative of the  loss function (i.e., generalized score)  equals zero. Thus,
+if we arrange the  submodel and loss function to have  derivative equal to the
+desired equation  then at the  MLE the desired  equation will be  solved. Note
+that  its   generally  difficult  (though  possible,   footnote  on  universal
+submodel?) to  arrange a submodel with  derivative equal to the  EIF for every
+fluctuation parameter  value. However, it is  easy to arrange a  submodel with
+derivative  equal  to  the  EIF  at zero.   Introduce  local  least  favorable
+model. Now describe the iterative process. Place a local least favorable model
+through  the   current  estimate  and  look   for  a  better  fit   along  the
+submodel. Eventually we  should hope that that  there is no better  fit in the
+submodel than the current estimate. That is,  the MLE is zero, so the equation
+(i.e.,  derivative of  the  loss) is  solved  at zero,  i.e.,  at the  current
+estimate. Then we use that estimate. Show  that it only takes a single step in
+the current problem to arrive at that solution. Phew, this section is going to
+be  a lot!  TMLE is  hard to  explain...   Show code  for TMLE.  Show that  it
+corrects  G-computation  estimator.  Compare  MSE of  one-step  TMLE?  Briefly
+discuss asymptotic linearity and inference. Show confidence intervals.  }
 
-Show code for TMLE. Show that it corrects G-computation estimator. Compare MSE of one-step TMLE? Briefly discuss asymptotic linearity and inference. Show confidence intervals.
-}
-
-\tcg{Big questions left in my mind. 1. Do we talk about IPTW at all? 2. Do we discuss double-robustness at all? Maybe just include an aside on DR in the estimator section (after one-step section?) to mirror the DR section in Chapter 2?}
+\tcg{Big questions left in my mind. 1. Do  we talk about IPTW at all? 2. Do we
+discuss double-robustness  at all? Maybe  just include an  aside on DR  in the
+estimator  section (after  one-step  section?)  to mirror  the  DR section  in
+Chapter 2?}
 
 
 \tcg{ !!!DAVID STOPPED HERE!!! }

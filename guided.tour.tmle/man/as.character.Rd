@@ -20,9 +20,11 @@ Prints an object of \code{class} \code{LAW}.
 Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
 }
 \seealso{
-Other methods for LAW objects: \code{\link{LAW}},
-  \code{\link{alter}}, \code{\link{evaluate_eic}},
-  \code{\link{evaluate_psi}}, \code{\link{reveal}},
+Other methods and functions for LAW objects: \code{\link{LAW}},
+  \code{\link{alter}}, \code{\link{copy}},
+  \code{\link{evaluate_eic}}, \code{\link{evaluate_psi}},
+  \code{\link{evaluate_remainder}},
+  \code{\link{get_feature}}, \code{\link{reveal}},
   \code{\link{sample_from}}
 }
-\concept{methods for LAW objects}
+\concept{methods and functions for LAW objects}

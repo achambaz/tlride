@@ -18,8 +18,8 @@ A \code{function},  the efficient  infuence curve  of statistical
 \description{
 Evaluates  at   efficient  influence  curve  of   the  statistical  mapping
 \eqn{\Psi} at the law for (W,A,Y) in [0,1] x {0,1} x [0,1] characterized by
-an object  of \code{class} \code{LAW}.   The mapping \eqn{\Psi} and  its efficient
-influence  curve  at  a  law  \eqn{P} are  given  by  \deqn{\Psi(P)  =  E_P
+an  object of  \code{class}  \code{LAW}.  The  mapping  \eqn{\Psi} and  its
+efficient influence curve at a law \eqn{P} are given by \deqn{\Psi(P) = E_P
 {Qbar(1,W) -  Qbar(0,W)}} with \eqn{Qbar(A,W)  = E_P (Y|A,W)}  and \eqn{D^*
 (P)  = D_1^*  (P) +  D_2^*(P)}  where \deqn{D_1^*(P)(W,A,Y)  = Qbar(1,W)  -
 Qbar(0,W) - \Psi(P)} and  \deqn{D_2^*(P)(W,A,Y) = \frac{2A-1}{Gbar(A,W)} (Y
@@ -54,9 +54,11 @@ Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
   and \code{\link{evaluate_psi}} to evaluate the  value of \eqn{Psi} at the
   law.
 
-Other methods for LAW objects: \code{\link{LAW}},
+Other methods and functions for LAW objects: \code{\link{LAW}},
   \code{\link{alter}}, \code{\link{as.character}},
-  \code{\link{evaluate_psi}}, \code{\link{reveal}},
+  \code{\link{copy}}, \code{\link{evaluate_psi}},
+  \code{\link{evaluate_remainder}},
+  \code{\link{get_feature}}, \code{\link{reveal}},
   \code{\link{sample_from}}
 }
-\concept{methods for LAW objects}
+\concept{methods and functions for LAW objects}

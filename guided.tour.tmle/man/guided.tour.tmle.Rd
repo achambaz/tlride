@@ -170,7 +170,7 @@ alter(another_experiment,
 ## (up to a constant) function 'sigma0' defined below with its argument
 ## 'law' set to 'another_experiment':
 
-sigma0 <- function(obs, law) {
+sigma0 <- function(obs, law = another_experiment) {
   ## preliminary
   Qbar <- get_feature(law, "Qbar", h = 0)
   QAW <- Qbar(obs[, c("A", "W")])
