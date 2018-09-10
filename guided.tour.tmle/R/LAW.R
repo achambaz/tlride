@@ -175,8 +175,6 @@ R.methodsS3::setMethodS3(
 #'
 #' @param this An object of \code{class} \code{LAW}.
 #'
-#' @param what A \code{character}, one among "Qbar", "Gbar", "QW", "qY".
-#'
 #' @param  \dots Additional parameters  possibly needed to  fully characterize
 #'   the law.
 #'
@@ -204,8 +202,9 @@ R.methodsS3::setMethodS3(
 #'   'value'   and  'weight'   (a  discrete   law)\item  'Gbar',   conditional
 #'   probability  that  'A=1'  given  'W',  a  \code{function}  \item  'Qbar',
 #'   conditional  mean of  'Y' given  '(A,W)', a  \code{function} \item  'qY',
-#'   conditional density  of 'Y' given  '(A,W)', a \code{function}.}   Each of
-#'   them equals 'NA' if it is not characterized.
+#'   conditional  density  of  'Y'  given  '(A,W)',  a  \code{function}  \item
+#'   'sample_from', a \code{function}  to sample from the law.}   Each of them
+#'   equals 'NA' if it is not characterized.
 #'
 #' @export
 #'
@@ -217,7 +216,8 @@ R.methodsS3::setMethodS3(
   list(QW = this$.QW,
        Gbar = this$.Gbar,
        Qbar = this$.Qbar,
-       qY = this$.qY)       
+       qY = this$.qY,
+       sample_from = this$.sample_from)       
 })
 
 #' Reveals one feature of an object of class LAW

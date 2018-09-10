@@ -7,8 +7,6 @@
 \arguments{
 \item{this}{An object of \code{class} \code{LAW}.}
 
-\item{what}{A \code{character}, one among "Qbar", "Gbar", "QW", "qY".}
-
 \item{\dots}{Additional parameters  possibly needed to  fully characterize
 the law.}
 }
@@ -18,8 +16,9 @@ A \code{list} with tags\itemize{\item  'QW', marginal law of 'W', a
   'value'   and  'weight'   (a  discrete   law)\item  'Gbar',   conditional
   probability  that  'A=1'  given  'W',  a  \code{function}  \item  'Qbar',
   conditional  mean of  'Y' given  '(A,W)', a  \code{function} \item  'qY',
-  conditional density  of 'Y' given  '(A,W)', a \code{function}.}   Each of
-  them equals 'NA' if it is not characterized.
+  conditional  density  of  'Y'  given  '(A,W)',  a  \code{function}  \item
+  'sample_from', a \code{function}  to sample from the law.}   Each of them
+  equals 'NA' if it is not characterized.
 }
 \description{
 Reveals an object  of \code{class} \code{LAW} by exhibiting  a selection of
