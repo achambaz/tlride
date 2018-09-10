@@ -1,9 +1,32 @@
 ---
 title: "A guided tour in targeted learning territory"
 author: "David Benkeser, Antoine Chambaz, Nima Hejazi"
-date: "08/27/2018"
+date: "09/10/2018"
 encoding: "UTF-8"
 output:
+  bookdown::gitbook:
+    lib_dir: assets
+    split_by: section
+    config:
+      toc:
+        collapse: subsection
+        scroll_highlight: yes
+        before: null
+        after: null
+      toolbar:
+        position: static
+      edit : null
+      download: null
+      search: yes
+      fontsettings:
+        theme: white
+        family: sans
+        size: 2
+      includes:
+        in_header: 
+          mathjax_number.html
+        before_body:
+          dan_header.html
   bookdown::pdf_document2:
     toc: true
     toc_depth: 2
