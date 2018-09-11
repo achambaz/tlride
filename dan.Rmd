@@ -33,12 +33,12 @@ Note that additional packages are required, among which `tidyverse`, `caret`
 and `ggdag`. Assuming that there are installed  too, we can run the next chunk
 of code:
 
-```{r visible-setup}
+```{r visible-setup, results = FALSE}
 set.seed(54321) ## because reproducibility matters...
-suppressMessages(library(tidyverse)) 
-suppressMessages(library(caret))
-suppressMessages(library(ggdag))
-suppressMessages(library(guided.tour.tmle))
+library(tidyverse)
+library(caret)
+library(ggdag)
+library(guided.tour.tmle)
 ```
 
 
@@ -77,7 +77,7 @@ translate the knowledge  we have about the experiment. The  more we know about
 the experiment,  the smaller is  $\calM$. In  all our examples,  model $\calM$
 will put very few restrictions on the candidate laws.
 
-Let us run (silently) the example built into the `guided.tour.tmle` package:
+Let us run the example built into the `guided.tour.tmle` package:
 
 ```{r example-one, results = FALSE}
 example(guided.tour.tmle)
