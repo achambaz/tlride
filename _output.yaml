@@ -4,7 +4,8 @@ bookdown::gitbook:
       collapse: section
       scroll_hightlight: yes
       before: |
-        <li><strong><a href="./">GTTMLE: A Guided Tour in</a></strong></li>
+        <li><strong><a href="./">GTTMLE:</a></strong></li>
+        <li><strong><a href="./">A Guided Tour in</a></strong></li>
         <li><strong><a href="./">Targeted Learning Territory</a></strong></li>
       toolbar:
         position: static
@@ -30,7 +31,6 @@ bookdown::pdf_document2:
     in_header: dan_header.tex
   latex_engine: pdflatex
   citation_package: natbib
-
 
 bookdown::tufte_book2:
   toc: true

@@ -1,18 +1,48 @@
 # Introduction {#sec:introduction}
 
-\tcg{Our ambition  is to present a  gentle introduction to the  inference of a
-causal quantity whose  statistical analysis is typical and thus  paves the way
-to more involved analyses. }
+Our ambition is to present a gentle  introduction to the inference of a causal
+quantity whose statistical analysis is typical  and thus paves the way to more
+involved analyses.   The introduction  weaves together  two main  threads, one
+theoretical and the other computational.
+
+## A causal story {#subsec:causal-story}
+
+We focus on a causal story where a  random reward (a real number between 0 and
+1) depends  on the action  undertaken (one among  two) and the  random context
+where  the action  is performed  (summarized by  a real  number between  0 and
+1).  The causal  quantity of  interest is  the average  difference of  the two
+counterfactual rewards. 
+
+We  will  build  several  estimators  and  discuss  their  respective  merits,
+theoretically  and  computationally. The  construction  of  the most  involved
+estimator will  unfold in  *targeted learning territory*,  at the  frontier of
+machine  learning and  semiparametrics,  the statistical  theory of  inference
+based on semiparametric models.
+
+## The `guided.tour.tmle` package {#subsec:package}
+
+The  computational illustrations  will  be developed  based  on the  companion
+package `guided.tour.tmle`. Make  sure you have installed it,  for instance by
+running the following chunk of code:
+
+```{r install-package, eval = FALSE}
+devtools::install_github("achambaz/gttmle/guided.tour.tmle")
+```
+
+Note that additional packages are required, among which `tidyverse`, `caret`
+and `ggdag`. Assuming that there are installed  too, we can run the next chunk
+of code:
 
 ```{r visible-setup}
 set.seed(54321) ## because reproducibility matters...
-suppressMessages(library(R.utils)) ## make sure it is installed
-suppressMessages(library(tidyverse)) ## make sure it is installed
-suppressMessages(library(caret)) ## make sure it is installed
-suppressMessages(library(ggdag)) ## make sure it is installed
-expit <- plogis
-logit <- qlogis
+suppressMessages(library(tidyverse)) 
+suppressMessages(library(caret))
+suppressMessages(library(ggdag))
+suppressMessages(library(guided.tour.tmle))
 ```
+
+
+## To remove at a later stage {#subsec:remove}
 
 ```{r redo}
 redo_fixed <- c(TRUE, FALSE)[2]
@@ -33,17 +63,9 @@ if (!redo_varying) {
 } 
 ```
 
+# Reproducible experiment as a law {#subsec:as:a:law}
 
-Function `expit` implements the link function  $\expit : \bbR \to ]0,1[$ given
-by  $\expit(x) \equiv  (1 +  e^{-x})^{-1}$.  Function  `logit` implements  its
-inverse function  $\logit : ]0,1[  \to \bbR$  given by $\logit(p)  \equiv \log
-[p/(1-p)]$.
-
-# A simulation study {#sec:simulation:study}
-
-\tcg{blabla}
-
-## Reproducible experiment as a law. {#subsec:as:a:law}
+\tcg{Continue here!}
 
 We are interested in a reproducible experiment. The generic summary of how one
 realization of the experiment unfolds, our observation, is called $O$. We view
@@ -55,79 +77,34 @@ translate the knowledge  we have about the experiment. The  more we know about
 the experiment,  the smaller is  $\calM$. In  all our examples,  model $\calM$
 will put very few restrictions on the candidate laws.
 
-Consider the following chunk of code:
+Let us run (silently) the example built into the `guided.tour.tmle` package:
 
-```{r simulation}
-run_experiment <- function(n, ideal = FALSE) {
-  ## preliminary
-  n <- Arguments$getInteger(n, c(1, Inf))
-  ideal <- Arguments$getLogical(ideal)
-  ## ## 'Gbar' and 'Qbar' factors
-  Gbar <- function(W) {
-    expit(1 + 2 * W - 4 * sqrt(abs((W - 5/12))))
-  }
-  Qbar <- function(AW) {
-    A <- AW[, 1]
-    W <- AW[, 2]
-    ## A * (cos((1 + W) * pi / 4) + (1/3 <= W & W <= 1/2) / 5) +
-    ##  (1 - A) * (sin(4 * W^2 * pi) / 4 + 1/2)
-    A * (cos((-1/2 + W) * pi) * 2/5 + 1/5 + (1/3 <= W & W <= 1/2) / 5 +
-         (W >= 3/4) * (W - 3/4) * 2) +
-      (1 - A) * (sin(4 * W^2 * pi) / 4 + 1/2) 
-  }
-  ## sampling
-  ## ## context
-  mixture_weights <- c(1/10, 9/10, 0)
-  mins <- c(0, 11/30, 0)
-  maxs <- c(1, 14/30, 1)
-  latent <- findInterval(runif(n), cumsum(mixture_weights)) + 1
-  W <- runif(n, min = mins[latent], max = maxs[latent])
-  ## ## counterfactual rewards
-  zeroW <- cbind(A = 0, W)
-  oneW <- cbind(A = 1, W)
-  Qbar.zeroW <- Qbar(zeroW)
-  Qbar.oneW <- Qbar(oneW)
-  Yzero <- rbeta(n, shape1 = 2, shape2 = 2 * (1 - Qbar.zeroW) / Qbar.zeroW)
-  Yone <- rbeta(n, shape1 = 3, shape2 = 3 * (1 - Qbar.oneW) / Qbar.oneW)
-  ## ## action undertaken
-  A <- rbinom(n, size = 1, prob = Gbar(W))
-  ## ## actual reward
-  Y <- A * Yone + (1 - A) * Yzero
-  ## ## observation
-  if (ideal) {
-    obs <- cbind(W = W, Yzero = Yzero, Yone = Yone, A = A, Y = Y)
-  } else {
-    obs <- cbind(W = W, A = A, Y = Y)
-  }
-  attr(obs, "Gbar") <- Gbar
-  attr(obs, "Qbar") <- Qbar
-  attr(obs, "QW") <- function(W) {
-    out <- sapply(1:length(mixture_weights),
-                  function(ii){
-                    mixture_weights[ii] *
-                      dunif(W, min = mins[ii], max = maxs[ii])
-                  })
-    return(rowSums(out))
-  }
-  attr(obs, "qY") <- function(AW, Y, Qbar){
-    A <- AW[, 1]
-    W <- AW[, 2]
-    Qbar.AW <- do.call(Qbar, list(AW)) # is call to 'do.call' necessary?
-    shape1 <- ifelse(A == 0, 2, 3)
-    dbeta(Y, shape1 = shape1, shape2 = shape1 * (1 - Qbar.AW) / Qbar.AW)
-  }
-  ##
-  return(obs)
-}
+```{r example-one, results = FALSE}
+example(guided.tour.tmle)
 ```
 
-We can interpret `run_experiment` as a  law $P_{0}$ since we can use the
+A few objects have been defined:
+
+```{r example-two}
+ls()
+```
+
+Function `expit` implements the link function  $\expit : \bbR \to ]0,1[$ given
+by  $\expit(x) \equiv  (1 +  e^{-x})^{-1}$.  Function  `logit` implements  its
+inverse function  $\logit : ]0,1[  \to \bbR$  given by $\logit(p)  \equiv \log
+[p/(1-p)]$.  Let us take a look at `experiment`:
+
+```{r view-experiment}
+experiment
+```
+
+We  can interpret  `run_experiment` as  a  law $P_{0}$  since we  can use  the
 function to sample observations  from a common law.  It is  even a little more
-than that, because we can tweak the experiment, by setting its `ideal` argument
-to  `TRUE`, in  order  to  get what  appear  as intermediary  (counterfactual)
-variables  in  the regular  experiment.   The  next  chunk  of code  runs  the
-(regular)  experiment  five  times  independently and  outputs  the  resulting
-observations: 
+than  that, because  we  can  tweak the  experiment,  by  setting its  `ideal`
+argument   to  `TRUE`,   in  order   to  get   what  appear   as  intermediary
+(counterfactual) variables in the regular  experiment.  The next chunk of code
+runs  the  (regular)  experiment  five times  independently  and  outputs  the
+resulting observations:
 
 ```{r draw-five-obs} 
 (five_obs <- run_experiment(5))
@@ -152,7 +129,7 @@ Similarly, the  attribute `Qbar` describes  the conditional mean of  $Y$ given
 $A$  and  $W$,   and  we  denote  $\Qbar_0(A,W)   =  \Exp_{P_{0}}(Y|A,W)$  the
 conditional mean of $Y$ given $A$ and $W$.
 
-\gear __Exercises__
+# \gear Exercises
 
 1.  Run the following chunk of code.  It visualizes the conditional mean
    $\Qbar_{0}$.
@@ -183,7 +160,7 @@ features %>% select(-Qw, -Gw) %>%
 2. Adapt the  above chunk of code to visualize  the marginal density $Q_{0,W}$
    and conditional probability $\Gbar_{0}$.
 
-## The parameter of interest, first pass. {#subsec:parameter:first}
+# The parameter of interest, first pass. {#subsec:parameter:first}
 
 It happens that we especially care for a finite-dimensional feature of $P_{0}$
 that  we   denote  by  $\psi_{0}$.    Its  definition  involves  two   of  the

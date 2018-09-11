@@ -1,22 +1,12 @@
-## ----setup, echo = FALSE-------------------------------------------------
-knitr::opts_chunk$set(
-  fig.height = 4, 
-  fig.path = 'img/',
-  fig.width = 12,
-  message = FALSE,
-  size = "tiny",
-  warning = FALSE,
-  warnings = FALSE
-)
+## ----install-package, eval = FALSE---------------------------------------
+## devtools::install_github("achambaz/gttmle/guided.tour.tmle")
 
 ## ----visible-setup-------------------------------------------------------
 set.seed(54321) ## because reproducibility matters...
-suppressMessages(library(R.utils)) ## make sure it is installed
-suppressMessages(library(tidyverse)) ## make sure it is installed
-suppressMessages(library(caret)) ## make sure it is installed
-suppressMessages(library(ggdag)) ## make sure it is installed
-expit <- plogis
-logit <- qlogis
+suppressMessages(library(tidyverse)) 
+suppressMessages(library(caret))
+suppressMessages(library(ggdag))
+suppressMessages(library(guided.tour.tmle))
 
 ## ----redo----------------------------------------------------------------
 redo_fixed <- c(TRUE, FALSE)[2]
@@ -26,78 +16,22 @@ redo_varying <- c(TRUE, FALSE)[2]
 if (!redo_fixed) {
   if (!exists("learned_features_fixed_sample_size")) {
     learned_features_fixed_sample_size <-
-      loadObject("data/learned_features_fixed_sample_size_new.xdr")
+      loadObject("../tmle-applique/data/learned_features_fixed_sample_size_new.xdr")
   }
 }
 if (!redo_varying) {
   if (!exists("learned_features_varying_sample_size")) {
     learned_features_varying_sample_size <-
-      loadObject("data/learned_features_varying_sample_size_new.xdr")
+      loadObject("../tmle-applique/data/learned_features_varying_sample_size_new.xdr")
   }
 } 
 
 ## ----simulation----------------------------------------------------------
-run_experiment <- function(n, ideal = FALSE) {
-  ## preliminary
-  n <- Arguments$getInteger(n, c(1, Inf))
-  ideal <- Arguments$getLogical(ideal)
-  ## ## 'Gbar' and 'Qbar' factors
-  Gbar <- function(W) {
-    expit(1 + 2 * W - 4 * sqrt(abs((W - 5/12))))
-  }
-  Qbar <- function(AW) {
-    A <- AW[, 1]
-    W <- AW[, 2]
-    ## A * (cos((1 + W) * pi / 4) + (1/3 <= W & W <= 1/2) / 5) +
-    ##  (1 - A) * (sin(4 * W^2 * pi) / 4 + 1/2)
-    A * (cos((-1/2 + W) * pi) * 2/5 + 1/5 + (1/3 <= W & W <= 1/2) / 5 +
-         (W >= 3/4) * (W - 3/4) * 2) +
-      (1 - A) * (sin(4 * W^2 * pi) / 4 + 1/2) 
-  }
-  ## sampling
-  ## ## context
-  mixture_weights <- c(1/10, 9/10, 0)
-  mins <- c(0, 11/30, 0)
-  maxs <- c(1, 14/30, 1)
-  latent <- findInterval(runif(n), cumsum(mixture_weights)) + 1
-  W <- runif(n, min = mins[latent], max = maxs[latent])
-  ## ## counterfactual rewards
-  zeroW <- cbind(A = 0, W)
-  oneW <- cbind(A = 1, W)
-  Qbar.zeroW <- Qbar(zeroW)
-  Qbar.oneW <- Qbar(oneW)
-  Yzero <- rbeta(n, shape1 = 2, shape2 = 2 * (1 - Qbar.zeroW) / Qbar.zeroW)
-  Yone <- rbeta(n, shape1 = 3, shape2 = 3 * (1 - Qbar.oneW) / Qbar.oneW)
-  ## ## action undertaken
-  A <- rbinom(n, size = 1, prob = Gbar(W))
-  ## ## actual reward
-  Y <- A * Yone + (1 - A) * Yzero
-  ## ## observation
-  if (ideal) {
-    obs <- cbind(W = W, Yzero = Yzero, Yone = Yone, A = A, Y = Y)
-  } else {
-    obs <- cbind(W = W, A = A, Y = Y)
-  }
-  attr(obs, "Gbar") <- Gbar
-  attr(obs, "Qbar") <- Qbar
-  attr(obs, "QW") <- function(W) {
-    out <- sapply(1:length(mixture_weights),
-                  function(ii){
-                    mixture_weights[ii] *
-                      dunif(W, min = mins[ii], max = maxs[ii])
-                  })
-    return(rowSums(out))
-  }
-  attr(obs, "qY") <- function(AW, Y, Qbar){
-    A <- AW[, 1]
-    W <- AW[, 2]
-    Qbar.AW <- do.call(Qbar, list(AW)) # is call to 'do.call' necessary?
-    shape1 <- ifelse(A == 0, 2, 3)
-    dbeta(Y, shape1 = shape1, shape2 = shape1 * (1 - Qbar.AW) / Qbar.AW)
-  }
-  ##
-  return(obs)
-}
+example(guided.tour.tmle, echo = FALSE)
+ls()
+stop("stop")
+## ----view-experiment-----------------------------------------------------
+experiment
 
 ## ----draw-five-obs-------------------------------------------------------
 (five_obs <- run_experiment(5))
@@ -132,7 +66,7 @@ integrand <- function(w) {
 }
 (psi_zero <- integrate(integrand, lower = 0, upper = 1)$val)
 
-## ----DAG, out.width = '70%', fig.align = 'center', fig.width = 8, fig.height = 6, fig.cap = "Causal graph summarizing the inner causal mechanism at play in `run\\_experiment`."----
+## ----DAG, out.width = '70%', fig.align = 'center', fig.width = 8, fig.height = 6, fig.cap = '(ref:DAG)'----
 dagify(
   Y ~ A + Y1 + Y0, A ~ W, Y1 ~ W, Y0 ~ W,
   labels = c(Y = "Actual reward",
@@ -206,7 +140,7 @@ another_integrand <- function(w) {
 }
 (psi_Pi_zero <- integrate(another_integrand, lower = 0, upper = 1)$val)
 
-## ----psi-approx-psi-one,  fig.cap =  "Evolution of statistical parameter $\\Psi$ along fluctuation $\\{\\Pi_{h} : h \\in H\\}$."----
+## ----psi-approx-psi-one, fig.cap = '(ref:psi-approx-psi-one)'------------
 approx <- seq(-1, 1, length.out = 1e2)
 psi_Pi_h <- sapply(approx, function(t) {
   obs_from_another_experiment <- run_another_experiment(1, h = t)
@@ -281,14 +215,63 @@ sd_hat <- sd(vars)
 (slope_hat <- mean(vars))
 (slope_CI <- slope_hat + c(-1, 1) * qnorm(1 - alpha / 2) * sd_hat / sqrt(B))
 
-## ----known-Gbar-one-a----------------------------------------------------
+## ----evaluating-remainder------------------------------------------------
+# Could we add a method for evaluating the remainder?
+# e.g., using integrate and/or approximating with large sample
+
+## ----draw-a-sample-------------------------------------------------------
 ## Debug -- couldn't find obs when I tried to compile
-obs <- run_experiment(1e6)
+obs <- run_experiment(B)
+
+## ----intro-est-G---------------------------------------------------------
+estimate_G <- function(dat, algorithm, ...) {
+  if (!is.data.frame(dat)) {
+    dat <- as.data.frame(dat)
+  }
+  if (!attr(algorithm, "ML")) {
+    fit <- algorithm[[1]](formula = algorithm[[2]], data = dat)
+  } else {
+    fit <- algorithm[[1]](dat, ...)
+  }
+  fit$type_of_preds <- algorithm$type_of_preds
+  return(fit)
+}
+
+## ----unknown-Gbar-two----------------------------------------------------
+trim_glm_fit <- caret::getModelInfo("glm")$glm$trim
+working_model_G_one <- list(
+  model = function(...) { 
+    trim_glm_fit(glm(family = binomial(), ...))
+  },
+  formula = as.formula(
+    paste("A ~",
+          paste(c("I(W^", "I(abs(W - 5/12)^"),
+                rep(seq(1/2, 3/2, by = 1/2), each = 2),
+                sep = "", collapse = ") + "),
+          ")")
+  ),
+  type_of_preds = "response"
+)
+attr(working_model_G_one, "ML") <- FALSE
+working_model_G_one$formula
+
+## ----show-estimateG-in-action--------------------------------------------
+
+
+## ----intro-estimateQ-method----------------------------------------------
+# introduce code for estimation of $\Qbar_0$ 
+# and show how it works 
+
+## ----intro-to-estimateQW-------------------------------------------------
+# not sure how this is being handled in the code 
+# and whether we need to introduce a function for this here?
+
+## ----known-Gbar-one-a----------------------------------------------------
 Gbar <- attr(obs, "Gbar")
 
 iter <- 1e3
 
-## ----known-Gbar-one-b, fig.cap = "Kernel density estimators of the law of two estimators of $\\psi_{0}$ (recentered with respect to $\\psi_{0}$, and renormalized), one of them misconceived (a), the other assuming that $\\Gbar_{0}$ is known (b). Built based on `iter` independent realizations of each estimator."----
+## ----known-Gbar-one-b, fig.cap = '(ref:known-Gbar-one-b)'----------------
 psi_hat_ab <- obs %>% as_tibble() %>%
   mutate(id = (seq_len(n()) - 1) %% iter) %>%
   mutate(lGAW = A * Gbar(W) + (1 - A) * (1 - Gbar(W))) %>% group_by(id) %>%
@@ -340,22 +323,6 @@ compute_lGhatAW <- function(A, W, Ghat, threshold = 0.05) {
   return(pred)
 }
 
-## ----unknown-Gbar-two----------------------------------------------------
-trim_glm_fit <- caret::getModelInfo("glm")$glm$trim
-working_model_G_one <- list(
-  model = function(...) {trim_glm_fit(glm(family = binomial(), ...))},
-  formula = as.formula(
-    paste("A ~",
-          paste(c("I(W^", "I(abs(W - 5/12)^"),
-                rep(seq(1/2, 3/2, by = 1/2), each = 2),
-                sep = "", collapse = ") + "),
-          ")")
-  ),
-  type_of_preds = "response"
-)
-attr(working_model_G_one, "ML") <- FALSE
-working_model_G_one$formula
-
 ## ----unknown-Gbar-two-bis------------------------------------------------
 if (redo_fixed) {
   learned_features_fixed_sample_size <-
@@ -379,7 +346,7 @@ psi_hat_abc <-
 ## DEBUG : This was breaking when I compiled.
 (bias_abc <- psi_hat_abc %>% group_by(type) %>% summarise(bias = mean(clt)))
 
-## ----unknown-Gbar-three, fig.cap = "Kernel density estimators of the law of three estimators of $\\psi_{0}$  (recentered with respect to $\\psi_{0}$, and renormalized), one of them misconceived (a), one assuming that $\\Gbar_{0}$ is known (b) and one that hinges on the estimation of $\\Gbar_{0}$ (c). The present figure includes Figure \\@ref(fig:known-Gbar-one-b) (but the colors differ). Built based on `iter` independent realizations of each estimator."----
+## ----unknown-Gbar-three, fig.cap = '(ref:unknown-Gbar-three)'------------
 fig +
   geom_density(aes(clt, fill = type, colour = type), psi_hat_abc, alpha = 0.1) +
   geom_vline(aes(xintercept = bias, colour = type),
@@ -389,7 +356,7 @@ fig +
        x = expression(paste(sqrt(n/v[n]^{list(a, b, c)})*
                             (psi[n]^{list(a, b, c)} - psi[0]))))
 
-## ----unknown-Gbar-four, fig.cap  = "Quantile-quantile plot of the standard normal law against the empirical laws  of three estimators of $\\psi_{0}$, one of them misconceived (a), one assuming that $\\Gbar_{0}$ is known (b) and one that hinges on the estimation of $\\Gbar_{0}$ (c). Built based on `iter` independent realizations of each estimator."----
+## ----unknown-Gbar-four, fig.cap = '(ref:unknown-Gbar-four)'--------------
 ggplot(psi_hat_abc, aes(sample = clt, fill = type, colour = type)) +
   geom_abline(intercept = 0, slope = 1, alpha = 0.5) +
   geom_qq(alpha = 1)
@@ -493,7 +460,7 @@ control <- trainControl(method = "cv", number = 2,
                         trim = TRUE,
                         allowParallel = TRUE)
 
-## ----estimating-Qbar-one-bis, fig.cap = "Write caption."-----------------
+## ----estimating-Qbar-one-bis, fig.cap = '(ref:estimating-Qbar-one-bis)'----
 if(redo_fixed) {
   learned_features_fixed_sample_size <-
     learned_features_fixed_sample_size %>% # head(n = 100) %>%
@@ -580,7 +547,7 @@ root_n_bias <- learned_features_varying_sample_size %>%
   mutate(block = unlist(map(strsplit(block, "_"), ~.x[2])),
          sample_size = sample_size[as.integer(block)])
 
-## ----estimating-Qbar-four, fig.width = 5, fig.height = 5, fig.cap  = "Evolution of root-$n$ times bias versus sample size for two inference methodology of $\\psi_{0}$ based on the estimation of $\\Qbar_{0}$. Big dots represent the average biases and vertical lines represent twice the standard error."----
+## ----estimating-Qbar-four, fig.width = 5, fig.height = 5, fig.cap = '(ref:estimating-Qbar-four)'----
 root_n_bias <- learned_features_fixed_sample_size %>%
   mutate(sample_size = B/iter) %>%  # because *fixed* sample size
   unnest(blip_QW_d, blip_QW_e) %>%
@@ -663,7 +630,7 @@ eic_hat <- function(obs, Qhat, Ghat, psi_hat) {
   return(out)
 }
 
-## ----one-step-two, fig.cap = "Write caption."----------------------------
+## ----one-step-two, fig.cap = '(ref:one-step-two)'------------------------
 psi_hat_de_one_step <- learned_features_fixed_sample_size %>%
   mutate(est_d = map(blip_QW_d, mean),
          est_e = map(blip_QW_e, mean)) %>%
