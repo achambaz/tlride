@@ -2,22 +2,23 @@
 knit: "bookdown::render_book"
 title: "A Guided Tour in Targeted Learning Territory (provisional)"
 author: ["David Benkeser", "Antoine Chambaz"]
+date: "09/11/2018"
 description: "To do..."
-<!--url: 'http\://r4ds.had.co.nz/'-->
+encoding: "UTF-8"
 github-repo: achambaz/gttmle
-<!--cover-image: cover.png-->
 site: bookdown::bookdown_site
 documentclass: book
 ---
 
+<!--url: 'http\://r4ds.had.co.nz/'-->
+<!--cover-image: cover.png-->
+
 # Welcome {-} 
 
-<a href="http://amzn.to/2aHLAQ1"><img src="cover.png" width="250" height="375"
-alt="Cover image" align="right" style="margin: 0 1em 0 1em" /></a> This is the
-website for __"A Guided Tour in Targeted Learning Territory"__. This book will
-teach you...
+This   is  the   website   for   __"A  Guided   Tour   in  Targeted   Learning
+Territory"__. 
 
-The  book   is  written  in   [RMarkdown](https://rmarkdown.rstudio.com)  with
+The text is written in [RMarkdown](https://rmarkdown.rstudio.com) with
 [bookdown](https://bookdown.org).  
 
 <!--It            is           automatically            rebuilt           from

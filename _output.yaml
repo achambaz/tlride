@@ -2,8 +2,10 @@ bookdown::gitbook:
   config:
     toc:
       collapse: section
+      scroll_hightlight: yes
       before: |
-        <li><strong><a href="./">A Guided Tour in Targeted Learning Territory</a></strong></li>
+        <li><strong><a href="./">GTTMLE: A Guided Tour in</a></strong></li>
+        <li><strong><a href="./">Targeted Learning Territory</a></strong></li>
       toolbar:
         position: static
       edit : null
@@ -13,20 +15,14 @@ bookdown::gitbook:
         theme: white
         family: sans
         size: 2
-      includes:
-        in_header: 
-          mathjax_number.html
-        before_body:
-          dan_header.html
-    edit:
-      link: https://github.com/achambaz/gttmle/edit/master/%s
-      text: "Edit"
+  includes:
+    before_body: dan_header.html
     sharing: no
-        lib_dir: assets
+    lib_dir: assets
     split_by: section
   css: gttmle.css
 
-bookdown::pdf_book:
+bookdown::pdf_document2:
   toc: true
   toc_depth: 2
   number_sections: true
@@ -34,5 +30,3 @@ bookdown::pdf_book:
     in_header: dan_header.tex
   latex_engine: pdflatex
   citation_package: natbib
-
-
