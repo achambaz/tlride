@@ -39,7 +39,7 @@ laws are characterized.
 
 ## create a one-dimensional fluctutation (collection of laws)
 example(guided.tour.tmle, echo = FALSE)
-(evaluate_psi(another_experiment)) # Psi(P_0)
+(evaluate_psi(another_experiment, h = 0)) # Psi(P_0)
 (evaluate_psi(another_experiment, h = 1)) # Psi(P_1)
 
 ## evaluate the remainder term

@@ -182,6 +182,4 @@
 #'   ## no need to center given how we will use it
 #'   return(out)
 #'  }
-#' 
-#' @importFrom magrittr %>%
 NULL

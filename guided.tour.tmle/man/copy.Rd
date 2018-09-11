@@ -4,6 +4,9 @@
 \alias{copy}
 \alias{copy.LAW}
 \title{Copies an object of class LAW}
+\usage{
+\method{copy}{LAW}(this, ...)
+}
 \arguments{
 \item{this}{An object of \code{class} \code{LAW}.}
 

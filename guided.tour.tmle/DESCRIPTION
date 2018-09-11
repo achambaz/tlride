@@ -1,6 +1,6 @@
 Package: guided.tour.tmle
 Title: A Companion Package to the Article "A Guided Tour in Targeted Learning Territory"
-Version: 0.0.1
+Version: 1.0.0
 Authors@R: as.person(c(
   "Antoine Chambaz <antoine.chambaz@parisdescartes.fr> [aut, cre]",
   "David Benkeser <benkeser@emory.edu> [aut]"))

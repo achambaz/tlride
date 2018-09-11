@@ -4,6 +4,9 @@
 \alias{sample_from}
 \alias{sample_from.LAW}
 \title{Samples from an object of class LAW}
+\usage{
+\method{sample_from}{LAW}(this, n = 1, ...)
+}
 \arguments{
 \item{this}{An object of \code{class} \code{LAW}.}
 

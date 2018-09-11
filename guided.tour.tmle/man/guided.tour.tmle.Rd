@@ -186,7 +186,6 @@ sigma0 <- function(obs, law = another_experiment) {
   ## no need to center given how we will use it
   return(out)
  }
-
 }
 \references{
 Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).

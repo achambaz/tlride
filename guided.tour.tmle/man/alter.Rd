@@ -4,6 +4,9 @@
 \alias{alter}
 \alias{alter.LAW}
 \title{Alters an object of class LAW}
+\usage{
+\method{alter}{LAW}(this, ...)
+}
 \arguments{
 \item{this}{An object of \code{class} \code{LAW}.}
 

@@ -3,8 +3,35 @@
 \name{LAW}
 \alias{LAW}
 \title{Initializes an object of class LAW}
+\usage{
+LAW(QW = NA, Gbar = NA, Qbar = NA, qY = NA, sample_from = NA)
+}
+\arguments{
+\item{QW}{The marginal  law of 'W', a  \code{function} (the density)  or a
+\code{tibble} with columns named 'value' and 'weight' (a discrete law).}
+
+\item{Gbar}{The  conditional  probability  that  'A=1'   given  'W',  a
+\code{function}.}
+
+\item{Qbar}{The conditional  mean of  'Y' given  '(A,W)', a  \code{function}.}
+
+\item{qY}{The conditional density of 'Y' given '(A,W)', a \code{function}}
+
+\item{sample_from}{A \code{function}  to sample from the law.}
+}
+\value{
+Returns an [R.oo::Object] of \code{class} LAW.
+}
 \description{
-Initializes an object of \code{class} \code{LAW}.
+Initializes  an object  of \code{class}  \code{LAW}. The  object can  fully
+characterize  a law  for (W,A,Y)  in [0,1]  x {0,1}  x [0,1],  ie, make  it
+possible to  sample from it. A  collection of features of  special interest
+can be specified.
+}
+\examples{
+
+## See 'example(guided.tour.tmle)'
+
 }
 \seealso{
 Other methods and functions for LAW objects: \code{\link{alter}},

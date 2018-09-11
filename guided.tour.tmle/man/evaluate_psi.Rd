@@ -4,6 +4,9 @@
 \alias{evaluate_psi}
 \alias{evaluate_psi.LAW}
 \title{Evaluates the statistical mapping Psi at an object of class LAW}
+\usage{
+\method{evaluate_psi}{LAW}(this, ...)
+}
 \arguments{
 \item{this}{An object of \code{class} \code{LAW}.}
 

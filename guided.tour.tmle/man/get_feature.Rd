@@ -4,6 +4,9 @@
 \alias{get_feature}
 \alias{get_feature.LAW}
 \title{Reveals one feature of an object of class LAW}
+\usage{
+\method{get_feature}{LAW}(this, what, ...)
+}
 \arguments{
 \item{this}{An object of \code{class} \code{LAW}.}
 
@@ -30,7 +33,7 @@ if one has built the object or if one acts as an \emph{oracle}.
 
 ## create then reveal an experiment
 example(guided.tour.tmle, echo = FALSE)
-get_feature(expriment, "Gbar")
+get_feature(experiment, "Gbar")
 
 
 }

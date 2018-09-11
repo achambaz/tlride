@@ -1,20 +1,41 @@
 #' Initializes an object of class LAW
 #'
-#' Initializes an object of \code{class} \code{LAW}.
+#' Initializes  an object  of \code{class}  \code{LAW}. The  object can  fully
+#' characterize  a law  for (W,A,Y)  in [0,1]  x {0,1}  x [0,1],  ie, make  it
+#' possible to  sample from it. A  collection of features of  special interest
+#' can be specified.
 #'
 #' @name LAW
 #'
-#' @family methods and functions for LAW objects
+#' @param  QW The marginal  law of 'W', a  \code{function} (the density)  or a
+#'   \code{tibble} with columns named 'value' and 'weight' (a discrete law).
 #' 
+#' @param  Gbar   The  conditional  probability  that  'A=1'   given  'W',  a
+#'   \code{function}.
+#'
+#' @param Qbar The conditional  mean of  'Y' given  '(A,W)', a  \code{function}.
+#'
+#' @param qY The conditional density of 'Y' given '(A,W)', a \code{function}
+#'
+#' @param sample_from A \code{function}  to sample from the law.
+#'
+#' @return Returns an [R.oo::Object] of \code{class} LAW.
+#'
+#' @examples
+#'
+#' ## See 'example(guided.tour.tmle)'
+#' 
+#' @family methods and functions for LAW objects
+#'
 #' @export 
-R.oo::setConstructorS3("LAW", function(Gbar = NA, Qbar = NA, QW = NA,
-                                       qY= NA, sample_from = NA) {
-  R.oo::extend(R.oo::Object(), "LAW",
-               .QW = QW,
-               .Gbar = Gbar,
-               .Qbar = Qbar,
-               .qY = qY,
-               .sample_from = sample_from)
+setConstructorS3("LAW", function(QW = NA, Gbar = NA, Qbar = NA, 
+                                 qY= NA, sample_from = NA) {
+  extend(Object(), "LAW",
+         .QW = QW,
+         .Gbar = Gbar,
+         .Qbar = Qbar,
+         .qY = qY,
+         .sample_from = sample_from)
 })
 
 
@@ -28,8 +49,6 @@ R.oo::setConstructorS3("LAW", function(Gbar = NA, Qbar = NA, QW = NA,
 #' @param this An object of \code{class} \code{LAW}.
 #'
 #' @param ... Not used.
-#' 
-#' @aliases copy.LAW
 #'
 #' @family methods and functions for LAW objects
 #' 
@@ -46,10 +65,12 @@ R.oo::setConstructorS3("LAW", function(Gbar = NA, Qbar = NA, QW = NA,
 #' 
 #' @references Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
 #'
+#' @aliases copy
+#' 
 #' @export copy
 #' 
-#' @export copy.LAW
-R.methodsS3::setMethodS3(
+#' @export
+setMethodS3(
   "copy", "LAW", function(this, ...) {
     LAW(Gbar = this$.Gbar,
         Qbar = this$.Qbar,
@@ -73,14 +94,12 @@ R.methodsS3::setMethodS3(
 #' @return  A character string  recalling what can be  done with an  object of
 #'   \code{class} \code{LAW}.
 #' 
-#' @aliases as.character.LAW
-#'
 #' @references Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
 #'
 #' @family methods and functions for LAW objects
-#' 
-#' @export as.character.LAW
-R.methodsS3::setMethodS3(
+#'
+#' @export
+setMethodS3(
   "as.character", "LAW",
   function(x, ...) {
     this <- x ## to please R CMD check
@@ -121,8 +140,6 @@ R.methodsS3::setMethodS3(
 #' @param  \dots Additional parameters  possibly needed to  fully characterize
 #'   the law.
 #' 
-#' @aliases sample_from.LAW
-#' 
 #' @seealso \code{\link{reveal}} to reveal  some relevant features of the law,
 #'   \code{\link{alter}}   to  modify   them,  \code{\link{evaluate_psi}}   to
 #'   evaluate    the     value    of    \eqn{Psi}    at     the    law,    and
@@ -145,11 +162,13 @@ R.methodsS3::setMethodS3(
 #'
 #' ## sample three observations from it
 #' sample_from(experiment, n = 3)
+#'
+#' @aliases sample_from
 #' 
 #' @export sample_from
 #' 
-#' @export sample_from.LAW
-R.methodsS3::setMethodS3(
+#' @export
+setMethodS3(
   "sample_from", "LAW",
   function(this, n = 1, ...) {
   n <- R.utils::Arguments$getInteger(n, c(1, Inf))
@@ -178,8 +197,6 @@ R.methodsS3::setMethodS3(
 #' @param  \dots Additional parameters  possibly needed to  fully characterize
 #'   the law.
 #'
-#' @aliases reveal.LAW
-#'
 #' @family methods and functions for LAW objects
 #' 
 #' @references Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
@@ -206,12 +223,12 @@ R.methodsS3::setMethodS3(
 #'   'sample_from', a \code{function}  to sample from the law.}   Each of them
 #'   equals 'NA' if it is not characterized.
 #'
-#' @export
-#'
+#' @aliases reveal
+#' 
 #' @export reveal
-#'
-#' @export reveal.LAW
-R.methodsS3::setMethodS3(
+#' 
+#' @export
+setMethodS3(
   "reveal", "LAW", function(this, ...) {
   list(QW = this$.QW,
        Gbar = this$.Gbar,
@@ -235,8 +252,6 @@ R.methodsS3::setMethodS3(
 #' @param  \dots Additional parameters  possibly needed to  fully characterize
 #'   the law.
 #'
-#' @aliases get_feature.LAW
-#'
 #' @family methods and functions for LAW objects
 #' 
 #' @references Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
@@ -247,7 +262,7 @@ R.methodsS3::setMethodS3(
 #'
 #' ## create then reveal an experiment
 #' example(guided.tour.tmle, echo = FALSE)
-#' get_feature(expriment, "Gbar")
+#' get_feature(experiment, "Gbar")
 #' 
 #' 
 #'@return  Depending on  argument  'what',  one among  \itemize{\item  'QW',
@@ -258,12 +273,12 @@ R.methodsS3::setMethodS3(
 #'   'qY', conditional density of 'Y' given '(A,W)', a \code{function}.}  Each
 #'   of them equals 'NA' if it is not characterized in object 'this'.
 #'
-#' @export
-#'
+#' @aliases get_feature
+#' 
 #' @export get_feature
 #'
-#' @export get_feature.LAW
-R.methodsS3::setMethodS3(
+#' @export
+setMethodS3(
   "get_feature", "LAW", function(this, what, ...){
   if (!(what %in% c("Qbar", "Gbar", "QW", "qY"))) {
     stop(stringr::str_c("Argument 'what' should be one of 'Qbar', 'Gbar', 'QW', 'qY', not ",
@@ -328,8 +343,6 @@ R.methodsS3::setMethodS3(
 #' @param \dots  Additional parameters possibly needed to  fully characterize the
 #'   law.
 #'
-#' @aliases evaluate_psi.LAW
-#'
 #' @references Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
 #' 
 #' @seealso \code{\link{sample_from}}  to sample from the law (if  it is fully
@@ -352,13 +365,13 @@ R.methodsS3::setMethodS3(
 #'
 #' ## evaluate Psi at this experiment
 #' evaluate_psi(experiment)
-#' 
-#' @export
+#'
+#' @aliases evaluate_psi
 #' 
 #' @export evaluate_psi
 #'
-#' @export evaluate_psi.LAW
-R.methodsS3::setMethodS3(
+#' @export
+setMethodS3(
   "evaluate_psi", "LAW", function(this, ...) {
   some_relevant_features <- reveal(this)
   ellipsis <- list(...)
@@ -406,10 +419,11 @@ R.methodsS3::setMethodS3(
 #'
 #' @param this An object of \code{class} \code{LAW}.
 #'
+#' @param  psi A  \code{numeric},  the  value of  \eqn{Psi}  at  the law.  If
+#'   \code{NULL} (default), then it is computed by calling \code{evaluate_psi}. 
+#' 
 #' @param \dots  Additional parameters possibly needed to  fully characterize the
 #'   law.
-#'
-#' @aliases evaluate_eic.LAW
 #' 
 #' @references Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
 #' 
@@ -437,13 +451,13 @@ R.methodsS3::setMethodS3(
 #' ## sample five observations from the experiment, then evaluate 'eic' at them
 #' obs <- sample_from(experiment, n = 5)
 #' eic(obs)
+#'
+#' @aliases evaluate_eic
+#'
+#' @export evaluate_eic
 #' 
 #' @export
-#' 
-#' @export evaluate_eic
-#'
-#' @export evaluate_eic.LAW
-R.methodsS3::setMethodS3(
+setMethodS3(
   "evaluate_eic", "LAW", function(this, psi = NULL, ...) {
   if (is.null(psi)) {
     psi <- evaluate_psi(this, ...)
@@ -500,8 +514,6 @@ R.methodsS3::setMethodS3(
 #'
 #' @param \dots ...
 #'
-#' @aliases alter.LAW
-#'
 #' @references Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
 #' 
 #' @seealso \code{\link{sample_from}}  to sample from the law (if  it is fully
@@ -523,13 +535,13 @@ R.methodsS3::setMethodS3(
 #' reveal(experiment)
 #' alter(experiment, Gbar = function(W){rep_len(1/2, length(W))})
 #' reveal(experiment)
-#' 
-#' @export
+#'
+#' @aliases alter
 #'
 #' @export alter
-#'
-#' @export alter.LAW
-R.methodsS3::setMethodS3(
+#' 
+#' @export
+setMethodS3(
   "alter", "LAW", function(this, ...) {
   sys_call <- as.list(sys.call())
   ellipsis <- list(...)
@@ -594,7 +606,7 @@ R.methodsS3::setMethodS3(
 #'
 #' ## create a one-dimensional fluctutation (collection of laws)
 #' example(guided.tour.tmle, echo = FALSE)
-#' (evaluate_psi(another_experiment)) # Psi(P_0)
+#' (evaluate_psi(another_experiment, h = 0)) # Psi(P_0)
 #' (evaluate_psi(another_experiment, h = 1)) # Psi(P_1)
 #' 
 #' ## evaluate the remainder term
@@ -610,9 +622,11 @@ R.methodsS3::setMethodS3(
 #' evaluate_remainder(another_experiment, yet_another_experiment,
 #'                    list(list(h = 0), list(h = 1)))
 #'
-#' @export
-#' 
+#' @aliases evaluate_remainder
+#'
 #' @export evaluate_remainder
+#' 
+#' @export
 evaluate_remainder <- function(this, that, params = NULL) {
   if (!is.null(params)) {
     if (!length(params) == 2) {

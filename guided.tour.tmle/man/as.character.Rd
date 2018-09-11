@@ -4,6 +4,9 @@
 \alias{as.character}
 \alias{as.character.LAW}
 \title{Prints an object of class LAW}
+\usage{
+\method{as.character}{LAW}(x, ...)
+}
 \arguments{
 \item{x}{An object of \code{class} \code{LAW}.}
 

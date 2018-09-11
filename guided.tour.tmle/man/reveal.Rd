@@ -4,6 +4,9 @@
 \alias{reveal}
 \alias{reveal.LAW}
 \title{Reveals an object of class LAW}
+\usage{
+\method{reveal}{LAW}(this, ...)
+}
 \arguments{
 \item{this}{An object of \code{class} \code{LAW}.}
 

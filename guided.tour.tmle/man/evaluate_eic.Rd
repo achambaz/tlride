@@ -4,8 +4,14 @@
 \alias{evaluate_eic}
 \alias{evaluate_eic.LAW}
 \title{Evaluates the efficient influence curve of Psi at an object of class LAW}
+\usage{
+\method{evaluate_eic}{LAW}(this, psi = NULL, ...)
+}
 \arguments{
 \item{this}{An object of \code{class} \code{LAW}.}
+
+\item{psi}{A  \code{numeric},  the  value of  \eqn{Psi}  at  the law.  If
+\code{NULL} (default), then it is computed by calling \code{evaluate_psi}.}
 
 \item{\dots}{Additional parameters possibly needed to  fully characterize the
 law.}

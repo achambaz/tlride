@@ -24,7 +24,7 @@
 #'}
 #' stats::predict(fit_light, newdata = dat)
 #'
-#' @export trim_glm_fit
+#' @export
 trim_glm_fit <- caret::getModelInfo("glm")$glm$trim
 
 #' Estimates the Gbar feature of an object of class LAW
