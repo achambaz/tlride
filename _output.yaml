@@ -1,0 +1,38 @@
+bookdown::gitbook:
+  config:
+    toc:
+      collapse: section
+      before: |
+        <li><strong><a href="./">A Guided Tour in Targeted Learning Territory</a></strong></li>
+      toolbar:
+        position: static
+      edit : null
+      download: null
+      search: yes
+      fontsettings:
+        theme: white
+        family: sans
+        size: 2
+      includes:
+        in_header: 
+          mathjax_number.html
+        before_body:
+          dan_header.html
+    edit:
+      link: https://github.com/achambaz/gttmle/edit/master/%s
+      text: "Edit"
+    sharing: no
+        lib_dir: assets
+    split_by: section
+  css: gttmle.css
+
+bookdown::pdf_book:
+  toc: true
+  toc_depth: 2
+  number_sections: true
+  includes:
+    in_header: dan_header.tex
+  latex_engine: pdflatex
+  citation_package: natbib
+
+
