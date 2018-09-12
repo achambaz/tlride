@@ -121,7 +121,7 @@ it easier later on to drive home important messages.  Specifically, $\ldots{}$
 (do we explain what happens?)}  The attribute `Gbar` describes the conditional
 probability of action $A = 1$ given  $W$.  For each $a \in \{0,1\}$, we denote
 $\Gbar_0(W)  \equiv  \Pr_{P_0}(A  =  1  |  W)$  and  $\ell\Gbar_0(a,W)  \equiv
-\Pr_{P_0}(A = a | W)$.  Obvisously, $\ell\Gbar_{0}(A,W) \equiv A\Gbar_{0}(W) +
+\Pr_{P_0}(A = a | W)$.   Obviously, $\ell\Gbar_{0}(A,W) \equiv A\Gbar_{0}(W) +
 (1-A) (1-\Gbar_{0}(W))$.  The attribute `qY` describes the conditional density
 of $Y$ given $A$ and $W$.  For  each $y\in ]0,1[$, we denote by $q_{0,Y}(y, A,
 W)$  the conditional  density  evaluated at  $y$  of $Y$  given  $A$ and  $W$.
