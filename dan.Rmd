@@ -52,13 +52,13 @@ redo_varying <- c(TRUE, FALSE)[2]
 if (!redo_fixed) {
   if (!exists("learned_features_fixed_sample_size")) {
     learned_features_fixed_sample_size <-
-      loadObject("../tmle-applique/data/learned_features_fixed_sample_size_new.xdr")
+      load("../tmle-applique/data/learned_features_fixed_sample_size_new.xdr")
   }
 }
 if (!redo_varying) {
   if (!exists("learned_features_varying_sample_size")) {
     learned_features_varying_sample_size <-
-      loadObject("../tmle-applique/data/learned_features_varying_sample_size_new.xdr")
+      load("../tmle-applique/data/learned_features_varying_sample_size_new.xdr")
   }
 } 
 ```
