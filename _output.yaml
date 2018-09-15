@@ -18,6 +18,7 @@ bookdown::gitbook:
         size: 2
   includes:
     before_body: dan_header.html
+    in_header: mathjax_number.html
     sharing: no
     lib_dir: assets
     split_by: section
