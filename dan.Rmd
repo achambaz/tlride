@@ -30,7 +30,7 @@ devtools::install_github("achambaz/gttmle/guided.tour.tmle")
 ```
 
 Note that additional packages are required, among which `tidyverse`, `caret`
-and `ggdag`. Assuming that there are installed  too, we can run the next chunk
+and `ggdag`. Assuming that these are installed  too, we can run the next chunk
 of code:
 
 ```{r visible-setup, results = FALSE}
@@ -67,15 +67,16 @@ if (!redo_varying) {
 
 \tcg{Continue here!}
 
-We are interested in a reproducible experiment. The generic summary of how one
-realization of the experiment unfolds, our observation, is called $O$. We view
-$O$  as a  random variable  drawn from  what we  call the  law $P_{0}$  of the
-experiment.  The  law $P_{0}$  is viewed  as an  element of  what we  call the
-model. Denoted  by $\calM$, the model  is the collection of  \textit{all} laws
-from which  $O$ can be drawn  and that meet some  constraints. The constraints
-translate the knowledge  we have about the experiment. The  more we know about
-the experiment,  the smaller is  $\calM$. In  all our examples,  model $\calM$
-will put very few restrictions on the candidate laws.
+We are interested in a reproducible experiment. Every time this experiment is run,
+it generates an observation that we call $O$. We view
+$O$  as a  random variable  drawn from  *the  law of the
+experiment* $P_{0}$.  We view the law as an  element of  *the
+model* $\calM$. The model  is a collection of  laws. In particular, the model
+contains all laws that we think may plausibly describe the law of the 
+experiment. Thus, the choice of model is based on our scientific knowledge
+of the  experiment. The  more we know about
+the experiment,  the smaller is  $\calM$. In  all our examples, we use large models
+that reflect a lack of knowledge about many aspects of the experiment. 
 
 Let us run the example built into the `guided.tour.tmle` package:
 
@@ -902,8 +903,8 @@ The previous  section identified our  target parameter and  developed relevant
 theory for understanding the properties of  certain types of estimators of the
 parameter. In  this section, we illustrate  how this theory can  be applied to
 develop estimators of  and inference about these quantities.  We consider that
-we  have available,  $O_{1}$,  \ldots,  $O_{n}$, be  a  sample of  independent
-observations drawn  from $P_{0}$,  and the  goal is to  estimate the  value of
+we  have available,  $O_{1}$,  \ldots,  $O_{n}$,  a  sample of 
+observations independent drawn  from $P_{0}$,  and the  goal is to  estimate the  value of
 $\psi_0$. Below  we generate `B` values  \tcg{Maybe change `B` to  `n` to keep
 consistent with the notation?}
 
@@ -1024,6 +1025,15 @@ an excuse to get  all of the estimation of the nuisance  parameters out of the
 way. Again, it all depends on how we/you want to structure the code.}
 
 ## Simple estimation strategies.
+
+Equation (\ref{eq:psi0}) suggests the following, simple estimator of $\psi_0$ \[
+\psi_{n}  &\equiv   \int  \left(\Qbar_{n}(1,   w)  -   \Qbar_{n}(0,  w)\right) dQ_{n,W}(w) , 
+\]
+where $\Qbar_n$ is an estimate of $\Qbar_0$ and $Q_{n,W}$ is an estimate of $Q_{0,W}$. 
+In words, this estimator is implemented by first estimating the regression of $Y$ on $A$ 
+and $W$. The estimated regression function is marginalized with respect to the 
+estimated law of $W$. This estimator is referred to as a standardization or G-computation
+estimator. 
 
 \tcg{Discuss G-computation,  i.e., plug-in estimation. Discuss  IPTW too? Show
 that  it  works  for  parametric   models,  but  fails  for  machine  learning
