@@ -1033,34 +1033,241 @@ where $\Qbar_n$ is an estimate of $\Qbar_0$ and $Q_{n,W}$ is an estimate of $Q_{
 In words, this estimator is implemented by first estimating the regression of $Y$ on $A$ 
 and $W$. The estimated regression function is marginalized with respect to the 
 estimated law of $W$. This estimator is referred to as a standardization or G-computation
-estimator. 
+estimator. We refer to this estimator as a "plug-in" estimator since it can be 
+obtained by "plugging in" estimates of relevant quantities into (\ref{eq:psi0}). 
 
-\tcg{Discuss G-computation,  i.e., plug-in estimation. Discuss  IPTW too? Show
-that  it  works  for  parametric   models,  but  fails  for  machine  learning
-algorithms.}
+A plug-in estimate of $\psi_0$ is constructed based on `B` independent draws from $P_0$.
+This estimator uses a parametric estimator of $\Qbar_0$.
 
-## \textdbend Analysis of G-computation estimator.
+```{r show-g-comp-computation}
 
-\tcg{Go  through the  expansion algebra  to generate  one-step correction/TMLE
-term and  empirical process term.  Highlight that  the correction term  is the
-source of  the bad behavior.  If we have all  the fitted nuisance  objects, we
-could  use   the}  `compute_eif`  \tcg{function  on   the  estimated  nuisance
-parameters to  illustrate that root-n  times EIF at estimated  nuisances blows
-up, which in turn  causes the estimator to blow up. In this  way, we provide a
-theoretical explanation and numerical depiction of why G-comp fails.}
+```
+
+Alternatively, we could construct a plug-in estimate based on a more flexible regression 
+technique. The following code shows construction of a plug-in estimate based on $k$-nearest
+neighbors regression. 
+
+```{r show-another-gcomp}
+
+```
+
+We now inquire as to the stochastic properties of such an estimator. In this section,
+we study the estimators properties via Monte Carlo simulation. In particular, we 
+study the bias, variance, and weak convergence of the estimators. 
+
+```{r simulation-with-parametric-and-knn}
+# maybe have three estimators? one with correct parametric model, one with misspecified parametric model and one with knn?
+```
+
+The simulation demonstrates the following key points. For correctly-specified parametric
+regressions, the plug-in estimator exhibits excellent behavior: its bias disappears
+faster than $n^{-1/2}$, its variance is close to that of an efficient estimator in large samples, and its sampling distribution is approximately Gaussian. However, misspecified 
+parametric regressions demonstrate very poor behavior indeed. Their bias does not disappear, even in large samples and thus their sampling distribution is not centered around the truth. 
+This may suggest that we should be instead using more flexible regression techniques in
+order to ensure that our estimate $\Qbar_n$ is as close to $\Qbar_0$ as possible. However,
+we find that, in spite of the excellent fit of $\Qbar_n$ to $\Qbar_0$, the plug-in estimate based on $k$-nearest neighbors exhibits non-negligible bias. In particular, the bias is 
+not disappearing faster than $n^{-1/2}$. Thus, the center point of the sampling distribution of $n^{1/2}$ times our estimator is moving farther from the truth as sample size increases. 
+In the next subsection, we analyze the plug-in estimator to understand the source
+of this poor behavior. 
+
+__Exercises__
+
+1. Evaluate the plug-in estimate, if, rather than the empirical distribution, we used a maximum likelihood estimator of $Q_{0,W}$ under the assumption that $W \sim \mbox{Normal}(\mu, \sigma^2)$ where $\mu$ and $\sigma^2$ are unknown. 
+
+2. \tcg{If we asked them to implement a regression estimator in the previous subsection, let's now have them use it to repeat our simulation and compute the G-comp estimator based on this.}
+
+## \textdbend Analysis of plug-in estimator.
+
+In view of our estimators of $\Qbar_0$ and $\Gbar_0$ as algorithms that map from a 
+distribution in $\calM$ to the relevant parameter space, we may view the estimates
+$\Qbar_n \equiv \hat{Q}(P_n)$ and $\Gbar_n \equiv \hat{G}(P_n)$. Let's denote by 
+$\hat{P}_n$ a distribution in $\calM$ that implies $\Qbar_{\hat{P}_n} = \Qbar_n$, 
+$\Gbar_{\hat{P}_n} = \Gbar_n$ and $Q_{\hat{P}_n,W} = Q_{n,W}$. We can then apply
+equation (\ref{taylor_expansion}) substituting this $\hat{P}_n$ for $P$: \begin{equation} \label{hard_to_study}
+\Psi(\hat{P}_n) - \Psi(P_0) = - P_0 D*(\hat{P}_n) + R_{P_0}(\hat{P}_n) . 
+\end{equation}
+We remind readers of our shorthand notation, \begin{equation*}
+P_0 D*(\hat{P}_n) \equiv \Exp_{P_0}\left( \frac{2A - 1}{\ell \Gbar_n(A,W)} (Y - \Qbar_n(A,W)) + \Qbar_n(1,W) - \Qbar_n(0,W) - \Psi(\hat{P}_n) \right) . 
+\end{equation*}
+To facilitate our study of (\ref{hard_to_study}), we perform some simple algebra, \begin{align*}
+\Psi(\hat{P}_n) - \Psi(P_0) &= - P_0 D*(\hat{P}_n) + R_{P_0}(\hat{P}_n) \pm P_n D*(\hat{P}_n) \\
+&= (P_n - P_0) D*(\hat{P}_n) - P_n D*(\hat{P}_n) + R_{P_0}(\hat{P}_n) \pm (P_n - P_0) D*(P_0) \\
+&= (P_n - P_0) D*(P_0) - P_n D*(\hat{P}_n) + R_{P_0}(\hat{P}_n) + (P_n - P_0) (D*(\hat{P}_n) - D*(P_0)) . 
+\end{align*}
+
+The first term $(P_n - P_0) D*(P_0) \equiv n^{-1} \sum_{i=1}^n D*(P_0)(O_i)$ is 
+a sum of independent transformations of the data that have mean zero and finite variance. 
+Thus, the weak law of large numbers and central limit theorem imply that this term should
+be well-behaved statistically.
+
+Turning to the term $R_{P_0}(\hat{P}_n)$, we note that this term is an expectation involving
+the product of two differences, one between $\Qbar_n$ and $\Qbar_0$, the other between 
+$\Gbar_n$ and $\Gbar_0$. Thus, we expect that if $\Qbar_n$ and $\Gbar_n$ are good 
+estimates of $\Qbar_0$ and $\Gbar_0$ respectively, then this product of differences 
+should be small, and, we should hope, asymptotically negligible. Formal conditions
+for negligibility of this term can be made via the triangle inequality\footnote{Add triangle inequality argument}.
+
+Considering the final term $(P_n - P_0) (D*(\hat{P}_n) - D*(P_0)),$ we note that this 
+term two involves a product of two differences, one between $P_n$ and $P_0$ and one between
+$D^*(\hat{P}_n)$ and $D^*(P_0)$. However, analysis of this term is more complicated than
+that of the remainder, and we require results from empirical process theory to provide 
+conditions on the asymptotic negligibility of this term\footnote{Add footnote on Donsker
+conditions}. We proceed assuming that such conditions are satisfied. 
+
+Finally, we turn to the term $P_n D*(\hat{P}_n)$. This term is the source of the irregular 
+behavior of the plug-in estimator. Notice that the data appear in this term twice, through $\hat{P}_n$ and through $P_n$ itself. Thus, the term involves a empirical average of a data-dependent transformation of the data. Such terms are difficult to analyze, and we 
+have no reason to suspect that if $\hat{P}_n$ involves flexible regression techniques, this term will be asymptotically negligible. Indeed, we can study numerically study the behavior of this term via Monte Carlo simulation. The next code chunk analyzes its behavior. 
+
+```{r show-rootn-times-PnDstar-blow up}
+
+```
+
+This simulation demonstrates that, as expected, $n^{1/2}P_n D*(\hat{P}_n) \rightarrow \infty$ and thus is the source of the irregular behavior of the plug-in estimate. 
+
+
+1. \tcg{Design a simulation study to empirically evaluate $n^{1/2} R_{P_0}(\hat{P}_n)$.}
+
+2. \tcg{Design a simulation study to empirically evaluate $n^{1/2} (P_n - P_0) (D*(\hat{P}_n) - D*(P_0))}.
+
+3. \tcg{A "difficult" exercise. Repeat exercise 2, but let's try to break Donsker conditions. E.g., could we blow the Donsker condition up by including an increasing number of polynomials?}
 
 ## One-step corrections.
 
-\tcg{Remind  the reader  about asymptotic  linearity;  that we  need to  write
-estimator  minus truth  as equal  to empirical  mean of  EIF at  true nuisance
-parameters  + negligible  term.  We saw  that  plug-in did  not  yield such  a
-representation, but look, the one-step  estimator does. Show that the one-step
-estimator corrects poor  behavior of G-computation estimator.  Discuss that we
-also  now  have asymptotic  linearity  and  inference  via the  central  limit
-theorem.  Discuss   standard  error   estimation.  Show   confidence  interval
-coverage?}
+In this section, we discuss a simple strategy for correcting the behavior of the plug-in
+estimate of $\psi_0$. Recall that an estimator $\psi_n$ of $\psi_0$ 
+is asymptotically linear if we can write $\psi_n - \psi_0 = \frac{1}{n} \sum_{i=1}^n \mbox{IF}(O_i) + o_P(n^{-1/2})$. Now, in the previous subsection we saw that, under
+certain regularity conditions, the plug-in estimator could be written as \begin{equation} \label{pre_one_step}
+  \Psi(\hat{P}_n) = \Psi(P_0) + \frac{1}{n} \sum_{i=1}^n D*(P_0)(O_i) - \frac{1}{n} \sum_{i=1}^n D*(\hat{P}_n)(O_i) + o_P(n^{-1/2}). 
+\end{equation}
+In other words, we found that the estimator *very nearly* allowed for an asymptotically 
+linear expression; however, the problematic term $\frac{1}{n} \sum_{i=1}^n D*(\hat{P}_n)(O_i)$ 
+prevents our claiming asymptotic linearity. Nevertheless, (\ref{pre_one_step}) implies
+that \[
+  \Psi(\hat{P}_n) + \frac{1}{n} \sum_{i=1}^n D*(\hat{P}_n)(O_i) = \Psi(P_0) + \frac{1}{n} \sum_{i=1}^n D*(P_0)(O_i) + o_P(n^{-1/2}). 
+\]
+In other words, under the regularity conditions introduced in the previous subsection, the corrected plug-in estimator \[
+  \psi_n^{+} \equiv \Psi(\hat{P}_n) + \frac{1}{n} \sum_{i=1}^n D*(\hat{P}_n)(O_i)
+\]
+is an asymptotically linear estimator with influence function equal to D*(P_0). That is 
+to say, in light of section \ref{subsec:parameter:third}, $\psi_n^{+}$ is an *asymptotically efficient* estimate of $\psi_0$!
+
+This simple strategy for generating asymptotically linear and efficient estimators 
+is often referred to as a one-step estimator, since it generalizes the familiar
+one-step Newton-Raphson estimator that is often used in the context of parametric models. 
+
+The next code chunk demonstrates that the one-step correction indeed yields an 
+efficient estimator of $\psi_0$. 
+
+```{r show-one-step-in-simulation}
+
+```
+
+Recall also that the central  limit theorem provides for the weak convergence of 
+asymptotically linear estimators of $\psi_0$ to a centered Gaussian distribution with 
+variance $\Var_{P_0}(D*(P_0))$. The fact that the form of the asymptotic variance is
+explicitly available through our knowledge of $D*$ allows for simple estimators 
+of the asymptotic variance of $\psi_n^{+}$. Namely, under weak conditions, the empirical variance of $D^*(\hat{P}_n)$ will consistently estimate $\Var_{P_0}(D*(P_0))$. Denoting this estimate by $\hat{\sigma}_n^2$, by Slutsky's theorem, we can argue that $n^{1/2}(\psi_n^{+} - \psi_0) / \hat{sigma}_n$ converges in distribution to that of a centered Gaussian variate 
+with unit variance. 
+
+
+```{r show-weak-convergence}
+
+```
+
+This convergence result also paves the way for the construction of Wald-style confidence intervals with coverage probability $1-\alpha$, which take the form $\psi_n \pm n^{-1/2} \sigma_n z_{1-\alpha/2}$, where $z_{1-\alpha/2}$ is the $1 - \alpha/2$ quantile of a 
+center Gaussian variate with unit variance. 
+
+```{r show-confidence-intervals}
+
+```
 
 ## \textdbend Targeted minimum loss-based estimation.
+
+In the previous section, we introduced the one-step corrected estimator of
+$\psi_0$. This estimator added a correction term to the plug-in estimator, 
+which resulted in an estimator that is asymptotically linear and efficient. 
+However, the one-step estimator has lost a desirable feature of a plug-in estimator:
+plug-in estimators always obey bounds on the parameter space. For example, the law 
+$P_0$ stipulates that $Y$ has a conditional Beta distribution and thus $Y \in (0,1)$. 
+Thus, it must also be true that $\psi_0 \in [-1,1]$. It is typically easy to generate an 
+estimate $\Qbar_n$ of $\Qbar_0$ that obeys bounds on the parameter space for $\Qbar_0$. 
+The plug-in estimate based on on such an estimate will also obey the bounds on the 
+parameter space for $\psi_0$. That is, our plug-in estimate of $\psi_0$ is guaranteed by
+its very construction be between -1 and 1. However, the one-step estimate adds 
+an additional term to the plug-in and therefore may result in an estimate of $\psi_0$ 
+that is outside its parameter space. Upon closer examination of the efficient influence
+function $D*$, we see that this may occur more frequently when $\ell \Gbar_n(A_i,W_i)$ is 
+close to zero for at least some $i$. In words, if there are observations in our 
+data set that we observed under actions $A_i$ that were estimated to be unlikely given the context $W_i$. In such cases, $D*(\hat{P}_n)(O_i)$, and consequently the one-step 
+correction term, may be large and cause the one-step estimate to fall outside the parameter
+space. 
+
+Another way to understand this behavior is to recognize the one-step estimator as
+a plug-in estimator that is corrected *in the parameter space of $\psi_0$*. On the
+other hand, we might consider performing a correction *in the parameter space of $\Qbar_0$*. 
+In particular, consider a $\hat{P}_n^*$ that is compatible with the estimates $\Qbar_n^*$, $\Gbar_n$, and $Q_{n,W}$, but moreover is such that $P_n D*(\hat{P}_n^*) = 0$ (or at the very least equals to $o_P(n^{-1/2})$). If indeed, such estimates can be generated, then the 
+plug-in estimator \[
+  \psi_n^* \equiv \int (\Qbar_n^*(1,w) - \Qbar_n^*(0,w)) dQ_{n,W}(w)
+\]
+is asymptotically linear and efficient. Moreover, by virtue of its plug-in construction it 
+has the additional property that in finite-samples $\psi_n^*$ will always obey
+bounds on the parameter space. 
+
+Our strategy for constructing such a plug-in estimate begins by generating an 
+initial estimate $\Qbar_n$ of $\Qbar_0$. This initial estimate should strive to be
+as close as possible to $\Qbar_0$. Now, the goal is to select a new regression
+function "near to" $\Qbar_n$ such that $P_n D*(\hat{P}_n^*) = 0$. Furthermore, because
+$\Qbar_n$ is our "best guess" for the true regression $\Qbar_0$, the new regression
+that we pick should be *at least as good* of an estimate of $\Qbar_0$ as $\Qbar_n$. 
+Thus, we must determine a way to move between regressions in our model *and* we
+must determine a way to move to a new regression that fits the data at least as 
+well as $\Qbar_n$. To move about the model space, we will make use of parametric
+submodels introduced in Section \ref{subsec:being:smooth:one}. In particular, let's consider
+the following parametric submodel \[
+  \calQ(\Gbar_n) = \{ \Qbar_{n,\epsilon}(A,W) = \expit\left(\logit(\Qbar_n(A,w)) + \epsilon \frac{2A - 1}{\ell \Gbar_n(A,W)} \right) : \epsilon \in \bbR \} . 
+\]
+We note that: (i) this submodel depends on the estimate of $\Gbar_0$; (ii) the submodel is 
+indexed by the univariate parameter $\epsilon$; and (iii) the submodel goes *through*
+the initial estimate $\Qbar_n$ of $\Qbar_0$. The code below visualizes regressions
+for several values of $\epsilon$. 
+
+```{r plot-for-several-epsilon}
+# can include the graph of Qbar_n,eps(a,W) ~ W for eps = -1, 0, 1 \times a = 0,1?
+# would like to drive home the point that each epsilon is simply a different regresion
+# fit.
+
+# could also show for different Gbar_n showing that the submodel depends on Gbar_n, 
+# but I actually think that's far less important. 
+```
+
+The plot shows that each $\epsilon$ corresponds to a different regression function. 
+Recalling that our goal is to select an estimate of $\Qbar_0$ that is *at least as good* 
+as $\Qbar_n$. This goal is now translated into selecting an $\epsilon$ that corresponds to
+a regression function that fits the data *at least as well* as $\Qbar_n$. To formalize
+this, we require a metric for defining how well a regression function estimates the true
+regression function. For this, we estimate the average negative log-likelihood loss, defined for a candidate regression function $\Qbar as \[
+  \bbD_0(\Qbar) \equiv -\Exp_{P_0}( Y \log(\Qbar(A,W)) + (1 - Y)\log(1 - \Qbar(A,W)) ) . 
+\]
+We note that the minimizer of $\bbD_0$ over all functions mapping from $\{0,1\} \times (0,1)$ to $\bbR$ is equal to $\Qbar_0$. Thus, $\bbD_0$ provides a concrete means of evaluating the 
+fit of different candidate regression functions to the true regression function $\Qbar_0$. Because, $\bbD_0$ depends on $P_0$, it is often unknown to us in practice. Thus, we may instead compute a natural estimate of $\bbD_0$, \[
+  \bbD_n(\Qbar) \equiv -\frac{1}{n} \sum_{i = 1}^n \left( Y_i \log(\Qbar(A_i, W_i)) + (1 - Y_i)\log(1 - \Qbar(A_i, W_i)) \right). 
+\]
+The code below computes this estimate of $\bbD_n(\Qbar_{n,\epsilon})$ over a fine grid of epsilon and plots the resulting function. 
+
+```{r compute-negloglik-and-plot}
+# basically just do a grid search over epsilon for minimizer of negative log-likelihood loss
+```
+
+The above plot shows the estimated average negative log-likelihood loss for each regression function in the parametric submodel $\calQ(\Gbar_n)$. Now, we should like to move to
+the regression with the smallest estimated average negative log-likelihood, which 
+was achieved at $\epsilon = $ \tcg{fill in from R output}. Because our submodel is through 
+$\Qbar_n$, that is, $\Qbar_n$ is itself included in our submodel, and this newly selected
+regression estimate has a better estimated average negative log-likelihood loss, we should
+hope that the new estimate is at least *no further from $\Qbar_0$* than $\Qbar_n$. 
+
+But what about the second \tcg{DAVID STOPPED HERE!}
+
+
 
 \tcg{Make point about  one-step being able to go outside  the parameter space,
 but plug-in  estimator will not do  so.  Can we  do a correction in  the model
