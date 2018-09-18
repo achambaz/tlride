@@ -1,4 +1,6 @@
 bookdown::gitbook:
+  lib_dir: assets
+  split_by: chapter+number
   config:
     toc:
       collapse: section
@@ -20,8 +22,6 @@ bookdown::gitbook:
     before_body: dan_header.html
     in_header: mathjax_number.html
     sharing: no
-    lib_dir: assets
-    split_by: section
   css: gttmle.css
 
 bookdown::pdf_document2:

@@ -29,3 +29,7 @@ $P$ and $P_{0}$, respectively).
   \Qbar(0, w)\right)dQ_{W}(w)$, the statistical mapping of interest.
   
 - $\psi \equiv \Psi(P)$, $\psi_{0} \equiv \Psi(P_{0})$.
+
+
+
+`r if (knitr::is_html_output()) '# References'`
