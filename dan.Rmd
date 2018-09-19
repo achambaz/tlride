@@ -742,7 +742,7 @@ first numerical approximation `slope_approx` is not too off.
 If an estimator $\psi_n$ of $\Psi(P)$ can be written as 
 
 \begin{equation*}  \psi_n  =  \Psi(P) +  \frac{1}{n}\sum_{i=1}^n  \IF(O_i)  +
-o_P(1/\sqrt{n})\end{equation*}
+o_{P}(1/\sqrt{n})\end{equation*}
 
 for some function  $\IF : \calO \to  \bbR$ such that $\Exp_P(\IF(O))  = 0$ and
 $\Var_{P}(\IF(O))  < \infty$,  then we  say that  $\psi_n$ is  *asymptotically
@@ -1086,53 +1086,56 @@ of this poor behavior.
 In view of our estimators of $\Qbar_0$ and $\Gbar_0$ as algorithms that map from a 
 distribution in $\calM$ to the relevant parameter space, we may view the estimates
 $\Qbar_n \equiv \hat{Q}(P_n)$ and $\Gbar_n \equiv \hat{G}(P_n)$. Let's denote by 
-$\hat{P}_n$ a distribution in $\calM$ that implies $\Qbar_{\hat{P}_n} = \Qbar_n$, 
-$\Gbar_{\hat{P}_n} = \Gbar_n$ and $Q_{\hat{P}_n,W} = Q_{n,W}$. We can then apply
-equation (\ref{taylor_expansion}) substituting this $\hat{P}_n$ for $P$: \begin{equation} \label{hard_to_study}
-\Psi(\hat{P}_n) - \Psi(P_0) = - P_0 D*(\hat{P}_n) + R_{P_0}(\hat{P}_n) . 
+$\hat{P}_n$ a law in $\calM$ such that $\Qbar_{\hat{P}_n} = \Qbar_n$, 
+$\Gbar_{\hat{P}_n} = \Gbar_n$ and $Q_{\hat{P}_n,W} = Q_{n,W}$. We will hence say that 
+that such a law is *compatible* with $\Qbar_n$, $\Gbar_n$ and $Q_{n,W}$. 
+
+We can apply equation (\ref{taylor_expansion}) substituting $\hat{P}_n$ for $P$: \begin{equation} \label{hard_to_study}
+\Psi(\hat{P}_n) - \Psi(P_0) = - P_0 D^*(\hat{P}_n) + R_{P_0}(\hat{P}_n) . 
 \end{equation}
 We remind readers of our shorthand notation, \begin{equation*}
-P_0 D*(\hat{P}_n) \equiv \Exp_{P_0}\left( \frac{2A - 1}{\ell \Gbar_n(A,W)} (Y - \Qbar_n(A,W)) + \Qbar_n(1,W) - \Qbar_n(0,W) - \Psi(\hat{P}_n) \right) . 
+P_0 D^*(\hat{P}_n) \equiv \Exp_{P_0}\left( \frac{2A - 1}{\ell \Gbar_n(A,W)} (Y - \Qbar_n(A,W)) + \Qbar_n(1,W) - \Qbar_n(0,W) - \Psi(\hat{P}_n) \right) . 
 \end{equation*}
-To facilitate our study of (\ref{hard_to_study}), we perform some simple algebra, \begin{align*}
-\Psi(\hat{P}_n) - \Psi(P_0) &= - P_0 D*(\hat{P}_n) + R_{P_0}(\hat{P}_n) \pm P_n D*(\hat{P}_n) \\
-&= (P_n - P_0) D*(\hat{P}_n) - P_n D*(\hat{P}_n) + R_{P_0}(\hat{P}_n) \pm (P_n - P_0) D*(P_0) \\
-&= (P_n - P_0) D*(P_0) - P_n D*(\hat{P}_n) + R_{P_0}(\hat{P}_n) + (P_n - P_0) (D*(\hat{P}_n) - D*(P_0)) . 
+To facilitate our study of (\ref{hard_to_study}), we write \begin{align*}
+\Psi(\hat{P}_n) - \Psi(P_0) &= - P_0 D^*(\hat{P}_n) + R_{P_0}(\hat{P}_n) \pm P_n D^*(\hat{P}_n) \\
+&= (P_n - P_0) D^*(\hat{P}_n) - P_n D^*(\hat{P}_n) + R_{P_0}(\hat{P}_n) \pm (P_n - P_0) D^*(P_0) \\
+&= (P_n - P_0) D^*(P_0) - P_n D^*(\hat{P}_n) + R_{P_0}(\hat{P}_n) + (P_n - P_0) (D^*(\hat{P}_n) - D^*(P_0)) . 
 \end{align*}
 
-The first term $(P_n - P_0) D*(P_0) \equiv n^{-1} \sum_{i=1}^n D*(P_0)(O_i)$ is 
-a sum of independent transformations of the data that have mean zero and finite variance. 
-Thus, the weak law of large numbers and central limit theorem imply that this term should
-be well-behaved statistically.
+The first term can be written $(P_n - P_0) D^*(P_0) \equiv n^{-1} \sum_{i=1}^n D^*(P_0)(O_i)$,
+since $\Exp_{P_0}(D^*(P_0)) = 0$. Because this term is a sum of independent transformations of the data that have mean zero and finite variance, we can use standard tools such as the weak law of large numbers and central limit theorem to study its behavior. 
 
-Turning to the term $R_{P_0}(\hat{P}_n)$, we note that this term is an expectation involving
+The term $R_{P_0}(\hat{P}_n)$ is an expectation involving
 the product of two differences, one between $\Qbar_n$ and $\Qbar_0$, the other between 
-$\Gbar_n$ and $\Gbar_0$. Thus, we expect that if $\Qbar_n$ and $\Gbar_n$ are good 
-estimates of $\Qbar_0$ and $\Gbar_0$ respectively, then this product of differences 
-should be small, and, we should hope, asymptotically negligible. Formal conditions
-for negligibility of this term can be made via the triangle inequality\footnote{Add triangle inequality argument}.
+$\Gbar_n$ and $\Gbar_0$. Intuitively, we expect that if $\Qbar_n$ and $\Gbar_n$ are good 
+estimates of $\Qbar_0$ and $\Gbar_0$, respectively, then the expectation of a product of differences between these quantities should be small, and, we should hope, negligible in large samples. Formal conditions for the asymptotic negligibility of this term can be made via the Cauchy-Schwarz inequality\footnote{For any measurable function $f:\calO \to \bbR$, we denote the $L_2(P)$-norm of $f$ by $|f|_{P} \equiv \Exp_{P} \left( f(O)^{2} \right)^{1/2}$. Assume that for $a= 0,1$, $\ell\Gbar_{n}(a,W) > \delta$ almost everywhere $Q_{0,W}$. Then the Cauchy-Schwarz inequality implies that for $a = 0,1$, $\Rem_{P_0}(\hat{P}_n) \le \frac{2}{\delta} \text{max}_{a=0,1} \left( | \Qbar_n(a,\cdot) - \Qbar_0(a,\cdot)|_{P_0} \right) |\Gbar_n - \Gbar_0|_{P_0}$. Therefore, if for $a=0,1$, $|\Qbar_n(a,\cdot) - \Qbar_0(a,\cdot)|_{P_0} = o_{P_0}(n^{-1/4})$ and $|\Gbar_n - \Gbar_0|_{P_0} = o_{P_0}(n^{-1/4})$ then $\Rem_{P_0}(\hat{P}_n) = o_{P_0}(n^{-1/2})$.}.
 
-Considering the final term $(P_n - P_0) (D*(\hat{P}_n) - D*(P_0)),$ we note that this 
+Considering the final term $(P_n - P_0) (D^*(\hat{P}_n) - D^*(P_0)),$ we note that this 
 term two involves a product of two differences, one between $P_n$ and $P_0$ and one between
-$D^*(\hat{P}_n)$ and $D^*(P_0)$. However, analysis of this term is more complicated than
-that of the remainder, and we require results from empirical process theory to provide 
-conditions on the asymptotic negligibility of this term\footnote{Add footnote on Donsker
-conditions}. We proceed assuming that such conditions are satisfied. 
+$D^*(\hat{P}_n)$ and $D^*(P_0)$. Thus, we should hope that this term too will be negligible in
+large samples. Formal conditions for the asymptotic negligibility of this term are provided
+by results from empirical process theory\footnote{If $D^*(\hat{P}_n)$ falls in a $P_0$-Donsker 
+class with probability tending to 1 and $P_0 \left( D^*(\hat{P}_n) - D^*(P_0) \right)^2$ converges to zero in probability as $n \rightarrow \infty$, then $(P_n - P_0) (D^*(\hat{P}_n) - D^*(P_0)) = o_{P_0}(n^{-1/2})$.}. We proceed assuming that such conditions are satisfied. 
 
-Finally, we turn to the term $P_n D*(\hat{P}_n)$. This term is the source of the irregular 
-behavior of the plug-in estimator. Notice that the data appear in this term twice, through $\hat{P}_n$ and through $P_n$ itself. Thus, the term involves a empirical average of a data-dependent transformation of the data. Such terms are difficult to analyze, and we 
-have no reason to suspect that if $\hat{P}_n$ involves flexible regression techniques, this term will be asymptotically negligible. Indeed, we can study numerically study the behavior of this term via Monte Carlo simulation. The next code chunk analyzes its behavior. 
+Finally, we turn to the term $P_n D^*(\hat{P}_n)$. We will soon see that this term is the 
+source of the poor behavior of the plug-in estimator. Notice that the data appear in this term 
+twice, once through $\hat{P}_n$ and once through $P_n$ itself. Thus, the term involves a 
+empirical average of a data-dependent transformation of the data. Such terms are difficult to 
+analyze, and we have no reason to suspect that if $\hat{P}_n$ involves flexible regression 
+techniques, this term will be asymptotically negligible. Indeed, we can study numerically 
+study the behavior of this term via Monte Carlo simulation. The next code chunk analyzes its 
+behavior. 
 
 ```{r show-rootn-times-PnDstar-blow up}
 
 ```
 
-This simulation demonstrates that, as expected, $n^{1/2}P_n D*(\hat{P}_n) \rightarrow \infty$ and thus is the source of the irregular behavior of the plug-in estimate. 
+This simulation demonstrates that, as expected, $n^{1/2}P_n D^*(\hat{P}_n) \rightarrow \infty$ and thus is the source of the poor behavior of the plug-in estimate. 
 
 
 1. \tcg{Design a simulation study to empirically evaluate $n^{1/2} R_{P_0}(\hat{P}_n)$.}
 
-2. \tcg{Design a simulation study to empirically evaluate $n^{1/2} (P_n - P_0) (D*(\hat{P}_n) - D*(P_0))}.
+2. \tcg{Design a simulation study to empirically evaluate $n^{1/2} (P_n - P_0) (D^*(\hat{P}_n) - D^*(P_0))}.
 
 3. \tcg{A "difficult" exercise. Repeat exercise 2, but let's try to break Donsker conditions. E.g., could we blow the Donsker condition up by including an increasing number of polynomials?}
 
@@ -1140,20 +1143,20 @@ This simulation demonstrates that, as expected, $n^{1/2}P_n D*(\hat{P}_n) \right
 
 In this section, we discuss a simple strategy for correcting the behavior of the plug-in
 estimate of $\psi_0$. Recall that an estimator $\psi_n$ of $\psi_0$ 
-is asymptotically linear if we can write $\psi_n - \psi_0 = \frac{1}{n} \sum_{i=1}^n \mbox{IF}(O_i) + o_P(n^{-1/2})$. Now, in the previous subsection we saw that, under
+is asymptotically linear if we can write $\psi_n = \psi_0 + \frac{1}{n} \sum_{i=1}^n \mbox{IF}(O_i) + o_{P_0}(n^{-1/2})$. Now, in the previous subsection we saw that, under
 certain regularity conditions, the plug-in estimator could be written as \begin{equation} \label{pre_one_step}
-  \Psi(\hat{P}_n) = \Psi(P_0) + \frac{1}{n} \sum_{i=1}^n D*(P_0)(O_i) - \frac{1}{n} \sum_{i=1}^n D*(\hat{P}_n)(O_i) + o_P(n^{-1/2}). 
+  \Psi(\hat{P}_n) = \Psi(P_0) + \frac{1}{n} \sum_{i=1}^n D^*(P_0)(O_i) - \frac{1}{n} \sum_{i=1}^n D^*(\hat{P}_n)(O_i) + o_{P_0}(n^{-1/2}). 
 \end{equation}
 In other words, we found that the estimator *very nearly* allowed for an asymptotically 
-linear expression; however, the problematic term $\frac{1}{n} \sum_{i=1}^n D*(\hat{P}_n)(O_i)$ 
-prevents our claiming asymptotic linearity. Nevertheless, (\ref{pre_one_step}) implies
+linear expression; however, the problematic term $\frac{1}{n} \sum_{i=1}^n D^*(\hat{P}_n)(O_i)$ 
+prevents the plug-in from attaining asymptotic linearity. Nevertheless, (\ref{pre_one_step}) implies
 that \[
-  \Psi(\hat{P}_n) + \frac{1}{n} \sum_{i=1}^n D*(\hat{P}_n)(O_i) = \Psi(P_0) + \frac{1}{n} \sum_{i=1}^n D*(P_0)(O_i) + o_P(n^{-1/2}). 
+  \Psi(\hat{P}_n) + \frac{1}{n} \sum_{i=1}^n D^*(\hat{P}_n)(O_i) = \Psi(P_0) + \frac{1}{n} \sum_{i=1}^n D^*(P_0)(O_i) + o_{P_0}(n^{-1/2}). 
 \]
 In other words, under the regularity conditions introduced in the previous subsection, the corrected plug-in estimator \[
-  \psi_n^{+} \equiv \Psi(\hat{P}_n) + \frac{1}{n} \sum_{i=1}^n D*(\hat{P}_n)(O_i)
+  \psi_n^{+} \equiv \Psi(\hat{P}_n) + \frac{1}{n} \sum_{i=1}^n D^*(\hat{P}_n)(O_i)
 \]
-is an asymptotically linear estimator with influence function equal to D*(P_0). That is 
+is an asymptotically linear estimator with influence function equal to D^*(P_0). That is 
 to say, in light of section \ref{subsec:parameter:third}, $\psi_n^{+}$ is an *asymptotically efficient* estimate of $\psi_0$!
 
 This simple strategy for generating asymptotically linear and efficient estimators 
@@ -1169,9 +1172,9 @@ efficient estimator of $\psi_0$.
 
 Recall also that the central  limit theorem provides for the weak convergence of 
 asymptotically linear estimators of $\psi_0$ to a centered Gaussian distribution with 
-variance $\Var_{P_0}(D*(P_0))$. The fact that the form of the asymptotic variance is
-explicitly available through our knowledge of $D*$ allows for simple estimators 
-of the asymptotic variance of $\psi_n^{+}$. Namely, under weak conditions, the empirical variance of $D^*(\hat{P}_n)$ will consistently estimate $\Var_{P_0}(D*(P_0))$. Denoting this estimate by $\hat{\sigma}_n^2$, by Slutsky's theorem, we can argue that $n^{1/2}(\psi_n^{+} - \psi_0) / \hat{sigma}_n$ converges in distribution to that of a centered Gaussian variate 
+variance $\Var_{P_0}(D^*(P_0))$. The fact that the form of the asymptotic variance is
+explicitly available through our knowledge of $D^*$ allows for simple estimators 
+of the asymptotic variance of $\psi_n^{+}$. Namely, under weak conditions, the empirical variance of $D^*(\hat{P}_n)$ will consistently estimate $\Var_{P_0}(D^*(P_0))$. Denoting this estimate by $\hat{\sigma}_n^2$, by Slutsky's theorem, we can argue that $n^{1/2}(\psi_n^{+} - \psi_0) / \hat{sigma}_n$ converges in distribution to that of a centered Gaussian variate 
 with unit variance. 
 
 
@@ -1190,27 +1193,29 @@ center Gaussian variate with unit variance.
 
 In the previous section, we introduced the one-step corrected estimator of
 $\psi_0$. This estimator added a correction term to the plug-in estimator, 
-which resulted in an estimator that is asymptotically linear and efficient. 
-However, the one-step estimator has lost a desirable feature of a plug-in estimator:
-plug-in estimators always obey bounds on the parameter space. For example, the law 
-$P_0$ stipulates that $Y$ has a conditional Beta distribution and thus $Y \in (0,1)$. 
+which resulted in an estimator that is asymptotically efficient. 
+However, the one-step estimator lacks a desirable feature of a plug-in estimator:
+plug-in estimators will always obey bounds on the parameter space. For example, the law 
+$P_0$ stipulates that $Y$ has a conditional Beta distribution and so $Y \in (0,1)$. 
 Thus, it must also be true that $\psi_0 \in [-1,1]$. It is typically easy to generate an 
 estimate $\Qbar_n$ of $\Qbar_0$ that obeys bounds on the parameter space for $\Qbar_0$. 
-The plug-in estimate based on on such an estimate will also obey the bounds on the 
+Indeed, many regression techniques are designed to ensure that the do not extrapolate
+beyond a known parameter space. 
+The plug-in estimate based on on such a regression estimate will also obey the bounds on the 
 parameter space for $\psi_0$. That is, our plug-in estimate of $\psi_0$ is guaranteed by
 its very construction be between -1 and 1. However, the one-step estimate adds 
 an additional term to the plug-in and therefore may result in an estimate of $\psi_0$ 
 that is outside its parameter space. Upon closer examination of the efficient influence
-function $D*$, we see that this may occur more frequently when $\ell \Gbar_n(A_i,W_i)$ is 
+function $D^*$, we see that this may occur more frequently when $\ell \Gbar_n(A_i,W_i)$ is 
 close to zero for at least some $i$. In words, if there are observations in our 
-data set that we observed under actions $A_i$ that were estimated to be unlikely given the context $W_i$. In such cases, $D*(\hat{P}_n)(O_i)$, and consequently the one-step 
+data set that we observed under actions $A_i$ that were estimated to be unlikely given the context $W_i$. In such cases, $D^*(\hat{P}_n)(O_i)$, and consequently the one-step 
 correction term, may be large and cause the one-step estimate to fall outside the parameter
 space. 
 
 Another way to understand this behavior is to recognize the one-step estimator as
 a plug-in estimator that is corrected *in the parameter space of $\psi_0$*. On the
 other hand, we might consider performing a correction *in the parameter space of $\Qbar_0$*. 
-In particular, consider a $\hat{P}_n^*$ that is compatible with the estimates $\Qbar_n^*$, $\Gbar_n$, and $Q_{n,W}$, but moreover is such that $P_n D*(\hat{P}_n^*) = 0$ (or at the very least equals to $o_P(n^{-1/2})$). If indeed, such estimates can be generated, then the 
+In particular, consider a $\hat{P}_n^*$ that is compatible with the estimates $\Qbar_n^*$, $\Gbar_n$, and $Q_{n,W}$, but moreover is such that $P_n D^*(\hat{P}_n^*) = 0$ (or at the very least equals to $o_{P_0}(n^{-1/2})$). If indeed, such estimates can be generated, then the 
 plug-in estimator \[
   \psi_n^* \equiv \int (\Qbar_n^*(1,w) - \Qbar_n^*(0,w)) dQ_{n,W}(w)
 \]
@@ -1242,20 +1247,27 @@ $Q_{0,W}$, by its very construction we will have that $P_n D_1^*(\hat{P}_n^*) = 
 # it is quite dense. 
 ```
 
-It thus remains to devise a strategy for ensuring that $P_n D_2^*(\hat{P}_n^*) = 0$. To achieve this, we consider an approach for revising our initial estimate of $\Qbar_0$. That is, we propose a method for selecting an estimate of $\Qbar_0$ that is "near to" $\Qbar_n$, but is such that for any law $\hat{P}_n^*$ that is compatible with this revised estimate,
-$P_n D*(\hat{P}_n^*) = 0$. Because $\Qbar_n$ is our "best initial guess" for the true regression $\Qbar_0$, the new regression that we pick should be *at least as good* of an estimate of $\Qbar_0$ as $\Qbar_n$. Thus, we must first propose a way to move between regressions in our model and then we must 
-propose a means of moving to a new regression that fits the data at least as 
-well as $\Qbar_n$. 
+It thus remains to devise a strategy for ensuring that $P_n D_2^*(\hat{P}_n^*) = 0$. To 
+achieve this, we consider an approach for revising our initial estimate of $\Qbar_0$. That is, 
+we propose a method for selecting an estimate of $\Qbar_0$ that is "near to" $\Qbar_n$, but is 
+such that for any law $\hat{P}_n^*$ that is compatible with this revised estimate,
+$P_n D^*(\hat{P}_n^*) = 0$. Because $\Qbar_n$ is our best (initial) estimate of true 
+regression $\Qbar_0$, the new regression that we pick should be *at least as good* of an 
+estimate of $\Qbar_0$ as $\Qbar_n$. So first, we must propose a way to move between 
+regressions in our model, and then we must propose a way to move to a new regression that 
+fits the data at least as well as $\Qbar_n$. 
 
 To move about the model space, we will make use of parametric
 submodels introduced in Section \ref{subsec:being:smooth:one}. In particular, let's consider
 the following parametric submodel \[
   \calQ(\Gbar_n) = \{ \Qbar_{n,\epsilon}(A,W) = \expit\left(\logit(\Qbar_n(A,w)) + \epsilon \frac{2A - 1}{\ell \Gbar_n(A,W)} \right) : \epsilon \in \bbR \} . 
 \]
-We note that: (i) this submodel depends on the estimate of $\Gbar_0$; (ii) the submodel is 
-indexed by the univariate parameter $\epsilon$; and (iii) the submodel goes *through*
-the initial estimate $\Qbar_n$ of $\Qbar_0$. The code below visualizes regressions
-for several values of $\epsilon$. 
+We note that this submodel depends on the estimate of $\Gbar_0$, is 
+indexed by the univariate parameter $\epsilon$, and is *through*
+the initial estimate $\Qbar_n$ of $\Qbar_0$. 
+
+Each value of the indexing parameter $\epsilon$ corresponds to a different regression
+estimate. The code below visualizes regressions for several values of $\epsilon$. 
 
 ```{r plot-for-several-epsilon}
 # can include the graph of Qbar_n,eps(a,W) ~ W for eps = -1, 0, 1 \times a = 0,1?
@@ -1266,7 +1278,6 @@ for several values of $\epsilon$.
 # but I actually think that's far less important. 
 ```
 
-The plot shows that each $\epsilon$ corresponds to a different regression function. 
 Recalling that our goal is to select an estimate of $\Qbar_0$ that is *at least as good* 
 as $\Qbar_n$. This goal is now translated into selecting an $\epsilon$ that corresponds to
 a regression function that fits the data *at least as well* as $\Qbar_n$. To formalize
@@ -1275,7 +1286,7 @@ regression function. For this, we estimate the average negative log-likelihood l
   \bbD_0(\Qbar) \equiv -\Exp_{P_0}( Y \log(\Qbar(A,W)) + (1 - Y)\log(1 - \Qbar(A,W)) ) . 
 \]
 We note that the minimizer of $\bbD_0$ over all functions mapping from $\{0,1\} \times (0,1)$ to $\bbR$ is equal to $\Qbar_0$. Thus, $\bbD_0$ provides a concrete means of evaluating the 
-fit of different candidate regression functions to the true regression function $\Qbar_0$. Because, $\bbD_0$ depends on $P_0$, it is often unknown to us in practice. Thus, we may instead compute an empirical estimate of $\bbD_0$, \[
+fit of different candidate regression functions to the true regression function $\Qbar_0$. Because, $\bbD_0$ depends on $P_0$, it is unknown to us in practice. Thus, we may instead compute an empirical estimate of $\bbD_0$, \[
   \bbD_n(\Qbar) \equiv -\frac{1}{n} \sum_{i = 1}^n \left( Y_i \log(\Qbar(A_i, W_i)) + (1 - Y_i)\log(1 - \Qbar(A_i, W_i)) \right). 
 \]
 The code below computes this estimate of $\bbD_n(\Qbar_{n,\epsilon})$ over a fine grid of epsilon and plots the resulting function. 
@@ -1283,7 +1294,6 @@ The code below computes this estimate of $\bbD_n(\Qbar_{n,\epsilon})$ over a fin
 ```{r compute-negloglik-and-plot}
 # basically just do a grid search over epsilon for minimizer of negative log-likelihood loss
 ```
-
 The above plot shows the estimated average negative log-likelihood loss for each regression function in the parametric submodel $\calQ(\Gbar_n)$. Now, we should like to move to
 the regression with the smallest estimated average negative log-likelihood, which 
 was achieved at $\epsilon = $ \tcg{fill in from R output}. Because our submodel is through 
@@ -1292,22 +1302,22 @@ regression estimate has a better estimated average negative log-likelihood loss,
 hope that the new estimate is at least *no further from $\Qbar_0$* than $\Qbar_n$. Let's 
 use $\Qbar_{n,\epsilon_n}$ to denote the new estimate of $\Qbar_0$. 
 
-What about repeating this process of defining a submodel and searching over this submodel 
-to obtain a better fitting regression? Perhaps by iterating this procedure, we could 
+What about repeating this process? Perhaps by iterating this procedure, we could 
 generate regression estimates that provide a better fit of $\Qbar_0$ than even $\Qbar_{n,\epsilon_n}$. Let's then define a submodel through $\Qbar_{n,\epsilon_n}$, \[
   \calQ_1(\Gbar_n) = \{ \Qbar_{n,\delta}(A,W) = \expit\left(\logit(\Qbar_{n,\epsilon_n}(A,W)) + \delta \frac{2A - 1}{\ell \Gbar_n(A,W)} \right) : \delta \in \bbR \} . 
 \]
 Consider finding $\delta_n$, the value of $\delta$ that minimizes $\bbD_n(\Qbar_{n,\delta})$ 
-over $\delta \in \bbR$. This is straightforward since there is a one-to-one correspondence 
+over $\delta \in \bbR$. This is trivial since there is a one-to-one correspondence 
 between the parameter $\epsilon$ indexing the submodel $\calQ(\Gbar_n)$ and 
-$\calQ_1(\Gbar_n)$. In particular, for a given $\epsilon$, there is some $\delta \in \bbR$ 
-such that $\delta = \epsilon - \epsilon_n$. That is to say that the choice of $\delta$ 
-that minimizes $\bbD_n(\Qbar_{nm,\delta})$ is $\delta = 0$. Thus, $\Qbar_{n,\delta = 0} \equiv \Qbar_{n,\epsilon_n}$ is the best fit that we can obtain for $\Qbar_0$ by moving through the
-model space via submodels of the form $\calQ(\Gbar_n)$.
+$\calQ_1(\Gbar_n)$: for any $\epsilon$, there is some $\delta \in \bbR$ such that $\delta = 
+\epsilon - \epsilon_n$. That is to say that the choice of $\delta$ that minimizes 
+$\bbD_n(\Qbar_{nm,\delta})$ is $\delta = 0$. Thus, 
+$\Qbar_{n,\delta = 0} \equiv \Qbar_{n,\epsilon_n}$ is the best fit that we can obtain for 
+$\Qbar_0$ by moving through the model space via submodels of the form $\calQ(\Gbar_n)$.
 
-Now, we hope that we have achieved our goal of finding a new regression fit that is *at least as good* as our initial estimate. However, what about the second goal of generating an estimate
-of $\Qbar_0$ such that for any $\hat{P}_n^*$ that is compatible with such an estimate we have
-that $P_n D*(\hat{P}_n^*) = 0$? Consider that because the minimum value of $\bbD_n(\Qbar_{n,\delta})$ is achieved at $\delta = 0$, it must be true that the derivative of $\bbD_n(\Qbar_{n,\delta})$ with respect to $\delta$ is zero when evaluated at $\delta = 0$. That is, \begin{equation} \label{deriv_equals_zero}
+Now, we hope that we have achieved our goal of finding a new regression fit that is *at least 
+as good* as our initial estimate. However, recall that our true purpose is to generate an 
+estimate of $\Qbar_0$ such that for any $\hat{P}_n^*$ that is compatible with such an estimate $P_n D^*(\hat{P}_n^*) = 0$. Have we achieved this goal as well? Consider the fact that because the minimum value of $\bbD_n(\Qbar_{n,\delta})$ is achieved at $\delta = 0$, it must be true that the derivative of $\bbD_n(\Qbar_{n,\delta})$ with respect to $\delta$ is zero when evaluated at $\delta = 0$. That is, \begin{equation} \label{deriv_equals_zero}
   \frac{d}{d\delta} \bbD_n(\Qbar_{n,\delta}) |_{\delta = 0} = 0 . 
 \end{equation}
 Indeed, we can produce plot of $\bbD_n(\Qbar_{n,\delta})$ for a fine grid of $\delta$ to 
@@ -1329,7 +1339,9 @@ With some effort, one can show that \begin{align*}
 \end{align*}
 
 This shows that the analytical form of the left-hand-side of (\ref{deriv_equals_zero}) equals
-$P_n D_{2}^{*}(\hat{P}^*_n)$ for a $\hat{P}_n$ that is compatible with $\Qbar_{n,\epsilon_n}$ and $\Gbar_n$. But then equation (\ref{deriv_equals_zero}) also implies that $P_n D_{2}^{*}(\hat{P}^*_n) = 0$! What happened here? Recalling Section \ref{subsec:being:smooth:one} there were many possible submodels that we may choose to move through our model space. 
+$P_n D_{2}^{*}(\hat{P}^*_n)$ for a $\hat{P}_n^*$ that is compatible with $\Qbar_{n,\epsilon_n}$ and $\Gbar_n$. But then equation (\ref{deriv_equals_zero}) also implies that $P_n D_{2}^{*}(\hat{P}^*_n) = 0$! 
+
+How did this happen? Recalling Section \ref{subsec:being:smooth:one} there were many possible submodels that we may choose to move through our model space. 
 It was no mistake that we selected the particular submodel $\calQ(\Gbar_n)$. 
 Furthermore, there are also many
 criterion by which we could judge our fit of $\Qbar_0$. It was no mistake that we selected 
@@ -1379,6 +1391,9 @@ we end up with an estimate of $\psi_0$ that is outside the parameter space.}
 
 
 # Inference assuming the mechanism of action known, or not, first pass {#known-gbar-first-pass}
+
+\tcg{I think it makes sense to remove this, unless we want to add a section to 
+the simple estimation strategies section above that talks about IPTW estimation.}
 
 Let us  assume for a moment  that we know  $\Gbar_{0}$.  This may be  the case
 indeed if  $P_{0}$ was a  controlled experiment.  Note that, on  the contrary,
