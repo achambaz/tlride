@@ -32,4 +32,4 @@ $P$ and $P_{0}$, respectively).
 
 
 
-`r if (knitr::is_html_output()) '# References'`
+

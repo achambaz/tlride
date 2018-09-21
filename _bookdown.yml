@@ -2,8 +2,9 @@ new_session: yes
 
 rmd_files: [
   "index.rmd",
-  "dan.Rmd",
-  "notation.Rmd"
+  "abcd.Rmd",
+  "notation.Rmd",
+  "footnotes.Rmd"
 ]
 
 before_chapter_script: "_common.R"

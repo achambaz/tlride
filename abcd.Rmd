@@ -1,3 +1,6 @@
+# (PART) A guided tour {-}
+
+
 # Introduction {#introduction}
 
 Our ambition is to present a gentle introduction to the inference of a causal
@@ -41,28 +44,32 @@ library(ggdag)
 library(guided.tour.tmle)
 ```
 
+## What we will discuss {#discuss}
 
+...
 
 ## To remove at a later stage. {#remove}
 
 ```{r redo}
-redo_fixed <- c(TRUE, FALSE)[1]
-redo_varying <- c(TRUE, FALSE)[1]
+redo_fixed <- c(TRUE, FALSE)[2]
+redo_varying <- c(TRUE, FALSE)[2]
 ## if  'redo_$'  then  recompute  'learned_features_$_sample_size',  otherwise
 ## upload it if it is not already in the environment.
 if (!redo_fixed) {
   if (!exists("learned_features_fixed_sample_size")) {
     learned_features_fixed_sample_size <-
-      load("data/learned_features_fixed_sample_size_new.xdr")
+      load("../tmle-applique/data/learned_features_fixed_sample_size_new.xdr")
   }
 }
 if (!redo_varying) {
   if (!exists("learned_features_varying_sample_size")) {
     learned_features_varying_sample_size <-
-      load("data/learned_features_varying_sample_size_new.xdr")
+      load("../tmle-applique/data/learned_features_varying_sample_size_new.xdr")
   }
 } 
 ```
+
+
 
 # A simulation study {#simulation-study}
 
@@ -185,7 +192,9 @@ features %>% select(-Qw, -Gw) %>%
 2. Adapt the  above chunk of code to visualize  the marginal density $Q_{0,W}$
    and conditional probability $\Gbar_{0}$.
 
-# The parameter of interest, first pass {#parameter-first-pass}
+# (PART) The parameter of interest {-}
+
+# First pass {#parameter-first-pass}
 
 It happens that we especially care for a finite-dimensional feature of $P_{0}$
 that  we   denote  by  $\psi_{0}$.    Its  definition  involves  two   of  the
@@ -194,6 +203,7 @@ aforementioned  infinite-dimensional  features: \begin{align}  \label{eq:psi0}
 dQ_{0,W}(w)\\  \notag &=  \Exp_{P_{0}} \left(\Exp_{P_0}(Y  \mid  A =  1, W)  -
 \Exp_{P_0}(Y \mid  A = 0, W)  \right).  \end{align} Acting as  oracles, we can
 compute explicitly the numerical value of $\psi_{0}$.
+
 
 ```{r approx-psi-0-a-one}
 (psi_zero <- evaluate_psi(experiment))
@@ -250,29 +260,16 @@ experiment eventually.  In light  of the above  enumeration, $\bbO  \equiv (W,
 Y_{0}, Y_{1}, A,  Y)$ is output, as  opposed to its summary  measure $O$. This
 defines another experiment and its law, that we denote $\bbP_{0}$.
 
-It  is   straightforward  to  show\footnote{For  $a   =  0,1$,  \begin{align*}
-\Exp_{\bbP_0}(Y_a) &=  \int \Exp_{\bbP_0}(Y_a \mid  W = w) dQ_{0,W}(w)  = \int
-\Exp_{\bbP_0}(Y_a \mid A = a, W =  w) dQ_{0,W}(w) \\ &= \int \Exp_{P_0}(Y \mid
-A = a,  W = w) dQ_{0,W}(w) = \int  \Qbar_0(a,W) dQ_{0,W}(w).  \end{align*} The
-second   equality   follows  from   the   conditional   independence  of   the
-counterfactual rewards  $(Y_0,Y_1)$ and  action $A$ given  $W$ (in  words, the
-\textit{randomization assumption} ``$(Y_0,Y_1) \perp A  \mid W$'' is met under
-$\bbP_{0}$).   The third  equality results  from the  facts that  the observed
-reward $Y$ equals the counterfactual reward $Y_a$  when $A = a$ (in words, the
-\textit{consistency  assumption}  ``$Y_a =  Y  \mid  A  =  a$'' is  met  under
-$\bbP_{0}$)  and that  $\Pr_{P_0}(\ell\Gbar_0(a,W) >  0) =  1$ (in  words, the
-\textit{positivity assumption}  is met  under $P_{0}$ ---  this is  needed for
-$\Exp_{P_0}(Y \mid A = a, W)$ to be well-defined).}  that
-\begin{equation} \label{eq:psi:zero}    
-\psi_{0} = \Exp_{\bbP_{0}} \left(Y_{1} - Y_{0}\right) = \Exp_{\bbP_{0}}(Y_1) -
-\Exp_{\bbP_{0}}(Y_0).  \end{equation}  Thus, $\psi_{0}$ describes  the average
-difference  of the  two counterfactual  rewards.  In  other words,  $\psi_{0}$
-quantifies the difference  in average of the  reward one would get  in a world
-where one would always enforce action $a=1$ with the reward one would get in a
-world where  one would always  enforce action $a=0$.   This said, it  is worth
-emphasizing  that $\psi_{0}$  is a  well-defined parameter  beyond its  causal
-interpretation, and that  it describes a standardized  association between the
-action $A$ and reward $Y$.
+It   is  straightforward   to  [show   that](identification)  \begin{equation}
+\label{eq:psi:zero} \psi_{0}  = \Exp_{\bbP_{0}}  \left(Y_{1} -  Y_{0}\right) =
+\Exp_{\bbP_{0}}(Y_1) - \Exp_{\bbP_{0}}(Y_0).   \end{equation} Thus, $\psi_{0}$
+describes the average difference of  the two counterfactual rewards.  In other
+words, $\psi_{0}$ quantifies the difference in average of the reward one would
+get in a world where one would always enforce action $a=1$ with the reward one
+would get in a world where one  would always enforce action $a=0$.  This said,
+it is worth emphasizing that $\psi_{0}$ is a well-defined parameter beyond its
+causal  interpretation,  and  that  it describes  a  standardized  association
+between the action $A$ and reward $Y$.
 
 To conclude this  subsection, we use our  position as oracles to
 sample observations from the  ideal experiment. We call `run_experiment`
@@ -290,18 +287,7 @@ The object  `psi_approx` contains  an approximation to  $\psi_0$ based  on `B`
 observations from the  ideal experiment.  The random  sampling of observations
 results  in uncertainty  in  the numerical  approximation  of $\psi_0$.   This
 uncertainty can be  quantified by constructing a 95\%  confidence interval for
-$\psi_0$. The central limit  theorem and Slutsky's lemma\footnote{Let $X_{1}$,
-$\ldots$,  $X_{n}$ be  independently drawn  from a  law such  that $\sigma^{2}
-\equiv \Var(X_{1})$  is finite.  Let  $m \equiv \Exp(X_{1})$  and $\bar{X}_{n}
-\equiv  n^{-1} \sum_{i=1}^{n}  X_{i}$ be  the empirical  mean.  It  holds that
-$\sqrt{n} (\bar{X}_{n}  - m)$ converges  in law as  $n$ grows to  the centered
-Gaussian law with  variance $\sigma^{2}$.  Moreover, if  $\sigma_{n}^{2}$ is a
-(positive)  consistent estimator  of  $\sigma^{2}$, then  $\sqrt{n}/\sigma_{n}
-(\bar{X}_{n} - m)$ converges in law  to the standard normal law. The empirical
-variance  $n^{-1}  \sum_{i=1}^{n}  (X_{i}   -  \bar{X}_{n})^{2}$  is  such  an
-estimator.  In conclusion, denoting by $\Phi$ the standard normal distribution
-function,  $[\bar{X}_{n} \pm  \Phi^{-1}(1-\alpha)  \sigma_{n}/\sqrt{n}]$ is  a
-confidence interval for $m$ with  asymptotic level $(1-2\alpha)$.} allow us to
+$\psi_0$.  The  central limit theorem  and Slutsky's lemma [allow  us](clt) to
 build such an interval as follows.
 
 ```{r approx-psi-zero-b}
@@ -314,7 +300,7 @@ We note that the interpretation of this confidence interval is that in 95\% of
 draws of size `B` from the ideal data generating experiment, the true value of 
 $\psi_0$ will be contained in the generated confidence interval. 
 
-# &#9881; An alternative parameter of interest, first pass {#exo-alternative-parameter-first-pass}
+# &#9881; Alternative, first pass {#exo-alternative-parameter-first-pass}
 
 As discussed  above, parameter $\psi_0$ \eqref{eq:psi:zero}  is the difference
 in average  rewards if  we enforce  action $a  = 1$  rather than  $a =  0$. An
@@ -352,7 +338,7 @@ $\psi_{0}$ \eqref{eq:psi:zero}.
    in the previous problem.
 
 
-# The parameter of interest, second pass {#parameter-second-pass}
+# Second pass {#parameter-second-pass}
 
 Suppose we  know beforehand that  $O$ drawn from  $P_{0}$ takes its  values in
 $\calO  \equiv  [0,1]  \times  \{0,1\}  \times [0,1]$  and  that  $\Gbar(W)  =
@@ -423,7 +409,7 @@ computation below.
 (psi_Pi_zero <- evaluate_psi(another_experiment, h = 0))
 ```
 
-# &#9881; An alternative parameter of interest, second pass {#exo-alternative-parameter-second-pass}
+# &#9881; Alternative, second pass {#exo-alternative-parameter-second-pass}
 
 As above, we define $q_{Y}(y,A,W)$ to  be the conditional density of $Y$ given
 $A$ and  $W$, evaluated at $y$,  that is implied  by a generic $P  \in \calM$.
@@ -448,19 +434,13 @@ $\calM$  to $[0,1]$,  characterized by  $\Delta_c(P) \equiv  \Gamma_{1,c}(P) -
    \in  \{1/4, 1/2,  3/4\}$.  Confirm  that your  results closely  match those
    obtained in the previous problem.
    
-3. Building upon the code you wrote to solve the previous problem, construct a
-   confidence  interval   with  asymptotic  level  $95\%$   for  $\Delta_{0,c}
-   (\Pi_{0})$, with  $c \in  \{1/4, 1/2, 3/4\}$.\footnote{Let  $X_{1}, \ldots,
-   X_{n}$  be  independently drawn  from  a  continuous distribution  function
-   $F$. Set $p \in ]0,1[$ and, assuming  that $n$ is large, find $k\geq 1$ and
-   $l \geq 1$ such that  $k/n \approx p - \Phi^{-1}(1-\alpha) \sqrt{p(1-p)/n}$
-   and $l/n \approx p +  \Phi^{-1}(1-\alpha) \sqrt{p(1-p)/n}$, where $\Phi$ is
-   the standard  normal distribution function.  Then  $[X_{(k)},X_{(l)}]$ is a
-   confidence interval for $F^{-1}(p)$ with asymptotic level $1 - 2\alpha$.}
+3. Building upon the code you  wrote to solve the previous problem, [construct
+   a  confidence interval](#order)  with asymptotic  level
+   $95\%$ for $\Delta_{0,c} (\Pi_{0})$, with $c \in \{1/4, 1/2, 3/4\}$.
 
 
 
-# The parameter of interest, third pass {#parameter-third-pass}
+# Third pass {#parameter-third-pass}
 
 In the previous subsection, we reoriented  our view of the target parameter to
 be  that   of  a   statistical  functional   of  the   law  of   the  observed
@@ -495,15 +475,16 @@ estimator  of $\psi_0$  using estimators  of $\Qbar_0$  and of  $Q_{W,0}$. The
 latter  suggests  building  an  estimator  of  $\psi_0$  using  estimators  of
 $\ell\Gbar_0$ and of $P_0$. We return to these ideas in later sections.
 
-# &#9881; An alternative parameter of interest, third pass {#exo-alternative-parameter-third-pass}
+# &#9881; Alternative, third pass {#exo-alternative-parameter-third-pass}
 
 1.   &#x2621;  Show that  for $a'  = 0,1$,  $\gamma_{0,a',c}$ as  defined in
 (\ref{def_quantile})  can be  equivalently expressed  as \begin{equation*}\inf
 \left\{z \in ]0,1[  : \int \frac{\one\{a =  a'\}}{\ell\Gbar(a',W)} \one\{y \le
 z\} dP_0(w,a,y) \ge c \right\}.\end{equation*}
 
+# (PART) Being smooth {-}
 
-# Smooth parameters, first pass {#smooth-first-pass}
+# First pass {#smooth-first-pass}
 
 
 Within  our view  of the  target  parameter as  a statistical  mapping, it  is
@@ -603,7 +584,7 @@ Qbar = function(AW, hh = h){
    how  does the  behavior of  the  target parameter  around $h  = 0$  compare
    between laws $\Pi_0$ and $\Pi_0'$?
 
-# &#x2621; Being smooth, second pass {#smooth-second-pass}
+# &#x2621; Second pass {#smooth-second-pass}
 
 Let us now formally define what it  means for statistical mapping $\Psi$ to be
 smooth at every  $P \in \calM$.  For every $h  \in H \equiv ]-M^{-1},M^{-1}[$,
@@ -802,6 +783,8 @@ D_{2}^{*}(P)     (O)     &\equiv      \frac{2A-1}{\ell\Gbar(A,W)}     (Y     -
    problems  2 and  3  of Section  \@ref(subsec:exo:dave:three). Compare  this
    bound with those computed in problem 1.
 
+# (PART) Double robustness {-}
+
 # Linear approximations of parameters {#linear-approximation}
 
 In the last subsection, we learned that the stochastic behavior of a regular, 
@@ -844,6 +827,7 @@ the  canonical   gradient  (\ref{eq:eif}),  and  linearization   of  parameter
 \biggl[    \{\Gbar_0(W)    -     \Gbar(W)\}    \biggl\{\frac{\Qbar_0(1,W)    -
 \Qbar(1,W)}{\ell\Gbar(1,W)} + \frac{\Qbar_0(0,W) - \Qbar(0,W)}{\ell\Gbar(0,W)}
 \biggr\} \biggr]. \label{remainder} \end{align}
+
 
 ```{r evaluating-remainder}
 # Could we add a method for evaluating the remainder?

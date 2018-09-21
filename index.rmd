@@ -1,6 +1,6 @@
 ---
 knit: "bookdown::render_book"
-title: "A Guided Tour in Targeted Learning Territory (provisional)"
+title: "A Guided Tour in Targeted Learning Territory"
 author: ["David Benkeser (Emory University)", "Antoine Chambaz (Université Paris Descartes)"]
 date: "09/11/2018"
 description: "To do..."

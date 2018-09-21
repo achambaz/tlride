@@ -19,7 +19,7 @@ bookdown::gitbook:
         family: sans
         size: 2
   includes:
-    before_body: dan_header.html
+    before_body: abcd_header.html
     in_header: mathjax_number.html
     sharing: no
   css: gttmle.css
@@ -29,7 +29,7 @@ bookdown::pdf_document2:
   toc_depth: 2
   number_sections: true
   includes:
-    in_header: dan_header.tex
+    in_header: abcd_header.tex
   latex_engine: pdflatex
   citation_package: natbib
 
@@ -38,6 +38,6 @@ bookdown::tufte_book2:
   toc_depth: 2
   number_sections: true
   includes:
-    in_header: dan_header.tex
+    in_header: abcd_header.tex
   latex_engine: pdflatex
   citation_package: natbib
