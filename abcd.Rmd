@@ -1,4 +1,4 @@
-# (PART) A guided tour {-}
+# (PART\*) A guided tour {-}
 
 
 # Introduction {#introduction}
@@ -192,7 +192,7 @@ features %>% select(-Qw, -Gw) %>%
 2. Adapt the  above chunk of code to visualize  the marginal density $Q_{0,W}$
    and conditional probability $\Gbar_{0}$.
 
-# (PART) The parameter of interest {-}
+# (PART\*) The parameter of interest {-}
 
 # First pass {#parameter-first-pass}
 
@@ -482,7 +482,7 @@ $\ell\Gbar_0$ and of $P_0$. We return to these ideas in later sections.
 \left\{z \in ]0,1[  : \int \frac{\one\{a =  a'\}}{\ell\Gbar(a',W)} \one\{y \le
 z\} dP_0(w,a,y) \ge c \right\}.\end{equation*}
 
-# (PART) Being smooth {-}
+# (PART\*) Being smooth {-}
 
 # First pass {#smooth-first-pass}
 
@@ -783,7 +783,7 @@ D_{2}^{*}(P)     (O)     &\equiv      \frac{2A-1}{\ell\Gbar(A,W)}     (Y     -
    problems  2 and  3  of Section  \@ref(subsec:exo:dave:three). Compare  this
    bound with those computed in problem 1.
 
-# (PART) Double robustness {-}
+# (PART\*) Double robustness {-}
 
 # Linear approximations of parameters {#linear-approximation}
 

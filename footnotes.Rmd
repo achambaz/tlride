@@ -1,0 +1,83 @@
+# Basic results and their proofs {#proofs}
+
+## Identification {#identification}
+
+Let $\bbP_{0}$ be an experiment that  generates $\bbO \equiv (W, Y_{0}, Y_{1},
+A, Y)$.   We think of  $W$ as  the context where  an action is  undertaken, of
+$Y_{0}$ and  $Y_{1}$ as  the counterfactual  (potential) rewards  that actions
+$a=0$ and $a=1$ would entail, of $A$ as  the action carried out, and of $Y$ as
+the  reward  received  in  response  to action  $A$.  Consider  the  following
+assumptions:
+
+1. **Randomization**:   under   $\bbP_{0}$,  the   counterfactual   rewards
+   $(Y_0,Y_1)$ and action $A$ are conditionally independent given $W$, *i.e.*,
+   $(Y_0,Y_1) \perp A \mid W$.
+
+1. **Consistency**: under $\bbP_{0}$, if action $A$ is undertaken then reward
+  $Y_{A}$ is received, *i.e.*, $Y = Y_{A}$ (or $Y=Y_{a}$ given that $A=a$).
+
+1.     **Positivity**:  under $\bbP_{0}$,  both actions  $a=0$ and  $a=1$ have
+   ($\bbP_{0}$-almost surely)  a positive  probability to be  undertaken given
+   $W$, *i.e.*, $\Pr_{\bbP_0}(\ell\Gbar_0(a,W) > 0) = 1$ for $a=0,1$.
+
+
+
+```{proposition, name="Identification"}
+Under  the  above assumptions,  it  holds  that \begin{equation*}  \psi_{0}  =
+\Exp_{\bbP_{0}}   \left(Y_{1}   -   Y_{0}\right)  =   \Exp_{\bbP_{0}}(Y_1)   -
+\Exp_{\bbP_{0}}(Y_0). \end{equation*}
+```	
+
+```{proof}
+Set arbitrarily $a  \in \{0,1\}$.  By the randomization assumption  on the one
+hand (second  equality) and by  the consistency and positivity  assumptions on
+the   other   hand   (third    equality),   it   holds   that   \begin{align*}
+\Exp_{\bbP_0}(Y_a) &=  \int \Exp_{\bbP_0}(Y_a \mid  W = w) dQ_{0,W}(w)  = \int
+\Exp_{\bbP_0}(Y_a \mid A = a, W =  w) dQ_{0,W}(w) \\ &= \int \Exp_{P_0}(Y \mid
+A =  a, W = w)  dQ_{0,W}(w) = \int \Qbar_0(a,W)  dQ_{0,W}(w). \end{align*} The
+stated result easily follows.
+```
+
+**Remark.** The positivity assumption is needed  for $\Exp_{P_0}(Y \mid A = a,
+W) \equiv \Qbar_{0}(a,W)$ to be well-defined.
+
+## Building a confidence interval {#confidence-interval}
+
+Let  $\Phi$  be  the  standard  normal  distribution  function.  Let  $X_{1}$,
+$\ldots$, $X_{n}$ be independently drawn from a given law.
+
+### CLT & Slutsky's lemma {#clt}
+
+Assume  that  $\sigma^{2}  \equiv  \Var(X_{1})$  is  finite.   Let  $m  \equiv
+\Exp(X_{1})$  be   the  mean  of   $X_{1}$  and  $\bar{X}_{n}   \equiv  n^{-1}
+\sum_{i=1}^{n} X_{i}$  be the  empirical mean.  By  the central  limit theorem
+(CLT), it  holds that  $\sqrt{n} (\bar{X}_{n}  - m)$ converges  in law  as $n$
+grows to the centered Gaussian law with variance $\sigma^{2}$.
+
+Moreover,  if  $\sigma_{n}^{2}$  is   a  (positive)  consistent  estimator  of
+$\sigma^{2}$ then, by Slutsky's lemma, $\sqrt{n}/\sigma_{n} (\bar{X}_{n} - m)$
+converges in law  to the standard normal law.  The  empirical variance $n^{-1}
+\sum_{i=1}^{n}(X_{i} - \bar{X}_{n})^{2}$ is such an estimator. 
+
+```{proposition}
+Under   the  above   assumptions,   \begin{equation*}  \left[\bar{X}_{n}   \pm
+\Phi^{-1}(1-\alpha)  \frac{\sigma_{n}}{\sqrt{n}}\right]  \end{equation*} is  a
+confidence interval for $m$ with asymptotic level $(1-2\alpha)$.
+```
+    
+### CLT and order statistics {#order}
+
+Suppose  that the  law of  $X_{1}$ admits  a continuous  distribution function
+$F$. Set $p \in ]0,1[$ and, assuming that  $n$ is large, find $k\geq 1$ and $l
+\geq   1$    such   that    \begin{equation*}   \frac{k}{n}   \approx    p   -
+\Phi^{-1}(1-\alpha)      \sqrt{\frac{p(1-p)}{n}}      \end{equation*}      and
+\begin{equation*}    \frac{l}{n}     \approx    p     +    \Phi^{-1}(1-\alpha)
+\sqrt{\frac{p(1-p)}{n}}.  \end{equation*} 
+
+```{proposition}
+Under the above assumptions, $[X_{(k)},X_{(l)}]$  is a confidence interval for
+$F^{-1}(p)$ with asymptotic level $1 - 2\alpha$.
+```	
+
+`r if (knitr::is_html_output()) '# References'`
+   
