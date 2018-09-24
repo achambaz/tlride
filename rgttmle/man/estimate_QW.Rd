@@ -9,7 +9,7 @@ estimate_QW(dat)
 \arguments{
 \item{dat}{The learning data  set. Must have the  same form as a  data set
 produced    by    an    object   of    \code{class}    \code{LAW}    (see
-'?guided.tour.tmle').}
+'?rgttmle').}
 }
 \value{
 A  \code{tibble}  with  columns named  'value'  and 'weight'  that
@@ -23,7 +23,7 @@ parametrically the marginal law of W, the so called 'QW' feature.
 \examples{
 
 ## create an experiment and draw a data set from it
-example(guided.tour.tmle, echo = FALSE)
+example(rgttmle, echo = FALSE)
 obs <- sample_from(experiment, n = 250)
 
 ## estimate 'QW'

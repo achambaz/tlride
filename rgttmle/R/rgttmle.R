@@ -1,6 +1,6 @@
-#' guided.tour.tmle: A Companion Package to the Article "A Guided Tour in Targeted Learning Territory"
+#' rgttmle: A Companion Package to the Article "A Guided Tour in Targeted Learning Territory"
 #'
-#' The  'guided.tour.tmle'  package  provides   two  categories  of  important
+#' The  'rgttmle'  package  provides   two  categories  of  important
 #' functions: 
 #' 
 #' @section  Methods  for  \code{LAW}  objects:
@@ -32,7 +32,7 @@
 #'
 #' @docType package
 #' 
-#' @name guided.tour.tmle
+#' @name rgttmle
 #'
 #' @references Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
 #' 

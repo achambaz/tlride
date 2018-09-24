@@ -23,7 +23,7 @@
 #'
 #' @examples
 #'
-#' ## See 'example(guided.tour.tmle)'
+#' ## See 'example(rgttmle)'
 #' 
 #' @family methods and functions for LAW objects
 #'
@@ -57,7 +57,7 @@ setConstructorS3("LAW", function(QW = NA, Gbar = NA, Qbar = NA,
 #' @examples
 #'
 #' ## create an experiment, make a copy (once)
-#' example(guided.tour.tmle, echo = FALSE)
+#' example(rgttmle, echo = FALSE)
 #' experiment_bis <- experiment
 #' experiment_ter <- copy(experiment)
 #' identical(experiment, experiment_bis)
@@ -157,7 +157,7 @@ setMethodS3(
 #' @examples
 #'
 #' ## create an experiment
-#' example(guided.tour.tmle, echo = FALSE)
+#' example(rgttmle, echo = FALSE)
 #' experiment
 #'
 #' ## sample three observations from it
@@ -210,7 +210,7 @@ setMethodS3(
 #' @examples
 #'
 #' ## create then reveal an experiment
-#' example(guided.tour.tmle, echo = FALSE)
+#' example(rgttmle, echo = FALSE)
 #' reveal(experiment)
 #' 
 #' 
@@ -261,7 +261,7 @@ setMethodS3(
 #' @examples
 #'
 #' ## create then reveal an experiment
-#' example(guided.tour.tmle, echo = FALSE)
+#' example(rgttmle, echo = FALSE)
 #' get_feature(experiment, "Gbar")
 #' 
 #' 
@@ -360,7 +360,7 @@ setMethodS3(
 #' @examples
 #'
 #' ## create an experiment
-#' example(guided.tour.tmle, echo = FALSE)
+#' example(rgttmle, echo = FALSE)
 #' experiment
 #'
 #' ## evaluate Psi at this experiment
@@ -442,7 +442,7 @@ setMethodS3(
 #' @examples
 #'
 #' ## create an experiment
-#' example(guided.tour.tmle, echo = FALSE)
+#' example(rgttmle, echo = FALSE)
 #' experiment
 #'
 #' ## evaluate the efficient influence curve of Psi at this experiment
@@ -529,7 +529,7 @@ setMethodS3(
 #' @examples
 #'
 #' ## create an experiment
-#' example(guided.tour.tmle, echo = FALSE)
+#' example(rgttmle, echo = FALSE)
 #'
 #' ## reveal the original experiment, alert and reveal it again
 #' reveal(experiment)
@@ -605,7 +605,7 @@ setMethodS3(
 #' @examples
 #'
 #' ## create a one-dimensional fluctutation (collection of laws)
-#' example(guided.tour.tmle, echo = FALSE)
+#' example(rgttmle, echo = FALSE)
 #' (evaluate_psi(another_experiment, h = 0)) # Psi(P_0)
 #' (evaluate_psi(another_experiment, h = 1)) # Psi(P_1)
 #' 

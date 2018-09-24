@@ -36,7 +36,7 @@ put the \code{sample_from} method at odds with the modified features.
 \examples{
 
 ## create an experiment
-example(guided.tour.tmle, echo = FALSE)
+example(rgttmle, echo = FALSE)
 
 ## reveal the original experiment, alert and reveal it again
 reveal(experiment)

@@ -32,7 +32,7 @@ one acts as an \emph{oracle}.
 \examples{
 
 ## create then reveal an experiment
-example(guided.tour.tmle, echo = FALSE)
+example(rgttmle, echo = FALSE)
 reveal(experiment)
 
 

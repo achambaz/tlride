@@ -29,7 +29,7 @@ are characterized.
 \examples{
 
 ## create an experiment
-example(guided.tour.tmle, echo = FALSE)
+example(rgttmle, echo = FALSE)
 experiment
 
 ## evaluate Psi at this experiment

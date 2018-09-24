@@ -36,7 +36,7 @@ trim_glm_fit <- caret::getModelInfo("glm")$glm$trim
 #'
 #' @param  dat The learning data  set. Must have the  same form as a  data set
 #'   produced    by    an    object   of    \code{class}    \code{LAW}    (see
-#'   '?guided.tour.tmle').
+#'   '?rgttmle').
 #'
 #' @param  algorithm The  algorithm.  See the  built-in algorithms  by running
 #'   'data(algorithms)'.
@@ -55,7 +55,7 @@ trim_glm_fit <- caret::getModelInfo("glm")$glm$trim
 #' @examples
 #'
 #' ## create an experiment and draw a data set from it
-#' example(guided.tour.tmle, echo = FALSE)
+#' example(rgttmle, echo = FALSE)
 #' obs <- sample_from(experiment, n = 250)
 #'
 #' ## load the built-in algorithms
@@ -89,7 +89,7 @@ estimate_Gbar <- function(dat, algorithm, ...) {
 #'
 #' @param  dat The learning data  set. Must have the  same form as a  data set
 #'   produced    by    an    object   of    \code{class}    \code{LAW}    (see
-#'   '?guided.tour.tmle').
+#'   '?rgttmle').
 #'
 #' @param  algorithm The  algorithm.  See the  built-in algorithms  by running
 #'   'data(algorithms)'.
@@ -108,7 +108,7 @@ estimate_Gbar <- function(dat, algorithm, ...) {
 #' @examples
 #'
 #' ## create an experiment and draw a data set from it
-#' example(guided.tour.tmle, echo = FALSE)
+#' example(rgttmle, echo = FALSE)
 #' obs <- sample_from(experiment, n = 250)
 #'
 #' ## load the built-in algorithms
@@ -140,7 +140,7 @@ estimate_Qbar <- function(dat, algorithm, ...) {
 #' 
 #' @param dat The learning data  set. Must have the  same form as a  data set
 #'   produced    by    an    object   of    \code{class}    \code{LAW}    (see
-#'   '?guided.tour.tmle').
+#'   '?rgttmle').
 #'
 #' @seealso   \code{\link{estimate_Gbar}}   to  estimate   the   conditional
 #'   probability that A=1 given W, \code{\link{estimate_Qbar}} to estimate the
@@ -154,7 +154,7 @@ estimate_Qbar <- function(dat, algorithm, ...) {
 #' @examples
 #'
 #' ## create an experiment and draw a data set from it
-#' example(guided.tour.tmle, echo = FALSE)
+#' example(rgttmle, echo = FALSE)
 #' obs <- sample_from(experiment, n = 250)
 #'
 #' ## estimate 'QW'

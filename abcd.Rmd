@@ -22,14 +22,14 @@ estimator will  unfold in  *targeted learning territory*,  at the  frontier of
 machine  learning and  semiparametrics,  the statistical  theory of  inference
 based on semiparametric models.
 
-## The `guided.tour.tmle` package. {#gttmle-package}
+## The `rgttmle` package. {#gttmle-package}
 
 The  computational illustrations  will  be developed  based  on the  companion
-package `guided.tour.tmle`. Make  sure you have installed it,  for instance by
+package `rgttmle`. Make  sure you have installed it,  for instance by
 running the following chunk of code:
 
 ```{r install-package, eval = FALSE}
-devtools::install_github("achambaz/gttmle/guided.tour.tmle")
+devtools::install_github("achambaz/gttmle/rgttmle")
 ```
 
 Note that additional  packages are required, among  which `tidyverse` [@r4ds],
@@ -41,7 +41,7 @@ set.seed(54321) ## because reproducibility matters...
 library(tidyverse)
 library(caret)
 library(ggdag)
-library(guided.tour.tmle)
+library(rgttmle)
 ```
 
 ## What we will discuss {#discuss}
@@ -94,10 +94,10 @@ from  now  on  take on  two  different  roles:  that  of an  *oracle*  knowing
 completely the nature  of the experiment, and that of  a statistician eager to
 know more about the experiment by observing some of its outputs. 
 
-Let us run the example built into the `guided.tour.tmle` package:
+Let us run the example built into the `rgttmle` package:
 
 ```{r example-one, results = FALSE}
-example(guided.tour.tmle)
+example(rgttmle)
 ```
 
 A few objects have been defined:

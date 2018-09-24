@@ -1,4 +1,4 @@
-Package: guided.tour.tmle
+Package: rgttmle
 Title: A Companion Package to the Article "A Guided Tour in Targeted Learning Territory"
 Version: 1.0.0
 Authors@R: as.person(c(

@@ -30,7 +30,7 @@ can be specified.
 }
 \examples{
 
-## See 'example(guided.tour.tmle)'
+## See 'example(rgttmle)'
 
 }
 \seealso{
