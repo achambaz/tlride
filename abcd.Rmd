@@ -8,7 +8,7 @@ quantity whose statistical analysis is typical  and thus paves the way to more
 involved analyses.   The introduction  weaves together  two main  threads, one
 theoretical and the other computational.
 
-## A causal story.  {#causal-story}
+## A causal story  {#causal-story}
 
 We focus on a causal story where a  random reward (a real number between 0 and
 1) depends  on the action  undertaken (one among  two) and the  random context
@@ -22,7 +22,7 @@ estimator will  unfold in  *targeted learning territory*,  at the  frontier of
 machine  learning and  semiparametrics,  the statistical  theory of  inference
 based on semiparametric models.
 
-## The `rgttmle` package. {#gttmle-package}
+## The `rgttmle` package {#gttmle-package}
 
 The  computational illustrations  will  be developed  based  on the  companion
 package `rgttmle`. Make  sure you have installed it,  for instance by
@@ -48,7 +48,7 @@ library(rgttmle)
 
 ...
 
-## To remove at a later stage. {#remove}
+## To remove at a later stage {#remove}
 
 ```{r redo}
 redo_fixed <- c(TRUE, FALSE)[2]
@@ -73,26 +73,29 @@ if (!redo_varying) {
 
 # A simulation study {#simulation-study}
 
-## Reproducible experiment as a law. {#reproducible-experiment}
+
+
+## Reproducible experiment as a law {#reproducible-experiment}
 
 We are interested in a reproducible  experiment. Every time this experiment is
 run, it  generates an observation that  we call $O$.  We view $O$ as  a random
-variable drawn from *the law of the experiment* that we denote by $P_{0}$.  
+variable drawn from *the law of the experiment* that we denote by $P_{0}$. 
 
-We  view $P_{0}$  as  an element  of  *the  model* $\calM$.   The  model is  a
+
+We view $P_{0}$ as an element of *the model* $\calM$.  The model is a
 collection of laws.  In particular, the  model contains all laws that we think
 may plausibly describe  the law of the experiment.  Thus,  the choice of model
 is based on our scientific knowledge of the experiment. The more we know about
 the experiment,  the smaller is  $\calM$.  In all  our examples, we  use large
 models that reflect a lack of knowledge about many aspects of the experiment.
 
-## A synthetic reproducible experiment. {#synthetic-experiment}
+## A synthetic reproducible experiment {#synthetic-experiment}
 
 Instead  of considering  a  real-life reproducible  experiment,  we focus  for
 pedagogical purposes  on a  *synthetic* reproducible  experiment. Thus  we can
 from  now  on  take on  two  different  roles:  that  of an  *oracle*  knowing
-completely the nature  of the experiment, and that of  a statistician eager to
-know more about the experiment by observing some of its outputs. 
+completely the nature of the experiment, and that of a *statistician* eager to
+know more about the experiment by observing some of its outputs.
 
 Let us run the example built into the `rgttmle` package:
 
@@ -109,7 +112,7 @@ ls()
 Function `expit` implements the link function  $\expit : \bbR \to ]0,1[$ given
 by  $\expit(x) \equiv  (1 +  e^{-x})^{-1}$.  Function  `logit` implements  its
 inverse function  $\logit : ]0,1[  \to \bbR$  given by $\logit(p)  \equiv \log
-[p/(1-p)]$.  
+[p/(1-p)]$. 
 
 Let us take a look at `experiment`:
 
@@ -130,35 +133,92 @@ times, independently:
 ```{r draw-five-obs} 
 (five_obs <- sample_from(experiment, n = 5))
 ``` 
+## Revealing `experiment` {#revealing-experiment}
 
+Acting as oracles,  we can peek into `experiment` and  *reveal* a selection of
+relevant  features  (simply run  `?reveal`  to  see  the  man page  of  method
+`reveal`).  Made by  us, the  selection exhibits  features that  will play  an
+important role in the text.
 
-We can interpret `run_experiment` as a law $P_{0}$ since we can use the
-function to sample observations  from a common law.  It is  even a little more
-than  that, because  we  can  tweak the  experiment,  by  setting its  `ideal`
-argument   to  `TRUE`,   in  order   to  get   what  appear   as  intermediary
-(counterfactual) variables in the regular  experiment.  The next chunk of code
-runs  the  (regular)  experiment  five times  independently  and  outputs  the
-resulting observations:
+```{r reveal-experiment}
+relevant_features <- reveal(experiment)
+names(relevant_features)
+```
 
+We have  an oracular knowledge of  `experiment` and can thus  comment upon the
+features of $P_{0}$ revealed in `relevant_features`.
 
-We can view the `attributes` of object `five_obs` because, in this section, we
-act  as  oracles,  \textit{i.e.},  we   know  completely  the  nature  of  the
-experiment. In  particular, we  have included several  features of  $P_0$ that
-play an important  role in our developments. The attribute  `QW` describes the
-density of $W$,  of which the law  $Q_{0,W}$ is a mixture of  the uniform laws
-over $[0,1]$ (weight $1/10$)  and $[11/30,14/30]$ (weight $9/10$).\footnote{We
-fine-tuned (or tweaked,  or something else?)  the marginal law  of $W$ to make
-it easier later on to drive home important messages.  Specifically, $\ldots{}$
-(do we explain what happens?)}  The attribute `Gbar` describes the conditional
-probability of action $A = 1$ given  $W$.  For each $a \in \{0,1\}$, we denote
-$\Gbar_0(W)  \equiv  \Pr_{P_0}(A  =  1  |  W)$  and  $\ell\Gbar_0(a,W)  \equiv
-\Pr_{P_0}(A = a | W)$.   Obviously, $\ell\Gbar_{0}(A,W) \equiv A\Gbar_{0}(W) +
-(1-A) (1-\Gbar_{0}(W))$.  The attribute `qY` describes the conditional density
-of $Y$ given $A$ and $W$.  For  each $y\in ]0,1[$, we denote by $q_{0,Y}(y, A,
-W)$  the conditional  density  evaluated at  $y$  of $Y$  given  $A$ and  $W$.
-Similarly, the  attribute `Qbar` describes  the conditional mean of  $Y$ given
-$A$  and  $W$,   and  we  denote  $\Qbar_0(A,W)   =  \Exp_{P_{0}}(Y|A,W)$  the
-conditional mean of $Y$ given $A$ and $W$.
+### `QW` {-}
+
+The `QW` feature describes the marginal law of $W$, that we call $Q_{0,W}$.^[A
+summary   of   the   notation   used  throughout   the   text   is   presented
+[here](#notation).]
+
+```{r show-QW}
+relevant_features$QW
+```
+
+It  appears that  $Q_{0,W}$ is  a  mixture of  the uniform  laws over  $[0,1]$
+(weight  $1/10$)  and  $[11/30,14/30]$  (weight  $9/10$).^[We  fine-tuned  the
+marginal  law $Q_{0,W}$  of $W$  to  make it  easier  later on  to drive  home
+important messages.]
+
+### `Gbar` {-}
+
+The `Gbar`  feature describes the  conditional probability  of action $A  = 1$
+given  $W$. For  each $a  \in  \{0,1\}$, we  denote \begin{align*}  \Gbar_0(W)
+&\equiv \Pr_{P_0}(A  = 1 |  W), \\\ell\Gbar_0(a,W)  &\equiv \Pr_{P_0}(A =  a |
+W).\end{align*}    Obviously,    \begin{equation*}\ell\Gbar_{0}(A,W)    \equiv
+A\Gbar_{0}(W) + (1-A) (1-\Gbar_{0}(W)).\end{equation*}
+
+```{r show-Gbar}
+relevant_features$Gbar
+```
+
+Note how real numbers of the form $1 + 2W - 4 * \sqrt{|W - 5/12|})$ are mapped
+into the interval $[0,1]$ by the $\expit$ link function.
+
+### `qY` {-}
+
+The `qY` feature  describes the conditional density of $Y$  given $A$ and $W$.
+For each $y\in ]0,1[$, we denote by $q_{0,Y}(y, A, W)$ the conditional density
+evaluated at $y$ of $Y$ given $A$ and $W$.  
+
+```{r show-qY}
+relevant_features$qY
+```
+
+It appears that the  conditional law of $Y$ given $A$ and $W$  is the Beta law
+with  conditional mean  and variance  characterized by  the `Qbar`  feature of
+`experiment` (see below) and the `shape10` and `shape11` parameters.
+
+### `Qbar` {-}
+
+As for the `Qbar` feature, it describes  the conditional mean of $Y$ given $A$
+and $W$. 
+
+```{r show-Qbar}
+relevant_features$Qbar
+```
+
+We denote  $\Qbar_0(A,W) =  \Exp_{P_{0}}(Y|A,W)$ the  conditional mean  of $Y$
+given $A$  and $W$.  Note  how $\Qbar_0(A,W)$ does  depend heavily on  $A$ and
+$W$.  We   refer  the  reader   to  Section  \@ref(exo-visualization)   for  a
+visualization of $\Qbar_{0}$.
+
+### `sample_from` {-}
+
+Finally,  the  `sample_from`   feature  is  the  function   called  by  method
+`sample_from`  when  it  is  applied  to   an  object  of  class  `LAW`,  like
+`experiment`.
+
+```{r show-sample-from }
+relevant_features$sample_from
+```
+
+We will comment  upon the `ideal` argument in the  above `sample_from` feature
+in Section \@ref(parameter-first-pass).
+
 
 # &#9881; Visualization {#exo-visualization}
 
@@ -166,10 +226,9 @@ conditional mean of $Y$ given $A$ and $W$.
    $\Qbar_{0}$.
 
 ```{r exercise:visualize, eval = TRUE}
-some_relevant_features <- reveal(experiment)
-Gbar <- some_relevant_features$Gbar
-Qbar <- some_relevant_features$Qbar
-QW <- some_relevant_features$QW
+Gbar <- relevant_features$Gbar
+Qbar <- relevant_features$Qbar
+QW <- relevant_features$QW
 
 features <- tibble(w = seq(0, 1, length.out = 1e3)) %>%
   mutate(Qw = QW(w),
@@ -191,6 +250,73 @@ features %>% select(-Qw, -Gw) %>%
 
 2. Adapt the  above chunk of code to visualize  the marginal density $Q_{0,W}$
    and conditional probability $\Gbar_{0}$.
+
+# &#9881; Make your own experiment {#exo-make-own-experiment}
+
+You can easily make your own experiment. 
+
+1. Check out the man page of method `alter` by running `?alter`. 
+
+2. Run the following chunk of code:
+
+```{r my-own-experiment-a}
+my_experiment <- LAW() ## creates an object of class 'LAW'
+alter(my_experiment,   ## characterize its relevant features
+      QW = function(W) {
+        out <- rep_len(0, length(W))
+        out[W == 0] <- 1/4
+        out[W == 1] <- 3/4
+        return(out)
+      },
+      Gbar = function(W) {
+        out <- rep_len(0, length(W))
+        out[W == 0] <- 1/3
+        out[W == 1] <- 3/5
+        return(out)
+      },
+      Qbar = function(AW) {
+        probs <- matrix(c(1/2, 2/3, 7/8, 4/5), ncol = 2,
+                        dimnames = list(c("A=0", "A=1"),
+                                        c("W=0", "W=1")))
+        probs[cbind(AW[, "A"] + 1, AW[, "W"] + 1)]
+      },
+      qY = function(obs) {
+        probs <- matrix(c(1/2, 2/3, 7/8, 4/5), ncol = 2,
+                        dimnames = list(c("A=0", "A=1"),
+                                        c("W=0", "W=1")))
+        probs <- probs[cbind(obs[, "A"] + 1, obs[, "W"] + 1)]
+        obs[, "Y"] * probs + (1 - obs[, "Y"]) * (1 - probs)
+      },
+      sample_from = function(n) {
+        ## preliminary
+        n <- R.utils::Arguments$getInteger(n, c(1, Inf))
+        ## 'QW', 'Gbar' and 'Qbar' features
+        QW <- my_experiment$.QW
+        Gbar <- my_experiment$.Gbar
+        Qbar <- my_experiment$.Qbar
+        ## sampling
+        W <- rbinom(n, size = 1, prob = QW(1))
+        A <- rbinom(n, size = 1, prob = Gbar(W))
+        AW <- cbind(W = W, A = A)
+        Y <- rbinom(n, size = 1, Qbar(AW))
+        return(cbind(AW, Y = Y))
+      })
+```
+
+3. What does the next chunk do?
+
+```{r my-own-experiment-b}
+(sample_from(my_experiment, 3))
+```
+
+4. Characterize entirely the law of `my_experiment`. Hint:
+
+```{r my-own-experiment-c}
+sample_from(my_experiment, 1e3) %>% as.tibble %>%
+  group_by(W, A) %>% summarize(prob = mean(Y))
+```
+
+5. Now, make your own experiment.
 
 # (PART\*) The parameter of interest {-}
 
@@ -1123,7 +1249,7 @@ This simulation demonstrates that, as expected, $n^{1/2}P_n D^*(\hat{P}_n) \righ
 
 3. \tcg{A "difficult" exercise. Repeat exercise 2, but let's try to break Donsker conditions. E.g., could we blow the Donsker condition up by including an increasing number of polynomials?}
 
-## One-step corrections.
+## One-step corrections
 
 In this section, we discuss a simple strategy for correcting the behavior of the plug-in
 estimate of $\psi_0$. Recall that an estimator $\psi_n$ of $\psi_0$ 

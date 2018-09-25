@@ -52,10 +52,16 @@ literature [@TMLEbook11], [@TMLEbook18].
 
 __Technical details__
 
-The text is written in [RMarkdown](https://rmarkdown.rstudio.com) with
-[bookdown](https://bookdown.org).  
+The  text   is  written  in   [RMarkdown](https://rmarkdown.rstudio.com)  with
+[bookdown](https://bookdown.org).           Assuming         that          the
+[knitr](https://yihui.name/knitr/) package is installed,  you can retrieve all
+the R code by running
 
-<!--It            is           automatically            rebuilt           from
+```{r extract, eval = FALSE}
+knitr::purl("abcd.Rmd")
+```
+
+<!--It is automatically rebuilt from
 [source](https://github.com/achambaz/gttmle)                                by
 [travis](http://travis-ci.org/).-->
 
