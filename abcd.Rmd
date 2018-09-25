@@ -312,8 +312,9 @@ alter(my_experiment,   ## characterize its relevant features
 4. Characterize entirely the law of `my_experiment`. Hint:
 
 ```{r my-own-experiment-c}
-sample_from(my_experiment, 1e3) %>% as.tibble %>%
-  group_by(W, A) %>% summarize(prob = mean(Y))
+obs <- sample_from(my_experiment, 1e4)
+obs %>% as.tibble %>% group_by(W, A, Y) %>% summarize(how_many = n())
+obs %>% as.tibble %>% group_by(W, A) %>% summarize(prob = mean(Y))
 ```
 
 5. Now, make your own experiment.
