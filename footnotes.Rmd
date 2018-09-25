@@ -1,5 +1,26 @@
 # Basic results and their proofs {#proofs}
 
+## NPSEM {#npsem}
+
+The experiment can also be summarized by a *nonparametric system of structural
+equations*:  for   some  deterministic  functions  $f_w$,   $f_a$,  $f_y$  and
+independent sources of randomness $U_w$, $U_a$, $U_y$,
+
+1. sample the context where the  counterfactual rewards will be generated, the
+action  will be  undertaken  and the  actual  reward will  be  obtained, $W  =
+f_{w}(U_w)$;
+
+2.  sample the  two counterfactual  rewards  of the  two actions  that can  be
+undertaken, $Y_{0} = f_{y}(0, W, U_y)$ and $Y_{1} = f_{y}(1, W, U_y)$;
+
+3. sample  which action is carried  out in the  given context, $A =  f_{a} (W,
+U_a)$;
+
+4.  define the corresponding reward, $Y = A Y_{1} + (1-A) Y_{0}$; 
+
+5. summarize  the course of  the experiment with the  observation $O =  (W, A,
+Y)$, thus concealing $Y_{0}$ and $Y_{1}$.
+
 ## Identification {#identification}
 
 Let $\bbP_{0}$ be an experiment that  generates $\bbO \equiv (W, Y_{0}, Y_{1},

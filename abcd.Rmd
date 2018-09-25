@@ -323,26 +323,34 @@ obs %>% as.tibble %>% group_by(W, A) %>% summarize(prob = mean(Y))
 
 # First pass {#parameter-first-pass}
 
+## Definition {#definition}
+
 It happens that we especially care for a finite-dimensional feature of $P_{0}$
 that  we   denote  by  $\psi_{0}$.    Its  definition  involves  two   of  the
-aforementioned  infinite-dimensional  features: \begin{align}  \label{eq:psi0}
-\psi_{0}  &\equiv   \int  \left(\Qbar_{0}(1,   w)  -   \Qbar_{0}(0,  w)\right)
-dQ_{0,W}(w)\\  \notag &=  \Exp_{P_{0}} \left(\Exp_{P_0}(Y  \mid  A =  1, W)  -
-\Exp_{P_0}(Y \mid  A = 0, W)  \right).  \end{align} Acting as  oracles, we can
-compute explicitly the numerical value of $\psi_{0}$.
+aforementioned infinite-dimensional  features, the  marginal law  $Q_{0,W}$ of
+$W$  and  the  conditional  mean  $\Qbar_{0}$   of  $Y$  given  $A$  and  $W$:
+\begin{align} \label{eq:psi0}  \psi_{0} &\equiv  \int \left(\Qbar_{0}(1,  w) -
+\Qbar_{0}(0, w)\right) dQ_{0,W}(w)\\ \notag &= \Exp_{P_{0}} \left(\Exp_{P_0}(Y
+\mid A = 1, W) - \Exp_{P_0}(Y \mid A = 0, W) \right).  \end{align} 
+
+Acting  as  oracles,  we  can   compute  explicitly  the  numerical  value  of
+$\psi_{0}$.   The  `evaluate_psi`  method  makes  it  very  easy  (simply  run
+`?estimate_psi` to see the man page of the method):
 
 
 ```{r approx-psi-0-a-one}
 (psi_zero <- evaluate_psi(experiment))
 ```
 
-Our  interest in  $\psi_{0}$ is  of  causal nature.  Taking a  closer look  at
-`run_experiment` reveals indeed  that the random making  of an observation
-$O$ drawn  from $P_{0}$ can  be summarized by  the following causal  graph and
-nonparametric system of structural equations:
+## A causal interpretation {#causal-interpretation}
+
+Our interest in $\psi_{0}$  is of causal nature.  Taking a  closer look at the
+`sample_from` feature of `experiment` reveals indeed that the random making of
+an  observation $O$  drawn from  $P_{0}$ can  be summarized  by the  following
+causal graph:
 
 (ref:DAG) Causal graph  summarizing the inner causal mechanism  at play in
-`run_experiment`. 
+`experiment`. 
 
 ```{r DAG, out.width = '70%', fig.align = 'center', fig.width = 8, fig.height = 6, fig.cap = '(ref:DAG)'}
 dagify(
@@ -361,31 +369,34 @@ dagify(
   ggdag(text = TRUE, use_labels = "label") + theme_dag_grey()
 ```
 
-and, for some deterministic functions $f_w$, $f_a$, $f_y$ and independent
-sources of randomness $U_w$, $U_a$, $U_y$,
-\begin{enumerate}
-\item sample the  context where the counterfactual rewards  will be generated,
-the action  will be undertaken  and the actual reward  will be obtained,  $W =
-f_{w}(U_w)$; 
-\item  sample the  two counterfactual  rewards of  the two
-  actions  that   can  be   undertaken,  $Y_{0}  =   f_{y}(0,  W,   U_y)$  and
-  $Y_{1} = f_{y}(1, W, U_y)$;
-\item\label{item:A:equals} sample   which  action is carried
-  out in the given context, $A = f_{a} (W, U_a)$;
-\item    define        the    corresponding    reward,
-  $Y = A Y_{1} + (1-A) Y_{0}$;
-\item summarize the course of the experiment  with the observation $O = (W, A,
-  Y)$, thus concealing $Y_{0}$ and $Y_{1}$. 
-\end{enumerate}
+In words, the experiment unfolds like this (see also Section \@ref(npsem)):
 
-The above  description of the  experiment `run_experiment` is  useful to
-reinforce what it means to run the "ideal" experiment by setting argument `ideal`
-to  `TRUE`  in   a  call  to  `run_experiment`.  Doing   so  triggers  a
-modification   of  the   nature  of   the  experiment,   enforcing  that   the
-counterfactual  rewards $Y_{0}$  and $Y_{1}$  be part  of the  summary of  the
-experiment eventually.  In light  of the above  enumeration, $\bbO  \equiv (W,
-Y_{0}, Y_{1}, A,  Y)$ is output, as  opposed to its summary  measure $O$. This
-defines another experiment and its law, that we denote $\bbP_{0}$.
+1. a context of action $W \in [0,1]$ is randomly generated;
+
+2.    two counterfactual  rewards $Y_{0}\in  [0,1]$ and  $Y_{1}\in [0,1]$  are
+   generated conditionally on $W$;
+   
+3. an  action $A  \in \{0,1\}$  (among two possible  actions called  $a=0$ and
+   $a=1$)   is  undertaken,   *(i)*  knowing   the  context   but  *not*   the
+   counterfactual rewards,  and *(ii)*  in such  a way  that both  actions can
+   always be considered;
+   
+4. the  action yields  a reward  $Y$, which equals  either $Y_{0}$  or $Y_{1}$
+   depending on whether action $a=0$ or $a=1$ has been undertaken;
+   
+5. summarize  the course  of the experiment  with $O \equiv  (W, A,  Y)$, thus
+   concealing $Y_{0}$ and $Y_{1}$.
+
+
+The above description  of the experiment is useful to  reinforce what it means
+to run the "ideal" experiment by setting  argument `ideal` to `TRUE` in a call
+to  `sample_from` for  `experiment`  (see Section  \@ref(causal-computation)).
+Doing so  triggers a modification of  the nature of the  experiment, enforcing
+that the counterfactual rewards $Y_{0}$ and  $Y_{1}$ be part of the summary of
+the   experiment   eventually.    In   light   of   the   above   enumeration,
+\begin{equation*}  \bbO \equiv  (W,  Y_{0}, Y_{1},  A,  Y) \end{equation*}  is
+output,  as  opposed  to  its  summary  measure  $O$.   This  defines  another
+experiment and its law, that we denote $\bbP_{0}$.
 
 It   is  straightforward   to  [show   that](identification)  \begin{equation}
 \label{eq:psi:zero} \psi_{0}  = \Exp_{\bbP_{0}}  \left(Y_{1} -  Y_{0}\right) =
@@ -398,11 +409,13 @@ it is worth emphasizing that $\psi_{0}$ is a well-defined parameter beyond its
 causal  interpretation,  and  that  it describes  a  standardized  association
 between the action $A$ and reward $Y$.
 
-To conclude this  subsection, we use our  position as oracles to
-sample observations from the  ideal experiment. We call `run_experiment`
-with its  argument `ideal` set to  `TRUE` in order to  numerically approximate
-$\psi_{0}$.   By  the law  of  large  numbers,  the  following code
-approximates $\psi_{0}$ and shows it approximate value.
+## A causal computation {#causal-computation}
+
+We  can use  our position  as oracles  to sample  observations from  the ideal
+experiment.  We call `sample_from` for  `experiment` with its argument `ideal`
+set to `TRUE`  in order to numerically approximate $\psi_{0}$.   By the law of
+large  numbers,  the  following  code approximates  $\psi_{0}$  and  shows  it
+approximate value.
 
 ```{r approx-psi-zero-a-two}
 B <- 1e6
