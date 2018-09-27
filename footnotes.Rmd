@@ -37,7 +37,7 @@ assumptions:
 1. **Consistency**: under $\bbP_{0}$, if action $A$ is undertaken then reward
   $Y_{A}$ is received, *i.e.*, $Y = Y_{A}$ (or $Y=Y_{a}$ given that $A=a$).
 
-1.     **Positivity**:  under $\bbP_{0}$,  both actions  $a=0$ and  $a=1$ have
+1. **Positivity**:  under $\bbP_{0}$,  both actions  $a=0$ and  $a=1$ have
    ($\bbP_{0}$-almost surely)  a positive  probability to be  undertaken given
    $W$, *i.e.*, $\Pr_{\bbP_0}(\ell\Gbar_0(a,W) > 0) = 1$ for $a=0,1$.
 
@@ -99,6 +99,23 @@ $F$. Set $p \in ]0,1[$ and, assuming that  $n$ is large, find $k\geq 1$ and $l
 Under the above assumptions, $[X_{(k)},X_{(l)}]$  is a confidence interval for
 $F^{-1}(p)$ with asymptotic level $1 - 2\alpha$.
 ```	
+
+## Another representation of the parameter of interest {#another-rep}
+
+For notational simplicitiy,  note that $(2a-1)$ equals 1 if  $a=1$ and $-1$ if
+$a=0$.      Now,      for     each      $a     =      0,1$,     \begin{align*}
+\Exp_{P_{0}}\left(\frac{\one\{A    =    a\}Y}{\ell\Gbar_{0}(a,W)}\right)    &=
+\Exp_{P_{0}}\left(\Exp_{P_{0}}\left(\frac{\one\{A  = a\}Y}{\ell\Gbar_{0}(a,W)}
+\middle|  A,  W  \right)   \right)  \\  &=  \Exp_{P_{0}}\left(\frac{\one\{A  =
+a\}}{\ell\Gbar_{0}(a,W)}      \Qbar_{0}(A,      W)     \right)      \\      &=
+\Exp_{P_{0}}\left(\frac{\one\{A   =    a\}}{\ell\Gbar_{0}(a,W)}   \Qbar_{0}(a,
+W)\right)    \\    &=   \Exp_{P_{0}}\left(\Exp_{P_{0}}\left(\frac{\one\{A    =
+a\}}{\ell\Gbar_{0}(a,W)}  \Qbar_{0}(a, W)  \middle|  W \right)  \right) \\&  =
+\Exp_{P_{0}}\left(\frac{\ell\Gbar_{0}(a,W)}{\ell\Gbar_{0}(a,W)}   \Qbar_{0}(a,
+W)  \middle| W  \right) \\&  =  \Exp_{P_{0}} \left(  \Qbar_{0}(a, W)  \right),
+\end{align*}  where the  first, fourth  and sixth  equalities follow  from the
+tower rule,  and the second  and fifth hold  by definition of  the conditional
+expectation. This completes the proof.
 
 `r if (knitr::is_html_output()) '# References'`
    

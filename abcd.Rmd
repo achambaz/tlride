@@ -51,8 +51,8 @@ library(rgttmle)
 ## To remove at a later stage {#remove}
 
 ```{r redo}
-redo_fixed <- c(TRUE, FALSE)[2]
-redo_varying <- c(TRUE, FALSE)[2]
+redo_fixed <- c(TRUE, FALSE)[1]
+redo_varying <- c(TRUE, FALSE)[1]
 ## if  'redo_$'  then  recompute  'learned_features_$_sample_size',  otherwise
 ## upload it if it is not already in the environment.
 if (!redo_fixed) {
@@ -350,8 +350,7 @@ Our interest in $\psi_{0}$  is of causal nature.  Taking a  closer look at the
 an  observation $O$  drawn from  $P_{0}$ can  be summarized  by the  following
 causal graph:
 
-(ref:DAG) Causal graph  summarizing the inner causal mechanism  at play in
-`experiment`. 
+(ref:DAG) Causal graph summarizing the inner causal mechanism at play in `experiment`. 
 
 ```{r DAG, out.width = '70%', fig.align = 'center', fig.width = 8, fig.height = 6, fig.cap = '(ref:DAG)'}
 dagify(
@@ -399,7 +398,7 @@ the   experiment   eventually.    In   light   of   the   above   enumeration,
 output,  as  opposed  to  its  summary  measure  $O$.   This  defines  another
 experiment and its law, that we denote $\bbP_{0}$.
 
-It   is  straightforward   to  [show   that](identification)  \begin{equation}
+It   is  straightforward   to  [show   that](#identification)  \begin{equation}
 (\#eq:psi-zero-bis) \psi_{0}  = \Exp_{\bbP_{0}}  \left(Y_{1} -  Y_{0}\right) =
 \Exp_{\bbP_{0}}(Y_1) - \Exp_{\bbP_{0}}(Y_0).   \end{equation} Thus, $\psi_{0}$
 describes the average difference of  the two counterfactual rewards.  In other
@@ -428,7 +427,7 @@ The object  `psi_approx` contains  an approximation to  $\psi_0$ based  on `B`
 observations from the  ideal experiment.  The random  sampling of observations
 results  in uncertainty  in  the numerical  approximation  of $\psi_0$.   This
 uncertainty can be  quantified by constructing a 95\%  confidence interval for
-$\psi_0$.  The  central limit theorem  and Slutsky's lemma [allow  us](clt) to
+$\psi_0$.  The central  limit theorem and Slutsky's lemma  [allow us](#clt) to
 build such an interval as follows.
 
 ```{r approx-psi-zero-b}
@@ -457,12 +456,12 @@ dQ_{0,W}(w) \ge c \right\}. (\#eq:def-quantile)\end{equation}
 
 It   is  not   very   difficult  to   check  (see   Problem   1  below)   that
 \begin{equation}\gamma_{0,a,c} =  \inf\left\{y \in ]0,1[  : \Pr_{\bbP_{0}}(Y_a
-\leq   y)   \geq    c\right\}.   (\#eq:alter-gamma-zero)\end{equation}   Thus,
+\leq   y)   \geq   c\right\}.    (\#eq:alter-gamma-zero)\end{equation}   Thus,
 $\gamma_{0,a,c}$ can  be interpreted  as a covariate-adjusted  $c$-th quantile
 reward     when     action     $a$    is     enforced.      The     difference
-\begin{equation*}\delta_{0,c}         \equiv          \gamma_{0,1,c}         -
-\gamma_{0,0,c}\end{equation*} is the $c$-th  quantile counterpart to parameter
-$\psi_{0}$ \eqref{eq:psi-zero}.
+\begin{equation}\delta_{0,c}    \equiv    \gamma_{0,1,c}   -    \gamma_{0,0,c}
+(\#eq:def-delta)\end{equation} is the $c$-th quantile counterpart to parameter
+$\psi_{0}$ \@ref(eq:psi-zero).
 
 1.  &#x2621; Prove \@ref(eq:alter-gamma-zero).
 
@@ -488,7 +487,7 @@ $\calO \equiv [0,1] \times \{0,1\} \times [0,1]$ and that $\Gbar_{0}(W) \equiv
 P_{0}(A=1|W)$ is bounded away from  zero and one $Q_{0,W}$-almost surely (this
 is the case indeed).  Then we can define  model $\calM$ as the set of all laws
 $P$     on    $\calO$     such    that     \begin{equation*}\Gbar(W)    \equiv
-P(A=1|W)\end{equation*}  is  bounded away  from  zero  and one  $Q_{W}$-almost
+_{P}(A=1|W)\end{equation*}  is  bounded away  from  zero  and one  $Q_{W}$-almost
 surely, where $Q_{W}$ is the marginal law of $W$ under $P$.
 
 Let us also define generically  $\Qbar$ as \begin{equation*}\Qbar (A,W) \equiv
@@ -509,6 +508,7 @@ When  we  ran   `example(rgttmle)`  earlier,  we  created   an  object  called
 ```{r another-simulation}
 another_experiment
 reveal(another_experiment)
+(two_obs_another_experiment <- sample_from(another_experiment, 2, h = 0))
 ```
 By taking an  oracular look at the output  of `reveal(another_experiment)`, we
 discover that  the law $\Pi_{0}  \in \calM$  encoded by default  (*i.e.*, with
@@ -526,21 +526,28 @@ confirms the equality.
 
 # &#9881; Alternative, second pass {#exo-alternative-parameter-second-pass}
 
-As above, we define $q_{Y}(y,A,W)$ to  be the conditional density of $Y$ given
-$A$ and  $W$, evaluated at $y$,  that is implied  by a generic $P  \in \calM$.
-Similarly, we use $Q_{Y}$ to  denote the corresponding cumulative distribution
-function.  The  covariate-adjusted $c$-th  quantile reward  for action  $a \in
-\{0,1\}$ may  be viewed as  a mapping  $\Gamma_{a,c}$ from $\calM$  to $[0,1]$
-characterized by \begin{equation*} \Gamma_{a,c}(P)  = \inf\left\{y \in ]0,1[ :
-\int Q_{Y}(y,a,w) dQ_W(w)  \ge c \right\}.  \end{equation*}  The difference in
-$c$-th quantile rewards  may similarly be viewed as a  mapping $\Delta_c$ from
-$\calM$  to $[0,1]$,  characterized by  $\Delta_c(P) \equiv  \Gamma_{1,c}(P) -
-\Gamma_{0,c}(P)$.
+We        now        resume        the       exercize        of        Section
+\@ref(exo-alternative-parameter-first-pass).    Like   we   did   in   Section
+\@ref(parameter-second-pass), we  introduce a generic version  of the relevant
+features $q_{0,Y}$  and $Q_{0,Y}$.  Specifically, we  define $q_{Y}(y,A,W)$ to
+be the conditional density of $Y$ given $A$ and $W$, evaluated at $y$, that is
+implied by a generic  $P \in \calM$.  Similarly, we use  $Q_{Y}$ to denote the
+corresponding cumulative distribution function.  
+
+The  covariate-adjusted $c$-th  quantile reward  for action  $a \in  \{0,1\}$,
+$\gamma_{0,a,c}$ \@ref(eq:def-quantile), may be viewed as the value at $P_{0}$
+of  a  mapping  $\Gamma_{a,c}$  from   $\calM$  to  $[0,1]$  characterized  by
+\begin{equation*} \Gamma_{a,c}(P) = \inf\left\{y \in ]0,1[ : \int Q_{Y}(y,a,w)
+dQ_W(w) \ge  c \right\}.   \end{equation*} The  difference in  $c$-th quantile
+rewards, $\delta_{0,c}$  \@ref(eq:def-delta), may  similarly be viewed  as the
+value  at   $P_{0}$  of  a   mapping  $\Delta_c$  from  $\calM$   to  $[0,1]$,
+characterized  by  \begin{equation*}   \Delta_c(P)  \equiv  \Gamma_{1,c}(P)  -
+\Gamma_{0,c}(P).  \end{equation*}
 
 1. Compute the numerical value of $\Gamma_{a,c}(\Pi_0)$ for $(a,c) \in \{0,1\}
-   \times   \{1/4,   1/2,  3/4\}$   using   the   appropriate  attributes   of
-   `five_obs_from_another_experiment`.   Based on  these  results, report  the
-   numerical value of $\Delta_c(\Pi_0)$ for each $c \in \{1/4, 1/2, 3/4\}$.
+   \times   \{1/4,    1/2,   3/4\}$    using   the   relevant    features   of
+   `another_experiment`.  Based  on these results, report  the numerical value
+   of $\Delta_c(\Pi_0)$ for each $c \in \{1/4, 1/2, 3/4\}$.
 
 2. Approximate the  value of $\Gamma_{0,a,c}(\Pi_{0})$ for  $(a,c) \in \{0,1\}
    \times \{1/4, 1/2,  3/4\}$ by drawing a large sample  from the "ideal" data
@@ -557,43 +564,40 @@ $\calM$  to $[0,1]$,  characterized by  $\Delta_c(P) \equiv  \Gamma_{1,c}(P) -
 
 # Third pass {#parameter-third-pass}
 
-In the previous subsection, we reoriented  our view of the target parameter to
-be  that   of  a   statistical  functional   of  the   law  of   the  observed
+In Section \@ref(parameter-second-pass), we reoriented  our view of the target
+parameter to be  that of a statistical  functional of the law  of the observed
 data. Specifically, we viewed the parameter as a function of specific features
-of   the   observed  data   law,   namely   $Q_{W}$   and  $\Qbar$.    It   is
-straightforward\footnote{We temporarily drop the subscript $P_0$ to save space
-and note,  for the same reason,  that $(2a-1)$ equals  1 if $a=1$ and  $-1$ if
-$a=0$.   Now, for  each $a  = 0,1$,  \begin{align*} \Exp\left(\frac{\one\{A  =
-a\}Y}{\ell\Gbar(a,W)}\right)     &=    \Exp\left(\Exp\left(\frac{\one\{A     =
-a\}Y}{\ell\Gbar(a,W)} \middle| A, W  \right) \right) = \Exp\left(\frac{\one\{A
-=  a\}}{\ell\Gbar(a,W)}  \Qbar(A,  W)   \right)  =  \Exp\left(\frac{\one\{A  =
-a\}}{\ell\Gbar(a,W)}         \Qbar(a,          W)\right)         \\         &=
-\Exp\left(\Exp\left(\frac{\one\{A = a\}}{\ell\Gbar(a,W)}  \Qbar(a, W) \middle|
-W \right)  \right) =  \Exp\left(\frac{\ell\Gbar(a,W)}{\ell\Gbar(a,W)} \Qbar(a,
-W) \middle|  W \right) = \Exp  \left( \Qbar(a, W) \right),  \end{align*} where
-the first,  fourth and sixth  equalities follow from  the tower rule,  and the
-second  and fifth  hold by  definition  of the  conditional expectation,  This
-completes the proof.}   to show an equivalent representation  of the parameter
-as \begin{align}  \notag \psi_{0}  &= \int  \frac{2a -  1}{\ell\Gbar_0(a,w)} y
-dP_0(w,a,y)   \\   \label{eq:psi0:b}   &=   \Exp_{P_0}   \left(   \frac{2A   -
+of the observed data law, namely $Q_{W}$ and $\Qbar$.  
+
+## Yet another representation {#yet-another}
+
+It is straightforward to  [show an equivalent representation](#another-rep) of
+the parameter as 
+
+\begin{align}  \notag  \psi_{0}  &=  \int \frac{2a  -  1}{\ell\Gbar_0(a,w)}  y
+dP_0(w,a,y)   \\   (\#eq:psi-zero-b)   &=   \Exp_{P_0}   \left(   \frac{2A   -
 1}{\ell\Gbar_{0}(A,W)} Y \right).  \end{align}  Viewing again the parameter as
 a  statistical   mapping  from  $\calM$   to  $[0,1]$,  it  also   holds  that
 \begin{align} \notag  \Psi(P) &= \int \frac{2a-1}{\ell\Gbar(a,w)}  y dP(w,a,y)
-\\  \label{eq:psi0:c}  &=  \Exp_{P}\left(\frac{2A -  1}{\ell\Gbar_{0}(A,W)}  Y
+\\  (\#eq:psi-zero-c)  &=  \Exp_{P}\left(\frac{2A -  1}{\ell\Gbar_{0}(A,W)}  Y
 \right).  \end{align}
+
+## From representations to estimation strategies {#rep-to-est}
 
 Our reason for introducing this alternative  view of the target parameter will
 become clear when we discuss estimation of the target parameter. Specifically,
-the  representations (\ref{eq:psi0})  and (\ref{eq:psi0:b})  naturally suggest
-different estimation strategies for $\psi_0$.  The former suggests building an
-estimator  of $\psi_0$  using estimators  of $\Qbar_0$  and of  $Q_{W,0}$. The
-latter  suggests  building  an  estimator  of  $\psi_0$  using  estimators  of
-$\ell\Gbar_0$ and of $P_0$. We return to these ideas in later sections.
+the  representations  \@ref(eq:psi-zero)  and  \@ref(eq:psi-zero-b)  naturally
+suggest  different estimation  strategies for  $\psi_0$.  The  former suggests
+building  an  estimator of  $\psi_0$  using  estimators  of $\Qbar_0$  and  of
+$Q_{W,0}$.   The  latter suggests  building  an  estimator of  $\psi_0$  using
+estimators of $\ell\Gbar_0$ and of $P_0$.  
+
+We return to these ideas in later sections.
 
 # &#9881; Alternative, third pass {#exo-alternative-parameter-third-pass}
 
-1.   &#x2621;  Show that  for $a'  = 0,1$,  $\gamma_{0,a',c}$ as  defined in
-(\ref{def_quantile})  can be  equivalently expressed  as \begin{equation*}\inf
+1. &#x2621; Show  that for  $a' =  0,1$, $\gamma_{0,a',c}$  as defined  in
+\@ref{eq:def-quantile) can be  equivalently expressed as \begin{equation*}\inf
 \left\{z \in ]0,1[  : \int \frac{\one\{a =  a'\}}{\ell\Gbar(a',W)} \one\{y \le
 z\} dP_0(w,a,y) \ge c \right\}.\end{equation*}
 
@@ -779,7 +783,7 @@ eic_experiment <- evaluate_eic(experiment)
 (eic_experiment(five_obs))
 
 eic_another_experiment <- evaluate_eic(another_experiment, h = 0)
-(eic_another_experiment(five_obs_another_experiment))
+(eic_another_experiment(two_obs_another_experiment))
 ```
 
 ```{r cramer-rao}
