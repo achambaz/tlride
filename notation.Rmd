@@ -7,8 +7,13 @@ reward of action $A$ in context $W$.
 
 - $P$, $P_{0}$, $\Pi_{0}$, $\Pi_{h}$, laws for $O$.
 
--  $\calM$, the model, that is, the collection of \textit{all} laws from which
-$O$ can be drawn and that meet some constraints.
+- $P_{n}$,  the empirical  measure. If the  observations are  $O_{1}$, \ldots,
+$O_{n}$, then $P_{n}$ is a law such that the generic random variable $O$ drawn
+from $P_{n}$ takes its values in $\{O_{1}, \ldots, O_{n}\}$ in such a way that
+$O = O_{i}$ with probability $n^{-1}$ for each $1 \leq i \leq n$.
+  
+- $\calM$, the model, that is, the collection of *all* laws from which $O$
+can be drawn and that meet some constraints.
 
 -     $Q_{W}$,  $Q_{0,W}$, marginal  laws  for  $W$  (under $P$  and  $P_{0}$,
 respectively).
@@ -26,7 +31,7 @@ respectively).
 $P$ and $P_{0}$, respectively).
 
 - $\Psi : \calM \to [0,1]$, given  by $\Psi(P) \equiv \int \left(\Qbar(1, w) -
-  \Qbar(0, w)\right)dQ_{W}(w)$, the statistical mapping of interest.
+\Qbar(0, w)\right)dQ_{W}(w)$, the statistical mapping of interest.
   
 - $\psi \equiv \Psi(P)$, $\psi_{0} \equiv \Psi(P_{0})$.
 

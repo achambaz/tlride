@@ -510,15 +510,15 @@ $\Var_{P}(X)$ is finite.  In particular, $P_{0}  \in \calM$.  For every $P \in
 *statistical    mapping*    $\Theta   :    \calM    \to    \bbR$   given    by
 \begin{equation*}\Theta(P) \equiv E_{P}(X).\end{equation*}
 
-Interestingly, the  empirical measure $P_{n}$ ^[The  empirical measure $P_{n}$
-is  the law  such  that *(i)*  $X$  drawn  from $P_{n}$  takes  its values  in
-$\{X_{1}, \ldots, X_{n}\}$, and *(ii)* $X=X_{i}$ with probability $n^{-1}$] is
-an  element of  $\calM$. Therefore,  the statistical  mapping $\Theta$  can be
+Interestingly, the empirical measure $P_{n}$^[The empirical measure $P_{n}$ is
+the law such that  *(i)* $X$ drawn from $P_{n}$ takes  its values in $\{X_{1},
+\ldots,  X_{n}\}$,  and *(ii)*  $X=X_{i}$  with  probability $n^{-1}$]  is  an
+element  of  $\calM$.  Therefore,  the statistical  mapping  $\Theta$  can  be
 evaluated   at    $P_{n}$:   \begin{equation*}\Theta(P_{n})    =   \frac{1}{n}
 \sum_{i=1}^{n} X_{i}  = \theta_{n}.\end{equation*} We *recover*  the empirical
 mean, and  understand that it  is a *substitution*  estimator of the  mean: in
 order to estimate $\Theta(P_{0})$, we  *substitute* $P_{n}$ for $P_{0}$ within
-$\Theta$. 
+$\Theta$.
 
 Substitution-based estimators are particularly  valuable notably because they,
 by construction, satisfy  all the constraints to which  the targeted parameter
@@ -546,7 +546,7 @@ statistical  mapping   $\Psi$  from   $\calM$  to  $[0,1]$   characterized  by
 dQ_{W}(w) (\#eq:psimap)\\ &= \Exp_{P}  \left(\Qbar(1, W) - \Qbar(0, W)\right),
 \notag \end{align} a clear extension of \@ref(eq:psi-zero).
 
-## The value of the statistical mapping at another experiment
+## The value of the statistical mapping at another experiment {#value-another-experiment}
 
 When  we  ran   `example(rgttmle)`  earlier,  we  created   an  object  called
 `another_experiment`:
@@ -651,48 +651,75 @@ z\} dP_0(w,a,y) \ge c \right\}.\end{equation*}
 
 
 
-# First pass {#smooth-first-pass}
+# Fluctuations, first pass {#smooth-first-pass}
 
-Within  our view  of the  target  parameter as  a statistical  mapping, it  is
-natural to inquire of properties this  functional enjoys.  For example, we may
-be interested in asking how the value of $\Psi(P)$ changes as we consider laws
-that *get nearer to* $P$ in $\calM$.  If small deviations from $P_0$ result in
-large  changes in  $\Psi(P_0)$,  then we  might hypothesize  that  it will  be
-difficult to  produce stable estimators  of $\psi_0$. Fortunately,  this turns
-out not to be the case for the mapping  $\Psi$, and so we say that $\Psi$ is a
-*smooth*   statistical   mapping. 
-
-## Fluctuations {#fluctuations}
-
+Within our view of the target  parameter as a statistical mapping evaluated at
+the  law of  the  experiment, it  is  natural to  inquire  of properties  this
+functional enjoys.  For example, we may  be interested in asking how the value
+of $\Psi(P)$ changes as we consider laws  that *get nearer to* $P$ in $\calM$.
+If small deviations from $P_0$ result in large changes in $\Psi(P_0)$, then we
+might hypothesize  that it will be  difficult to produce stable  estimators of
+$\psi_0$.  Fortunately, this  turns out  not to  be the  case for  the mapping
+$\Psi$, and so we say that $\Psi$ is a *smooth* statistical mapping.
 
 To discuss how $\Psi(P)$ changes for distributions that *get nearer* to $P$ in
-the model, we require a more concrete notion of *getting-nearness*.
+the model, we require a more concrete notion of *getting-nearness*. The notion
+hinges on fluctuations (or fluctuating models). 
 
 
-To that end, consider the law 
-encoded in `run_another_experiment`  as a function of the  input parameter `h`.  
-Let $\Pi_{h} \in  \calM$ be the law encoded by  `run_another_experiment` for a
-given `h`  $\in ]-1,1[$.  Note  that $\calP \equiv  \{\Pi_h : h  \in ]-1,1[\}$
-defines  a collection  of laws,  that is,  a statistical  model.  We  say that
-$\calP$ is a  *submodel* of $\calM$ because $\calP  \subset \calM$.  Moreover,
-we say that this submodel is  *through $\Pi_0$* since $\Pi_{h} \to \Pi_{0}$ as
-$h \to  0$.  One could  enumerate many  possible submodels in  $\calM$ through
-$\Pi_0$. It turns  out that all that  matters for our purposes is  the form of
-the submodel in  a neighborhood of $\Pi_0$. We informally  say that this local
-behavior describes the *direction* of a submodel through $\Pi_0$. We formalize
-this notion in the next subsection.
+## The `another_experiment` fluctuation {#fluctuations}
 
-We now  have a notion of how to move through the model space $P \in \calM$ and 
-can study how the value of the parameter changes as we move away from a law $P$. 
-Above,  we said  that  $\Psi$  is a  smooth
-parameter if  it does not change  "too much" as we  move towards $P$  in any
-particular direction.  That  is, we should hope that  $\Psi$ is differentiable
-along our  submodel at $P$. This idea too is formalized in the next subsection, and
-we now turn to illustrating this idea numerically. The code below evaluates  how the  parameter changes  for laws  in $\calP$,  and
+
+In  Section \@ref(value-another-experiment),  we discussed  the nature  of the
+object   called   `another_experiment`   that   was  created   when   we   ran
+`example(rgttmle)`:
+ 
+```{r show-another-experiement-a}
+another_experiment
+```
+
+The message  is a little  misleading. Indeed, `another_experiment` is  not *a*
+law but,  rather, a *collection*  of laws  indexed by a  real-valued parameter
+`h`. This oracular statement (we built the object!)  is evident when one looks
+again at the `sample_from` feature of `another_experiment`:
+
+```{r show-another-experiement-b}
+reveal(another_experiment)$sample_from
+```
+
+Let us call $\Pi_{h} \in \calM$  the law encoded by `another_experiment` for a
+given  `h`  taken  in   $]-1,1[$.   Note  that  \begin{equation*}\calP  \equiv
+\{\Pi_h : h \in ]-1,1[\}\end{equation*}  defines a collection of laws, *i.e.*,
+a statistical model.  
+
+We say that $\calP$ is a  *submodel* of $\calM$ because $\calP \subset \calM$.
+Moreover, we  say that  this submodel  is *through  $\Pi_0$* since  $\Pi_{h} =
+\Pi_{0}$  when $h  =  0$. We  also  say  that $\calP$  is  a *fluctuation*  of
+$\Pi_{0}$.
+
+One could  enumerate many possible  submodels in $\calM$ through  $\Pi_0$.  It
+turns out that all  that matters for our purposes is the  form of the submodel
+in  a neighborhood  of $\Pi_0$.  We informally  say that  this local  behavior
+describes the  *direction* of a  submodel through $\Pi_0$.  We  formalize this
+notion Section \@ref(smooth-second-pass).
+
+We now have a notion of how to  move through the model space $P \in \calM$ and
+can study how  the value of the parameter  changes as we move away  from a law
+$P$.  Above, we said  that $\Psi$ is a smooth parameter if  it does not change
+"too much" as  we move towards $P$  in any particular direction.   That is, we
+should hope that $\Psi$ is differentiable along our submodel at $P$. 
+
+This idea too is formalized  in Section \@ref(smooth-second-pass). We now turn
+to illustrating this idea numerically.
+
+## Numerical illustration {#numerical-illus}
+
+The code  below evaluates how the  parameter changes for laws  in $\calP$, and
 approximates the  derivative of  the parameter along  the submodel  $\calP$ at
-$\Pi_0$.
+$\Pi_0$. Recall that  the numerical value of $\Psi(\Pi_{0})$  has already been
+computed and is stored in object `psi_Pi_zero`.
 
-(ref:psi-approx-psi-one) Evolution of  statistical parameter $\Psi$ along
+(ref:psi-approx-psi-one)  Evolution   of  statistical  mapping   $\Psi$  along
 fluctuation $\{\Pi_{h} : h \in H\}$.
 
 ```{r psi-approx-psi-one, fig.cap = '(ref:psi-approx-psi-one)'}
@@ -715,55 +742,56 @@ ggplot() +
 ```
 
 The dotted curve  represents the function $h \mapsto  \Psi(\Pi_{h})$. The blue
-line represents  the tangent to the  previous curve at $h=0$,  which indeed appears to be
-differentiable around $h=0$.  In
-the  next  subsection,  we derive a  closed-form expression 
-for the  slope of the blue  curve from the chunk of code where 
-`run_another_experiment` is defined.
+line  represents the  tangent to  the previous  curve at  $h=0$, which  indeed
+appears to be  differentiable around $h=0$.  In  Section \@ref(revisiting), we
+derive a closed-form expression for the slope of the blue curve.
 
 
+# &#9881; Yet another experiment
 
-## &#9881; Exercises
+1. Adapt  the code  from Problem 1  in Section  \@ref(exo-visualization) to
+visualize  $w  \mapsto   \Exp_{\Pi_h}(Y  |  A  =  1,  W   =  w)$,  $w  \mapsto
+\Exp_{\Pi_h}(Y | A =  0, W=w)$, and $w \mapsto \Exp_{\Pi_h}(Y | A  = 1, W=w) -
+\Exp_{\Pi_h}(Y | A = 0, W=w)$, for $h \in \{-1/2, 0, 1/2\}$.
 
-1.    Adapt  the code  from problem 1  in Section  \ref{subsec:visualizing} to
-visualize $\Exp_{\Pi_h}(Y  \mid A = 1,  W)$, $\Exp_{\Pi_h}(Y \mid A  = 0, W)$,
-and $\Exp_{\Pi_h}(Y \mid  A = 1, W) -  \Exp_{\Pi_h}(Y \mid A = 0,  W)$, for $h
-\in \{-1/2, 0, 1/2\}$.
+2. Run the following chunk of code.
 
-Define a new experiment with law $\Pi_0'$  by adapting the code used to define
-`run_another_experiment`.  Leave  all aspects of the  new experiment identical
-to $\Pi_0$, but set
-
-```{r set-Q-bar, eval = FALSE}
-Qbar = function(AW, hh = h){
-  A <- AW[,1]
-  W <- AW[,2]
-  expit( logit( A * W + (1 - A) * W^2 ) + 
-         hh * (2*A - 1) / ifelse(A == 1, sin((1 + W) * pi / 6), 
-                                 1 - sin((1 + W) * pi / 6)) *
-         (Y - A * W + (1 - A) * W^2))
-}
+```{r yet-another-experiment}
+yet_another_experiment <- copy(another_experiment)
+alter(yet_another_experiment,
+      Qbar = function(AW, h){
+        A <- AW[, "A"]
+        W <- AW[, "W"]
+        expit( logit( A * W + (1 - A) * W^2 ) + 
+               h * (2*A - 1) / ifelse(A == 1,
+                                      sin((1 + W) * pi / 6), 
+                                      1 - sin((1 + W) * pi / 6)) *
+               (Y - A * W + (1 - A) * W^2))
+      })
 ```
 
-2.  Repeat the  previous  problem  for this  new  experiment.  Comment on  the
-   similarities  and differences  between $\Pi_0$  and $\Pi_0'$  for different
-   values of $h$.
+3. Justify that `yet_another_fluctuation` characterizes another fluctuation of
+$\Pi_{0}$.  Comment upon the similarities and differences between $\{\Pi_{h} :
+h \in ]-1,1[\}$ and $\{\Pi_{h}' : h \in ]-1,1[\}$.
 
-3.  Re-produce Figure  1 for  law $\Pi_0'$.  Comment on  the similarities  and
-   differences between  this figure for  $\Pi_0$ and $\Pi_0'$.  In particular,
-   how  does the  behavior of  the  target parameter  around $h  = 0$  compare
-   between laws $\Pi_0$ and $\Pi_0'$?
+
+4. Repeat Problem 1 above with $\Pi_{h}'$ substituted for $\Pi_{h}$.
+
+5. Re-produce Figure  \@ref(fig:psi-approx-psi-one) for the $\{\Pi_h'  : h \in
+]-1,1[\}$ fluctuation.   Comment on  the similarities and  differences between
+the resulting figure and Figure \@ref(fig:psi-approx-psi-one).  In particular,
+how does the behavior  of the target parameter around $h  = 0$ compare between
+laws $\Pi_0$ and $\Pi_0'$?
 
 # &#x2621; Second pass {#smooth-second-pass}
 
 Let us now formally define what it  means for statistical mapping $\Psi$ to be
 smooth at every  $P \in \calM$.  For every $h  \in H \equiv ]-M^{-1},M^{-1}[$,
-we can define  a law $P_{h} \in \calM$ by  setting $P_{h} \ll P$\footnote{That
-is, $P_{h}$ is  dominated by $P$: if  an event $A$ satisfies $P(A)  = 0$, then
-necessarily $P_{h} (A) = 0$ too.}  and
+we can  define a  law $P_{h}  \in \calM$  by setting  $P_{h} \ll  P$^[That is,
+$P_{h}$  is dominated  by $P$:  if an  event $A$  satisfies $P(A)  = 0$,  then
+necessarily $P_{h} (A) = 0$ too.]  and
 
-\begin{equation}\label{eq:fluct}\frac{dP_{h}}{dP}    \equiv   1    +   h    s,
-\end{equation}
+\begin{equation}(\#eq:fluct)\frac{dP_{h}}{dP} \equiv 1 + h s, \end{equation}
 
 where $s : \calO\to  \bbR$ is a (measurable) function of  $O$ such that $s(O)$
 is not equal to zero $P$-almost surely, $\Exp_{P} (s(O)) = 0$, and $s$ bounded
@@ -816,7 +844,7 @@ point.
 
 
 
-In general, it is possible for many  gradients to exist ^[This may be at first
+In general, it is  possible for many gradients to exist^[This  may be at first
 surprising given the previous parallel  drawn to Euclidean geometry.  However,
 it is important  to remember that the model dictates  fluctuations of $P$ that
 are valid submodels with respect to  the full model.  In turn, this determines
@@ -852,7 +880,7 @@ obs_another_experiment <- sample_from(another_experiment, B, h = 0)
 (ratio <- sqrt(cramer_rao_Pi_zero_hat/cramer_rao_hat))
 ```
 
-# Revisiting Section \@ref(smooth-first-pass)
+# Revisiting Section \@ref(smooth-first-pass) {#revisiting}
 
 It is  not difficult  (though cumbersome)  to verify that,  up to  a constant,
 $\{\Pi_{h} :  h \in [-1,1]\}$ is  a fluctuation of $\Pi_{0}$  in the direction
@@ -905,20 +933,19 @@ $\sqrt(n)  (\psi_n -  \Psi(P))  = \frac{1}{\sqrt{n}}  \sum_{i=1}^n \IF(O_i)  +
 o_P(1)$. The central  limit theorem implies the  the right-hand-side converges
 in law to a centered Gaussian distribution with variance $\Var_P(\IF(O))$.
 
-As  it happens,
-influence  functions of  regular\footnote{We  can view  $\psi_{n}$  as the  by
-product of an algorithm $\Psihat$ trained on independent observations $O_{1}$,
-\ldots,  $O_{n}$  drawn from  $P$.  We say that the estimator  is  regular at  $P$ 
-if, for any direction $s\neq 0$ such that $\Exp_{P} (s(O)) = 0$
-and  $\Var_{P}  (s(O))  <  \infty$  and fluctuation  $\{P_{h}  :  h  \in  H\}$
-satisfying   \eqref{eq:score},   the    estimator   $\psi_{n,1/\sqrt{n}}$   of
+As it happens,  influence functions of regular^[We can view  $\psi_{n}$ as the
+by  product of  an  algorithm $\Psihat$  trained  on independent  observations
+$O_{1}$, \ldots, $O_{n}$ drawn from $P$.  We say that the estimator is regular
+at $P$  if, for any direction  $s\neq 0$ such  that $\Exp_{P} (s(O)) =  0$ and
+$\Var_{P} (s(O))  < \infty$ and fluctuation  $\{P_{h} : h \in  H\}$ satisfying
+\eqref{eq:score},       the      estimator       $\psi_{n,1/\sqrt{n}}$      of
 $\Psi(P_{1/\sqrt{n}})$   obtained  by   training   $\Psihat$  on   independent
 observations $O_{1}$, \ldots, $O_{n}$ drawn from $P_{1/\sqrt{n}}$ is such that
 $\sqrt{n} (\psi_{n,1/\sqrt{n}} - \Psi(P_{1/\sqrt{n}}))$  converges in law to a
-limit that  does not  depend on  $s$.}  estimators  are intimately  related to
-gradients.   In fact,  if $\psi_n$  is a  regular, asymptotically linear 
-estimator  of $\Psi(P)$  with
-influence  function $\IF$,  then it  must be  true that  $\Psi$ is  a smooth
+limit that  does not  depend on  $s$.]  estimators  are intimately  related to
+gradients.  In fact, if $\psi_n$ is a regular, asymptotically linear estimator
+of $\Psi(P)$ with  influence function $\IF$, then it must  be true that $\Psi$
+is a smooth
 at $P$ and  that $\IF$  is a  gradient of $\Psi$  at $P$.  
 
 These results, combined with the definition of the canonical gradient, imply that  
@@ -1052,6 +1079,7 @@ Confirm the double-robustness of the efficient influence function by doing the f
    and confirm  (via numerical approximation)  that the mean of  the efficient
    influence function is zero. Repeat for several choices of `Gbar`.
 
+# (PART\*) Inference {-}
 
 # Building estimators
 
@@ -1262,10 +1290,14 @@ To facilitate our study of (\ref{hard_to_study}), we write \begin{align*}
 The first term can be written $(P_n - P_0) D^*(P_0) \equiv n^{-1} \sum_{i=1}^n D^*(P_0)(O_i)$,
 since $\Exp_{P_0}(D^*(P_0)) = 0$. Because this term is a sum of independent transformations of the data that have mean zero and finite variance, we can use standard tools such as the weak law of large numbers and central limit theorem to study its behavior. 
 
-The term $R_{P_0}(\hat{P}_n)$ is an expectation involving
-the product of two differences, one between $\Qbar_n$ and $\Qbar_0$, the other between 
-$\Gbar_n$ and $\Gbar_0$. Intuitively, we expect that if $\Qbar_n$ and $\Gbar_n$ are good 
-estimates of $\Qbar_0$ and $\Gbar_0$, respectively, then the expectation of a product of differences between these quantities should be small, and, we should hope, negligible in large samples. Formal conditions for the asymptotic negligibility of this term can be made via the Cauchy-Schwarz inequality\footnote{For any measurable function $f:\calO \to \bbR$, we denote the $L_2(P)$-norm of $f$ by $|f|_{P} \equiv \Exp_{P} \left( f(O)^{2} \right)^{1/2}$. Assume that for $a= 0,1$, $\ell\Gbar_{n}(a,W) > \delta$ almost everywhere $Q_{0,W}$. Then the Cauchy-Schwarz inequality implies that for $a = 0,1$, $\Rem_{P_0}(\hat{P}_n) \le \frac{2}{\delta} \text{max}_{a=0,1} \left( | \Qbar_n(a,\cdot) - \Qbar_0(a,\cdot)|_{P_0} \right) |\Gbar_n - \Gbar_0|_{P_0}$. Therefore, if for $a=0,1$, $|\Qbar_n(a,\cdot) - \Qbar_0(a,\cdot)|_{P_0} = o_{P_0}(n^{-1/4})$ and $|\Gbar_n - \Gbar_0|_{P_0} = o_{P_0}(n^{-1/4})$ then $\Rem_{P_0}(\hat{P}_n) = o_{P_0}(n^{-1/2})$.}.
+The term $R_{P_0}(\hat{P}_n)$  is an expectation involving the  product of two
+differences, one between $\Qbar_n$ and  $\Qbar_0$, the other between $\Gbar_n$
+and $\Gbar_0$. Intuitively, we expect that if $\Qbar_n$ and $\Gbar_n$ are good
+estimates of $\Qbar_0$ and $\Gbar_0$,  respectively, then the expectation of a
+product  of differences  between these  quantities  should be  small, and,  we
+should hope, negligible in large samples. Formal conditions for the asymptotic
+negligibility  of  this  term  [can  be  made](#asymp-neglig-remain)  via  the
+Cauchy-Schwarz inequality.
 
 Considering the final term $(P_n - P_0) (D^*(\hat{P}_n) - D^*(P_0)),$ we note that this 
 term two involves a product of two differences, one between $P_n$ and $P_0$ and one between
