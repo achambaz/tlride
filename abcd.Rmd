@@ -321,7 +321,7 @@ obs %>% as.tibble %>% group_by(W, A) %>% summarize(prob = mean(Y))
 
 # (PART\*) The parameter of interest {-}
 
-# First pass {#parameter-first-pass}
+# The parameter of interest {#parameter-first-pass}
 
 ## Definition {#definition}
 
@@ -440,7 +440,7 @@ We note that the interpretation of this confidence interval is that in 95\% of
 draws of size `B` from the ideal data generating experiment, the true value of 
 $\psi_0$ will be contained in the generated confidence interval. 
 
-# &#9881; Alternative, first pass {#exo-alternative-parameter-first-pass}
+# &#9881; An alternative parameter of interest {#exo-alternative-parameter-first-pass}
 
 Equality    \@ref(eq:psi-zero-bis)     shows    that     parameter    $\psi_0$
 \@ref(eq:psi-zero) is the  difference in average rewards if  we enforce action
@@ -478,17 +478,63 @@ $\psi_{0}$ \@ref(eq:psi-zero).
    in the previous problem.
 
 
-# Second pass {#parameter-second-pass}
+# The statistical mapping of interest  {#parameter-second-pass}
+
+The noble way to define a statistical parameter  is to view it as the value of
+a statistical  mapping at the law  of the experiment of  interest.  Beyond the
+elegance, this has paramount statistical implications.
+
+## Opening discussion {#opening}
+
+Oftentimes, the premise of a statistical  analysis is presented like this. One
+assumes  that the  law $P_{0}$  of  the experiment  of interest  belongs to  a
+statistical     model    \begin{equation*}\{P_{\theta}     :    \theta     \in
+T\}.\end{equation*} The statistical model is identifiable, meaning that if two
+elements $P_{\theta}$  and $P_{\theta'}$ coincide, then  necessarily $\theta =
+\theta'$.   Therefore, there  exists a  unique  $\theta_{0} \in  T$ such  that
+$P_{0} = P_{\theta_{0}}$, and one wishes to estimate $\theta_{0}$.
+
+For instance,  each $P_{\theta}$ could be  the Gaussian law with  mean $\theta
+\in T  \equiv \bbR$ and variance  1, and one  could wish to estimate  the mean
+$\theta_{0}$ of $P_{0}$. To do so, one could rely on $n$ observations $X_{1}$,
+\ldots,  $X_{n}$  drawn  independently   from  $P_{0}$.   The  empirical  mean
+\begin{equation*}\theta_{n}       \equiv      \frac{1}{n}       \sum_{i=1}^{n}
+X_{i}\end{equation*} estimates $\theta_{0}$.  If  we assume that $\Var_{P_{0}}
+(X_{1})$ is  finite, then  $\theta_{n}$ satisfies  many useful  properties. In
+particular, it can be used [to construct confidence intervals](#clt).
+
+Of course, the mean of a law is defined beyond the small model $\{P_{\theta} :
+\theta \in \bbR\}$.   Let $\calM$ be the  set of laws $P$ on  $\bbR$ such that
+$\Var_{P}(X)$ is finite.  In particular, $P_{0}  \in \calM$.  For every $P \in
+\calM$,  the mean  $E_{P}(X)$ is  well defined.   Thus, we  can introduce  the
+*statistical    mapping*    $\Theta   :    \calM    \to    \bbR$   given    by
+\begin{equation*}\Theta(P) \equiv E_{P}(X).\end{equation*}
+
+Interestingly, the  empirical measure $P_{n}$ ^[The  empirical measure $P_{n}$
+is  the law  such  that *(i)*  $X$  drawn  from $P_{n}$  takes  its values  in
+$\{X_{1}, \ldots, X_{n}\}$, and *(ii)* $X=X_{i}$ with probability $n^{-1}$] is
+an  element of  $\calM$. Therefore,  the statistical  mapping $\Theta$  can be
+evaluated   at    $P_{n}$:   \begin{equation*}\Theta(P_{n})    =   \frac{1}{n}
+\sum_{i=1}^{n} X_{i}  = \theta_{n}.\end{equation*} We *recover*  the empirical
+mean, and  understand that it  is a *substitution*  estimator of the  mean: in
+order to estimate $\Theta(P_{0})$, we  *substitute* $P_{n}$ for $P_{0}$ within
+$\Theta$. 
+
+Substitution-based estimators are particularly  valuable notably because they,
+by construction, satisfy  all the constraints to which  the targeted parameter
+is  subjected.   Some of  the  estimators  that  we  will build  together  are
+substitution-based, some are not. 
 
 ## The parameter as the value of a statistical mapping at the experiment {#parameter-mapping}
 
-Suppose we  know beforehand that  $O$ drawn from  $P_{0}$ takes its  values in
-$\calO \equiv [0,1] \times \{0,1\} \times [0,1]$ and that $\Gbar_{0}(W) \equiv
-P_{0}(A=1|W)$ is bounded away from  zero and one $Q_{0,W}$-almost surely (this
-is the case indeed).  Then we can define  model $\calM$ as the set of all laws
-$P$     on    $\calO$     such    that     \begin{equation*}\Gbar(W)    \equiv
-_{P}(A=1|W)\end{equation*}  is  bounded away  from  zero  and one  $Q_{W}$-almost
-surely, where $Q_{W}$ is the marginal law of $W$ under $P$.
+We now go back to our main  topic of interest. Suppose we know beforehand that
+$O$ drawn from $P_{0}$ takes its  values in $\calO \equiv [0,1] \times \{0,1\}
+\times [0,1]$ and that $\Gbar_{0}(W) \equiv P_{0}(A=1|W)$ is bounded away from
+zero and one  $Q_{0,W}$-almost surely (this is the case  indeed).  Then we can
+define  model  $\calM$ as  the  set  of all  laws  $P$  on $\calO$  such  that
+\begin{equation*}\Gbar(W)  \equiv _{P}(A=1|W)\end{equation*}  is bounded  away
+from zero and one $Q_{W}$-almost surely,  where $Q_{W}$ is the marginal law of
+$W$ under $P$.
 
 Let us also define generically  $\Qbar$ as \begin{equation*}\Qbar (A,W) \equiv
 \Exp_{P} (Y|A, W).\end{equation*}  Note how we have  suppressed the dependence
@@ -524,7 +570,7 @@ confirms the equality.
 
 
 
-# &#9881; Alternative, second pass {#exo-alternative-parameter-second-pass}
+# &#9881; Alternative statistical mapping {#exo-alternative-parameter-second-pass}
 
 We        now        resume        the       exercize        of        Section
 \@ref(exo-alternative-parameter-first-pass).    Like   we   did   in   Section
@@ -562,12 +608,12 @@ characterized  by  \begin{equation*}   \Delta_c(P)  \equiv  \Gamma_{1,c}(P)  -
 
 
 
-# Third pass {#parameter-third-pass}
+# Representations {#parameter-third-pass}
 
 In Section \@ref(parameter-second-pass), we reoriented  our view of the target
 parameter to be  that of a statistical  functional of the law  of the observed
 data. Specifically, we viewed the parameter as a function of specific features
-of the observed data law, namely $Q_{W}$ and $\Qbar$.  
+of the observed data law, namely $Q_{W}$ and $\Qbar$. 
 
 ## Yet another representation {#yet-another}
 
@@ -587,24 +633,25 @@ a  statistical   mapping  from  $\calM$   to  $[0,1]$,  it  also   holds  that
 Our reason for introducing this alternative  view of the target parameter will
 become clear when we discuss estimation of the target parameter. Specifically,
 the  representations  \@ref(eq:psi-zero)  and  \@ref(eq:psi-zero-b)  naturally
-suggest  different estimation  strategies for  $\psi_0$.  The  former suggests
-building  an  estimator of  $\psi_0$  using  estimators  of $\Qbar_0$  and  of
-$Q_{W,0}$.   The  latter suggests  building  an  estimator of  $\psi_0$  using
-estimators of $\ell\Gbar_0$ and of $P_0$.  
+suggest different  estimation strategies  for $\psi_0$,  as hinted  in Section
+\@ref(opening).  The former  suggests building an estimator  of $\psi_0$ using
+estimators of  $\Qbar_0$ and  of $Q_{W,0}$.  The  latter suggests  building an
+estimator of $\psi_0$ using estimators of $\ell\Gbar_0$ and of $P_0$.
 
 We return to these ideas in later sections.
 
-# &#9881; Alternative, third pass {#exo-alternative-parameter-third-pass}
+# &#9881; Alternative representation {#exo-alternative-parameter-third-pass}
 
-1. &#x2621; Show  that for  $a' =  0,1$, $\gamma_{0,a',c}$  as defined  in
-\@ref{eq:def-quantile) can be  equivalently expressed as \begin{equation*}\inf
+1. &#x2621; Show  that  for $a'  = 0,1$,  $\gamma_{0,a',c}$  as defined  in
+\@ref(eq:def-quantile) can be  equivalently expressed as \begin{equation*}\inf
 \left\{z \in ]0,1[  : \int \frac{\one\{a =  a'\}}{\ell\Gbar(a',W)} \one\{y \le
 z\} dP_0(w,a,y) \ge c \right\}.\end{equation*}
 
 # (PART\*) Being smooth {-}
 
-# First pass {#smooth-first-pass}
 
+
+# First pass {#smooth-first-pass}
 
 Within  our view  of the  target  parameter as  a statistical  mapping, it  is
 natural to inquire of properties this  functional enjoys.  For example, we may
@@ -613,12 +660,16 @@ that *get nearer to* $P$ in $\calM$.  If small deviations from $P_0$ result in
 large  changes in  $\Psi(P_0)$,  then we  might hypothesize  that  it will  be
 difficult to  produce stable estimators  of $\psi_0$. Fortunately,  this turns
 out not to be the case for the mapping  $\Psi$, and so we say that $\Psi$ is a
-*smooth*   parameter   mapping.   We   formalize   this   notion  in   Section
-\@ref(smooth-first-pass),  and  here  provide   an  informal  description  of
-smoothness.
+*smooth*   statistical   mapping. 
 
-To discuss how $\Psi(P)$ changes for distributions *near* $P$ in the model, we 
-require a more concrete definition of nearness.  To that end, consider the law 
+## Fluctuations {#fluctuations}
+
+
+To discuss how $\Psi(P)$ changes for distributions that *get nearer* to $P$ in
+the model, we require a more concrete notion of *getting-nearness*.
+
+
+To that end, consider the law 
 encoded in `run_another_experiment`  as a function of the  input parameter `h`.  
 Let $\Pi_{h} \in  \calM$ be the law encoded by  `run_another_experiment` for a
 given `h`  $\in ]-1,1[$.  Note  that $\calP \equiv  \{\Pi_h : h  \in ]-1,1[\}$
@@ -670,9 +721,9 @@ the  next  subsection,  we derive a  closed-form expression
 for the  slope of the blue  curve from the chunk of code where 
 `run_another_experiment` is defined.
 
-<!--
 
-\subsubsection*{\gear Exercises}
+
+## &#9881; Exercises
 
 1.    Adapt  the code  from problem 1  in Section  \ref{subsec:visualizing} to
 visualize $\Exp_{\Pi_h}(Y  \mid A = 1,  W)$, $\Exp_{\Pi_h}(Y \mid A  = 0, W)$,
@@ -731,14 +782,14 @@ the  fluctuation is  built, for our purposes the most important feature of the
 fluctuation is its local  shape in a neighborhood of $P$. 
 
 We  are  now  prepared  to  provide  a  formal  definition  of  smoothness  of
-statistical mappings.  We  say that a
-statistical mapping $\Psi$ is smooth at every $P \in \calM$ if for each $P \in
-\calM$, there exists a (measurable) function  $D^{*}(P) : \calO \to \bbR$ such
-that  $\Exp_{P}(D^{*}(P)(O)) =  0$,  $\Var_{P}(D^{*}(P)(O)) < \infty$, and,  for
-every  fluctuation $\{P_{h}  : h  \in H\}$  with  score $s$  at $h  = 0$,  the
-real-valued mapping $h \mapsto \Psi(P_{h})$ is differentiable at $h=0$, with a
-derivative               equal               to               \begin{equation}
-\label{eq:derivative}\Exp_{P}\left(D^{*}(P)(O) s(O)\right).  \end{equation}
+statistical mappings.  We  say that a statistical mapping $\Psi$  is smooth at
+every $P  \in \calM$ if  for each $P \in  \calM$, there exists  a (measurable)
+function $D^{*}(P)  : \calO \to  \bbR$ such that $\Exp_{P}(D^{*}(P)(O))  = 0$,
+$\Var_{P}(D^{*}(P)(O)) < \infty$, and, for  every fluctuation $\{P_{h} : h \in
+H\}$  with  score  $s$  at  $h  =  0$,  the  real-valued  mapping  $h  \mapsto
+\Psi(P_{h})$  is  differentiable   at  $h=0$,  with  a   derivative  equal  to
+\begin{equation}                   \Exp_{P}                  \left(D^{*}(P)(O)
+s(O)\right).(\#eq:derivative)\end{equation}
 
 <!-- Interestingly,   if  a   fluctuation   $\{P_{h}  :   h   \in  H\}$   satisfies
 \eqref{eq:score} for a direction $s$ such that $s\neq 0$, $\Exp_{P}(s(O)) = 0$
@@ -746,8 +797,10 @@ and  $\Var_{P}  (s(O))  <  \infty$,  then $h  \mapsto  \Psi(P_{h})$  is  still
 differentiable  at  $h=0$ with  a  derivative  equal to  \eqref{eq:derivative}
 (beyond  fluctuations of  the  form \eqref{eq:fluct}).   -->
 
-The object $D^*(P)$ in (\ref{eq:derivative}) is called a gradient of $\Psi$ at
-$P$.  
+The object $D^*(P)$ in \@ref(eq:derivative) is  called a gradient of $\Psi$ at
+$P$.
+
+## A Euclidean perspective {#Euclidean-perspective}
 
 This  terminology has  a direct  parallel  to directional  derivatives in  the
 calculus  of Euclidean  geometry.   Recall  that if  $f$  is a  differentiable
@@ -763,17 +816,16 @@ point.
 
 
 
-In general, it is possible for many gradients to exist\footnote{This may be at
-first  surprising given  the previous  parallel drawn  to Euclidean  geometry.
-However, it is  important to remember that the model  dictates fluctuations of
-$P$ that  are valid submodels  with respect to the  full model. In  turn, this
-determines  the possible  directions from  which we  may approach  $P$.  Thus,
-depending  on the  direction,  \eqref{eq:derivative} may  hold with  different
-choices  of  $D^*$.}.   However,  in  the  special  case  that  the  model  is
-nonparametric, only a  single gradient exists, which is  sometimes referred to
-as the canonical gradient. In the more general setting, the canonical gradient
-may be defined as the minimizer of  $D\mapsto \Var_{P} (D(O))$ over the set of
-all gradients.
+In general, it is possible for many  gradients to exist ^[This may be at first
+surprising given the previous parallel  drawn to Euclidean geometry.  However,
+it is important  to remember that the model dictates  fluctuations of $P$ that
+are valid submodels with respect to  the full model.  In turn, this determines
+the possible  directions from which we  may approach $P$.  Thus,  depending on
+the  direction,  \@ref(eq:derivative)  may  hold  with  different  choices  of
+$D^*$.].  However, in the special case that the model is nonparametric, only a
+single  gradient exists,  which  is  sometimes referred  to  as the  canonical
+gradient. In the  more general setting, the canonical gradient  may be defined
+as the minimizer of $D\mapsto \Var_{P} (D(O))$ over the set of all gradients.
 
 ```{r eic}
 ## 
@@ -916,7 +968,9 @@ equal to $D^*(P)$. This fact will suggest concrete strategies for generating eff
 estimators of smooth parameters. In this section, we take the first step towards 
 generating such estimators: linearizing the parameter. 
 
-Drawing  another parallel  to  Euclidean geometry,  recall that  if  $f$ is  a
+
+
+Drawing another parallel to Euclidean geometry, recall that if $f$ is a
 differentiable mapping from $\bbR^p$ to $\bbR$,  we can use a Taylor series to
 approximate $f$ at a point $x_0 \in  \bbR^p$, $f(x_0) \approx f(x) + (x_0 - x)
 \cdot \nabla f(x)$, where $x$ is a  point in $\bbR^p$ and $\nabla f(x)$ is the
