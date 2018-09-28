@@ -1,14 +1,14 @@
-# (PART\*) A guided tour {-}
+# A guided tour
 
 
-# Introduction {#introduction}
+## Introduction {#introduction}
 
 Our ambition is to present a gentle introduction to the inference of a causal
 quantity whose statistical analysis is typical  and thus paves the way to more
 involved analyses.   The introduction  weaves together  two main  threads, one
 theoretical and the other computational.
 
-## A causal story  {#causal-story}
+### A causal story  {#causal-story}
 
 We focus on a causal story where a  random reward (a real number between 0 and
 1) depends  on the action  undertaken (one among  two) and the  random context
@@ -22,7 +22,7 @@ estimator will  unfold in  *targeted learning territory*,  at the  frontier of
 machine  learning and  semiparametrics,  the statistical  theory of  inference
 based on semiparametric models.
 
-## The `rgttmle` package {#gttmle-package}
+### The `rgttmle` package {#gttmle-package}
 
 The  computational illustrations  will  be developed  based  on the  companion
 package `rgttmle`. Make  sure you have installed it,  for instance by
@@ -44,11 +44,11 @@ library(ggdag)
 library(rgttmle)
 ```
 
-## What we will discuss {#discuss}
+### What we will discuss {#discuss}
 
 ...
 
-## To remove at a later stage {#remove}
+### To remove at a later stage {#remove}
 
 ```{r redo}
 redo_fixed <- c(TRUE, FALSE)[1]
@@ -71,11 +71,11 @@ if (!redo_varying) {
 
 
 
-# A simulation study {#simulation-study}
+## A simulation study {#simulation-study}
 
 
 
-## Reproducible experiment as a law {#reproducible-experiment}
+### Reproducible experiment as a law {#reproducible-experiment}
 
 We are interested in a reproducible  experiment. Every time this experiment is
 run, it  generates an observation that  we call $O$.  We view $O$ as  a random
@@ -89,7 +89,7 @@ is based on our scientific knowledge of the experiment. The more we know about
 the experiment,  the smaller is  $\calM$.  In all  our examples, we  use large
 models that reflect a lack of knowledge about many aspects of the experiment.
 
-## A synthetic reproducible experiment {#synthetic-experiment}
+### A synthetic reproducible experiment {#synthetic-experiment}
 
 Instead  of considering  a  real-life reproducible  experiment,  we focus  for
 pedagogical purposes  on a  *synthetic* reproducible  experiment. Thus  we can
@@ -133,7 +133,7 @@ times, independently:
 ```{r draw-five-obs} 
 (five_obs <- sample_from(experiment, n = 5))
 ``` 
-## Revealing `experiment` {#revealing-experiment}
+### Revealing `experiment` {#revealing-experiment}
 
 Acting as oracles,  we can peek into `experiment` and  *reveal* a selection of
 relevant  features  (simply run  `?reveal`  to  see  the  man page  of  method
@@ -148,7 +148,7 @@ names(relevant_features)
 We have  an oracular knowledge of  `experiment` and can thus  comment upon the
 features of $P_{0}$ revealed in `relevant_features`.
 
-### `QW` {-}
+#### `QW` {-}
 
 The `QW` feature describes the marginal law of $W$, that we call $Q_{0,W}$.^[A
 summary   of   the   notation   used  throughout   the   text   is   presented
@@ -163,7 +163,7 @@ It  appears that  $Q_{0,W}$ is  a  mixture of  the uniform  laws over  $[0,1]$
 marginal  law $Q_{0,W}$  of $W$  to  make it  easier  later on  to drive  home
 important messages.]
 
-### `Gbar` {-}
+#### `Gbar` {-}
 
 The `Gbar`  feature describes the  conditional probability  of action $A  = 1$
 given  $W$. For  each $a  \in  \{0,1\}$, we  denote \begin{align*}  \Gbar_0(W)
@@ -178,7 +178,7 @@ relevant_features$Gbar
 Note how real numbers of the form $1 + 2W - 4 * \sqrt{|W - 5/12|})$ are mapped
 into the interval $[0,1]$ by the $\expit$ link function.
 
-### `qY` {-}
+#### `qY` {-}
 
 The `qY` feature  describes the conditional density of $Y$  given $A$ and $W$.
 For each $y\in ]0,1[$, we denote by $q_{0,Y}(y, A, W)$ the conditional density
@@ -192,7 +192,7 @@ It appears that the  conditional law of $Y$ given $A$ and $W$  is the Beta law
 with  conditional mean  and variance  characterized by  the `Qbar`  feature of
 `experiment` (see below) and the `shape10` and `shape11` parameters.
 
-### `Qbar` {-}
+#### `Qbar` {-}
 
 As for the `Qbar` feature, it describes  the conditional mean of $Y$ given $A$
 and $W$. 
@@ -206,7 +206,7 @@ given $A$  and $W$.  Note  how $\Qbar_0(A,W)$ does  depend heavily on  $A$ and
 $W$.  We   refer  the  reader   to  Section  \@ref(exo-visualization)   for  a
 visualization of $\Qbar_{0}$.
 
-### `sample_from` {-}
+#### `sample_from` {-}
 
 Finally,  the  `sample_from`   feature  is  the  function   called  by  method
 `sample_from`  when  it  is  applied  to   an  object  of  class  `LAW`,  like
@@ -220,7 +220,7 @@ We will comment  upon the `ideal` argument in the  above `sample_from` feature
 in Section \@ref(parameter-first-pass).
 
 
-# &#9881; Visualization {#exo-visualization}
+## &#9881; Visualization {#exo-visualization}
 
 1.  Run the following chunk of code.  It visualizes the conditional mean
    $\Qbar_{0}$.
@@ -251,7 +251,7 @@ features %>% select(-Qw, -Gw) %>%
 2. Adapt the  above chunk of code to visualize  the marginal density $Q_{0,W}$
    and conditional probability $\Gbar_{0}$.
 
-# &#9881; Make your own experiment {#exo-make-own-experiment}
+## &#9881; Make your own experiment {#exo-make-own-experiment}
 
 You can easily make your own experiment. 
 
@@ -319,11 +319,11 @@ obs %>% as.tibble %>% group_by(W, A) %>% summarize(prob = mean(Y))
 
 5. Now, make your own experiment.
 
-# (PART\*) The parameter of interest {-}
+# The parameter of interest {#parameter}
 
-# The parameter of interest {#parameter-first-pass}
+## The parameter of interest {#parameter-first-pass}
 
-## Definition {#definition}
+### Definition {#definition}
 
 It happens that we especially care for a finite-dimensional feature of $P_{0}$
 that  we   denote  by  $\psi_{0}$.    Its  definition  involves  two   of  the
@@ -343,7 +343,7 @@ $\psi_{0}$.   The  `evaluate_psi`  method  makes  it  very  easy  (simply  run
 (psi_zero <- evaluate_psi(experiment))
 ```
 
-## A causal interpretation {#causal-interpretation}
+### A causal interpretation {#causal-interpretation}
 
 Our interest in $\psi_{0}$  is of causal nature.  Taking a  closer look at the
 `sample_from` feature of `experiment` reveals indeed that the random making of
@@ -409,7 +409,7 @@ it is worth emphasizing that $\psi_{0}$ is a well-defined parameter beyond its
 causal  interpretation,  and  that  it describes  a  standardized  association
 between the action $A$ and reward $Y$.
 
-## A causal computation {#causal-computation}
+### A causal computation {#causal-computation}
 
 We  can use  our position  as oracles  to sample  observations from  the ideal
 experiment.  We call `sample_from` for  `experiment` with its argument `ideal`
@@ -440,7 +440,7 @@ We note that the interpretation of this confidence interval is that in 95\% of
 draws of size `B` from the ideal data generating experiment, the true value of 
 $\psi_0$ will be contained in the generated confidence interval. 
 
-# &#9881; An alternative parameter of interest {#exo-alternative-parameter-first-pass}
+## &#9881; An alternative parameter of interest {#exo-alternative-parameter-first-pass}
 
 Equality    \@ref(eq:psi-zero-bis)     shows    that     parameter    $\psi_0$
 \@ref(eq:psi-zero) is the  difference in average rewards if  we enforce action
@@ -463,9 +463,9 @@ reward     when     action     $a$    is     enforced.      The     difference
 (\#eq:def-delta)\end{equation} is the $c$-th quantile counterpart to parameter
 $\psi_{0}$ \@ref(eq:psi-zero).
 
-1.  &#x2621; Prove \@ref(eq:alter-gamma-zero).
+1.  &#9761; Prove \@ref(eq:alter-gamma-zero).
 
-2. &#x2621;  Compute the numerical  value of $\gamma_{0,a,c}$ for  each $(a,c)
+2. &#9761;  Compute the numerical  value of $\gamma_{0,a,c}$ for  each $(a,c)
    \in \{0,1\}  \times \{1/4,  1/2, 3/4\}$ using  the appropriate  features of
    `experiment` (see `relevant_features`).  Based on these results, report the
    numerical value of $\delta_{0,c}$ for each $c \in \{1/4, 1/2, 3/4\}$.
@@ -478,13 +478,13 @@ $\psi_{0}$ \@ref(eq:psi-zero).
    in the previous problem.
 
 
-# The statistical mapping of interest  {#parameter-second-pass}
+## The statistical mapping of interest  {#parameter-second-pass}
 
 The noble way to define a statistical parameter  is to view it as the value of
 a statistical  mapping at the law  of the experiment of  interest.  Beyond the
 elegance, this has paramount statistical implications.
 
-## Opening discussion {#opening}
+### Opening discussion {#opening}
 
 Oftentimes, the premise of a statistical  analysis is presented like this. One
 assumes  that the  law $P_{0}$  of  the experiment  of interest  belongs to  a
@@ -525,7 +525,7 @@ by construction, satisfy  all the constraints to which  the targeted parameter
 is  subjected.   Some of  the  estimators  that  we  will build  together  are
 substitution-based, some are not. 
 
-## The parameter as the value of a statistical mapping at the experiment {#parameter-mapping}
+### The parameter as the value of a statistical mapping at the experiment {#parameter-mapping}
 
 We now go back to our main  topic of interest. Suppose we know beforehand that
 $O$ drawn from $P_{0}$ takes its  values in $\calO \equiv [0,1] \times \{0,1\}
@@ -546,7 +546,7 @@ statistical  mapping   $\Psi$  from   $\calM$  to  $[0,1]$   characterized  by
 dQ_{W}(w) (\#eq:psimap)\\ &= \Exp_{P}  \left(\Qbar(1, W) - \Qbar(0, W)\right),
 \notag \end{align} a clear extension of \@ref(eq:psi-zero).
 
-## The value of the statistical mapping at another experiment {#value-another-experiment}
+### The value of the statistical mapping at another experiment {#value-another-experiment}
 
 When  we  ran   `example(rgttmle)`  earlier,  we  created   an  object  called
 `another_experiment`:
@@ -570,7 +570,7 @@ confirms the equality.
 
 
 
-# &#9881; Alternative statistical mapping {#exo-alternative-parameter-second-pass}
+## &#9881; Alternative statistical mapping {#exo-alternative-parameter-second-pass}
 
 We        now        resume        the       exercize        of        Section
 \@ref(exo-alternative-parameter-first-pass).    Like   we   did   in   Section
@@ -608,14 +608,14 @@ characterized  by  \begin{equation*}   \Delta_c(P)  \equiv  \Gamma_{1,c}(P)  -
 
 
 
-# Representations {#parameter-third-pass}
+## Representations {#parameter-third-pass}
 
 In Section \@ref(parameter-second-pass), we reoriented  our view of the target
 parameter to be  that of a statistical  functional of the law  of the observed
 data. Specifically, we viewed the parameter as a function of specific features
 of the observed data law, namely $Q_{W}$ and $\Qbar$. 
 
-## Yet another representation {#yet-another}
+### Yet another representation {#yet-another}
 
 It is straightforward to  [show an equivalent representation](#another-rep) of
 the parameter as 
@@ -628,7 +628,7 @@ a  statistical   mapping  from  $\calM$   to  $[0,1]$,  it  also   holds  that
 \\  (\#eq:psi-zero-c)  &=  \Exp_{P}\left(\frac{2A -  1}{\ell\Gbar_{0}(A,W)}  Y
 \right).  \end{align}
 
-## From representations to estimation strategies {#rep-to-est}
+### From representations to estimation strategies {#rep-to-est}
 
 Our reason for introducing this alternative  view of the target parameter will
 become clear when we discuss estimation of the target parameter. Specifically,
@@ -640,18 +640,18 @@ estimator of $\psi_0$ using estimators of $\ell\Gbar_0$ and of $P_0$.
 
 We return to these ideas in later sections.
 
-# &#9881; Alternative representation {#exo-alternative-parameter-third-pass}
+## &#9881; Alternative representation {#exo-alternative-parameter-third-pass}
 
-1. &#x2621; Show  that  for $a'  = 0,1$,  $\gamma_{0,a',c}$  as defined  in
+1. &#9761; Show  that  for $a'  = 0,1$,  $\gamma_{0,a',c}$  as defined  in
 \@ref(eq:def-quantile) can be  equivalently expressed as \begin{equation*}\inf
 \left\{z \in ]0,1[  : \int \frac{\one\{a =  a'\}}{\ell\Gbar(a',W)} \one\{y \le
 z\} dP_0(w,a,y) \ge c \right\}.\end{equation*}
 
-# (PART\*) Being smooth {-}
+# Being smooth {#smooth}
 
 
 
-# Fluctuations, first pass {#smooth-first-pass}
+## Fluctuations, first pass {#smooth-first-pass}
 
 Within our view of the target  parameter as a statistical mapping evaluated at
 the  law of  the  experiment, it  is  natural to  inquire  of properties  this
@@ -667,7 +667,7 @@ the model, we require a more concrete notion of *getting-nearness*. The notion
 hinges on fluctuations (or fluctuating models). 
 
 
-## The `another_experiment` fluctuation {#fluctuations}
+### The `another_experiment` fluctuation {#fluctuations}
 
 
 In  Section \@ref(value-another-experiment),  we discussed  the nature  of the
@@ -712,7 +712,7 @@ should hope that $\Psi$ is differentiable along our submodel at $P$.
 This idea too is formalized  in Section \@ref(smooth-second-pass). We now turn
 to illustrating this idea numerically.
 
-## Numerical illustration {#numerical-illus}
+### Numerical illustration {#numerical-illus}
 
 The code  below evaluates how the  parameter changes for laws  in $\calP$, and
 approximates the  derivative of  the parameter along  the submodel  $\calP$ at
@@ -747,7 +747,7 @@ appears to be  differentiable around $h=0$.  In  Section \@ref(revisiting), we
 derive a closed-form expression for the slope of the blue curve.
 
 
-# &#9881; Yet another experiment
+## &#9881; Yet another experiment
 
 1. Adapt  the code  from Problem 1  in Section  \@ref(exo-visualization) to
 visualize  $w  \mapsto   \Exp_{\Pi_h}(Y  |  A  =  1,  W   =  w)$,  $w  \mapsto
@@ -783,7 +783,7 @@ the resulting figure and Figure \@ref(fig:psi-approx-psi-one).  In particular,
 how does the behavior  of the target parameter around $h  = 0$ compare between
 laws $\Pi_0$ and $\Pi_0'$?
 
-# &#x2621; Second pass {#smooth-second-pass}
+## &#9761; Second pass {#smooth-second-pass}
 
 Let us now formally define what it  means for statistical mapping $\Psi$ to be
 smooth at every  $P \in \calM$.  For every $h  \in H \equiv ]-M^{-1},M^{-1}[$,
@@ -828,7 +828,7 @@ differentiable  at  $h=0$ with  a  derivative  equal to  \eqref{eq:derivative}
 The object $D^*(P)$ in \@ref(eq:derivative) is  called a gradient of $\Psi$ at
 $P$.
 
-## A Euclidean perspective {#Euclidean-perspective}
+### A Euclidean perspective {#Euclidean-perspective}
 
 This  terminology has  a direct  parallel  to directional  derivatives in  the
 calculus  of Euclidean  geometry.   Recall  that if  $f$  is a  differentiable
@@ -856,7 +856,7 @@ gradient. In the  more general setting, the canonical gradient  may be defined
 as the minimizer of $D\mapsto \Var_{P} (D(O))$ over the set of all gradients.
 
 ```{r eic}
-## 
+### 
 ## move around
 ## 
 eic_experiment <- evaluate_eic(experiment)
@@ -880,7 +880,7 @@ obs_another_experiment <- sample_from(another_experiment, B, h = 0)
 (ratio <- sqrt(cramer_rao_Pi_zero_hat/cramer_rao_hat))
 ```
 
-# Revisiting Section \@ref(smooth-first-pass) {#revisiting}
+## Revisiting Section \@ref(smooth-first-pass) {#revisiting}
 
 It is  not difficult  (though cumbersome)  to verify that,  up to  a constant,
 $\{\Pi_{h} :  h \in [-1,1]\}$ is  a fluctuation of $\Pi_{0}$  in the direction
@@ -917,7 +917,7 @@ sd_hat <- sd(vars)
 Equal to  `r round(slope_approx,  3)` (rounded to  three decimal  places), the
 first numerical approximation `slope_approx` is not too off.
 
-# &#x2621; Influence functions and the efficient influence function {#influence-functions}
+## &#9761; Influence functions and the efficient influence function {#influence-functions}
 
 If an estimator $\psi_n$ of $\Psi(P)$ can be written as 
 
@@ -971,7 +971,7 @@ D_{2}^{*}(P)     (O)     &\equiv      \frac{2A-1}{\ell\Gbar(A,W)}     (Y     -
 \Qbar(A,W)).\end{aligned}
 \end{equation}
 
-# &#9881; Cramér-Rao bounds {#exo-cramer-rao}
+## &#9881; Cramér-Rao bounds {#exo-cramer-rao}
 
 1. Numerically approximate the Cramér-Rao bound at $P_{0}$ and at
    $\Pi_0$. With  a large  sample and  using regular  estimators, can  we more
@@ -981,9 +981,9 @@ D_{2}^{*}(P)     (O)     &\equiv      \frac{2A-1}{\ell\Gbar(A,W)}     (Y     -
    problems  2 and  3  of Section  \@ref(subsec:exo:dave:three). Compare  this
    bound with those computed in problem 1.
 
-# (PART\*) Double robustness {-}
+# Double robustness {#double-robustness}
 
-# Linear approximations of parameters {#linear-approximation}
+## Linear approximations of parameters {#linear-approximation}
 
 In the last subsection, we learned that the stochastic behavior of a regular, 
 asymptotically linear estimator of $\Psi(P)$ can be characterized by its
@@ -1034,7 +1034,7 @@ the  canonical   gradient  (\ref{eq:eif}),  and  linearization   of  parameter
 # e.g., using integrate and/or approximating with large sample
 ```
 
-# &#9881; The remainder term {#exo-remainder-term}
+## &#9881; The remainder term {#exo-remainder-term}
 
 1.  [Pending  the  addition  of  above  method]  Use  the  available  code  to
    numerically confirm equation (\ref{taylor_expansion}) by approximating each
@@ -1043,7 +1043,7 @@ the  canonical   gradient  (\ref{eq:eif}),  and  linearization   of  parameter
 
 2. Compute $\Rem_{\Pi_0}(\Pi_h)$ for $h \in [-1,1]$ and plot your results.
 
-# &#x2621; Double-robustness {#double-robustness}
+## &#9761; Double-robustness {#double-robustness}
 
 The  efficient influence  curve $D^{*}(P)$  at  $P \in  \calM$ enjoys  a rather
 remarkable property: it is double-robust.   Specifically, the remainder satisfies
@@ -1065,7 +1065,7 @@ or $\Gbar$-component as $P$, then $\Psi(P')  = \Psi(P)$ no matter how $P'$ may
 differ  from  $P$ otherwise.  This  property  is  useful to  build  consistent
 estimators of $\Psi(P)$.
 
-# &#9881; Double-robustness {#exo-double-robustness}
+## &#9881; Double-robustness {#exo-double-robustness}
 
 Confirm the double-robustness of the efficient influence function by doing the following:
 
@@ -1079,9 +1079,9 @@ Confirm the double-robustness of the efficient influence function by doing the f
    and confirm  (via numerical approximation)  that the mean of  the efficient
    influence function is zero. Repeat for several choices of `Gbar`.
 
-# (PART\*) Inference {-}
+# Inference {#inference}
 
-# Building estimators
+## Building estimators
 
 The previous  section identified our  target parameter and  developed relevant
 theory for understanding the properties of  certain types of estimators of the
@@ -1107,7 +1107,7 @@ parameters in  a particular way as  to ensure that the  resultant estimator of
 the target parameter enjoys desirable properties.  In this second step we will
 make use of the theory developed in the previous subsection.
 
-# Estimating nuisance parameters
+## Estimating nuisance parameters
 
 The  first step  towards obtaining  estimates of  the target  parameter is  to
 propose  a method  for  estimating the  nuisance parameters.  In  the case  of
@@ -1194,7 +1194,7 @@ $P_{n}$, the empirical  measure, \textit{i.e.}, the law  consisting in drawing
 one among $O_{1}$, \ldots, $O_{n}$ with equal probabilities $n^{-1}$. Thus, we
 can write $\Qbar_n = \hat{Q}(P_n)$.
 
-# &#9881; Algorithms {#exo-algorithms}
+## &#9881; Algorithms {#exo-algorithms}
 
 1. \tcg{Depending on how above goes,  define your own algorithm for estimating
    $\Gbar_0$ and/or $\Qbar_0$?}
@@ -1208,10 +1208,10 @@ much detail we need  to go into, but adding something like  this would give us
 an excuse to get  all of the estimation of the nuisance  parameters out of the
 way. Again, it all depends on how we/you want to structure the code.}
 
-# Simple estimation strategies
+## Simple estimation strategies
 
 Equation (\ref{eq:psi0}) suggests the following, simple estimator of $\psi_0$ \[
-\psi_{n}  &\equiv   \int  \left(\Qbar_{n}(1,   w)  -   \Qbar_{n}(0,  w)\right) dQ_{n,W}(w) , 
+\psi_{n}  \equiv   \int  \left(\Qbar_{n}(1,   w)  -   \Qbar_{n}(0,  w)\right) dQ_{n,W}(w) , 
 \]
 where $\Qbar_n$ is an estimate of $\Qbar_0$ and $Q_{n,W}$ is an estimate of $Q_{0,W}$. 
 In words, this estimator is implemented by first estimating the regression of $Y$ on $A$ 
@@ -1254,7 +1254,7 @@ not disappearing faster than $n^{-1/2}$. Thus, the center point of the sampling 
 In the next subsection, we analyze the plug-in estimator to understand the source
 of this poor behavior. 
 
-# &#9881; Plug-in estimate {#exo-plug-in-estimate}
+## &#9881; Plug-in estimate {#exo-plug-in-estimate}
 
 1. Evaluate the plug-in estimate,  if, rather than the empirical distribution,
    we used  a maximum likelihood  estimator of $Q_{0,W}$ under  the assumption
@@ -1265,7 +1265,7 @@ of this poor behavior.
    subsection, let's now have them use it to repeat our simulation and compute
    the G-comp estimator based on this.}
 
-## \textdbend Analysis of plug-in estimator. \label{subsec:analysis-of-plug-in}
+### &#9761; Analysis of plug-in estimator. \label{subsec:analysis-of-plug-in}
 
 
 In view of our estimators of $\Qbar_0$ and $\Gbar_0$ as algorithms that map from a 
@@ -1324,11 +1324,11 @@ This simulation demonstrates that, as expected, $n^{1/2}P_n D^*(\hat{P}_n) \righ
 
 1. \tcg{Design a simulation study to empirically evaluate $n^{1/2} R_{P_0}(\hat{P}_n)$.}
 
-2. \tcg{Design a simulation study to empirically evaluate $n^{1/2} (P_n - P_0) (D^*(\hat{P}_n) - D^*(P_0))}.
+2. \tcg{Design a simulation study to empirically evaluate $n^{1/2} (P_n - P_0) (D^*(\hat{P}_n) - D^*(P_0))$}.
 
 3. \tcg{A "difficult" exercise. Repeat exercise 2, but let's try to break Donsker conditions. E.g., could we blow the Donsker condition up by including an increasing number of polynomials?}
 
-## One-step corrections
+### One-step corrections
 
 In this section, we discuss a simple strategy for correcting the behavior of the plug-in
 estimate of $\psi_0$. Recall that an estimator $\psi_n$ of $\psi_0$ 
@@ -1378,7 +1378,7 @@ center Gaussian variate with unit variance.
 
 ```
 
-# &#x2621; Targeted minimum loss-based estimation {#TMLE}
+## &#9761; Targeted minimum loss-based estimation {#TMLE}
 
 In the previous section, we introduced the one-step corrected estimator of
 $\psi_0$. This estimator added a correction term to the plug-in estimator, 
@@ -1418,9 +1418,9 @@ the empirical distribution $Q_{n,W}$ as estimate of $Q_{0,W}$. Now, note that fo
 estimate $\Qbar_n$ of $\Qbar_0$ and a distribution $\hat{P}_n^*$ that is compatible with 
 $\Qbar_n$ and $Q_{n,W}$, 
 \begin{align*}
-  P_n D_1^*(\hat{P}_n^*) &= \frac{1}{n} \sum_{i=1}^n D_1^(\hat{P}_n^*)(O_i)
-  &= \frac{1}{n} \sum_{i=1}^n \left( \Qbar_n(1,W_i) - \Qbar_n(0,W_i) - \int (\Qbar_n(1,w) - \Qbar_n(0,w)) dQ_{n,W}(w) right) \\
-  &= \frac{1}{n} \sum_{i=1}^n \left( \Qbar_n(1,W_i) - \Qbar_n(0,W_i) - \frac{1}{n}\sum_{j=1}^n (\Qbar_n(1,W_j) - \Qbar_n(0,W_j)) right)
+  P_n D_1^*(\hat{P}_n^*) &= \frac{1}{n} \sum_{i=1}^n D_1^(\hat{P}_n^*)(O_i)\\
+  &= \frac{1}{n} \sum_{i=1}^n \left( \Qbar_n(1,W_i) - \Qbar_n(0,W_i) - \int (\Qbar_n(1,w) - \Qbar_n(0,w)) dQ_{n,W}(w) \right) \\
+  &= \frac{1}{n} \sum_{i=1}^n \left( \Qbar_n(1,W_i) - \Qbar_n(0,W_i) - \frac{1}{n}\sum_{j=1}^n (\Qbar_n(1,W_j) - \Qbar_n(0,W_j)) \right)\\
   &= \frac{1}{n} \sum_{i=1}^n (\Qbar_n(1,W_i) - \Qbar_n(0,W_i)) - \frac{n}{n^2}\sum_{j=1}^n (\Qbar_n(1,W_j) - \Qbar_n(0,W_j)) \\
   &= 0 .
 \end{align*}
@@ -1471,7 +1471,7 @@ Recalling that our goal is to select an estimate of $\Qbar_0$ that is *at least 
 as $\Qbar_n$. This goal is now translated into selecting an $\epsilon$ that corresponds to
 a regression function that fits the data *at least as well* as $\Qbar_n$. To formalize
 this, we require a metric for defining how well a regression function estimates the true
-regression function. For this, we estimate the average negative log-likelihood loss, defined for a candidate regression function $\Qbar as \[
+regression function. For this, we estimate the average negative log-likelihood loss, defined for a candidate regression function $\Qbar$ as \[
   \bbD_0(\Qbar) \equiv -\Exp_{P_0}( Y \log(\Qbar(A,W)) + (1 - Y)\log(1 - \Qbar(A,W)) ) . 
 \]
 We note that the minimizer of $\bbD_0$ over all functions mapping from $\{0,1\} \times (0,1)$ to $\bbR$ is equal to $\Qbar_0$. Thus, $\bbD_0$ provides a concrete means of evaluating the 
@@ -1483,13 +1483,15 @@ The code below computes this estimate of $\bbD_n(\Qbar_{n,\epsilon})$ over a fin
 ```{r compute-negloglik-and-plot}
 # basically just do a grid search over epsilon for minimizer of negative log-likelihood loss
 ```
-The above plot shows the estimated average negative log-likelihood loss for each regression function in the parametric submodel $\calQ(\Gbar_n)$. Now, we should like to move to
-the regression with the smallest estimated average negative log-likelihood, which 
-was achieved at $\epsilon = $ \tcg{fill in from R output}. Because our submodel is through 
-$\Qbar_n$, that is, $\Qbar_n$ is itself included in our submodel, and this newly selected
-regression estimate has a better estimated average negative log-likelihood loss, we should
-hope that the new estimate is at least *no further from $\Qbar_0$* than $\Qbar_n$. Let's 
-use $\Qbar_{n,\epsilon_n}$ to denote the new estimate of $\Qbar_0$. 
+The above  plot shows the  estimated average negative log-likelihood  loss for
+each regression function in the  parametric submodel $\calQ(\Gbar_n)$. Now, we
+should like  to move  to the  regression with  the smallest  estimated average
+negative log-likelihood, which was achieved at $\epsilon=$ \tcg{fill\_in\_from\_R\_output}.  Because our submodel is  through $\Qbar_n$, that is,  $\Qbar_n$ is
+itself included in  our submodel, and this newly  selected regression estimate
+has a  better estimated average  negative log-likelihood loss, we  should hope
+that  the  new  estimate  is  at   least  *no  further  from  $\Qbar_0$*  than
+$\Qbar_n$.  Let's use  $\Qbar_{n,\epsilon_n}$ to  denote the  new estimate  of
+$\Qbar_0$.
 
 What about repeating this process? Perhaps by iterating this procedure, we could 
 generate regression estimates that provide a better fit of $\Qbar_0$ than even $\Qbar_{n,\epsilon_n}$. Let's then define a submodel through $\Qbar_{n,\epsilon_n}$, \[
@@ -1521,10 +1523,10 @@ confirm.
 
 Finding the analytical form of this derivative is straightforward, though a bit cumbersome. 
 With some effort, one can show that \begin{align*}
-&\frac{d}{d\delta} \bbD_n(\Qbar_{n,\delta}) |_{\delta = 0} 
+&\frac{d}{d\delta} \bbD_n(\Qbar_{n,\delta}) |_{\delta = 0} \\
 &\hspace{0.1in} = \frac{d}{d\delta} \frac{1}{n} \sum_{i = 1}^n \left( Y_i \log(\Qbar_{n,\delta}(A_i, W_i)) + (1 - Y_i)\log(1 - \Qbar_{n,\delta}(A_i, W_i)) \right) \bigg|_{\delta = 0} \\
-&\hspace{0.1in} = \frac{1}{n} \sum_{i = 1}^n \frac{2A_i - 1}{\ell \Gbar_n(A_i, W_i)} \left(Y_i - \Qbar_{n,\delta = 0}) \\ 
-&\hspace{0.1in} = \frac{1}{n} \sum_{i = 1}^n \frac{2A_i - 1}{\ell \Gbar_n(A_i, W_i)} \left(Y_i - \Qbar_{n,\epsilon_n}) 
+&\hspace{0.1in} = \frac{1}{n} \sum_{i = 1}^n \frac{2A_i - 1}{\ell \Gbar_n(A_i, W_i)} \left(Y_i - \Qbar_{n,\delta = 0}\right) \\ 
+&\hspace{0.1in} = \frac{1}{n} \sum_{i = 1}^n \frac{2A_i - 1}{\ell \Gbar_n(A_i, W_i)} \left(Y_i - \Qbar_{n,\epsilon_n}\right) 
 \end{align*}
 
 This shows that the analytical form of the left-hand-side of (\ref{deriv_equals_zero}) equals
@@ -1579,7 +1581,7 @@ we end up with an estimate of $\psi_0$ that is outside the parameter space.}
 
 
 
-# Inference assuming the mechanism of action known, or not, first pass {#known-gbar-first-pass}
+## Inference assuming the mechanism of action known, or not, first pass {#known-gbar-first-pass}
 
 \tcg{I think it makes sense to remove this, unless we want to add a section to 
 the simple estimation strategies section above that talks about IPTW estimation.}
@@ -1682,7 +1684,7 @@ to   $\\psi_{0}$,   and  renormalized)   as   estimated   by  kernel   density
 estimation.  The latter  is close  to the  black curve,  which represents  the
 standard normal density.
 
-# Inference assuming the mechanism of action known, or not, second pass {#known-gbar-second-pass}
+## Inference assuming the mechanism of action known, or not, second pass {#known-gbar-second-pass}
 
 
 At  the beginning  of  Section \@ref(known-gbar-first-pass),  we assumed  that
@@ -1832,7 +1834,7 @@ Figures \@ref(fig:unknown-Gbar-three)  and \@ref(fig:unknown-Gbar-four) reveal
 that $\psi_{n}^{c}$ behaves as well as $\psi_{n}^{b}$ --- but remember that we
 did not discuss how to estimate its asymptotic variance.
 
-# &#9881; A nice title... {#exo-a-nice-title}
+## &#9881; A nice title... {#exo-a-nice-title}
 
 1. Compute a numerical approximation of $\Exp_{P_{0}} (Y | A=1) - \Exp_{P_{0}}
 (Y  | A=0)$.  How accurate  is it?  \tcg{I would  perhaps suggest  moving this
@@ -1894,14 +1896,14 @@ attr(working_model_G_three, "ML") <- FALSE
 (working_model_G_three$formula)
 ```
 
-6.   &#x2621;  Drawing inspiration  from \eqref{eq:v:n:b}, one  may consider
+6.   &#9761;  Drawing inspiration  from \eqref{eq:v:n:b}, one  may consider
 estimating the asymptotic  variance of $\psi_{n}^{c}$ with  the counterpart of
 $v_{n}^{b}$ obtained  by substituting  $\ell\Gbar_{n}$ for  $\ell\Gbar_{0}$ in
 \eqref{eq:v:n:b}.   By adapting  the piece  of  code devoted  to the  repeated
 computation of  $\psi_{n}^{b}$ and its  companion quantities, discuss  if that
 would be legitimate.
 
-# Inference based on the estimation of the reward regression {#inference-reward-regression}
+## Inference based on the estimation of the reward regression {#inference-reward-regression}
 
 \tcg{Comment on structure of} `estimate_Qbar`, similar to that of `estimate_Gbar`.
 
@@ -2144,7 +2146,7 @@ root_n_bias %>%
 ## as soon as possible!
 ```	
 
-# One-step estimation {#one-step-estimation}
+## One-step estimation {#one-step-estimation}
 
 Function  `set_Qbar_Gbar`  implements the  change  of  the `Qbar`  and  `Gbar`
 attributes of `obs` (which are accessible only by oracles).
@@ -2276,7 +2278,7 @@ conservative  for type  `e_one-step`.  As  for the  mean square  error, it  is
 diminished by  the one-step  update for  type `d` and  enlarged for  type `e`,
 the `d_one_step` estimator exhibiting the smallest mean square error.
 
-# Targeted inference {#targeted-inference}
+## Targeted inference {#targeted-inference}
 
 
 # (APPENDIX) Appendix {-}

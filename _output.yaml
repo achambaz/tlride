@@ -10,7 +10,7 @@ bookdown::gitbook:
       toolbar:
         position: static
       edit : null
-      download: null
+      download: pdf
       search: yes
       fontsettings:
         theme: white
@@ -19,8 +19,17 @@ bookdown::gitbook:
   includes:
     before_body: abcd_header.html
     in_header: mathjax_number.html
-    sharing: no
+    sharing: null
   css: gttmle.css
+
+bookdown::pdf_book:
+  toc: true
+  toc_depth: 2
+  number_sections: true
+  includes:
+    in_header: abcd_header.tex
+  latex_engine: xelatex
+  citation_package: natbib
 
 bookdown::pdf_document2:
   toc: true

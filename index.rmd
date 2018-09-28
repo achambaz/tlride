@@ -2,7 +2,7 @@
 knit: "bookdown::render_book"
 title: "A Guided Tour in Targeted Learning Territory"
 author: ["David Benkeser (Emory University)", "Antoine Chambaz (Université Paris Descartes)"]
-date: "09/11/2018"
+date: "`r Sys.Date()`"
 description: "To do..."
 encoding: "UTF-8"
 github-repo: achambaz/gttmle
@@ -10,17 +10,26 @@ site: bookdown::bookdown_site
 documentclass: book
 bibliography: "bibliography.bib"
 link-citation: true
+cover-image: "cover.jpg"
+favicon: "favicon.png"
 ---
 
-<!--url: 'http\://r4ds.had.co.nz/'-->
-<!--cover-image: cover.png-->
+
+
+
 
 # Welcome {-} 
 
 This   is  the   website   for   __"A  Guided   Tour   in  Targeted   Learning
 Territory"__. 
 
-__Organization__
+
+```{r cover, fig.width = 6, echo = FALSE}
+knitr::include_graphics("cover.jpg")
+```
+
+
+__Organization__ 
 
 The text  takes the  form of  a series  of brief  sections. The  main sections
 combine theoretical and computational developments. The code is written in the
@@ -30,7 +39,7 @@ analysis.
 
 Regularly, a section  is inserted that proposes exercizes.   Each such section
 is indicated by the <span style="color:red">&#9881;</span> symbol.  The symbol
-<span  style="color:red">&#x2621;</span> also  indicates those  sections whose
+<span  style="color:red">&#9761;</span> also  indicates those  sections whose
 content is more involved.
 
 __Overview__

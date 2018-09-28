@@ -5,7 +5,7 @@ of interest unfold,  our generic observation; $W \in [0,1]$  is the context of
 action, $A  \in \{0,1\}$  is the  action undertaken, and  $Y\in [0,1]$  is the
 reward of action $A$ in context $W$.
 
-- $P$, $P_{0}$, $\Pi_{0}$, $\Pi_{h}$, laws for $O$.
+- $P$, $P_{0}$, $\Pi_{0}$, $\Pi_{h}$, $\Pi_{0}'$, $\Pi_{h}'$, laws for $O$.
 
 - $P_{n}$,  the empirical  measure. If the  observations are  $O_{1}$, \ldots,
 $O_{n}$, then $P_{n}$ is a law such that the generic random variable $O$ drawn
@@ -15,7 +15,7 @@ $O = O_{i}$ with probability $n^{-1}$ for each $1 \leq i \leq n$.
 - $\calM$, the model, that is, the collection of *all* laws from which $O$
 can be drawn and that meet some constraints.
 
--     $Q_{W}$,  $Q_{0,W}$, marginal  laws  for  $W$  (under $P$  and  $P_{0}$,
+- $Q_{W}$,  $Q_{0,W}$, marginal  laws  for  $W$  (under $P$  and  $P_{0}$,
 respectively).
   
 - $\Gbar(W) \equiv \Pr_{P}(A  = 1 | W)$, $\Gbar_0(W) \equiv  \Pr_{P_0}(A = 1 |
@@ -23,7 +23,7 @@ W)$, conditional  probabilities of  action $A  = 1$ given  $W$ (under  $P$ and
 $P_{0}$,  respectively).  For  each  $a \in  \{0,1\}$, $\ell\Gbar(a,W)  \equiv
 \Pr_{P}(A = a | W)$ and $\ell\Gbar_0(a,W) \equiv \Pr_{P_0}(A = a | W)$.
 
--  $\Qbar(A,W)  = \Exp_{P}(Y|A,W)$, $\Qbar_0(A,W) =  \Exp_{P_{0}}(Y|A,W)$, the
+- $\Qbar(A,W)  = \Exp_{P}(Y|A,W)$, $\Qbar_0(A,W) =  \Exp_{P_{0}}(Y|A,W)$, the
 conditional  means  of  $Y$  given  $A$   and  $W$  (under  $P$  and  $P_{0}$,
 respectively).
 
