@@ -10,7 +10,7 @@ bookdown::gitbook:
       toolbar:
         position: static
       edit : null
-      download: pdf
+      download: "pdf"
       search: yes
       fontsettings:
         theme: white

@@ -1,3 +1,7 @@
+book_filename: "gttmle-book"
+
+chapter_name: "Chapter "
+
 new_session: yes
 
 rmd_files: [
