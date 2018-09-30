@@ -1,4 +1,4 @@
-\usepackage{amsmath,amssymb,xcolor}%,manfnt,tikz}
+\usepackage{amsmath,amssymb,xcolor,unicode-math,tikz}
 
 \DeclareMathOperator{\Dirac}{Dirac}
 \DeclareMathOperator{\expit}{expit}
@@ -6,24 +6,35 @@
 \DeclareMathOperator{\Rem}{Rem}
 \DeclareMathOperator{\Var}{Var}
 
-% \newsavebox\gearbox
-% \newcommand{\gearmacro}[5]{%
-%   % #1 number of teeths
-%   % #2 radius intern
-%   % #3 radius extern
-%   % #4 angle from start to end of the first arc
-%   % #5 angle to decale the second arc from the first 
-%   \foreach \i in {1,...,#1} {%
-%     [rotate=(\i-1)*360/#1]  (0:#2)  arc (0:#4:#2) {[rounded corners=1.5pt]
-%       -- (#4+#5:#3)  arc (#4+#5:360/#1-#5:#3)} --  (360/#1:#2)
-%   }}  
-% \newcommand{\makegear}{\begin{tikzpicture}
-%     \fill[gray] (0,0) circle (2cm);
-%     \draw[thick,rotate=12,fill=gray] \gearmacro{8}{2}{2.4}{20}{2};
-%     \draw[thick,fill=white] (0cm,0cm) circle(1.35cm);
-%   \end{tikzpicture}}
-% \sbox\gearbox{\resizebox{!}{2em}{\makegear}}
-% \newcommand{\gear}{\usebox{\gearbox}\;}
+%% Exercize symbol
+
+\newsavebox\gearbox
+\newcommand{\gearmacro}[5]{%
+  % #1 number of teeths
+  % #2 radius intern
+  % #3 radius extern
+  % #4 angle from start to end of the first arc
+  % #5 angle to decale the second arc from the first 
+  \foreach \i in {1,...,#1} {%
+    [rotate=(\i-1)*360/#1]  (0:#2)  arc (0:#4:#2) {[rounded corners=1.5pt]
+      -- (#4+#5:#3)  arc (#4+#5:360/#1-#5:#3)} --  (360/#1:#2)
+  }}  
+\newcommand{\makegear}{\begin{tikzpicture}
+    \fill[gray] (0,0) circle (2cm);
+    \draw[thick,rotate=12,fill=gray] \gearmacro{8}{2}{2.4}{20}{2};
+    \draw[thick,fill=white] (0cm,0cm) circle(1.35cm);
+  \end{tikzpicture}}
+\sbox\gearbox{\resizebox{!}{1em}{\makegear}}
+\newcommand{\gear}{\usebox{\gearbox}\;}
+
+%% Danger symbol
+
+\DeclareFontFamily{U}{stixbbit}{}
+\DeclareFontShape{U}{stixbbit}{m}{it}{<-> stix-mathbbit}{}
+\DeclareRobustCommand{\stixdanger}{%
+  {\usefont{U}{stixbbit}{m}{it}\symbol{"F6}}%
+}
+
 
 \newcommand{\bbO}{\mathbb{O}}
 \newcommand{\bbD}{\mathbb{D}}
