@@ -27,6 +27,9 @@ This is the website for __"A Ride in Targeted Learning Territory"__.
 knitr::include_graphics("cover.jpg")
 ```
 
+```{block, type = "center"}
+Long Mendocino Drive (detail, [Liana Steinmetz](https://www.lianasteinmetz.com/))
+```
 
 __Organization__ 
 
