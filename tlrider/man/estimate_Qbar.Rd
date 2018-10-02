@@ -9,7 +9,7 @@ estimate_Qbar(dat, algorithm, ...)
 \arguments{
 \item{dat}{The learning data  set. Must have the  same form as a  data set
 produced    by    an    object   of    \code{class}    \code{LAW}    (see
-'?rgttmle').}
+'?tlrider').}
 
 \item{algorithm}{The  algorithm.  See the  built-in algorithms  by running
 'data(algorithms)'.}
@@ -29,7 +29,7 @@ the law.
 \examples{
 
 ## create an experiment and draw a data set from it
-example(rgttmle, echo = FALSE)
+example(tlrider, echo = FALSE)
 obs <- sample_from(experiment, n = 250)
 
 ## load the built-in algorithms

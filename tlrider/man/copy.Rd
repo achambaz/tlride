@@ -22,7 +22,7 @@ object.
 \examples{
 
 ## create an experiment, make a copy (once)
-example(rgttmle, echo = FALSE)
+example(tlrider, echo = FALSE)
 experiment_bis <- experiment
 experiment_ter <- copy(experiment)
 identical(experiment, experiment_bis)

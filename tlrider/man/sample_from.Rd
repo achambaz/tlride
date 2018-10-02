@@ -27,7 +27,7 @@ Samples data of the form (W,A,Y) in [0,1] x {0,1} x [0,1] from an object of
 \examples{
 
 ## create an experiment
-example(rgttmle, echo = FALSE)
+example(tlrider, echo = FALSE)
 experiment
 
 ## sample three observations from it

@@ -32,7 +32,7 @@ if one has built the object or if one acts as an \emph{oracle}.
 \examples{
 
 ## create then reveal an experiment
-example(rgttmle, echo = FALSE)
+example(tlrider, echo = FALSE)
 get_feature(experiment, "Gbar")
 
 

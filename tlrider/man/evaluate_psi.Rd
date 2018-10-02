@@ -29,7 +29,7 @@ are characterized.
 \examples{
 
 ## create an experiment
-example(rgttmle, echo = FALSE)
+example(tlrider, echo = FALSE)
 experiment
 
 ## evaluate Psi at this experiment

@@ -1,6 +1,6 @@
-#' rgttmle: A Companion Package to the Article "A Guided Tour in Targeted Learning Territory"
+#' tlrider: A Companion Package to the Article "A Ride in Targeted Learning Territory"
 #'
-#' The  'rgttmle'  package  provides   two  categories  of  important
+#' The  'tlrider'  package  provides   two  categories  of  important
 #' functions: 
 #' 
 #' @section  Methods  for  \code{LAW}  objects:
@@ -32,7 +32,7 @@
 #'
 #' @docType package
 #' 
-#' @name rgttmle
+#' @name tlrider
 #'
 #' @references Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
 #' 

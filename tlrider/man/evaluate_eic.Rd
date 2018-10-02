@@ -39,7 +39,7 @@ are characterized.
 \examples{
 
 ## create an experiment
-example(rgttmle, echo = FALSE)
+example(tlrider, echo = FALSE)
 experiment
 
 ## evaluate the efficient influence curve of Psi at this experiment

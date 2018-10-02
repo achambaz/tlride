@@ -1,4 +1,4 @@
-# A guided tour
+# A ride
 
 
 ## Introduction {#introduction}
@@ -22,14 +22,14 @@ estimator will  unfold in  *targeted learning territory*,  at the  frontier of
 machine  learning and  semiparametrics,  the statistical  theory of  inference
 based on semiparametric models.
 
-### The `rgttmle` package {#gttmle-package}
+### The `tlrider` package {#tlrider-package}
 
 The  computational illustrations  will  be developed  based  on the  companion
-package `rgttmle`. Make  sure you have installed it,  for instance by
+package `tlrider`. Make  sure you have installed it,  for instance by
 running the following chunk of code:
 
 ```{r install-package, eval = FALSE}
-devtools::install_github("achambaz/gttmle/rgttmle")
+devtools::install_github("achambaz/tlride/tlrider")
 ```
 
 Note that additional  packages are required, among  which `tidyverse` [@r4ds],
@@ -41,7 +41,7 @@ set.seed(54321) ## because reproducibility matters...
 library(tidyverse)
 library(caret)
 library(ggdag)
-library(rgttmle)
+library(tlrider)
 ```
 
 ### What we will discuss {#discuss}
@@ -97,10 +97,10 @@ from  now  on  take on  two  different  roles:  that  of an  *oracle*  knowing
 completely the nature of the experiment, and that of a *statistician* eager to
 know more about the experiment by observing some of its outputs.
 
-Let us run the example built into the `rgttmle` package:
+Let us run the example built into the `tlrider` package:
 
 ```{r example-one, results = FALSE}
-example(rgttmle)
+example(tlrider)
 ```
 
 A few objects have been defined:
@@ -548,7 +548,7 @@ dQ_{W}(w) (\#eq:psimap)\\ &= \Exp_{P}  \left(\Qbar(1, W) - \Qbar(0, W)\right),
 
 ### The value of the statistical mapping at another experiment {#value-another-experiment}
 
-When  we  ran   `example(rgttmle)`  earlier,  we  created   an  object  called
+When  we  ran   `example(tlrider)`  earlier,  we  created   an  object  called
 `another_experiment`:
 
 ```{r another-simulation}
@@ -672,7 +672,7 @@ hinges on fluctuations (or fluctuating models).
 
 In  Section \@ref(value-another-experiment),  we discussed  the nature  of the
 object   called   `another_experiment`   that   was  created   when   we   ran
-`example(rgttmle)`:
+`example(tlrider)`:
  
 ```{r show-another-experiement-a}
 another_experiment

@@ -1,11 +1,11 @@
 ---
 knit: "bookdown::render_book"
-title: "A Guided Tour in Targeted Learning Territory"
+title: "A Ride in Targeted Learning Territory"
 author: ["David Benkeser (Emory University)", "Antoine Chambaz (Université Paris Descartes)"]
 date: "`r Sys.Date()`"
 description: "To do..."
 encoding: "UTF-8"
-github-repo: achambaz/gttmle
+github-repo: achambaz/tlride
 site: bookdown::bookdown_site
 documentclass: book
 bibliography: "bibliography.bib"
@@ -20,8 +20,7 @@ favicon: "favicon.png"
 
 # Welcome {-} 
 
-This   is  the   website   for   __"A  Guided   Tour   in  Targeted   Learning
-Territory"__. 
+This is the website for __"A Ride in Targeted Learning Territory"__.
 
 
 ```{r cover, fig.width = 6, echo = FALSE}
@@ -71,6 +70,6 @@ knitr::purl("abcd.Rmd")
 ```
 
 <!--It is automatically rebuilt from
-[source](https://github.com/achambaz/gttmle)                                by
+[source](https://github.com/achambaz/tlride)                                by
 [travis](http://travis-ci.org/).-->
 

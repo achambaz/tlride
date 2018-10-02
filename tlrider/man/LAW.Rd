@@ -30,7 +30,7 @@ can be specified.
 }
 \examples{
 
-## See 'example(rgttmle)'
+## See 'example(tlrider)'
 
 }
 \seealso{

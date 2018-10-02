@@ -1,4 +1,4 @@
-# gttmle: A Guided Tour in Targeted Learnign Territory (provisional)
+# tlride: A Ride in Targeted Learnign Territory
 
 > Manuscript on applications of Targeted Learning for Causal Inference and
 > Variable Importance
