@@ -3,7 +3,7 @@
 
 ## Introduction {#introduction}
 
-Our ambition is to present a gentle introduction to the inference of a causal
+Our ambition is to present a gentle  introduction to the inference of a causal
 quantity whose statistical analysis is typical  and thus paves the way to more
 involved analyses.   The introduction  weaves together  two main  threads, one
 theoretical and the other computational.
@@ -12,9 +12,9 @@ theoretical and the other computational.
 
 We focus on a causal story where a  random reward (a real number between 0 and
 1) depends  on the action  undertaken (one among  two) and the  random context
-where  the action  is performed  (summarized by  a real  number between  0 and
-1).  The causal  quantity of  interest is  the average  difference of  the two
-counterfactual rewards. 
+where the action is  performed (summarized by a real number  between 0 and 1).
+The  causal  quantity  of  interest  is the  average  difference  of  the  two
+counterfactual rewards.
 
 We  will  build  several  estimators  and  discuss  their  respective  merits,
 theoretically  and  computationally. The  construction  of  the most  involved
@@ -220,7 +220,7 @@ We will comment  upon the `ideal` argument in the  above `sample_from` feature
 in Section \@ref(parameter-first-pass).
 
 
-## &#9881; Visualization {#exo-visualization}
+## &#9881; \gear Visualization {#exo-visualization}
 
 1.  Run the following chunk of code.  It visualizes the conditional mean
    $\Qbar_{0}$.
@@ -251,7 +251,7 @@ features %>% select(-Qw, -Gw) %>%
 2. Adapt the  above chunk of code to visualize  the marginal density $Q_{0,W}$
    and conditional probability $\Gbar_{0}$.
 
-## &#9881; Make your own experiment {#exo-make-own-experiment}
+## &#9881; \gear Make your own experiment {#exo-make-own-experiment}
 
 You can easily make your own experiment. 
 
@@ -440,7 +440,7 @@ We note that the interpretation of this confidence interval is that in 95\% of
 draws of size `B` from the ideal data generating experiment, the true value of 
 $\psi_0$ will be contained in the generated confidence interval. 
 
-## &#9881; An alternative parameter of interest {#exo-alternative-parameter-first-pass}
+## &#9881; \gear An alternative parameter of interest {#exo-alternative-parameter-first-pass}
 
 Equality    \@ref(eq:psi-zero-bis)     shows    that     parameter    $\psi_0$
 \@ref(eq:psi-zero) is the  difference in average rewards if  we enforce action
@@ -463,9 +463,9 @@ reward     when     action     $a$    is     enforced.      The     difference
 (\#eq:def-delta)\end{equation} is the $c$-th quantile counterpart to parameter
 $\psi_{0}$ \@ref(eq:psi-zero).
 
-1.  &#9761; Prove \@ref(eq:alter-gamma-zero).
+1.  &#9761; \stixdanger{} Prove \@ref(eq:alter-gamma-zero).
 
-2. &#9761;  Compute the numerical  value of $\gamma_{0,a,c}$ for  each $(a,c)
+2. &#9761; \stixdanger{} Compute the numerical value of $\gamma_{0,a,c}$ for each $(a,c)
    \in \{0,1\}  \times \{1/4,  1/2, 3/4\}$ using  the appropriate  features of
    `experiment` (see `relevant_features`).  Based on these results, report the
    numerical value of $\delta_{0,c}$ for each $c \in \{1/4, 1/2, 3/4\}$.
@@ -570,7 +570,7 @@ confirms the equality.
 
 
 
-## &#9881; Alternative statistical mapping {#exo-alternative-parameter-second-pass}
+## &#9881; \gear Alternative statistical mapping {#exo-alternative-parameter-second-pass}
 
 We        now        resume        the       exercize        of        Section
 \@ref(exo-alternative-parameter-first-pass).    Like   we   did   in   Section
@@ -640,9 +640,9 @@ estimator of $\psi_0$ using estimators of $\ell\Gbar_0$ and of $P_0$.
 
 We return to these ideas in later sections.
 
-## &#9881; Alternative representation {#exo-alternative-parameter-third-pass}
+## &#9881; \gear Alternative representation {#exo-alternative-parameter-third-pass}
 
-1. &#9761; Show  that  for $a'  = 0,1$,  $\gamma_{0,a',c}$  as defined  in
+1. &#9761; \stixdanger{} Show that for $a' = 0,1$, $\gamma_{0,a',c}$ as defined in
 \@ref(eq:def-quantile) can be  equivalently expressed as \begin{equation*}\inf
 \left\{z \in ]0,1[  : \int \frac{\one\{a =  a'\}}{\ell\Gbar(a',W)} \one\{y \le
 z\} dP_0(w,a,y) \ge c \right\}.\end{equation*}
@@ -651,7 +651,7 @@ z\} dP_0(w,a,y) \ge c \right\}.\end{equation*}
 
 
 
-## Fluctuations, first pass {#smooth-first-pass}
+## Fluctuations, smoothness and `another_experiment` {#smooth-first-pass}
 
 Within our view of the target  parameter as a statistical mapping evaluated at
 the  law of  the  experiment, it  is  natural to  inquire  of properties  this
@@ -747,7 +747,7 @@ appears to be  differentiable around $h=0$.  In  Section \@ref(revisiting), we
 derive a closed-form expression for the slope of the blue curve.
 
 
-## &#9881; Yet another experiment
+## &#9881; \gear Yet another experiment
 
 1. Adapt  the code  from Problem 1  in Section  \@ref(exo-visualization) to
 visualize  $w  \mapsto   \Exp_{\Pi_h}(Y  |  A  =  1,  W   =  w)$,  $w  \mapsto
@@ -783,108 +783,124 @@ the resulting figure and Figure \@ref(fig:psi-approx-psi-one).  In particular,
 how does the behavior  of the target parameter around $h  = 0$ compare between
 laws $\Pi_0$ and $\Pi_0'$?
 
-## &#9761; Second pass {#smooth-second-pass}
+## &#9761; \stixdanger{} More on fluctuations and smoothness {#smooth-second-pass}
 
-Let us now formally define what it  means for statistical mapping $\Psi$ to be
+### Fluctuations
+
+Let us now formally define what it means for statistical mapping $\Psi$ to be
 smooth at every  $P \in \calM$.  For every $h  \in H \equiv ]-M^{-1},M^{-1}[$,
 we can  define a  law $P_{h}  \in \calM$  by setting  $P_{h} \ll  P$^[That is,
 $P_{h}$  is dominated  by $P$:  if an  event $A$  satisfies $P(A)  = 0$,  then
-necessarily $P_{h} (A) = 0$ too.]  and
+necessarily $P_{h} (A) = 0$ too.]  and 
+\begin{equation}
+\frac{dP_h}{dP} \equiv
+1 + h s, (\#eq:fluct)
+\end{equation} 
+where   $s  :  \calO\to  \bbR$  is  a
+(measurable) function of $O$ such that  $s(O)$ is not equal to zero $P$-almost
+surely,  $\Exp_{P}  (s(O))  =  0$,  and  $s$ bounded  by  $M$.   We  make  the
+observation that 
+\begin{equation}
+(i)  \quad P_h|_{h=0}  = P,\quad  (ii) \quad
+\left.\frac{d}{dh}  \log \frac{dP_h}{dP}(O)\right|_{h=0}  =s(O).  (\#eq:score)
+\end{equation}
 
-\begin{equation}(\#eq:fluct)\frac{dP_{h}}{dP} \equiv 1 + h s, \end{equation}
-
-where $s : \calO\to  \bbR$ is a (measurable) function of  $O$ such that $s(O)$
-is not equal to zero $P$-almost surely, $\Exp_{P} (s(O)) = 0$, and $s$ bounded
-by $M$.   We make the observation  that \begin{equation}\label{eq:score}(i) \;
-P_{h}|_{h=0}    =     P,    \quad    (ii)    \;     \left.\frac{d}{dh}    \log
-\frac{dP_{h}}{dP}(O)\right|_{h=0} = s(O).\end{equation}
-
-Because  of   \textit{(i)},  $\{P_{h}  :  h  \in   H\}$  is  a submodel through $P$
-(also referred to as a \textit{fluctuation} of $P$).  As above note that the 
-fluctuation is a one-dimensional submodel of
-$\calM$  with univariate  parameter $h  \in  H$.  We  note that  \textit{(ii)}
+Because  of *(i)*,  $\{P_{h} :  h \in  H\}$ is  a submodel  through $P$,  also
+referred to as  a *fluctuation* of $P$.  The fluctuation  is a one-dimensional
+submodel of $\calM$ with univariate parameter  $h \in H$.  We note that *(ii)*
 indicates that  the score of this  submodel at $h =  0$ is $s$.  Thus,  we say
-that the fluctuation is \textit{in the  direction} of $s$. Fluctuations of $P$
-do not  necessarily take the same  form as in \eqref{eq:fluct}.  No matter how
-the  fluctuation is  built, for our purposes the most important feature of the 
-fluctuation is its local  shape in a neighborhood of $P$. 
+that the fluctuation is *in the direction* of $s$.
+
+Fluctuations  of   $P$  do  not   necessarily  take   the  same  form   as  in
+\@ref(eq:fluct).  No matter how the fluctuation is built, for our purposes the
+most important feature of the fluctuation is its local shape in a neighborhood
+of $P$.
+
+### Smoothness
 
 We  are  now  prepared  to  provide  a  formal  definition  of  smoothness  of
-statistical mappings.  We  say that a statistical mapping $\Psi$  is smooth at
+statistical mappings.  We say that a statistical mapping $\Psi$ is *smooth* at
 every $P  \in \calM$ if  for each $P \in  \calM$, there exists  a (measurable)
 function $D^{*}(P)  : \calO \to  \bbR$ such that $\Exp_{P}(D^{*}(P)(O))  = 0$,
 $\Var_{P}(D^{*}(P)(O)) < \infty$, and, for  every fluctuation $\{P_{h} : h \in
 H\}$  with  score  $s$  at  $h  =  0$,  the  real-valued  mapping  $h  \mapsto
-\Psi(P_{h})$  is  differentiable   at  $h=0$,  with  a   derivative  equal  to
-\begin{equation}                   \Exp_{P}                  \left(D^{*}(P)(O)
-s(O)\right).(\#eq:derivative)\end{equation}
-
-<!-- Interestingly,   if  a   fluctuation   $\{P_{h}  :   h   \in  H\}$   satisfies
-\eqref{eq:score} for a direction $s$ such that $s\neq 0$, $\Exp_{P}(s(O)) = 0$
-and  $\Var_{P}  (s(O))  <  \infty$,  then $h  \mapsto  \Psi(P_{h})$  is  still
-differentiable  at  $h=0$ with  a  derivative  equal to  \eqref{eq:derivative}
-(beyond  fluctuations of  the  form \eqref{eq:fluct}).   -->
-
+\Psi(P_{h})$ is differentiable at $h=0$, with a derivative equal to
+\begin{equation} 
+\Exp_{P}  \left(D^{*}(P)(O) s(O)\right).   (\#eq:derivative)
+\end{equation}
 The object $D^*(P)$ in \@ref(eq:derivative) is  called a gradient of $\Psi$ at
-$P$.
+$P$.^[Interestingly,  if  a  fluctuation  $\{P_{h}  :  h  \in  H\}$  satisfies
+\@ref(eq:score) for a direction $s$ such  that $s\neq 0$, $\Exp_{P}(s(O)) = 0$
+and  $\Var_{P}  (s(O))  <  \infty$,  then $h  \mapsto  \Psi(P_{h})$  is  still
+differentiable  at  $h=0$  with  a derivative  equal  to  \@ref(eq:derivative)
+beyond fluctuations of the form \@ref(eq:fluct).]
+
 
 ### A Euclidean perspective {#Euclidean-perspective}
 
 This  terminology has  a direct  parallel  to directional  derivatives in  the
 calculus  of Euclidean  geometry.   Recall  that if  $f$  is a  differentiable
-mapping from $\bbR^p$ to $\bbR$, then the directional derivative of $f$ at $x$
-(a point in $\bbR^p$) in direction $u$  (a unit vector in $\bbR^p$) is the dot
-product of the gradient of $f$  and $u$.  In words, the directional derivative
-of $f$ at $x$ can be represented as  an inner product of the direction that we
-approach $x$ and  the change of the  function's value at $x$.   In the present
-problem, the law  $P$ is the point  at which we evaluate  the function $\Psi$,
-the score $s$ of  the fluctuation is the "direction" in  which we approach the
-point, and  the gradient describes the  change in the function's  value at the
-point.
+mapping from $\bbR^p$ to $\bbR$, then  the directional derivative of $f$ at *a
+point*  $x$ (an  element of  $\bbR^p$) in  *direction* $u$  (a unit  vector in
+$\bbR^p$) is the scalar product of the gradient of $f$ and $u$.  In words, the
+directional derivative of $f$ at $x$ can be represented as a scalar product of
+the direction that we  approach $x$ and the change of  the function's value at
+$x$.
 
+In the present  problem, the law $P$  is *the point* at which  we evaluate the
+function $\Psi$, the score $s$ of  the fluctuation is *the direction* in which
+we approach the point, and the gradient describes the change in the function's
+value at the point.
 
+### The canonical gradient
 
 In general, it is  possible for many gradients to exist^[This  may be at first
-surprising given the previous parallel  drawn to Euclidean geometry.  However,
-it is important  to remember that the model dictates  fluctuations of $P$ that
-are valid submodels with respect to  the full model.  In turn, this determines
-the possible  directions from which we  may approach $P$.  Thus,  depending on
-the  direction,  \@ref(eq:derivative)  may  hold  with  different  choices  of
-$D^*$.].  However, in the special case that the model is nonparametric, only a
-single  gradient exists,  which  is  sometimes referred  to  as the  canonical
-gradient. In the  more general setting, the canonical gradient  may be defined
-as the minimizer of $D\mapsto \Var_{P} (D(O))$ over the set of all gradients.
+surprising given the parallel drawn in Section \@ref(Euclidean-perspective) to
+Euclidean  geometry.  However,  it is  important  to remember  that the  model
+dictates fluctuations of $P$ that are valid submodels with respect to the full
+model.  In  turn, this determines  the possible  directions from which  we may
+approach $P$.  Thus, depending on the direction, \@ref(eq:derivative) may hold
+with different choices of $D^*$.].  Yet, in the special case that the model is
+nonparametric,  only a  single gradient  exists. The  unique gradient  is then
+referred to  as *the canonical  gradient* or *the efficient  influence curve*,
+for reasons that will be  clarified in Section \@ref(influence-curves).  In
+the  more general  setting,  the  canonical gradient  may  be  defined as  the
+minimizer of $D\mapsto \Var_{P} (D(O))$ over the set of all gradients.
 
-```{r eic}
-### 
-## move around
-## 
+It  is  not difficult  to  check  that  the  efficient influence  curve  of
+statistical  mapping $\Psi$  \@ref(eq:psimap) at  $P \in  \calM$ can  be written  as
+\begin{align}
+D^{*}(P) & \equiv D_{1}^{*} (P) + D_{2}^{*} (P), \quad \text{where}  (\#eq:eif)\\
+D_{1}^{*}(P) (O) &\equiv \Qbar(1,W) - \Qbar(0,W) - \Psi(P), \notag\\ 
+D_{2}^{*}(P) (O) &\equiv \frac{2A-1}{\ell\Gbar(A,W)}(Y - \Qbar(A,W)).\notag 
+\end{align}
+
+A `method` from package `tlrider` evaluates the efficient influence curve at a
+law described  by an object of  class `LAW`. It is  called `evaluate_eic`. For
+instance,  the next  chunk of  code  evaluates the  efficient influence  curve
+$D^{*}(P_{0})$  of  $\Psi$  \@ref(eq:psimap)  at $P_{0}  \in  \calM$  that  is
+characterized by `experiment`:
+
+```{r eic-one}
 eic_experiment <- evaluate_eic(experiment)
+
+```
+
+The  efficient influence  curve $D^{*}(P_{0})$  is a  function from  $\bbO$ to
+$\bbR$.  As  such, it can  be evaluated  at the five  independent observations
+drawn from  $P_{0}$ in Section  \@ref(synthetic-experiment). This is  what the
+next chunk of code does:
+
+```{r eic-two}
 (eic_experiment(five_obs))
-
-eic_another_experiment <- evaluate_eic(another_experiment, h = 0)
-(eic_another_experiment(two_obs_another_experiment))
 ```
 
-```{r cramer-rao}
-##
-## move around
-##
-obs <- sample_from(experiment, B)
-(cramer_rao_hat <- var(eic_experiment(obs)))
-```
 
-```{r cramer-rao-another-experiment}
-obs_another_experiment <- sample_from(another_experiment, B, h = 0)
-(cramer_rao_Pi_zero_hat <- var(eic_another_experiment(obs_another_experiment)))
-(ratio <- sqrt(cramer_rao_Pi_zero_hat/cramer_rao_hat))
-```
+## A fresh look at `another_experiment` {#revisiting}
 
-## Revisiting Section \@ref(smooth-first-pass) {#revisiting}
-
-It is  not difficult  (though cumbersome)  to verify that,  up to  a constant,
+It is not difficult (though cumbersome) to verify that, up to a constant,
 $\{\Pi_{h} :  h \in [-1,1]\}$ is  a fluctuation of $\Pi_{0}$  in the direction
-(in the sense of \eqref{eq:fluct}) of
+(in the sense of \@ref(eq:fluct)) of
 
 \begin{align*}\sigma_{0}(O)  &\equiv -  10  \sqrt{W}  A \times  \beta_{0}(A,W)
 \left(\log(1    -     Y)    +     \sum_{k=0}^{3}    \left(k     +    \beta_{0}
@@ -906,6 +922,24 @@ $\sigma_{0}$ with  `R` function `sigma0_run_another_experiment`, which  we use
 to  numerically   approximate  \eqref{eq:slope:Pi}   (pointwise  and   with  a
 confidence interval of asymptotic level 95\%):
 
+
+
+```{r cramer-rao}
+##
+## move around
+##
+obs <- sample_from(experiment, B)
+(cramer_rao_hat <- var(eic_experiment(obs)))
+```
+
+```{r cramer-rao-another-experiment}
+obs_another_experiment <- sample_from(another_experiment, B, h = 0)
+(cramer_rao_Pi_zero_hat <- var(eic_another_experiment(obs_another_experiment)))
+(ratio <- sqrt(cramer_rao_Pi_zero_hat/cramer_rao_hat))
+```
+
+
+
 ```{r recover-slope}
 vars <- eic_another_experiment(obs_another_experiment) *
   sigma0(obs_another_experiment)
@@ -917,36 +951,35 @@ sd_hat <- sd(vars)
 Equal to  `r round(slope_approx,  3)` (rounded to  three decimal  places), the
 first numerical approximation `slope_approx` is not too off.
 
-## &#9761; Influence functions and the efficient influence function {#influence-functions}
+## &#9761; \stixdanger{} Influence curves and the efficient influence curve {#influence-curves}
 
 If an estimator $\psi_n$ of $\Psi(P)$ can be written as 
 
-\begin{equation*}  \psi_n  =  \Psi(P) +  \frac{1}{n}\sum_{i=1}^n  \IF(O_i)  +
+\begin{equation*}  \psi_n  =  \Psi(P) +  \frac{1}{n}\sum_{i=1}^n  \IC(O_i)  +
 o_{P}(1/\sqrt{n})\end{equation*}
 
-for some function  $\IF : \calO \to  \bbR$ such that $\Exp_P(\IF(O))  = 0$ and
-$\Var_{P}(\IF(O))  < \infty$,  then we  say that  $\psi_n$ is  *asymptotically
-linear* with  *influence function*  $\IF$.  We note  that weak  convergence of
+for some function  $\IC : \calO \to  \bbR$ such that $\Exp_P(\IC(O))  = 0$ and
+$\Var_{P}(\IC(O))  < \infty$,  then we  say that  $\psi_n$ is  *asymptotically
+linear* with  *influence curve*  $\IC$.  We note  that weak  convergence of
 asymptotically linear estimators is implied by the central limit theorem. That
-is, if $\psi_n$  is asymptotically linear with influence  function $\IF$, then
-$\sqrt(n)  (\psi_n -  \Psi(P))  = \frac{1}{\sqrt{n}}  \sum_{i=1}^n \IF(O_i)  +
+is, if $\psi_n$  is asymptotically linear with influence  curve $\IC$, then
+$\sqrt(n)  (\psi_n -  \Psi(P))  = \frac{1}{\sqrt{n}}  \sum_{i=1}^n \IC(O_i)  +
 o_P(1)$. The central  limit theorem implies the  the right-hand-side converges
-in law to a centered Gaussian distribution with variance $\Var_P(\IF(O))$.
+in law to a centered Gaussian distribution with variance $\Var_P(\IC(O))$.
 
-As it happens,  influence functions of regular^[We can view  $\psi_{n}$ as the
+As it happens,  influence curves of regular^[We can view  $\psi_{n}$ as the
 by  product of  an  algorithm $\Psihat$  trained  on independent  observations
-$O_{1}$, \ldots, $O_{n}$ drawn from $P$.  We say that the estimator is regular
+$O_{1}, \ldots, O_{n}$  drawn from $P$.  We say that  the estimator is regular
 at $P$  if, for any direction  $s\neq 0$ such  that $\Exp_{P} (s(O)) =  0$ and
 $\Var_{P} (s(O))  < \infty$ and fluctuation  $\{P_{h} : h \in  H\}$ satisfying
-\eqref{eq:score},       the      estimator       $\psi_{n,1/\sqrt{n}}$      of
-$\Psi(P_{1/\sqrt{n}})$   obtained  by   training   $\Psihat$  on   independent
-observations $O_{1}$, \ldots, $O_{n}$ drawn from $P_{1/\sqrt{n}}$ is such that
-$\sqrt{n} (\psi_{n,1/\sqrt{n}} - \Psi(P_{1/\sqrt{n}}))$  converges in law to a
-limit that  does not  depend on  $s$.]  estimators  are intimately  related to
-gradients.  In fact, if $\psi_n$ is a regular, asymptotically linear estimator
-of $\Psi(P)$ with  influence function $\IF$, then it must  be true that $\Psi$
-is a smooth
-at $P$ and  that $\IF$  is a  gradient of $\Psi$  at $P$.  
+\@ref(eq:score), the estimator $\psi_{n,1/\sqrt{n}}$ of $\Psi(P_{1/\sqrt{n}})$
+obtained by  training $\Psihat$  on independent observations  $O_{1}$, \ldots,
+$O_{n}$    drawn    from    $P_{1/\sqrt{n}}$   is    such    that    $\sqrt{n}
+(\psi_{n,1/\sqrt{n}} - \Psi(P_{1/\sqrt{n}}))$ converges in law to a limit that
+does not depend on $s$.]  estimators  are intimately related to gradients.  In
+fact, if $\psi_n$  is a regular, asymptotically linear  estimator of $\Psi(P)$
+with influence curve $\IC$, then it must be true that $\Psi$ is a smooth
+at $P$ and  that $\IC$  is a  gradient of $\Psi$  at $P$.  
 
 These results, combined with the definition of the canonical gradient, imply that  
 if $\psi_{n}$ is a regular, asymptotically linear estimator of $\Psi(P)$ built
@@ -956,22 +989,13 @@ canonical         gradient          of         $\Psi$          at         $P$,
 \begin{equation}\label{eq:CR}\Var_{P}(D^{*}(P)(O))  . \end{equation}  That is,
 (\ref{eq:CR}) is  the lower bound on  the asymptotic variance of  any regular,
 asymptotically linear estimator of $\Psi(P)$. This bound is referred to as the
-\textit{Cramér-Rao bound}.  Any regular estimator that  achieves this variance
-bound  is said  to be  \textit{asymptotically  efficient} at  $P$. Since,  the
-canonical gradient  is the influence  function of an  asymptotically efficient
-estimator, it  is often referred to  as the *efficient influence  function* or
-the *efficient influence curve*.
+*Cramér-Rao bound*.  Any  regular estimator that achieves  this variance bound
+is  said  to be  *asymptotically  efficient*  at  $P$.  Since,  the  canonical
+gradient is the  influence curve of an  asymptotically efficient estimator,
+it  is  often  referred  to  as the  *efficient  influence  curve*.
 
-It is not difficult to check \tcg{(do  we give the proof?)} that the efficient
-influence function of  $\Psi$ at  $P \in  \calM$ can be written as $D^{*}(P)
-\equiv D_{1}^{*}  (P) +  D_{2}^{*} (P)$ where 
-\begin{equation} \label{eq:eif}
-\begin{aligned} D_{1}^{*}(P) (O)  &\equiv \Qbar(1,W)  - \Qbar(0,W)  - \Psi(P),\\
-D_{2}^{*}(P)     (O)     &\equiv      \frac{2A-1}{\ell\Gbar(A,W)}     (Y     -
-\Qbar(A,W)).\end{aligned}
-\end{equation}
 
-## &#9881; Cramér-Rao bounds {#exo-cramer-rao}
+## &#9881; \gear Cramér-Rao bounds {#exo-cramer-rao}
 
 1. Numerically approximate the Cramér-Rao bound at $P_{0}$ and at
    $\Pi_0$. With  a large  sample and  using regular  estimators, can  we more
@@ -987,10 +1011,10 @@ D_{2}^{*}(P)     (O)     &\equiv      \frac{2A-1}{\ell\Gbar(A,W)}     (Y     -
 
 In the last subsection, we learned that the stochastic behavior of a regular, 
 asymptotically linear estimator of $\Psi(P)$ can be characterized by its
-influence function. Moreover, we said that this influence function must in fact
+influence curve. Moreover, we said that this influence curve must in fact
 be a gradient of $\Psi$ at $P$. In this section, we show that the converse
 is also true: given a gradient $D^*$ of $\Psi$  at $P$, under regularity
-conditions, it is  possible to construct an estimator  with influence function
+conditions, it is  possible to construct an estimator  with influence curve
 equal to $D^*(P)$. This fact will suggest concrete strategies for generating efficient 
 estimators of smooth parameters. In this section, we take the first step towards 
 generating such estimators: linearizing the parameter. 
@@ -1021,7 +1045,7 @@ the notion that if $P$ is ``close''  to $P_0$ (i.e., $d(P,P_0)$ is small) then
 the linear approximation of $\Psi(P_0)$ is more accurate.
 
 The equations for  the definition of the parameter  (\ref{eq:psimap}), form of
-the  canonical   gradient  (\ref{eq:eif}),  and  linearization   of  parameter
+the  canonical   gradient  \@ref(eq:eif),   and  linearization   of  parameter
 (\ref{taylor_expansion})  combine to  determine  the remainder,  \begin{align}
 \Rem_{P_0}(P) &= \Psi(P) - \Psi(P_0) - (P_0 - P)D^*(P) \notag \\ &= \Exp_{P_0}
 \biggl[    \{\Gbar_0(W)    -     \Gbar(W)\}    \biggl\{\frac{\Qbar_0(1,W)    -
@@ -1034,7 +1058,7 @@ the  canonical   gradient  (\ref{eq:eif}),  and  linearization   of  parameter
 # e.g., using integrate and/or approximating with large sample
 ```
 
-## &#9881; The remainder term {#exo-remainder-term}
+## &#9881; \gear The remainder term {#exo-remainder-term}
 
 1.  [Pending  the  addition  of  above  method]  Use  the  available  code  to
    numerically confirm equation (\ref{taylor_expansion}) by approximating each
@@ -1043,7 +1067,7 @@ the  canonical   gradient  (\ref{eq:eif}),  and  linearization   of  parameter
 
 2. Compute $\Rem_{\Pi_0}(\Pi_h)$ for $h \in [-1,1]$ and plot your results.
 
-## &#9761; Double-robustness {#double-robustness}
+## &#9761; \stixdanger{} Double-robustness {#double-robustness}
 
 The  efficient influence  curve $D^{*}(P)$  at  $P \in  \calM$ enjoys  a rather
 remarkable property: it is double-robust.   Specifically, the remainder satisfies
@@ -1057,27 +1081,27 @@ In particular, if
 \begin{equation}\label{eq:solves:eic}     \Exp_{P}    (D^{*}(P')     (O))    =
 0,\end{equation}
 
-and  \textit{either}  $\Qbar' =  \Qbar$  \textit{or}  $\Gbar' =  \Gbar$,  then
-$\Rem_{P} (\Qbar', \Gbar') = 0$ hence $\Psi(P') = \Psi(P)$.  In words, if $P'$
-solves  the   so  called  $P$-specific  efficient   influence  curve  equation
-\eqref{eq:solves:eic} and if, in addition, $P'$ has the same $\Qbar$-component
-or $\Gbar$-component as $P$, then $\Psi(P')  = \Psi(P)$ no matter how $P'$ may
-differ  from  $P$ otherwise.  This  property  is  useful to  build  consistent
-estimators of $\Psi(P)$.
+and *either* $\Qbar'  = \Qbar$ *or* $\Gbar' = \Gbar$,  then $\Rem_{P} (\Qbar',
+\Gbar') =  0$ hence  $\Psi(P') = \Psi(P)$.   In words, if  $P'$ solves  the so
+called $P$-specific  efficient influence curve  equation \eqref{eq:solves:eic}
+and if, in addition, $P'$  has the same $\Qbar$-component or $\Gbar$-component
+as $P$,  then $\Psi(P')  = \Psi(P)$  no matter  how $P'$  may differ  from $P$
+otherwise.   This  property  is  useful  to  build  consistent  estimators  of
+$\Psi(P)$.
 
-## &#9881; Double-robustness {#exo-double-robustness}
+## &#9881; \gear Double-robustness {#exo-double-robustness}
 
-Confirm the double-robustness of the efficient influence function by doing the following:
+Confirm the double-robustness of the efficient influence curve by doing the following:
 
 1. \tcg{Will modify  to reflect the final structure of  `LAW` methods, etc...}
    Replace `Gbar` in the law of  `experiment` with some other function of $W$,
    and confirm  (via numerical approximation)  that the mean of  the efficient
-   influence function is zero. Repeat for several choices of `Gbar`.
+   influence curve is zero. Repeat for several choices of `Gbar`.
 
 2. \tcg{Will modify  to reflect the final structure of  `LAW` methods, etc...}
    Replace `Qbar` in the law of  `experiment` with some other function of $W$,
    and confirm  (via numerical approximation)  that the mean of  the efficient
-   influence function is zero. Repeat for several choices of `Gbar`.
+   influence curve is zero. Repeat for several choices of `Gbar`.
 
 # Inference {#inference}
 
@@ -1099,7 +1123,7 @@ consistent with the notation?}
 
 Each of  the strategies  we discuss be  described in two  steps. In  the first
 step, we obtain estimators of the quantities relevant to evaluating the target
-parameter and  its efficient influence  function. Because estimation  of these
+parameter and  its efficient influence  curve. Because estimation  of these
 quantities is merely  an intermediate step along our path  towards an estimate
 of  the  target   parameter,  we  refer  to  these   quantities  as  *nuisance
 parameters*. In  the second step,  we combine  the estimators of  the nuisance
@@ -1190,11 +1214,11 @@ nuisance parameter)  as an algorithm  $\hat{Q}: \calM \rightarrow  \calQ$ that
 maps a distribution from the model  into the nuisance parameter space. In this
 case, $\calQ$ consists of all functions mapping from $\{0,1\} \times [0,1]$ to
 $\bbR$. We can be our estimate $\Qbar_n$ as the algorithm $\hat{Q}$ applied on
-$P_{n}$, the empirical  measure, \textit{i.e.}, the law  consisting in drawing
-one among $O_{1}$, \ldots, $O_{n}$ with equal probabilities $n^{-1}$. Thus, we
-can write $\Qbar_n = \hat{Q}(P_n)$.
+$P_{n}$,  the empirical  measure, *i.e.*,  the law  consisting in  drawing one
+among $O_{1}$, \ldots, $O_{n}$ with equal probabilities $n^{-1}$. Thus, we can
+write $\Qbar_n = \hat{Q}(P_n)$.
 
-## &#9881; Algorithms {#exo-algorithms}
+## &#9881; \gear Algorithms {#exo-algorithms}
 
 1. \tcg{Depending on how above goes,  define your own algorithm for estimating
    $\Gbar_0$ and/or $\Qbar_0$?}
@@ -1254,7 +1278,7 @@ not disappearing faster than $n^{-1/2}$. Thus, the center point of the sampling 
 In the next subsection, we analyze the plug-in estimator to understand the source
 of this poor behavior. 
 
-## &#9881; Plug-in estimate {#exo-plug-in-estimate}
+## &#9881; \gear Plug-in estimate {#exo-plug-in-estimate}
 
 1. Evaluate the plug-in estimate,  if, rather than the empirical distribution,
    we used  a maximum likelihood  estimator of $Q_{0,W}$ under  the assumption
@@ -1265,7 +1289,7 @@ of this poor behavior.
    subsection, let's now have them use it to repeat our simulation and compute
    the G-comp estimator based on this.}
 
-### &#9761; Analysis of plug-in estimator. \label{subsec:analysis-of-plug-in}
+### &#9761; \stixdanger{} Analysis of plug-in estimator. \label{subsec:analysis-of-plug-in}
 
 
 In view of our estimators of $\Qbar_0$ and $\Gbar_0$ as algorithms that map from a 
@@ -1345,7 +1369,7 @@ that \[
 In other words, under the regularity conditions introduced in the previous subsection, the corrected plug-in estimator \[
   \psi_n^{+} \equiv \Psi(\hat{P}_n) + \frac{1}{n} \sum_{i=1}^n D^*(\hat{P}_n)(O_i)
 \]
-is an asymptotically linear estimator with influence function equal to D^*(P_0). That is 
+is an asymptotically linear estimator with influence curve equal to D^*(P_0). That is 
 to say, in light of section \ref{subsec:parameter:third}, $\psi_n^{+}$ is an *asymptotically efficient* estimate of $\psi_0$!
 
 This simple strategy for generating asymptotically linear and efficient estimators 
@@ -1378,7 +1402,7 @@ center Gaussian variate with unit variance.
 
 ```
 
-## &#9761; Targeted minimum loss-based estimation {#TMLE}
+## &#9761; \stixdanger{} Targeted minimum loss-based estimation {#TMLE}
 
 In the previous section, we introduced the one-step corrected estimator of
 $\psi_0$. This estimator added a correction term to the plug-in estimator, 
@@ -1395,7 +1419,7 @@ parameter space for $\psi_0$. That is, our plug-in estimate of $\psi_0$ is guara
 its very construction be between -1 and 1. However, the one-step estimate adds 
 an additional term to the plug-in and therefore may result in an estimate of $\psi_0$ 
 that is outside its parameter space. Upon closer examination of the efficient influence
-function $D^*$, we see that this may occur more frequently when $\ell \Gbar_n(A_i,W_i)$ is 
+curve $D^*$, we see that this may occur more frequently when $\ell \Gbar_n(A_i,W_i)$ is 
 close to zero for at least some $i$. In words, if there are observations in our 
 data set that we observed under actions $A_i$ that were estimated to be unlikely given the context $W_i$. In such cases, $D^*(\hat{P}_n)(O_i)$, and consequently the one-step 
 correction term, may be large and cause the one-step estimate to fall outside the parameter
@@ -1548,7 +1572,7 @@ we arrive a *targeted* estimate of the nuisance parameters. In the present probl
 examined explicitly this loss-minimization in Figures \tcg{X and Y}. The resultant estimate 
 generated by the loss-minimzation procedure should be *no worse* an estimate of its true 
 target than the initial estimate, but has been additionally endowed with the property that it 
-solves the efficient influence function equation. 
+solves the efficient influence curve equation. 
 
 Assuming that the regularity conditions discussed in Section \ref{subsec:analysis-of-plug-in}
 are satisfied for $\Qbar_{n,\epsilon_n}$, then by (\ref{pre_one_step}), \[
@@ -1616,11 +1640,11 @@ can    be    consistently    estimated   by    its    empirical    counterpart
 \psi_{n}^{b}\right)^{2}.\end{equation}
 
 Let us investigate how $\psi_{n}^{b}$ behaves  based on `obs`.  Because we are
-interested  in the  \textit{law} of  $\psi_{n}^{b}$,  the next  chunk of  code
-constitutes `iter =` `r iter`  independent samples of independent observations
-drawn from $P_{0}$, each consisting of $n$ equal to `nrow(obs)/iter =` 
-`r nrow(obs) / iter` data points, and computes the realization of $\psi_{n}^{b}$
-on all samples.
+interested in the *law* of $\psi_{n}^{b}$,  the next chunk of code constitutes
+`iter =` `r  iter` independent samples of independent  observations drawn from
+$P_{0}$, each  consisting of $n$  equal to  `nrow(obs)/iter =` `r  nrow(obs) /
+iter`  data points,  and computes  the  realization of  $\psi_{n}^{b}$ on  all
+samples.
 
 Before  proceeding,   let  us  introduce   \begin{align*}\psi_{n}^{a}  &\equiv
 \Exp_{P_{n}} \left(Y  | A=1\right) -  \Exp_{P_{n}} \left(Y | A=0\right)  \\ &=
@@ -1695,10 +1719,10 @@ estimator of $\ell\Gbar_{0}$ for $\ell\Gbar_{0}$ in \eqref{eq:psi:n:b}.
 For  simplicity,  we  consider  the  case that  $\Gbar_{0}$  is  estimated  by
 minimizing   a   loss    function   on   a   single    working   model,   both
 fine-tune-parameter-free.   By adopting  this  stance,  we exclude  estimating
-procedures that involve penalization  (\textit{e.g.} the LASSO) or aggregation
-of competing estimators (\textit{via}  stacking/super learning) -- see Section
+procedures  that involve  penalization (*e.g.*  the LASSO)  or aggregation  of
+competing   estimators  (*via*   stacking/super  learning)   --  see   Section
 \@ref(subsec:exo:one).   Defined  in  the  next chunk  of  code,  the  generic
-function `estimate_Gbar`  fits a user-specified  working model by  minimizing the
+function `estimate_Gbar` fits a user-specified working model by minimizing the
 empirical risk  associated to  the user-specified  loss function  and provided
 data.
 
@@ -1731,8 +1755,8 @@ data.
 
 Note how the  prediction of any $\ell\Gbar_{0}(A,W)$ is  manually bounded away
 from 0 and 1 at the last  but one line of `compute_lGhatAW`. This is desirable
-because the  \textit{inverse} of each $\ell\Gbar_{0}(A_{i},W_{i})$  appears in
-the definition of $\psi_{n}^{b}$ \eqref{eq:psi:n:b}.
+because  the *inverse*  of  each $\ell\Gbar_{0}(A_{i},W_{i})$  appears in  the
+definition of $\psi_{n}^{b}$ \eqref{eq:psi:n:b}.
 
 For sake of illustration, we choose argument `working_model_G_one` of function
 `estimate_Gbar` as follows:
@@ -1834,7 +1858,7 @@ Figures \@ref(fig:unknown-Gbar-three)  and \@ref(fig:unknown-Gbar-four) reveal
 that $\psi_{n}^{c}$ behaves as well as $\psi_{n}^{b}$ --- but remember that we
 did not discuss how to estimate its asymptotic variance.
 
-## &#9881; A nice title... {#exo-a-nice-title}
+## &#9881; \gear A nice title... {#exo-a-nice-title}
 
 1. Compute a numerical approximation of $\Exp_{P_{0}} (Y | A=1) - \Exp_{P_{0}}
 (Y  | A=0)$.  How accurate  is it?  \tcg{I would  perhaps suggest  moving this
@@ -1896,7 +1920,7 @@ attr(working_model_G_three, "ML") <- FALSE
 (working_model_G_three$formula)
 ```
 
-6.   &#9761;  Drawing inspiration  from \eqref{eq:v:n:b}, one  may consider
+6.  &#9761; \stixdanger{} Drawing inspiration from \eqref{eq:v:n:b}, one may consider
 estimating the asymptotic  variance of $\psi_{n}^{c}$ with  the counterpart of
 $v_{n}^{b}$ obtained  by substituting  $\ell\Gbar_{n}$ for  $\ell\Gbar_{0}$ in
 \eqref{eq:v:n:b}.   By adapting  the piece  of  code devoted  to the  repeated
@@ -2195,7 +2219,7 @@ eic_hat <- function(obs, Qhat, Ghat, psi_hat) {
 ```
 
 We  first call  function  `eic_hat` to  compute the  values  of the  estimated
-efficient influence  at the observations  in `obs`. Constructing  the one-step
+efficient influence curve at the observations  in `obs`. Constructing  the one-step
 estimators is then straightforward.
 
 (ref:one-step-two) Write caption.
@@ -2266,17 +2290,17 @@ psi_hat_de %>%
                       mse = mean((est - psi_approx)^2) * n()))
 ```
 
-The `sd`  (\textit{estimator} of the  asymptotic standard deviation)  and `se`
-(\textit{empirical} standard deviation) entries for type `d_one_step` are very
+The  `sd`  (*estimator*  of  the   asymptotic  standard  deviation)  and  `se`
+(*empirical*  standard  deviation)  entries  for type  `d_one_step`  are  very
 similar: this indicates  that the inference of the asymptotic  variance of the
-`d`-variant  of the  one-step estimator  based  on the  influence function  is
-accurate.   \textit{This  comes as  a  surprise,  since theory  suggests  that
-estimation should be conservative, that  is, that the estimator should produce
-an  upper bound  to the  actual asymptotic  variance.}  On  the contrary,  the
-influence function-based estimator of the  asymptotic variance is clearly very
+`d`-variant  of the  one-step estimator  based  on the  influence curve  is
+accurate.  *This  comes as a  surprise, since theory suggests  that estimation
+should be  conservative, that is, that  the estimator should produce  an upper
+bound  to the  actual asymptotic  variance.*  On the  contrary, the  influence
+curve-based  estimator   of  the   asymptotic  variance  is   clearly  very
 conservative  for type  `e_one-step`.  As  for the  mean square  error, it  is
-diminished by  the one-step  update for  type `d` and  enlarged for  type `e`,
-the `d_one_step` estimator exhibiting the smallest mean square error.
+diminished by the one-step update for type  `d` and enlarged for type `e`, the
+`d_one_step` estimator exhibiting the smallest mean square error.
 
 ## Targeted inference {#targeted-inference}
 
