@@ -578,7 +578,7 @@ We        now        resume        the       exercize        of        Section
 features $q_{0,Y}$  and $Q_{0,Y}$.  Specifically, we  define $q_{Y}(y,A,W)$ to
 be the conditional density of $Y$ given $A$ and $W$, evaluated at $y$, that is
 implied by a generic  $P \in \calM$.  Similarly, we use  $Q_{Y}$ to denote the
-corresponding cumulative distribution function.  
+corresponding cumulative distribution function. 
 
 The  covariate-adjusted $c$-th  quantile reward  for action  $a \in  \{0,1\}$,
 $\gamma_{0,a,c}$ \@ref(eq:def-quantile), may be viewed as the value at $P_{0}$
@@ -647,11 +647,11 @@ We return to these ideas in later sections.
 \left\{z \in ]0,1[  : \int \frac{\one\{a =  a'\}}{\ell\Gbar(a',W)} \one\{y \le
 z\} dP_0(w,a,y) \ge c \right\}.\end{equation*}
 
-# Being smooth {#smooth}
+# Smoothness {#smooth}
 
 
 
-## Fluctuations, smoothness and `another_experiment` {#smooth-first-pass}
+## Fluctuating  smoothly {#smooth-first-pass}
 
 Within our view of the target  parameter as a statistical mapping evaluated at
 the  law of  the  experiment, it  is  natural to  inquire  of properties  this
@@ -719,8 +719,7 @@ approximates the  derivative of  the parameter along  the submodel  $\calP$ at
 $\Pi_0$. Recall that  the numerical value of $\Psi(\Pi_{0})$  has already been
 computed and is stored in object `psi_Pi_zero`.
 
-(ref:psi-approx-psi-one)  Evolution   of  statistical  mapping   $\Psi$  along
-fluctuation $\{\Pi_{h} : h \in H\}$.
+(ref:psi-approx-psi-one) Evolution of statistical mapping $\Psi$ along fluctuation $\{\Pi_{h} : h \in H\}$.
 
 ```{r psi-approx-psi-one, fig.cap = '(ref:psi-approx-psi-one)'}
 approx <- seq(-1, 1, length.out = 1e2)
@@ -895,32 +894,77 @@ next chunk of code does:
 (eic_experiment(five_obs))
 ```
 
+Finally, the  efficient influence curve can  be visualized as two  images that
+represent $(w,y) \mapsto D^{*}(P_{0})(w,a,y)$ for $a = 0,1$, respectively:
+
+(ref:eic-three) Visualizing the efficient influence curve $D^{*}(P_{0})$ of $\Psi$ \@ref(eq:psimap) at $P_{0}$, the law described by `experiment`. 
+
+```{r eic-three, out.width = '80%', fig.cap = '(ref:eic-three)'}
+crossing(w = seq(0, 1, length.out = 2e2),
+	 a = c(0, 1),
+	 y = seq(0, 1, length.out = 2e2)) %>%
+  mutate(eic = eic_experiment(cbind(Y=y,A=a,W=w))) %>%
+  ggplot(aes(x = w, y = y, fill = eic)) +
+  geom_raster(interpolate = TRUE) +
+  geom_contour(aes(z = eic), color = "white") +
+  facet_wrap(~ a, nrow = 1,
+             labeller = as_labeller(c(`0` = "a = 0", `1` = "a = 1"))) +
+  labs(fill = expression(paste(D^"*", (P[0])(w,a,y))))
+```
 
 ## A fresh look at `another_experiment` {#revisiting}
+
+We can give a fresh look at Section \@ref(numerical-illus) now.
+
+### Deriving the efficient influence curve
 
 It is not difficult (though cumbersome) to verify that, up to a constant,
 $\{\Pi_{h} :  h \in [-1,1]\}$ is  a fluctuation of $\Pi_{0}$  in the direction
 (in the sense of \@ref(eq:fluct)) of
 
-\begin{align*}\sigma_{0}(O)  &\equiv -  10  \sqrt{W}  A \times  \beta_{0}(A,W)
+\begin{align}\sigma_{0}(O)  &\equiv -  10  \sqrt{W}  A \times  \beta_{0}(A,W)
 \left(\log(1    -     Y)    +     \sum_{k=0}^{3}    \left(k     +    \beta_{0}
 (A,W)\right)^{-1}\right)     +      \text{constant},\\     \text{where}     \;
 \beta_{0}(A,W)&\equiv                                                  \frac{1
--\Qbar_{\Pi_{0}}(A,W)}{\Qbar_{\Pi_{0}}(A,W)}.\end{align*}
+-\Qbar_{\Pi_{0}}(A,W)}{\Qbar_{\Pi_{0}}(A,W)}. (\#eq:sigma0)\end{align}
 
 Consequently,    the    slope    of     the    dotted    curve    in    Figure
 \@ref(fig:psi-approx-psi-one) is equal to 
 
-\begin{equation}\label{eq:slope:Pi}\Exp_{\Pi_{0}}      (D^{*}(\Pi_{0})     (O)
-\sigma_{0}(O))\end{equation}
+\begin{equation}
+\Exp_{\Pi_{0}} (D^{*}(\Pi_{0}) (O) \sigma_{0}(O)). (\#eq:slope-Pi)
+\end{equation}
 
-(since $D^{*}(\Pi_{0})$  is centered under $\Pi_{0}$,  knowing $\sigma_{0}$ up
-to a constant is not problematic). 
+Since $D^{*}(\Pi_{0})$  is centered under $\Pi_{0}$,  knowing $\sigma_{0}$ up
+to a constant is not problematic.
 
-In the following code, we check this numerically by implementing the direction
-$\sigma_{0}$ with  `R` function `sigma0_run_another_experiment`, which  we use
-to  numerically   approximate  \eqref{eq:slope:Pi}   (pointwise  and   with  a
-confidence interval of asymptotic level 95\%):
+### Numerical validation
+
+In  the following  code, we  check the  above fact  numerically.  When  we ran
+`example(tlrider)`, we  created a  function `sigma0`. The  function implements
+$\sigma_{0}$ defined in \@ref(eq:sigma0):
+
+```{r, sigma0}
+sigma0
+```
+
+The next chunk of code approximates
+\@ref(eq:slope-Pi)  pointwise and  with  a confidence  interval of  asymptotic
+level 95\%:
+
+```{r recover-slope}
+eic_another_experiment <- evaluate_eic(another_experiment, h = 0)
+obs_another_experiment <- sample_from(another_experiment, B, h = 0)
+vars <- eic_another_experiment(obs_another_experiment) *
+  sigma0(obs_another_experiment)
+
+sd_hat <- sd(vars)
+(slope_hat <- mean(vars))
+(slope_CI <- slope_hat + c(-1, 1) * qnorm(1 - alpha / 2) * sd_hat / sqrt(B))
+```
+
+Equal to  `r round(slope_approx,  3)` (rounded to  three decimal  places), the
+first numerical approximation `slope_approx` is not too off!
 
 
 
@@ -940,18 +984,8 @@ obs_another_experiment <- sample_from(another_experiment, B, h = 0)
 
 
 
-```{r recover-slope}
-vars <- eic_another_experiment(obs_another_experiment) *
-  sigma0(obs_another_experiment)
-sd_hat <- sd(vars)
-(slope_hat <- mean(vars))
-(slope_CI <- slope_hat + c(-1, 1) * qnorm(1 - alpha / 2) * sd_hat / sqrt(B))
-```
 
-Equal to  `r round(slope_approx,  3)` (rounded to  three decimal  places), the
-first numerical approximation `slope_approx` is not too off.
-
-## &#9761; \stixdanger{} Influence curves and the efficient influence curve {#influence-curves}
+## &#9761; \stixdanger{} Asymptotic linearity and statistical efficiency {#influence-curves}
 
 If an estimator $\psi_n$ of $\Psi(P)$ can be written as 
 
