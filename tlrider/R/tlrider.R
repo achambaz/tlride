@@ -53,7 +53,8 @@
 #'       Qbar =  function(AW) {
 #'         A <- AW[, "A"]
 #'         W <- AW[, "W"]
-#'         A * (cos((-1/2 + W) * pi) * 2/5 + 1/5 + (1/3 <= W & W <= 1/2) / 5 +
+#'         A * (cos((-1/2 + W) * pi) * 2/5 + 1/5 +
+#'              (1/3 <= W & W <= 1/2) / 5 +
 #'              (W >= 3/4) * (W - 3/4) * 2) +
 #'           (1 - A) * (sin(4 * W^2 * pi) / 4 + 1/2) 
 #'       },
@@ -64,7 +65,9 @@
 #'         out <- sapply(1:length(mixture_weights),
 #'                       function(ii){
 #'                         mixture_weights[ii] *
-#'                           stats::dunif(W, min = mins[ii], max = maxs[ii])
+#'                           stats::dunif(W,
+#'                                        min = mins[ii],
+#'                                        max = maxs[ii])
 #'                       })
 #'         return(rowSums(out))
 #'       },
@@ -73,7 +76,9 @@
 #'         AW <- obs[, c("A", "W")]
 #'         QAW <- Qbar(AW)
 #'         shape1 <- ifelse(A == 0, shape10, shape11)
-#'         stats::dbeta(Y, shape1 = shape1, shape2 = shape1 * (1 - QAW) / QAW)
+#'         stats::dbeta(Y,
+#'                      shape1 = shape1,
+#'                      shape2 = shape1 * (1 - QAW) / QAW)
 #'       },
 #'       sample_from = function(n, ideal = FALSE) {
 #'         ## preliminary
@@ -95,8 +100,12 @@
 #'         oneW <- cbind(A = 1, W)
 #'         Qbar_zeroW <- Qbar(zeroW)
 #'         Qbar_oneW <- Qbar(oneW)
-#'         Yzero <- stats::rbeta(n, shape1 = 2, shape2 = 2 * (1 - Qbar_zeroW) / Qbar_zeroW)
-#'         Yone <- stats::rbeta(n, shape1 = 3, shape2 = 3 * (1 - Qbar_oneW) / Qbar_oneW)
+#'         Yzero <- stats::rbeta(n,
+#'                               shape1 = 2,
+#'                               shape2 = 2 * (1 - Qbar_zeroW) / Qbar_zeroW)
+#'         Yone <- stats::rbeta(n,
+#'                              shape1 = 3,
+#'                              shape2 = 3 * (1 - Qbar_oneW) / Qbar_oneW)
 #'         ## ## action undertaken
 #'         A <- stats::rbinom(n, size = 1, prob = Gbar(W))
 #'         ## ## actual reward
@@ -127,11 +136,15 @@
 #'         expit( logit( A *  W + (1 - A) * W^2 ) +
 #'                h * 10 * sqrt(W) * A )
 #'       },
-#'       QW = function(x, min = 1/10, max = 9/10){stats::dunif(x, min = min, max = max)},
+#'       QW = function(x, min = 1/10, max = 9/10){
+#'              stats::dunif(x, min = min, max = max)
+#'       },
 #'       qY = function(obs, Qbar, shape1 = 4){
 #'         AW <- obs[, c("A", "W")]
 #'         QAW <- Qbar(AW)
-#'         stats::gdbeta(Y, shape1 = shape1, shape2 = shape1 * (1 - QAW) / QAW)
+#'         stats::gdbeta(Y,
+#'                       shape1 = shape1,
+#'                       shape2 = shape1 * (1 - QAW) / QAW)
 #'       },
 #'       sample_from = function(n, h) {
 #'         ## preliminary
@@ -151,7 +164,9 @@
 #'         params <- formals(another_experiment$.qY)
 #'         shape1 <- eval(params$shape1)
 #'         QAW <- Qbar(cbind(A = A, W = W), h = h)
-#'         Y <- stats::rbeta(n, shape1 = shape1, shape2 = shape1 * (1 - QAW) / QAW)
+#'         Y <- stats::rbeta(n,
+#'                           shape1 = shape1,
+#'                           shape2 = shape1 * (1 - QAW) / QAW)
 #'         ## ## observation
 #'         obs <- cbind(W = W, A = A, Y = Y)
 #'         return(obs)
@@ -178,7 +193,8 @@
 #'   for (int in 1:shape1) {
 #'     out <- out + 1/(int - 1 + betaAW)
 #'   }
-#'   out <- - out * shape1 * (1 - QAW) / QAW * 10 * sqrt(obs[, "W"]) * obs[, "A"]
+#'   out <- - out * shape1 * (1 - QAW) / QAW *
+#'            10 * sqrt(obs[, "W"]) * obs[, "A"]
 #'   ## no need to center given how we will use it
 #'   return(out)
 #'  }

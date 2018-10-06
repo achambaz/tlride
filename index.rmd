@@ -8,6 +8,9 @@ encoding: "UTF-8"
 github-repo: achambaz/tlride
 site: bookdown::bookdown_site
 documentclass: book
+geometry: "textwidth=6in,textheight=8in"
+classoption: "openright,twoside"
+fontsize: 11pt
 bibliography: "bibliography.bib"
 link-citation: true
 cover-image: "cover.jpg"
@@ -15,15 +18,12 @@ favicon: "favicon.png"
 ---
 
 
-
-
-
 # Welcome {-} 
 
-This is the website for __"A Ride in Targeted Learning Territory"__.
+This is the website/text called __"A Ride in Targeted Learning Territory"__.
 
 
-```{r cover, fig.width = 6, echo = FALSE}
+```{r cover, fig.width = 7, echo = FALSE}
 knitr::include_graphics("cover.jpg")
 ```
 
@@ -65,7 +65,7 @@ __Technical details__
 
 The  text   is  written  in   [RMarkdown](https://rmarkdown.rstudio.com)  with
 [bookdown](https://bookdown.org).           Assuming         that          the
-[knitr](https://yihui.name/knitr/) package is installed,  you can retrieve all
+[`knitr`](https://yihui.name/knitr/) package is installed,  you can retrieve all
 the R code by running
 
 ```{r extract, eval = FALSE}

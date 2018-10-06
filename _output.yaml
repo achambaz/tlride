@@ -2,6 +2,7 @@ bookdown::gitbook:
   lib_dir: assets
   split_by: chapter+number
   config:
+    sharing: null
     toc:
       collapse: section
       scroll_hightlight: yes
@@ -17,17 +18,18 @@ bookdown::gitbook:
         family: sans
         size: 2
   includes:
-    before_body: abcd_header.html
+    before_body: tlride_header.html
     in_header: mathjax_number.html
-    sharing: null
   css: tlride.css
+  mathjax: "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML"
 
 bookdown::pdf_book:
   toc: true
   toc_depth: 2
   number_sections: true
   includes:
-    in_header: abcd_header.tex
+    in_header: tlride_header.tex
+    before_body: tlride_before_body.tex
   latex_engine: xelatex
   citation_package: natbib
 
@@ -36,7 +38,7 @@ bookdown::pdf_document2:
   toc_depth: 2
   number_sections: true
   includes:
-    in_header: abcd_header.tex
+    in_header: tlride_header.tex
   latex_engine: pdflatex
   citation_package: natbib
 
@@ -45,6 +47,6 @@ bookdown::tufte_book2:
   toc_depth: 2
   number_sections: true
   includes:
-    in_header: abcd_header.tex
+    in_header: tlride_header.tex
   latex_engine: pdflatex
   citation_package: natbib

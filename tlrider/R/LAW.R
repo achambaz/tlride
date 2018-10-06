@@ -642,6 +642,9 @@ evaluate_remainder <- function(this, that, params = NULL) {
       params_A <- params[[1]]
       params_B <- params[[2]]
     }
+  } else {
+      params_A <- NULL
+      params_B <- NULL
   }
   some_relevant_features_A <- reveal(this)
   some_relevant_features_B <- reveal(that)

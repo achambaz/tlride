@@ -1,3 +1,24 @@
+```{r include=FALSE, cache=FALSE}
+options(digits = 3)
+
+knitr::opts_chunk$set(
+  comment = "#>",
+  collapse = TRUE,
+  cache = TRUE,
+  out.width = "70%",
+  fig.align = 'center',
+  fig.width = 6, # used to have: fig.width = 12,
+  fig.asp = 0.618, # used to have: fig.height = 4, 
+  fig.show = "hold",
+  fig.path = 'img/',
+  size = "tiny",
+  message = FALSE,
+  warning = FALSE,
+  warnings = FALSE
+)
+
+options(dplyr.print_min = 6, dplyr.print_max = 6)
+```
 # Basic results and their proofs {#proofs}
 
 ## NPSEM {#npsem}
@@ -114,22 +135,32 @@ a\}}{\ell\Gbar_{0}(a,W)}  \Qbar_{0}(a, W)  \middle|  W \right)  \right) \\&  =
 \Exp_{P_{0}}\left(\frac{\ell\Gbar_{0}(a,W)}{\ell\Gbar_{0}(a,W)}   \Qbar_{0}(a,
 W)  \middle| W  \right) \\&  =  \Exp_{P_{0}} \left(  \Qbar_{0}(a, W)  \right),
 \end{align*}  where the  first, fourth  and sixth  equalities follow  from the
-tower rule,  and the second  and fifth hold  by definition of  the conditional
-expectation. This completes the proof.
+tower  rule^[For  any  random  variable  $(U,V)$  such  that  $\Exp(U|V)$  and
+$\Exp(U)$ are well  defined, it holds that $\Exp(\Exp(U|V))  = \Exp(U)$.], and
+the second and fifth hold by  definition of the conditional expectation.  This
+completes the proof.
+
+
+
 
 ## Asymptotic negligibility of the remainder term {#asymp-neglig-remain}
 
-For any measurable function $f:\calO \to \bbR$, we denote the $L_2(P)$-norm of
-$f$ by $\|f\|_{P} \equiv \Exp_{P} \left( f(O)^{2} \right)^{1/2}$.  Assume that
-for $a= 0,1$, $\ell\Gbar_{n}(a,W) >  \delta$ almost everywhere $Q_{0,W}$. Then
-the    Cauchy-Schwarz   inequality    implies    that   for    $a   =    0,1$,
-\begin{equation*}\Rem_{P_0}(\hat{P}_n) \le \frac{2}{\delta} \text{max}_{a=0,1}
+Recall that  $\|f\|_{P}^{2} \equiv  \Exp_{P} \left(  f(O)^{2} \right)$  is the
+$L_2(P)$-norm of  $f$, a measurable  function from $\calO$ to  $\bbR$.  Assume
+that  for $a=  0,1$,  $\ell\Gbar_{n}(a,W) \geq  \delta  > 0$  $Q_{0,W}$-almost
+everywhere.
+
+The   Cauchy-Schwarz  inequality   then   implies  that,   for   $a  =   0,1$,
+\begin{equation*}\Rem_{P_0}(\hat{P}_n)   \le   \frac{2}{\delta}   \max_{a=0,1}
 \left(  \|\Qbar_n   (a,\cdot)  -  \Qbar_0  (a,\cdot)\|_{P_0}   \right)  \times
 \|\Gbar_n  -   \Gbar_0\|_{P_0}.\end{equation*}  Therefore,  if   for  $a=0,1$,
 \begin{equation*}\|\Qbar_n(a,\cdot)      -     \Qbar_0(a,\cdot)\|_{P_0}      =
-o_{P_0}(n^{-1/4})\end{equation*}     and      \begin{equation*}\|\Gbar_n     -
-\Gbar_0\|_{P_0}         =        o_{P_0}(n^{-1/4})\end{equation*}         then
+o_{P_0}(n^{-1/4})\end{equation*}     *and*    \begin{equation*}\|\Gbar_n     -
+\Gbar_0\|_{P_0}        =         o_{P_0}(n^{-1/4}),\end{equation*}        then
 \begin{equation*}\Rem_{P_0}(\hat{P}_n) = o_{P_0}(n^{-1/2}).\end{equation*}
 
+
+
 `r if (knitr::is_html_output()) '# References'`
+   
    

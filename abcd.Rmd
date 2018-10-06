@@ -1,3 +1,45 @@
+```{r include=FALSE, cache=FALSE}
+options(digits = 3)
+
+knitr::opts_chunk$set(
+  comment = "#>",
+  collapse = TRUE,
+  cache = TRUE,
+  out.width = "70%",
+  fig.align = 'center',
+  fig.width = 6, # used to have: fig.width = 12,
+  fig.asp = 0.618, # used to have: fig.height = 4, 
+  fig.show = "hold",
+  fig.path = 'img/',
+  size = "tiny",
+  message = FALSE,
+  warning = FALSE,
+  warnings = FALSE
+)
+
+options(dplyr.print_min = 6, dplyr.print_max = 6)
+```
+```{r include=FALSE, cache=FALSE}
+options(digits = 3)
+
+knitr::opts_chunk$set(
+  comment = "#>",
+  collapse = TRUE,
+  cache = TRUE,
+  out.width = "70%",
+  fig.align = 'center',
+  fig.width = 6, # used to have: fig.width = 12,
+  fig.asp = 0.618, # used to have: fig.height = 4, 
+  fig.show = "hold",
+  fig.path = 'img/',
+  size = "tiny",
+  message = FALSE,
+  warning = FALSE,
+  warnings = FALSE
+)
+
+options(dplyr.print_min = 6, dplyr.print_max = 6)
+```
 # A ride
 
 
@@ -47,30 +89,7 @@ library(tlrider)
 ### What we will discuss {#discuss}
 
 ...
-
-### To remove at a later stage {#remove}
-
-```{r redo}
-redo_fixed <- c(TRUE, FALSE)[1]
-redo_varying <- c(TRUE, FALSE)[1]
-## if  'redo_$'  then  recompute  'learned_features_$_sample_size',  otherwise
-## upload it if it is not already in the environment.
-if (!redo_fixed) {
-  if (!exists("learned_features_fixed_sample_size")) {
-    learned_features_fixed_sample_size <-
-      load("../tmle-applique/data/learned_features_fixed_sample_size_new.xdr")
-  }
-}
-if (!redo_varying) {
-  if (!exists("learned_features_varying_sample_size")) {
-    learned_features_varying_sample_size <-
-      load("../tmle-applique/data/learned_features_varying_sample_size_new.xdr")
-  }
-} 
-```
-
-
-
+ 
 ## A simulation study {#simulation-study}
 
 
@@ -433,7 +452,8 @@ build such an interval as follows.
 ```{r approx-psi-zero-b}
 sd_approx <- sd(ideal_obs[, "Yone"] - ideal_obs[, "Yzero"])
 alpha <- 0.05
-(psi_approx_CI <- psi_approx + c(-1, 1) * qnorm(1 - alpha / 2) * sd_approx / sqrt(B))
+(psi_approx_CI <- psi_approx + c(-1, 1) *
+   qnorm(1 - alpha / 2) * sd_approx / sqrt(B))
 ```
 
 We note that the interpretation of this confidence interval is that in 95\% of 
@@ -746,7 +766,7 @@ appears to be  differentiable around $h=0$.  In  Section \@ref(revisiting), we
 derive a closed-form expression for the slope of the blue curve.
 
 
-## &#9881; \gear Yet another experiment
+## &#9881; \gear Yet another experiment {#exo-yet-another-experiment}
 
 1. Adapt  the code  from Problem 1  in Section  \@ref(exo-visualization) to
 visualize  $w  \mapsto   \Exp_{\Pi_h}(Y  |  A  =  1,  W   =  w)$,  $w  \mapsto
@@ -815,7 +835,7 @@ Fluctuations  of   $P$  do  not   necessarily  take   the  same  form   as  in
 most important feature of the fluctuation is its local shape in a neighborhood
 of $P$.
 
-### Smoothness
+### Smoothness and gradients
 
 We  are  now  prepared  to  provide  a  formal  definition  of  smoothness  of
 statistical mappings.  We say that a statistical mapping $\Psi$ is *smooth* at
@@ -851,7 +871,7 @@ function $\Psi$, the score $s$ of  the fluctuation is *the direction* in which
 we approach the point, and the gradient describes the change in the function's
 value at the point.
 
-### The canonical gradient
+### The canonical gradient {#canonical-gradient}
 
 In general, it is  possible for many gradients to exist^[This  may be at first
 surprising given the parallel drawn in Section \@ref(Euclidean-perspective) to
@@ -966,42 +986,34 @@ sd_hat <- sd(vars)
 Equal to  `r round(slope_approx,  3)` (rounded to  three decimal  places), the
 first numerical approximation `slope_approx` is not too off!
 
-
-
-```{r cramer-rao}
-##
-## move around
-##
-obs <- sample_from(experiment, B)
-(cramer_rao_hat <- var(eic_experiment(obs)))
-```
-
-```{r cramer-rao-another-experiment}
-obs_another_experiment <- sample_from(another_experiment, B, h = 0)
-(cramer_rao_Pi_zero_hat <- var(eic_another_experiment(obs_another_experiment)))
-(ratio <- sqrt(cramer_rao_Pi_zero_hat/cramer_rao_hat))
-```
-
-
-
-
 ## &#9761; \stixdanger{} Asymptotic linearity and statistical efficiency {#influence-curves}
 
-If an estimator $\psi_n$ of $\Psi(P)$ can be written as 
+### Asymptotic linearity
+
+Suppose  that  $O_{1},  \ldots,  O_{n}$ are  drawn  independently  from  $P\in
+\calM$. If an estimator $\psi_n$ of $\Psi(P)$ can be written as
 
 \begin{equation*}  \psi_n  =  \Psi(P) +  \frac{1}{n}\sum_{i=1}^n  \IC(O_i)  +
 o_{P}(1/\sqrt{n})\end{equation*}
 
 for some function  $\IC : \calO \to  \bbR$ such that $\Exp_P(\IC(O))  = 0$ and
 $\Var_{P}(\IC(O))  < \infty$,  then we  say that  $\psi_n$ is  *asymptotically
-linear* with  *influence curve*  $\IC$.  We note  that weak  convergence of
-asymptotically linear estimators is implied by the central limit theorem. That
-is, if $\psi_n$  is asymptotically linear with influence  curve $\IC$, then
-$\sqrt(n)  (\psi_n -  \Psi(P))  = \frac{1}{\sqrt{n}}  \sum_{i=1}^n \IC(O_i)  +
-o_P(1)$. The central  limit theorem implies the  the right-hand-side converges
-in law to a centered Gaussian distribution with variance $\Var_P(\IC(O))$.
+linear* with  *influence curve*  $\IC$.  Asymptotically linear  estimators are
+*weakly convergent*.  Specifically, if $\psi_n$ is  asymptotically linear with
+influence curve $\IC$, then
 
-As it happens,  influence curves of regular^[We can view  $\psi_{n}$ as the
+\begin{equation}
+\sqrt{n}  (\psi_n  - \Psi(P))  =  \frac{1}{\sqrt{n}}  \sum_{i=1}^n \IC(O_i)  +
+o_P(1) (\#eq:asymp-lin)
+\end{equation}
+
+and, by  the central  limit theorem  (recall that  $O_{1}, \ldots,  O_{n}$ are
+independent), $\sqrt{n}  (\psi_n -  \Psi(P))$ converges in  law to  a centered
+Gaussian distribution with variance $\Var_P(\IC(O))$.
+
+### Influence curves and gradients
+
+As it happens, influence curves of regular^[We can view $\psi_{n}$ as the
 by  product of  an  algorithm $\Psihat$  trained  on independent  observations
 $O_{1}, \ldots, O_{n}$  drawn from $P$.  We say that  the estimator is regular
 at $P$  if, for any direction  $s\neq 0$ such  that $\Exp_{P} (s(O)) =  0$ and
@@ -1013,129 +1025,247 @@ $O_{n}$    drawn    from    $P_{1/\sqrt{n}}$   is    such    that    $\sqrt{n}
 does not depend on $s$.]  estimators  are intimately related to gradients.  In
 fact, if $\psi_n$  is a regular, asymptotically linear  estimator of $\Psi(P)$
 with influence curve $\IC$, then it must be true that $\Psi$ is a smooth
-at $P$ and  that $\IC$  is a  gradient of $\Psi$  at $P$.  
+at $P$ and  that $\IC$  is a  gradient of $\Psi$  at $P$. 
 
-These results, combined with the definition of the canonical gradient, imply that  
-if $\psi_{n}$ is a regular, asymptotically linear estimator of $\Psi(P)$ built
-from $n$ independent observations drawn from $P$, then the asymptotic variance
-of $\sqrt{n} (\psi_{n} - \Psi(P))$ cannot  be smaller than the variance of the
-canonical         gradient          of         $\Psi$          at         $P$,
-\begin{equation}\label{eq:CR}\Var_{P}(D^{*}(P)(O))  . \end{equation}  That is,
-(\ref{eq:CR}) is  the lower bound on  the asymptotic variance of  any regular,
-asymptotically linear estimator of $\Psi(P)$. This bound is referred to as the
-*Cramér-Rao bound*.  Any  regular estimator that achieves  this variance bound
-is  said  to be  *asymptotically  efficient*  at  $P$.  Since,  the  canonical
-gradient is the  influence curve of an  asymptotically efficient estimator,
-it  is  often  referred  to  as the  *efficient  influence  curve*.
+### Asymptotic efficiency
+
+Now  recall  that,  in   Section  \@ref(canonical-gradient),  we  defined  the
+canonical gradient as the minimizer of $D \mapsto \Var_{P}(D(O))$ over the set
+of all gradients. Therefore, if $\psi_{n}$ is a regular, asymptotically linear
+estimator of  $\Psi(P)$ (built  from $n$  independent observations  drawn from
+$P$), then the  asymptotic variance of $\sqrt{n} (\psi_{n}  - \Psi(P))$ cannot
+be  smaller than  the variance  of the  canonical gradient  of $\Psi$  at $P$,
+*i.e.*, 
+
+\begin{equation}
+(\#eq:CR)\Var_{P}(D^{*}(P)(O)). 
+\end{equation}
+
+In other words, \@ref(eq:CR) is the  lower bound on the asymptotic variance of
+*any* regular,  asymptotically linear estimator  of $\Psi(P)$.  This  bound is
+referred to  as the *Cramér-Rao  bound*.  Any regular estimator  that achieves
+this variance bound is said to  be *asymptotically efficient* at $P$.  Because
+the canonical gradient  is the influence curve of  an asymptotically efficient
+estimator, it is often referred to as the *efficient influence curve*.
 
 
 ## &#9881; \gear Cramér-Rao bounds {#exo-cramer-rao}
 
-1. Numerically approximate the Cramér-Rao bound at $P_{0}$ and at
-   $\Pi_0$. With  a large  sample and  using regular  estimators, can  we more
-   precisely estimate $\Psi(P_0)$ or $\Psi(\Pi_0)$?
 
-2. Numerically approximate  the  Cramér-Rao  bound at  the  law encoded  for
-   problems  2 and  3  of Section  \@ref(subsec:exo:dave:three). Compare  this
-   bound with those computed in problem 1.
+1. What does the following chunk do?
 
-# Double robustness {#double-robustness}
+```{r cramer-rao}
+obs <- sample_from(experiment, B)
+(cramer_rao_hat <- var(eic_experiment(obs)))
+```
+
+2. Same question about this one.
+
+```{r cramer-rao-another-experiment}
+obs_another_experiment <- sample_from(another_experiment, B, h = 0)
+(cramer_rao_Pi_zero_hat <- var(eic_another_experiment(obs_another_experiment)))
+```
+
+3. With a large independent sample drawn from $\Psi(P_0)$ (or $\Psi(\Pi_0)$),
+   is it possible  to construct a regular estimator  $\psi_{n}$ of $\Psi(P_0)$
+   (or $\Psi(\Pi_0)$)  such that the  asymptotic variance of  $\sqrt{n}$ times
+   $\psi_{n}$ minus its target be smaller than the Cramér-Rao bound?
+
+4. Is it easier to estimate $\Psi(P_{0})$ or $\Psi(\Pi_{0})$ (from independent
+   observations drawn from either law)? In  what sense? (Hint: you may want to
+   compute a ratio.)
+
+
+# Double-robustness {#double-robustness}
 
 ## Linear approximations of parameters {#linear-approximation}
 
-In the last subsection, we learned that the stochastic behavior of a regular, 
-asymptotically linear estimator of $\Psi(P)$ can be characterized by its
-influence curve. Moreover, we said that this influence curve must in fact
-be a gradient of $\Psi$ at $P$. In this section, we show that the converse
-is also true: given a gradient $D^*$ of $\Psi$  at $P$, under regularity
-conditions, it is  possible to construct an estimator  with influence curve
-equal to $D^*(P)$. This fact will suggest concrete strategies for generating efficient 
-estimators of smooth parameters. In this section, we take the first step towards 
-generating such estimators: linearizing the parameter. 
+### From gradients to estimators
+
+We learned in Section \@ref(smooth) that the stochastic behavior of a regular,
+asymptotically  linear estimator  of  $\Psi(P)$ can  be  characterized by  its
+influence curve. Moreover, we said that this influence curve must in fact be a
+gradient of $\Psi$ at $P$. 
+
+In this  section, we  show that the  converse is also  true: given  a gradient
+$D^*$  of  $\Psi$ at  $P$,  under  so-called  *regularity conditions*,  it  is
+possible   to  construct   an  estimator   with  influence   curve  equal   to
+$D^*(P)$. This fact will suggest  concrete strategies for generating efficient
+estimators  of  smooth  parameters.   We  take here  the  first  step  towards
+generating such estimators: linearizing the parameter.
 
 
+### A Euclidean perspective {#another-Euclidean-perspective}
 
-Drawing another parallel to Euclidean geometry, recall that if $f$ is a
-differentiable mapping from $\bbR^p$ to $\bbR$,  we can use a Taylor series to
-approximate $f$ at a point $x_0 \in  \bbR^p$, $f(x_0) \approx f(x) + (x_0 - x)
-\cdot \nabla f(x)$, where $x$ is a  point in $\bbR^p$ and $\nabla f(x)$ is the
-gradient  of $f$  evaluated at  $x$.  As the  distance between  $x$ and  $x_0$
-decreases, the *linear approximation* to $f(x_0)$ becomes more accurate.
+As in  Section \@ref(Euclidean-perspective),  drawing a parallel  to Euclidean
+geometry is  helpful. We recall that  if $f$ is a  differentiable mapping from
+$\bbR^p$ to $\bbR$, then a Taylor series  approximates $f$ at a point $x_0 \in
+\bbR^p$:  \begin{equation*} f(x_0)  \approx f(x)  + \langle(x_0  - x),  \nabla
+f(x)\rangle,\end{equation*} where $x$ is a point in $\bbR^p$, $\nabla f(x)$ is
+the gradient  of $f$ evaluated at  $x$ and $\langle u,v\rangle$  is the scalar
+product of  $u,v \in  \bbR^{p}$.  As the  squared distance  $\|x-x_{0}\|^{2} =
+\langle x-x_{0}, x-x_{0}\rangle$ between $x$  and $x_0$ decreases, the *linear
+approximation* to $f(x_0)$ becomes more accurate.
+
+### The remainder term
 
 Returning to  the present  problem with this  in mind, we  find that  indeed a
-similar approximation  strategy may  be applied. In  particular, if  $\Psi$ is
-pathwise differentiable uniformly  over directions, then for any  given $P \in
-\calM$,  we  can  write  \begin{align}  \label{taylor_expansion}  \Psi(P_0)  =
-\Psi(P) + (P_0 - P)  D^*(P) - \Rem_{P_0}(P), \end{align} where $\Rem_{P_0}(P)$
-is a *remainder term* satisfying that \begin{align*} \frac{\Rem_{P_0}(P)}{d(P,
-P_0)} \rightarrow 0 \ \mbox{as} \ d(P, P_0) \rightarrow 0 , \end{align*} where
-$d$  is   a  measure   of  discrepancy  for   distributions  in   $\calM$.  In
-(\ref{taylor_expansion}),  we introduced  a  new shorthand  notation. For  any
-measurable function $g$  of the observed data  $O$, we will write  $P g \equiv
-\Exp_P(g(O))$. Thus, (\ref{taylor_expansion}) could be equivalently written as
-\begin{align*}    \Psi(P_0)    =    \Psi(P)    +    \Exp_{P_0}(D^*(P)(O))    -
-\Exp_P(D^*(P)(O)) - \Rem_{P_0}(P).  \end{align*} The remainder term formalizes
-the notion that if $P$ is ``close''  to $P_0$ (i.e., $d(P,P_0)$ is small) then
-the linear approximation of $\Psi(P_0)$ is more accurate.
+similar approximation strategy may be applied. 
 
-The equations for  the definition of the parameter  (\ref{eq:psimap}), form of
+For clarity,  let us introduce a  new shorthand notation.  For  any measurable
+function $f$ of  the observed data $O$, we  may write from now on  $P f \equiv
+\Exp_P(f(O))$. One may argue that the  notation is valuable beyong the gain of
+space. For instance, \@ref(eq:asymp-lin) 
+
+\begin{equation*}
+\sqrt{n}  (\psi_n  - \Psi(P))  =  \frac{1}{\sqrt{n}}  \sum_{i=1}^n \IC(O_i)  +
+o_P(1) 
+\end{equation*}
+
+can be rewritten as
+
+\begin{equation*}
+\sqrt{n} (\psi_n - \Psi(P)) = \sqrt{n} (P_{n} - P) \IC + o_P(1),
+\end{equation*}
+
+thus  suggesting  more clearly  the  importance  of the  so-called  *empirical
+process* $\sqrt{n} (P_{n} - P)$.
+
+In particular,  if $\Psi$ is  smooth uniformly  over directions, then  for any
+given $P \in \calM$, we can write
+
+\begin{equation} 
+\Psi(P_0)    =   \Psi(P)    +   (P_0    -   P)    D^*(P)   -    \Rem_{P_0}(P),
+(\#eq:taylor-expansion) 
+\end{equation}
+
+where $\Rem_{P_0}(P)$ is a  *remainder term* satisfying that \begin{equation*}
+\frac{\Rem_{P_0}(P)}{d(P,  P_0)}  \rightarrow  0   \  \mbox{as}  \  d(P,  P_0)
+\rightarrow 0  , \end{equation*}  where $d$  is a  measure of  discrepancy for
+distributions  in  $\calM$.   Note   that  \@ref(eq:taylor-expansion)  can  be
+equivalently   written   as   \begin{equation*}    \Psi(P_0)   =   \Psi(P)   +
+\Exp_{P_0}(D^*(P)(O))  - \Exp_P(D^*(P)(O))  - \Rem_{P_0}(P).   \end{equation*}
+The  remainder term  formalizes the  notion that  if $P$  is *close*  to $P_0$
+(*i.e.*, if $d(P,P_0)$ is small), then the linear approximation of $\Psi(P_0)$
+is more accurate.
+
+### Expressing the remainder term as a function of the relevant features
+
+The equations  for the definition  of the parameter \@ref(eq:psimap),  form of
 the  canonical   gradient  \@ref(eq:eif),   and  linearization   of  parameter
-(\ref{taylor_expansion})  combine to  determine  the remainder,  \begin{align}
-\Rem_{P_0}(P) &= \Psi(P) - \Psi(P_0) - (P_0 - P)D^*(P) \notag \\ &= \Exp_{P_0}
-\biggl[    \{\Gbar_0(W)    -     \Gbar(W)\}    \biggl\{\frac{\Qbar_0(1,W)    -
-\Qbar(1,W)}{\ell\Gbar(1,W)} + \frac{\Qbar_0(0,W) - \Qbar(0,W)}{\ell\Gbar(0,W)}
-\biggr\} \biggr]. \label{remainder} \end{align}
+\@ref(eq:taylor-expansion) combine to determine the remainder: 
 
+\begin{align}
+\Rem_{P_0}(P) &\equiv \Psi(P) - \Psi(P_0) - (P_0 - P)D^*(P) (\#eq:remainder-one) \\ 
+&=    \Exp_{P_0}   \left[    \left(\Gbar_0(W)   -
+\Gbar(W)\right)           \times          \left(\frac{\Qbar_0(1,W)           -
+\Qbar(1,W)}{\ell\Gbar(1,W)} + \frac{\Qbar_0(0,W) - \Qbar(0,W)}{\ell\Gbar(0,W)}
+\right) \right]. (\#eq:remainder)
+\end{align}
+
+Acting   as  oracles,   we   can  compute   explicitly   the  remainder   term
+$\Rem_{P_0}(P)$.  The  `evaluate_remainder` method makes it  very easy (simply
+run `?evaluate_remainder` to see the man page of the method):
 
 ```{r evaluating-remainder}
-# Could we add a method for evaluating the remainder?
-# e.g., using integrate and/or approximating with large sample
+(evaluate_remainder(experiment, experiment))
+(rem <- evaluate_remainder(experiment, another_experiment,
+                           list(list(), list(h = 0))))
 ```
+
+We recover  the equality $\Rem_{P_{0}} (P_{0})  = 0$, which is  fairly obvious
+given  \@ref(eq:taylor-expansion). In  addition, we  learn that  $\Rem_{P_{0}}
+(\Pi_{0})$ equals `r round(rem, 3)`. In  the next subsection, we invite you to
+make better  acquaintance with the  remainder term  by playing around  with it
+numerically.
 
 ## &#9881; \gear The remainder term {#exo-remainder-term}
 
-1.  [Pending  the  addition  of  above  method]  Use  the  available  code  to
-   numerically confirm equation (\ref{taylor_expansion}) by approximating each
-   term in  the equation separately  and showing approximate  equality between
-   the two sides of the equation.
+1. Compute numerically $\Rem_{\Pi_0}(\Pi_h)$ for  $h \in [-1,1]$ and plot your
+results. What do you notice?
 
-2. Compute $\Rem_{\Pi_0}(\Pi_h)$ for $h \in [-1,1]$ and plot your results.
+2.  &#9761;  \stixdanger{} Approximate $\Rem_{P_{0}}  (\Pi_{0})$ numerically
+without relying on  method `evaluate_remainder` and compare the  value you get
+with that of `rem`.  (Hint: use \@ref(eq:remainder-one) and a large sample of
+observations drawn independently from $P_{0}$.)
 
-## &#9761; \stixdanger{} Double-robustness {#double-robustness}
+## &#9761; \stixdanger{} Double-robustness {#def-double-robustness}
 
-The  efficient influence  curve $D^{*}(P)$  at  $P \in  \calM$ enjoys  a rather
-remarkable property: it is double-robust.   Specifically, the remainder satisfies
+### The key property
 
-\begin{equation}\label{eq:rem:two}   \Rem_{P}    (\Qbar',   \Gbar')^{2}   \leq
-\|\Qbar'  - \Qbar\|_{P}^{2}  \times  \|(\Gbar' -  \Gbar)/\ell\Gbar'\|_{P}^{2}.
+Let us  denote by  $\|f\|_{P}^{2}$ the  square of  the $L^{2}(P)$-norm  of any
+function  $f$  from $\bbO$  to  $\bbR$  *i.e.*,  using a  recently  introduced
+notation,  $\|f\|_{P}^{2}  \equiv  Pf^{2}$.    For  instance,  $\|\Qbar_{1}  -
+\Qbar_{0}\|_{P}$ or  $\|\Gbar_{1} - \Gbar_{0}\|_{P}$ is  a distance separating
+the features $\Qbar_{1}$ and $\Qbar_{0}$ or $\Gbar_{1}$ and $\Gbar_{0}$.
+
+The efficient  influence curve  $D^{*}(P)$ at  $P \in  \calM$ enjoys  a rather
+remarkable property:  it is *double-robust*.   Specifically, for every  $P \in
+\calM$, the remainder term $\Rem_{P_{0}} (P)$ satisfies 
+
+\begin{equation} 
+\Rem_{P_{0}}   (P)^{2}  \leq   \|\Qbar   -
+\Qbar_{0}\|_{P}^{2}  \times   \|(\Gbar  -  \Gbar_{0})/\ell\Gbar_{0}\|_{P}^{2},
+(\#eq:rem-two)
 \end{equation}
 
-In particular, if
+where $\Qbar$ and  $\Gbar$ are the counterparts under $P$  to $\Qbar$_{0}$ and
+$\Gbar_{0}$.   The proof  consists  in a  straightforward  application of  the
+Cauchy-Schwarz   inequality    to   the   right-hand   side    expression   in
+\@ref(eq:remainder-one).
 
-\begin{equation}\label{eq:solves:eic}     \Exp_{P}    (D^{*}(P')     (O))    =
-0,\end{equation}
+### Its direct consequence {#direct-consequence}
 
-and *either* $\Qbar'  = \Qbar$ *or* $\Gbar' = \Gbar$,  then $\Rem_{P} (\Qbar',
-\Gbar') =  0$ hence  $\Psi(P') = \Psi(P)$.   In words, if  $P'$ solves  the so
-called $P$-specific  efficient influence curve  equation \eqref{eq:solves:eic}
-and if, in addition, $P'$  has the same $\Qbar$-component or $\Gbar$-component
-as $P$,  then $\Psi(P')  = \Psi(P)$  no matter  how $P'$  may differ  from $P$
-otherwise.   This  property  is  useful  to  build  consistent  estimators  of
-$\Psi(P)$.
+It may  not be clear yet  why \@ref(eq:rem-two) is an  important property, and
+why  $D^{*}$ is  said *double-robust*  because of  it.  To  answer the  latter
+question,  let us  consider a  law $P\in  \calM$ such  that *either*  $\Qbar =
+\Qbar_{0}$ *or* $\Gbar = \Gbar_{0}$. 
+
+It  is then  the  case that  *either*  $\|\Qbar -  \Qbar_{0}\|_{P}  = 0$  *or*
+$\|\Gbar - \Gbar_{0}\|_{P} = 0$.  Therefore, in light of \@ref(eq:rem-two), it
+also  holds that  $\Rem_{P_{0}} (P)  = 0$.^[This  also trivially  follows from
+\@ref(eq:remainder).]    It  thus   appears  that   \@ref(eq:taylor-expansion)
+simplifies to
+
+\begin{align*} \Psi(P_0) &= \Psi(P) + (P_0 - P) D^*(P)\\
+&= \Psi(P) + P_0 D^*(P),\end{align*}
+
+where the second  equality holds because $PD^{*}(P) = 0$  for all $P\in \calM$
+by definition of $D^{*}(P)$.
+
+It is now clear  that for such a law $P\in \calM$,  $\Psi(P) = \Psi(P_{0})$ is
+equivalent to
+
+\begin{equation} 
+P_{0} D^{*}(P) = 0. (\#eq:solves-eic) 
+\end{equation}
+
+Most  importantly, in  words,  if $P$  solves  the so-called  $P_{0}$-specific
+efficient influence  curve equation \@ref(eq:solves-eic) and  if, in addition,
+$P$  has  the  same  $\Qbar$-feature *or*  $\Gbar$-feature  as  $P_{0}$,  then
+$\Psi(P) = \Psi(P_{0})$.
+
+
+The conclusion is  valid no matter how $P$ may  differ from $P_{0}$ otherwise,
+hence the notion  of being *double-robust*.  This property is  useful to build
+consistent   estimators   of  $\Psi(P)$,   as   we   shall  see   in   Section
+\@ref(inference). 
+
+
+
 
 ## &#9881; \gear Double-robustness {#exo-double-robustness}
 
-Confirm the double-robustness of the efficient influence curve by doing the following:
+1. Go  back to  Problem 1  in \@ref(exo-remainder-term).  In light  of Section
+   \@ref(def-double-robustness), what is happening?
 
-1. \tcg{Will modify  to reflect the final structure of  `LAW` methods, etc...}
-   Replace `Gbar` in the law of  `experiment` with some other function of $W$,
-   and confirm  (via numerical approximation)  that the mean of  the efficient
-   influence curve is zero. Repeat for several choices of `Gbar`.
+2. Create  a copy  of `experiment`  and replace its  `Gbar` feature  with some
+   other  function of  $W$ (see  `?copy`, `?alter`  and Problem  2 in  Section
+   \@ref(exo-yet-another-experiment)).  Call $P'$ the element of model $\calM$
+   thus  characterized.   Can  you  guess the  values  of  $\Rem_{P_{0}}(P')$,
+   $\Psi(P')$ and $P_{0} D^{*}(P')$? Support your argument.
 
-2. \tcg{Will modify  to reflect the final structure of  `LAW` methods, etc...}
-   Replace `Qbar` in the law of  `experiment` with some other function of $W$,
-   and confirm  (via numerical approximation)  that the mean of  the efficient
-   influence curve is zero. Repeat for several choices of `Gbar`.
+3. Add more exercizes?
 
 # Inference {#inference}
 
@@ -1333,17 +1463,18 @@ $\hat{P}_n$ a law in $\calM$ such that $\Qbar_{\hat{P}_n} = \Qbar_n$,
 $\Gbar_{\hat{P}_n} = \Gbar_n$ and $Q_{\hat{P}_n,W} = Q_{n,W}$. We will hence say that 
 that such a law is *compatible* with $\Qbar_n$, $\Gbar_n$ and $Q_{n,W}$. 
 
-We can apply equation (\ref{taylor_expansion}) substituting $\hat{P}_n$ for $P$: \begin{equation} \label{hard_to_study}
-\Psi(\hat{P}_n) - \Psi(P_0) = - P_0 D^*(\hat{P}_n) + R_{P_0}(\hat{P}_n) . 
-\end{equation}
-We remind readers of our shorthand notation, \begin{equation*}
-P_0 D^*(\hat{P}_n) \equiv \Exp_{P_0}\left( \frac{2A - 1}{\ell \Gbar_n(A,W)} (Y - \Qbar_n(A,W)) + \Qbar_n(1,W) - \Qbar_n(0,W) - \Psi(\hat{P}_n) \right) . 
-\end{equation*}
-To facilitate our study of (\ref{hard_to_study}), we write \begin{align*}
-\Psi(\hat{P}_n) - \Psi(P_0) &= - P_0 D^*(\hat{P}_n) + R_{P_0}(\hat{P}_n) \pm P_n D^*(\hat{P}_n) \\
-&= (P_n - P_0) D^*(\hat{P}_n) - P_n D^*(\hat{P}_n) + R_{P_0}(\hat{P}_n) \pm (P_n - P_0) D^*(P_0) \\
-&= (P_n - P_0) D^*(P_0) - P_n D^*(\hat{P}_n) + R_{P_0}(\hat{P}_n) + (P_n - P_0) (D^*(\hat{P}_n) - D^*(P_0)) . 
-\end{align*}
+We can apply equation  \@ref(eq:taylor-expansion) substituting $\hat{P}_n$ for
+$P$: \begin{equation}  \label{hard_to_study} \Psi(\hat{P}_n)  - \Psi(P_0)  = -
+P_0 D^*(\hat{P}_n) + R_{P_0}(\hat{P}_n) .  \end{equation} We remind readers of
+our   shorthand   notation,   \begin{equation*}  P_0   D^*(\hat{P}_n)   \equiv
+\Exp_{P_0}\left(  \frac{2A  -  1}{\ell  \Gbar_n(A,W)}  (Y  -  \Qbar_n(A,W))  +
+\Qbar_n(1,W) -  \Qbar_n(0,W) -  \Psi(\hat{P}_n) \right) .   \end{equation*} To
+facilitate  our  study  of   (\ref{hard_to_study}),  we  write  \begin{align*}
+\Psi(\hat{P}_n) - \Psi(P_0)  &= - P_0 D^*(\hat{P}_n)  + R_{P_0}(\hat{P}_n) \pm
+P_n D^*(\hat{P}_n)  \\ &= (P_n  - P_0)  D^*(\hat{P}_n) - P_n  D^*(\hat{P}_n) +
+R_{P_0}(\hat{P}_n) \pm (P_n -  P_0) D^*(P_0) \\ &= (P_n -  P_0) D^*(P_0) - P_n
+D^*(\hat{P}_n) + R_{P_0}(\hat{P}_n) + (P_n  - P_0) (D^*(\hat{P}_n) - D^*(P_0))
+.  \end{align*}
 
 The first term can be written $(P_n - P_0) D^*(P_0) \equiv n^{-1} \sum_{i=1}^n D^*(P_0)(O_i)$,
 since $\Exp_{P_0}(D^*(P_0)) = 0$. Because this term is a sum of independent transformations of the data that have mean zero and finite variance, we can use standard tools such as the weak law of large numbers and central limit theorem to study its behavior. 
@@ -1724,7 +1855,8 @@ fig <- ggplot() +
   
 fig +
   labs(y = "",
-       x = expression(paste(sqrt(n/v[n]^{list(a, b)})*(psi[n]^{list(a, b)} - psi[0]))))
+       x = expression(paste(sqrt(n/v[n]^{list(a, b)})*
+                            (psi[n]^{list(a, b)} - psi[0]))))
 ```
 
 Let $v_{n}^{a}$ be $n$ times the empirical variance of the `iter` realizations
@@ -1799,7 +1931,7 @@ For sake of illustration, we choose argument `working_model_G_one` of function
 ## empty...
 ```
 
-In words, we choose the so called logistic (or negative binomial) loss
+In  words,  we choose  the  so-called  logistic  (or negative  binomial)  loss
 function    $L_{a}$    given   by    \begin{equation}    \label{eq:logis:loss}
 -L_{a}(f)(A,W) \equiv A \log f(W) + (1 - A) \log (1 - f(W)) \end{equation} for
 any function $f : [0,1] \to [0,1]$ paired with the working model $\calF \equiv
@@ -1809,7 +1941,7 @@ any function $f : [0,1] \to [0,1]$ paired with the working model $\calF \equiv
 $\Gbar_{0}$  is the  unique minimizer  of the  risk entailed  by $L_{a}$  over
 $\calF$: \begin{equation*}\Gbar_{0} = \mathop{\arg\min}_{f_{\theta} \in \calF}
 \Exp_{P_{0}}   \left(L_{a}(f_{\theta})(A,W)\right).\end{equation*}  Therefore,
-the estimator  $\Gbar_{n}$ output by  `estimate_Gbar` and obtained  by minimizing
+the estimator $\Gbar_{n}$ output by `estimate_Gbar` and obtained by minimizing
 the        empirical         risk        \begin{equation*}        \Exp_{P_{n}}
 \left(L_{a}(f_{\theta})(A,W)\right)      =     \frac{1}{n}      \sum_{i=1}^{n}
 L_{a}(f_{\theta})(A_{i},W_{i})\end{equation*}   over    $\calF$   consistently

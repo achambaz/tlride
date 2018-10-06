@@ -16,6 +16,13 @@
   font-style: normal;
 }
 
+h1:after {
+    content: ' ';
+    display: block;
+    border: 1px solid;
+    color: #ff43a4;
+}
+
 div.center {
     margin: auto;
     width: 50%;
