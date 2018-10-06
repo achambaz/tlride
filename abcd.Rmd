@@ -417,16 +417,20 @@ the   experiment   eventually.    In   light   of   the   above   enumeration,
 output,  as  opposed  to  its  summary  measure  $O$.   This  defines  another
 experiment and its law, that we denote $\bbP_{0}$.
 
-It   is  straightforward   to  [show   that](#identification)  \begin{equation}
-(\#eq:psi-zero-bis) \psi_{0}  = \Exp_{\bbP_{0}}  \left(Y_{1} -  Y_{0}\right) =
-\Exp_{\bbP_{0}}(Y_1) - \Exp_{\bbP_{0}}(Y_0).   \end{equation} Thus, $\psi_{0}$
-describes the average difference of  the two counterfactual rewards.  In other
-words, $\psi_{0}$ quantifies the difference in average of the reward one would
-get in a world where one would always enforce action $a=1$ with the reward one
-would get in a world where one  would always enforce action $a=0$.  This said,
-it is worth emphasizing that $\psi_{0}$ is a well-defined parameter beyond its
-causal  interpretation,  and  that  it describes  a  standardized  association
-between the action $A$ and reward $Y$.
+It is straightforward to [show that](#identification) 
+
+\begin{align}
+\psi_{0} &= \Exp_{\bbP_{0}} \left(Y_{1} - Y_{0}\right) (\#eq:psi-zero-bis) \\
+&= \Exp_{\bbP_{0}}(Y_1) - \Exp_{\bbP_{0}}(Y_0).  \notag 
+\end{align} 
+
+Thus, $\psi_{0}$  describes the average  difference of the  two counterfactual
+rewards.  In other  words, $\psi_{0}$ quantifies the difference  in average of
+the reward  one would  get in a  world where one  would always  enforce action
+$a=1$ with the reward one would get  in a world where one would always enforce
+action  $a=0$.  This  said,  it  is worth  emphasizing  that  $\psi_{0}$ is  a
+well-defined parameter beyond its causal interpretation, and that it describes
+a standardized association between the action $A$ and reward $Y$.
 
 ### A causal computation {#causal-computation}
 
@@ -549,10 +553,10 @@ substitution-based, some are not.
 
 We now go back to our main  topic of interest. Suppose we know beforehand that
 $O$ drawn from $P_{0}$ takes its  values in $\calO \equiv [0,1] \times \{0,1\}
-\times [0,1]$ and that $\Gbar_{0}(W) \equiv P_{0}(A=1|W)$ is bounded away from
+\times [0,1]$ and that $\Gbar_{0}(W) \equiv _Pr_{P_{0}}(A=1|W)$ is bounded away from
 zero and one  $Q_{0,W}$-almost surely (this is the case  indeed).  Then we can
 define  model  $\calM$ as  the  set  of all  laws  $P$  on $\calO$  such  that
-\begin{equation*}\Gbar(W)  \equiv _{P}(A=1|W)\end{equation*}  is bounded  away
+\begin{equation*}\Gbar(W)  \equiv \Pr_{P}(A=1|W)\end{equation*}  is bounded  away
 from zero and one $Q_{W}$-almost surely,  where $Q_{W}$ is the marginal law of
 $W$ under $P$.
 
@@ -942,8 +946,9 @@ It is not difficult (though cumbersome) to verify that, up to a constant,
 $\{\Pi_{h} :  h \in [-1,1]\}$ is  a fluctuation of $\Pi_{0}$  in the direction
 (in the sense of \@ref(eq:fluct)) of
 
-\begin{align}\sigma_{0}(O)  &\equiv -  10  \sqrt{W}  A \times  \beta_{0}(A,W)
-\left(\log(1    -     Y)    +     \sum_{k=0}^{3}    \left(k     +    \beta_{0}
+\begin{align}
+\notag\sigma_{0}(O) \equiv - 10 \sqrt{W} A \times \beta_{0} & (A,W)\\
+&\times\left(\log(1    -     Y)    +     \sum_{k=0}^{3}    \left(k     +    \beta_{0}
 (A,W)\right)^{-1}\right)     +      \text{constant},\\     \text{where}     \;
 \beta_{0}(A,W)&\equiv                                                  \frac{1
 -\Qbar_{\Pi_{0}}(A,W)}{\Qbar_{\Pi_{0}}(A,W)}. (\#eq:sigma0)\end{align}
@@ -1267,23 +1272,171 @@ consistent   estimators   of  $\Psi(P)$,   as   we   shall  see   in   Section
 
 3. Add more exercizes?
 
+
+
 # Inference {#inference}
+
+## Where we stand
+
+In the previous sections, we analyzed our target parameter and presented
+relevant theory for understanding the  statistical properties of certain types
+of estimators of the parameter.  The  theory is also relevant for building and
+comparing a variety of estimators.
+
+We assume from now  on that we have available a  sample $O_{1}, \ldots, O_{B}$
+of independent observations  drawn from $P_{0}$. This is  literally the case!,
+and  the  observations  are  stored  in  `obs`  that  we  created  in  Section
+\@ref(exo-cramer-rao). 
+
+```{r iter}
+iter <- 1e3
+```
+
+Equal to `r B/1e6` million, the sample size `B` is very large. We will in fact
+use  `r  as.integer(iter)` disjoint  subsamples  composed  of $n$  independent
+observations among $O_{1}, \ldots, O_{B}$,  where $n$ equals `B/iter`, *i.e.*,
+`r as.integer(B/iter)`.   We will  thus be  in a  position to  investigate the
+statistical  properties  of  every  estimation  procedure  by  replicating  it
+independently `r as.integer(iter)` times.
+
+## Where we go
+
+The  following  sections  explore  different statistical  paths  to  inferring
+$\psi_{0}$ or, rather (though equivalently), $\Psi(P_{0})$.
+
+- Section   \@ref(simple-strategies)   present   two   simple   inference
+  strategies. Easier,  the first one  can be  carried out in  situations where
+  $\Gbar_{0}$ is  already known to  the statistician. A little  more involved,
+  the second one does not need such prior knowledge.
+
+- Section...
+
+# Two simple inference strategies {#simple-strategies}
+
+## Assuming the mechanism of action known {#known-gbar-first-pass}
+
+### A simple IPTW substitution estimator
+
+Let us assume for a moment that we know $\Gbar_{0}$.  This would have been the
+case  indeed if  $P_{0}$  were a  controlled experiment.   Note  that, on  the
+contrary, assuming $\Qbar_{0}$ known would be difficult to justify.
+
+```{r known-Gbar-one-a}
+Gbar <- get_feature(experiment, "Gbar")
+```
+
+The   alternative  expression   \@ref(eq:psi-zero-b)   suggests  to   estimate
+$\Psi(P_{0})$ with 
+
+\begin{align}
+\psi_{n}^{b}  &\equiv \Exp_{P_{n}}  \left( \frac{2A-1}{\ell  \Gbar_{0}(A,W)} Y
+\right) \\ 
+&       =        \frac{1}{n}       \sum_{i=1}^{n}       \left(\frac{2A_{i}-1}{
+\ell\Gbar_{0}(A_{i},W_{i})}Y_{i} \right). (\#eq:psi-n-b)
+\end{align}
+
+Note how $P_{n}$  is substituted for $P_{0}$ in  \@ref(eq:psi-n-b) relative to
+\@ref(eq:psi-zero-b).    This  justifies   that  we   call  $\psi_{n}^{b}$   a
+*substitution estimator*.  It  is also dubbed an IPTW  (inverse probability of
+treatment     weighted)    estimator     because    of     the    denominators
+$\ell\Gbar_{0}(A_{i},W_{i})$  in  its  definition.^[We  could  have  used  the
+alternative expression IPAW, where A (like  action) is substituted for T (like
+treatment).]
+
+### Elementary statistical properties
+
+It is easy to check that $\psi_{n}^{b}$ estimates $\Psi(P_{0})$ consistently,
+but this  is too little to  request from an estimator  of $\psi_{0}$.  Better,
+$\psi_{n}^{b}$   also   satisfies   a   central   limit   theorem:   $\sqrt{n}
+(\psi_{n}^{b} -  \psi_{0})$ converges in law  to a centered Gaussian  law with
+asymptotic     variance     \begin{equation*}v^{b}     \equiv     \Var_{P_{0}}
+\left(\frac{2A-1}{\ell\Gbar_{0}(A,W)}Y\right),\end{equation*}   where  $v^{b}$
+can be consistently estimated by its empirical counterpart
+
+\begin{align}
+(\#eq:v-n-b)      v_{n}^{b}       &\equiv      \Var_{P_{n}}
+\left(\frac{2A-1}{\ell\Gbar_{0}(A,W)}Y\right) \\ 
+&=        \frac{1}{n}        \sum_{i=1}^{n}\left(\frac{2A_{i}-1}{\ell\Gbar_{0}
+(A_{i},W_{i})} Y_{i} - \psi_{n}^{b}\right)^{2}.
+\end{align}
+
+We  investigate *empirically*  the statistical  behavior of  $\psi_{n}^{b}$ in
+Section \@ref(empirical-inves-IPTW).
+
+### Another estimator of another parameter 
+
+ANTOINE
+
+let us introduce \begin{align*}\psi_{n}^{a} &\equiv \Exp_{P_{n}} \left(Y |
+A=1\right)  -   \Exp_{P_{n}}  \left(Y  |  A=0\right)   \\  &=  \frac{1}{n_{1}}
+\sum_{i=1}^{n}   \one\{A_{i}=1\}   Y_{i}  -   \frac{1}{n_{0}}   \sum_{i=1}^{n}
+\one\{A_{i}=0\}  Y_{i}   \\&=\frac{1}{n_{1}}  \sum_{i=1}^{n}  A_{i}   Y_{i}  -
+\frac{1}{n_{0}} \sum_{i=1}^{n} (1 - A_{i})  Y_{i}, \end{align*} where $n_{1} =
+\sum_{i=1}^{n} A_{i} =  n - n_{0}$ is the number  of observations $O_{i}$ such
+that $A_{i}  = 1$.  It is  an estimator of \begin{equation*}\Exp_{P_{0}}  (Y |
+A=1) -  \Exp_{P_{0}} (Y  | A=0).\end{equation*} We  seize this  opportunity to
+demonstrate numerically the obvious fact that $\psi_{n}^{a}$ does not estimate
+$\psi_{0}$.
+
+### Empirical investigation {#empirical-inves-IPTW}
+
+(ref:known-Gbar-one-b) Kernel density estimators of the law of two estimators
+of $\psi_{0}$ (recentered  with respect to $\psi_{0}$,  and renormalized), one
+of  them  misconceived (a),  the  other  assuming  that $\Gbar_{0}$  is  known
+(b). Built based on `iter` independent realizations of each estimator.
+
+```{r known-Gbar-one-b, fig.cap = '(ref:known-Gbar-one-b)'}
+psi_hat_ab <- obs %>% as_tibble() %>%
+  mutate(id = (seq_len(n()) - 1) %% iter) %>%
+  mutate(lGAW = A * Gbar(W) + (1 - A) * (1 - Gbar(W))) %>% group_by(id) %>%
+  summarize(est_a = mean(Y[A==1]) - mean(Y[A==0]),
+            est_b = mean(Y * (2 * A - 1) / lGAW),
+            std_b = sd(Y * (2 * A - 1) / lGAW) / sqrt(n()),
+            clt_b = (est_b - psi_approx) / std_b) %>% 
+  mutate(std_a = sd(est_a),
+         clt_a = (est_a - psi_approx) / std_a) %>%
+  gather("key", "value", -id) %>%
+  extract(key, c("what", "type"), "([^_]+)_([ab])") %>%
+  spread(what, value)
+
+(bias_ab <- psi_hat_ab %>% group_by(type) %>% summarise(bias = mean(clt)))
+
+fig <- ggplot() +
+  geom_line(aes(x = x, y = y), 
+            data = tibble(x = seq(-3, 3, length.out = 1e3),
+                          y = dnorm(x)),
+            linetype = 1, alpha = 0.5) +
+  geom_density(aes(clt, fill = type, colour = type),
+               psi_hat_ab, alpha = 0.1) +
+  geom_vline(aes(xintercept = bias, colour = type),
+             bias_ab, size = 1.5, alpha = 0.5)
+  
+fig +
+  labs(y = "",
+       x = expression(paste(sqrt(n/v[n]^{list(a, b)})*
+                            (psi[n]^{list(a, b)} - psi[0]))))
+```
+
+Let $v_{n}^{a}$ be $n$ times the empirical variance of the `iter` realizations
+of   $\psi_{n}^{a}$.   By   the  above   chunk  of   code,  the   averages  of
+$\sqrt{n/v_{n}^{a}}   (\psi_{n}^{a}  -   \psi_{0})$  and   $\sqrt{n/v_{n}^{b}}
+(\psi_{n}^{b}  -  \psi_{0})$  computed  across the  realizations  of  the  two
+estimators are respectively equal to 
+`r round(bias_ab$bias[bias_ab$type=="a"],3)` and 
+`r round(bias_ab$bias[bias_ab$type=="b"], 3)` (both rounded to three decimal
+places  ---  see  `bias_ab`).   Interpreted  as amounts  of  bias,  those  two
+quantities    are     represented    by     vertical    lines     in    Figure
+\@ref(fig:known-Gbar-one-b). The red and blue bell-shaped curves represent the
+empirical laws  of $\psi_{n}^{a}$ and $\psi_{n}^{b}$  (recentered with respect
+to   $\\psi_{0}$,   and  renormalized)   as   estimated   by  kernel   density
+estimation.  The latter  is close  to the  black curve,  which represents  the
+standard normal density.
+
+
+# ANTOINE
 
 ## Building estimators
 
-The previous  section identified our  target parameter and  developed relevant
-theory for understanding the properties of  certain types of estimators of the
-parameter. In  this section, we illustrate  how this theory can  be applied to
-develop estimators of and inference  about these quantities.  We consider that
-we  have  available,  $O_{1}$,  \ldots,  $O_{n}$,  a  sample  of  observations
-independently drawn  from $P_{0}$, and  the goal is  to estimate the  value of
-$\psi_0$. Below  we generate `B` values  \tcg{Maybe change `B` to  `n` to keep
-consistent with the notation?}
-
-```{r draw-a-sample}
-## Debug -- couldn't find obs when I tried to compile
-## obs <- run_experiment(B)
-```
 
 Each of  the strategies  we discuss be  described in two  steps. In  the first
 step, we obtain estimators of the quantities relevant to evaluating the target
@@ -1770,109 +1923,6 @@ we end up with an estimate of $\psi_0$ that is outside the parameter space.}
 
 
 
-## Inference assuming the mechanism of action known, or not, first pass {#known-gbar-first-pass}
-
-\tcg{I think it makes sense to remove this, unless we want to add a section to 
-the simple estimation strategies section above that talks about IPTW estimation.}
-
-Let us  assume for a moment  that we know  $\Gbar_{0}$.  This may be  the case
-indeed if  $P_{0}$ was a  controlled experiment.  Note that, on  the contrary,
-assuming $\Qbar_{0}$ known would be difficult to justify. 
-
-```{r known-Gbar-one-a}
-Gbar <- get_feature(experiment, "Gbar")
-iter <- 1e3
-```
-
-Then,  the   alternative  expression  \ref{eq:psi0:b}  suggests   to  estimate
-$\psi_{0}$    with    \begin{equation}\label{eq:psi:n:b}\psi_{n}^{b}    \equiv
-\Exp_{P_{n}}   \left(\frac{2A-1}{\ell\Gbar_{0}(A,W)}Y\right)   =   \frac{1}{n}
-\sum_{i=1}^{n}
-\left(\frac{2A_{i}-1}{\ell\Gbar_{0}(A_{i},W_{i})}Y_{i}\right).\end{equation}
-Note how $P_{n}$ is substituted  for $P_{0}$ in \eqref{eq:psi:n:b} relative to
-\eqref{eq:psi0:b}.
-
-It is easy to check that $\psi_{n}^{b}$ estimates $\psi_{0}$ consistently, but
-this  is too  little  to request  from an  estimator  of $\psi_{0}$.   Better,
-$\psi_{n}^{b}$   also   satisfies   a   central   limit   theorem:   $\sqrt{n}
-(\psi_{n}^{b} -  \psi_{0})$ converges in law  to a centered Gaussian  law with
-asymptotic     variance     \begin{equation*}v^{b}     \equiv     \Var_{P_{0}}
-\left(\frac{2A-1}{\ell\Gbar_{0}(A,W)}Y\right),\end{equation*}   where  $v^{b}$
-can    be    consistently    estimated   by    its    empirical    counterpart
-\begin{equation}\label{eq:v:n:b}      v_{n}^{b}       \equiv      \Var_{P_{n}}
-\left(\frac{2A-1}{\ell\Gbar_{0}(A,W)}Y\right)  =   \frac{1}{n}  \sum_{i=1}^{n}
-\left(\frac{2A_{i}-1}{\ell\Gbar_{0}(A_{i},W_{i})}Y_{i}                       -
-\psi_{n}^{b}\right)^{2}.\end{equation}
-
-Let us investigate how $\psi_{n}^{b}$ behaves  based on `obs`.  Because we are
-interested in the *law* of $\psi_{n}^{b}$,  the next chunk of code constitutes
-`iter =` `r  iter` independent samples of independent  observations drawn from
-$P_{0}$, each  consisting of $n$  equal to  `nrow(obs)/iter =` `r  nrow(obs) /
-iter`  data points,  and computes  the  realization of  $\psi_{n}^{b}$ on  all
-samples.
-
-Before  proceeding,   let  us  introduce   \begin{align*}\psi_{n}^{a}  &\equiv
-\Exp_{P_{n}} \left(Y  | A=1\right) -  \Exp_{P_{n}} \left(Y | A=0\right)  \\ &=
-\frac{1}{n_{1}}   \sum_{i=1}^{n}  \one\{A_{i}=1\}   Y_{i}  -   \frac{1}{n_{0}}
-\sum_{i=1}^{n} \one\{A_{i}=0\} Y_{i}  \\&=\frac{1}{n_{1}} \sum_{i=1}^{n} A_{i}
-Y_{i} - \frac{1}{n_{0}}  \sum_{i=1}^{n} (1 - A_{i})  Y_{i}, \end{align*} where
-$n_{1}  = \sum_{i=1}^{n}  A_{i} =  n -  n_{0}$ is  the number  of observations
-$O_{i}$    such   that    $A_{i}   =    1$.    It    is   an    estimator   of
-\begin{equation*}\Exp_{P_{0}}    (Y   |    A=1)    -    \Exp_{P_{0}}   (Y    |
-A=0).\end{equation*} We seize this  opportunity to demonstrate numerically the
-obvious fact that $\psi_{n}^{a}$ does not estimate $\psi_{0}$.
-
-(ref:known-Gbar-one-b) Kernel density estimators of  the law of two estimators
-of $\psi_{0}$ (recentered  with respect to $\psi_{0}$,  and renormalized), one
-of  them  misconceived (a),  the  other  assuming  that $\Gbar_{0}$  is  known
-(b). Built based on `iter` independent realizations of each estimator.
-
-```{r known-Gbar-one-b, fig.cap = '(ref:known-Gbar-one-b)'}
-psi_hat_ab <- obs %>% as_tibble() %>%
-  mutate(id = (seq_len(n()) - 1) %% iter) %>%
-  mutate(lGAW = A * Gbar(W) + (1 - A) * (1 - Gbar(W))) %>% group_by(id) %>%
-  summarize(est_a = mean(Y[A==1]) - mean(Y[A==0]),
-            est_b = mean(Y * (2 * A - 1) / lGAW),
-            std_b = sd(Y * (2 * A - 1) / lGAW) / sqrt(n()),
-            clt_b = (est_b - psi_approx) / std_b) %>% 
-  mutate(std_a = sd(est_a),
-         clt_a = (est_a - psi_approx) / std_a) %>%
-  gather("key", "value", -id) %>%
-  extract(key, c("what", "type"), "([^_]+)_([ab])") %>%
-  spread(what, value)
-
-(bias_ab <- psi_hat_ab %>% group_by(type) %>% summarise(bias = mean(clt)))
-
-fig <- ggplot() +
-  geom_line(aes(x = x, y = y), 
-            data = tibble(x = seq(-3, 3, length.out = 1e3),
-                          y = dnorm(x)),
-            linetype = 1, alpha = 0.5) +
-  geom_density(aes(clt, fill = type, colour = type),
-               psi_hat_ab, alpha = 0.1) +
-  geom_vline(aes(xintercept = bias, colour = type),
-             bias_ab, size = 1.5, alpha = 0.5)
-  
-fig +
-  labs(y = "",
-       x = expression(paste(sqrt(n/v[n]^{list(a, b)})*
-                            (psi[n]^{list(a, b)} - psi[0]))))
-```
-
-Let $v_{n}^{a}$ be $n$ times the empirical variance of the `iter` realizations
-of   $\psi_{n}^{a}$.   By   the  above   chunk  of   code,  the   averages  of
-$\sqrt{n/v_{n}^{a}}   (\psi_{n}^{a}  -   \psi_{0})$  and   $\sqrt{n/v_{n}^{b}}
-(\psi_{n}^{b}  -  \psi_{0})$  computed  across the  realizations  of  the  two
-estimators are respectively equal to 
-`r round(bias_ab$bias[bias_ab$type=="a"],3)` and 
-`r round(bias_ab$bias[bias_ab$type=="b"], 3)` (both rounded to three decimal
-places  ---  see  `bias_ab`).   Interpreted  as amounts  of  bias,  those  two
-quantities    are     represented    by     vertical    lines     in    Figure
-\@ref(fig:known-Gbar-one-b). The red and blue bell-shaped curves represent the
-empirical laws  of $\psi_{n}^{a}$ and $\psi_{n}^{b}$  (recentered with respect
-to   $\\psi_{0}$,   and  renormalized)   as   estimated   by  kernel   density
-estimation.  The latter  is close  to the  black curve,  which represents  the
-standard normal density.
 
 ## Inference assuming the mechanism of action known, or not, second pass {#known-gbar-second-pass}
 

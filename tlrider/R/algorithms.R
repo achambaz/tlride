@@ -16,7 +16,7 @@
 #'   \code{list} with entries 'algo' and 'type_of_preds' (with \code{attribue}
 #'   'ML' set to \code{TRUE}).
 #'
-#' @references Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).  
+#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).  
 #' 
 #' @name algorithms
 NULL

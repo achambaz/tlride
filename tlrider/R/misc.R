@@ -16,7 +16,7 @@
 #'   form 'q_l'.   Each 'q_l' string  is repeated 'sample_size[l]'  times. The
 #'   function is used to make easily sub-data sets of a data set.
 #'
-#' @references Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
+#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
 "label"
 
 #' Samples from a mixture of uniform laws
@@ -39,5 +39,5 @@
 #'
 #' @return A \code{vector} of numerics, the sample.
 #'
-#' @references Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
+#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
 "sample_from_mixture_of_uniforms"

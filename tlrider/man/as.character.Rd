@@ -20,7 +20,7 @@ A character string  recalling what can be  done with an  object of
 Prints an object of \code{class} \code{LAW}.
 }
 \references{
-Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
+Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
 }
 \seealso{
 Other methods and functions for LAW objects: \code{\link{LAW}},

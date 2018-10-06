@@ -51,7 +51,7 @@ eic(obs)
 
 }
 \references{
-Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
+Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
 }
 \seealso{
 \code{\link{sample_from}}  to sample from the law (if  it is fully

@@ -41,7 +41,7 @@ Qbar_hat <- estimate_Qbar(obs, working_model_Q_one)
 
 }
 \references{
-Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
+Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
 }
 \seealso{
 \code{\link{estimate_QW}} to estimate the marginal distribution of

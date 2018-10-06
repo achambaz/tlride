@@ -32,7 +32,7 @@ QW_hat <- estimate_QW(obs)
 
 }
 \references{
-Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
+Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
 }
 \seealso{
 \code{\link{estimate_Gbar}}   to  estimate   the   conditional

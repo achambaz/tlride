@@ -34,7 +34,7 @@
 #' 
 #' @name tlrider
 #'
-#' @references Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
+#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
 #' 
 #' @examples
 #'

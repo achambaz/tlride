@@ -47,7 +47,7 @@ trim_glm_fit <- caret::getModelInfo("glm")$glm$trim
 #'   W, \code{\link{estimate_Qbar}} to estimate the conditional expectation of
 #'   Y given (A,W).
 #' 
-#' @references Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
+#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
 #' 
 #' @return The  result of  the fit  output by  the algorithm  trained on  the
 #'   learning data set.
@@ -100,7 +100,7 @@ estimate_Gbar <- function(dat, algorithm, ...) {
 #'   W,  \code{\link{estimate_Gbar}} to  estimate the  conditional probability
 #'   that A=1 given W.
 #'
-#' @references Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
+#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
 #' 
 #' @return The  result of  the fit  output by  the algorithm  trained on  the
 #'   learning data set.
@@ -146,7 +146,7 @@ estimate_Qbar <- function(dat, algorithm, ...) {
 #'   probability that A=1 given W, \code{\link{estimate_Qbar}} to estimate the
 #'   conditional expectation of Y given (A,W).
 #'
-#' @references Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
+#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
 #' 
 #' @return A  \code{tibble}  with  columns named  'value'  and 'weight'  that
 #'   describes the empirical law of 'W' in data set 'dat'.
@@ -192,7 +192,7 @@ estimate_QW <- function(dat) {
 #'
 #' @family estimating functions
 #'
-#' @references Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
+#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
 #' 
 #' @export
 compute_lGbar_hatAW <- function(A, W, Gbar_hat, threshold = 0.05) {
@@ -229,7 +229,7 @@ compute_lGbar_hatAW <- function(A, W, Gbar_hat, threshold = 0.05) {
 #'
 #' @family estimating functions
 #'
-#' @references Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
+#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
 #' 
 #' @export
 compute_Qbar_hatAW <- function(A, W, Qbar_hat, blip = FALSE) {
@@ -265,3 +265,53 @@ wrapper <- function(fit) {
   })
 }
 
+#' Builds the IPTW estimator
+#'
+#' Given a data set  consisting of realizations of (W,A,Y) in  [0,1] x {0,1} x
+#' [0,1] drawn  from a  common law  and the  conditional probability  that A=1
+#' given W, the so called 'Gbar' feature  of the law, either a priori known or
+#' estimated  beforehand, \code{compute_iptw}  builds  the  IPTW estimator  of
+#' \eqn{Psi} at the law that generated the data set.
+#'
+#' @param  dat The learning data  set. Must have the  same form as a  data set
+#'   produced    by    an    object   of    \code{class}    \code{LAW}    (see
+#'   '?tlrider').
+#'
+#' @param  Gbar  The  conditional  probability  that  'A=1'   given  'W',  a
+#'   \code{function}.
+#'
+#' @param  threshold A small  positive number (default  value 0.05) used  to bound
+#'   'Gbar' away from zero.
+#' 
+#' @seealso \code{\link{estimate_Gbar}} to  estimate the  conditional probability
+#'   that A=1 given W.
+#'
+#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
+#' 
+#' @return A  \code{vector} of  length  2 containing  the value  of the  IPTW
+#'   estimator and that of the estimator of its standard deviation.
+#'
+#' @examples
+#'
+#' ## create an experiment and draw a data set from it
+#' example(tlrider, echo = FALSE)
+#' obs <- sample_from(experiment, n = 250)
+#'
+#' ## suppose that 'Gbar' is known
+#' Gbar <- get_feature(experiment, "Gbar")
+#'
+#' ## compute the IPTW estimator
+#' psi_sig_n <- compute_iptw(obs, Gbar)
+#' 
+#' @export 
+compute_iptw <- function(dat, Gbar, threshold = 0.05) {
+  threshold <- R.utils::Arguments$getNumeric(threshold, c(0, 1/2))
+  W <- dat[, "W"]
+  A <- dat[, "A"]
+  Y <- dat[, "Y"]
+  lGAW <- A * Gbar(W) + (1 - A) * (1 - Gbar(W))
+  lGAW <- pmax(threshold, lGAW)
+  psi_n <- mean(Y * (2 * A - 1) / lGAW)
+  sig_n <- stats::sd(Y * (2 * A - 1) / lGAW) / sqrt(nrow(dat))
+  return(c(psi = psi_n, sig = sig_n))
+}

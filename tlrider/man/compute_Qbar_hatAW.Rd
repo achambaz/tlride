@@ -30,7 +30,7 @@ conditional    expectation   of    Y    given   (A,W)    (as   output    by
 expectation of Y  given (A,W)=(A_i,W_i).
 }
 \references{
-Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
+Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
 }
 \seealso{
 Other estimating functions: \code{\link{compute_lGbar_hatAW}},

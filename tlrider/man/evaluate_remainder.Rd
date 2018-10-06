@@ -57,7 +57,7 @@ evaluate_remainder(another_experiment, yet_another_experiment,
 
 }
 \references{
-Benkeser & Chambaz, "A Guided Tour in Targeted Learning Territory" (2018).
+Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
 }
 \seealso{
 \code{\link{evaluate_psi}} to  evaluate \eqn{Psi}  at a  law and
