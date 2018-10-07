@@ -1365,20 +1365,34 @@ Section \@ref(empirical-inves-IPTW).
 
 ### Another estimator of another parameter 
 
-ANTOINE
-
-let us introduce \begin{align*}\psi_{n}^{a} &\equiv \Exp_{P_{n}} \left(Y |
+Let  us introduce  \begin{align*}\psi_{n}^{a} &\equiv  \Exp_{P_{n}} \left(Y  |
 A=1\right)  -   \Exp_{P_{n}}  \left(Y  |  A=0\right)   \\  &=  \frac{1}{n_{1}}
 \sum_{i=1}^{n}   \one\{A_{i}=1\}   Y_{i}  -   \frac{1}{n_{0}}   \sum_{i=1}^{n}
 \one\{A_{i}=0\}  Y_{i}   \\&=\frac{1}{n_{1}}  \sum_{i=1}^{n}  A_{i}   Y_{i}  -
 \frac{1}{n_{0}} \sum_{i=1}^{n} (1 - A_{i})  Y_{i}, \end{align*} where $n_{1} =
 \sum_{i=1}^{n} A_{i} =  n - n_{0}$ is the number  of observations $O_{i}$ such
-that $A_{i}  = 1$.  It is  an estimator of \begin{equation*}\Exp_{P_{0}}  (Y |
-A=1) -  \Exp_{P_{0}} (Y  | A=0).\end{equation*} We  seize this  opportunity to
-demonstrate numerically the obvious fact that $\psi_{n}^{a}$ does not estimate
-$\psi_{0}$.
+that    $A_{i}    =    1$.     It   is    a    substitution    estimator    of
+\begin{equation*}\Phi(P_{0}) \equiv \Exp_{P_{0}} (Y | A=1) - \Exp_{P_{0}} (Y |
+A=0).\end{equation*} 
+
+We seize  this opportunity  to demonstrate numerically  the obvious  fact that
+$\psi_{n}^{a}$  *does   not*  estimate  $\Psi(P_{0})$  because,   in  general,
+$\Psi(P_{0})$  and $\Phi(P_{0})$  differ. This  is apparent  in the  following
+alternative expression of $\Phi(P_{0})$:
+
+\begin{align*} \Phi(P_{0}) &= \Exp_{P_{0}} \left(\Exp_{P_0}(Y \mid A, W) |A=1)
+\right) -  \Exp_{P_{0}} \left(\Exp_{P_0}(Y \mid  A, W) | A=0\right)\\  &= \int
+\Qbar_{0}(1, w) dP_{0,W|A=1}(w) - \int \Qbar_{0}(0, w) dP_{0,W|A=0}(w).
+\end{align*}
+
+Contrast  the above  equalities and  \@ref(eq:psi-zero).  In  the latter,  the
+outer  integral is  against the  marginal  law of  $W$ under  $P_{0}$. In  the
+former, the outer  integrals are respectively against the  conditional laws of
+$W$ given $A=1$ and $A=0$ under $P_{0}$.
 
 ### Empirical investigation {#empirical-inves-IPTW}
+
+ANTOINE
 
 (ref:known-Gbar-one-b) Kernel density estimators of the law of two estimators
 of $\psi_{0}$ (recentered  with respect to $\psi_{0}$,  and renormalized), one
