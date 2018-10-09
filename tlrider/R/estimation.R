@@ -75,10 +75,9 @@ estimate_Gbar <- function(dat, algorithm, ...) {
   } else {
     fit <- algorithm[[1]](dat, ...)
   }
-  fit$type_of_preds <- algorithm$type_of_preds
+  attr(fit, "type_of_preds") <- algorithm$type_of_preds
   return(fit)
 }
-
 
 #' Estimates the Qbar feature of an object of class LAW
 #'
@@ -124,11 +123,38 @@ estimate_Qbar <- function(dat, algorithm, ...) {
     dat <- as.data.frame(dat)
   }
   if (!attr(algorithm, "ML")) {
-    fit <- algorithm[[1]](formula = algorithm[[2]], data = dat)
+    if (!attr(algorithm, "stratify")) {
+      fit_both <- algorithm[[1]](formula = algorithm[[2]], data = dat)
+      fit_one <- list()
+      fit_zero <- list()
+    } else {
+      idx_one <- (dat$A == 1)
+      if (sum(idx_one) %in% c(0, nrow(dat))) {
+        stop("Impossible to stratify.\n")
+      }
+      fit_both <- list()
+      fit_one <- algorithm[[1]](formula = algorithm[[2]], data = dat[idx_one, ])
+      fit_zero <- algorithm[[1]](formula = algorithm[[2]], data = dat[!idx_one, ])
+    }
   } else {
-    fit <- algorithm[[1]](dat, ...)
+    if (!attr(algorithm, "stratify")) {
+      fit_both <- algorithm[[1]](dat, ...)
+      fit_one <- list()
+      fit_zero <- list()
+    } else {
+      idx_one <- (dat$A == 1)
+      if (sum(idx_one) %in% c(0, nrow(dat))) {
+        stop("Impossible to stratify.\n")
+      }
+      fit_both <- list()
+      fit_one <- algorithm[[1]](dat[idx_one, ], ...)
+      fit_zero <- algorithm[[1]](dat[!idx_one, ], ...)
+    }
   }
-  fit$type_of_preds <- algorithm$type_of_preds
+  fit <- tibble(a = c("both", "one", "zero"),
+                fit = list(fit_both, fit_one, fit_zero))
+  attr(fit, "type_of_preds") <- algorithm$type_of_preds
+  attr(fit, "stratify") <- attr(algorithm, "stratify")
   return(fit)
 }
 
@@ -198,7 +224,7 @@ estimate_QW <- function(dat) {
 compute_lGbar_hatAW <- function(A, W, Gbar_hat, threshold = 0.05) {
   threshold <- R.utils::Arguments$getNumeric(threshold, c(0, 1/2))
   dat <- data.frame(A = A, W = W)
-  GW <- stats::predict(Gbar_hat, newdata = dat, type = Gbar_hat$type_of_preds)
+  GW <- stats::predict(Gbar_hat, newdata = dat, type = attr(Gbar_hat, "type_of_preds"))
   lGAW <- A * GW + (1 - A) * (1 - GW)
   pred <- pmin(1 - threshold, pmax(lGAW, threshold))
   return(pred)
@@ -234,14 +260,51 @@ compute_lGbar_hatAW <- function(A, W, Gbar_hat, threshold = 0.05) {
 #' @export
 compute_Qbar_hatAW <- function(A, W, Qbar_hat, blip = FALSE) {
   blip <- R.utils::Arguments$getLogical(blip)
+  stratify <- R.utils::Arguments$getLogical(attr(Qbar_hat, "stratify"))
   if (!blip) {
     dat <- data.frame(Y = NA, A = A, W = W)
-    pred <- stats::predict(Qbar_hat, newdata = dat, type = Qbar_hat$type_of_preds)
+    if (!stratify) {
+      fit <- Qbar_hat %>% filter(.data$a == "both") %>%
+        pull(fit) %>% first
+      pred <- stats::predict(fit,
+                             newdata = dat,
+                             type = attr(Qbar_hat, "type_of_preds"))
+    } else {
+      fit_one <- Qbar_hat %>% filter(.data$a == "one") %>%
+        pull(fit) %>% first
+      fit_zero <- Qbar_hat %>% filter(.data$a == "zero") %>%
+        pull(fit) %>% first
+      pred <- vector("numeric", nrow(dat))
+      idx_one <- (dat$A == 1)
+      if (sum(idx_one) > 0) {
+        pred[idx_one] <- stats::predict(fit_one,
+                                        newdata = dat[idx_one, ],
+                                        type = attr(Qbar_hat, "type_of_preds"))
+      }
+      if (sum(!idx_one) > 0) {
+        pred[!idx_one] <- stats::predict(fit_zero,
+                                         newdata = dat[!idx_one, ],
+                                         type = attr(Qbar_hat, "type_of_preds"))
+      }
+    }
   } else {
-    pred <- stats::predict(Qbar_hat, newdata = data.frame(A = 1, W = W),
-                    type = Qbar_hat$type_of_preds) -
-      stats::predict(Qbar_hat, newdata = data.frame(A = 0, W = W),
-              type = Qbar_hat$type_of_preds)
+    if (!stratify) {
+      fit <- Qbar_hat %>% filter(.data$a == "both") %>%
+        pull(fit) %>% first
+      pred <- stats::predict(fit, newdata = data.frame(A = 1, W = W),
+                             type = attr(Qbar_hat, "type_of_preds")) -
+        stats::predict(fit, newdata = data.frame(A = 0, W = W),
+                       type = attr(Qbar_hat, "type_of_preds"))
+    } else {
+      fit_one <- Qbar_hat %>% filter(.data$a == "one") %>%
+        pull(fit) %>% first
+      fit_zero <- Qbar_hat %>% filter(.data$a == "zero") %>%
+        pull(fit) %>% first
+      pred <- stats::predict(fit_one, newdata = data.frame(A = 1, W = W),
+                             type = attr(Qbar_hat, "type_of_preds")) -
+        stats::predict(fit_zero, newdata = data.frame(A = 0, W = W),
+                       type = attr(Qbar_hat, "type_of_preds"))
+    }
   }
   return(pred)  
 }
@@ -261,7 +324,7 @@ compute_Qbar_hatAW <- function(A, W, Qbar_hat, blip = FALSE) {
 wrapper <- function(fit) {
   pryr::unenclose(function(obs) {
     obs <- as.data.frame(obs)
-    stats::predict(fit, newdata = obs, type = fit$type_of_preds)
+    stats::predict(fit, newdata = obs, type = attr(fit, "type_of_preds"))
   })
 }
 
@@ -316,3 +379,4 @@ compute_iptw <- function(dat, Gbar, threshold = 0.05) {
   sig_n <- stats::sd(Y * (2 * A - 1) / lGAW) / sqrt(nrow(dat))
   tibble::tibble(psi_n = psi_n, sig_n = sig_n)
 }
+  

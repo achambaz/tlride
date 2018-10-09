@@ -441,7 +441,7 @@ large  numbers,  the  following  code approximates  $\psi_{0}$  and  shows  it
 approximate value.
 
 ```{r approx-psi-zero-a-two}
-B <- 1e6
+B <- 1e5
 ideal_obs <- sample_from(experiment, B, ideal = TRUE)
 (psi_approx <- mean(ideal_obs[, "Yone"] - ideal_obs[, "Yzero"]))
 ```
@@ -1068,7 +1068,8 @@ obs <- sample_from(experiment, B)
 
 ```{r cramer-rao-another-experiment}
 obs_another_experiment <- sample_from(another_experiment, B, h = 0)
-(cramer_rao_Pi_zero_hat <- var(eic_another_experiment(obs_another_experiment)))
+(cramer_rao_Pi_zero_hat <-
+   var(eic_another_experiment(obs_another_experiment)))
 ```
 
 3. With a large independent sample drawn from $\Psi(P_0)$ (or $\Psi(\Pi_0)$),
@@ -1289,7 +1290,7 @@ and  the  observations  are  stored  in  `obs`  that  we  created  in  Section
 \@ref(exo-cramer-rao). 
 
 ```{r iter}
-iter <- 1e3
+iter <- 1e2
 ```
 
 Equal to `r B/1e6` million, the sample size `B` is very large. We will in fact
@@ -1304,14 +1305,17 @@ independently `r as.integer(iter)` times.
 The  following  sections  explore  different statistical  paths  to  inferring
 $\psi_{0}$ or, rather (though equivalently), $\Psi(P_{0})$.
 
-- Section   \@ref(simple-strategies)   present   two   simple   inference
-  strategies. Easier,  the first one  can be  carried out in  situations where
-  $\Gbar_{0}$ is  already known to  the statistician. A little  more involved,
-  the second one does not need such prior knowledge.
+- Section \@ref(simple-strategy) present a  simple inference strategy.  It can
+  be  carried out  in situations  where $\Gbar_{0}$  is already  known to  the
+  statistician.
 
+- Section    \@ref(nuisance)    discusses   the    estimation    of    some
+  infinite-dimensional  features of  $P_{0}$.   The  resulting estimators  are
+  later used to infer $\psi_{0}$.
+  
 - Section...
 
-# Two simple inference strategies {#simple-strategies}
+# A simple inference strategy {#simple-strategy}
 
 ## A cautionary parenthesis
 
@@ -1382,20 +1386,19 @@ Let $f:\bbR\times \bbR^{*} \times \bbR\times \bbR^{*}$ be given by $f(r,s,t,u)
    Also point out  to the line where the above  asymptotic variance of $X_{n}$
    is estimated with its empirical counterpart, say $V_{n}$.
 
-2. &#9761;  \stixdanger{}   Argue   how  the   delta-method  yields   that
-   $\sqrt{n}(\psi_{n}^{a}  - \Phi(P_{0}))$  converges in  law to  the centered
-   Gaussian law with a variance that can be estimated with 
-\begin{equation}
-v_{n}^{a} \equiv \nabla f(X_{n}) \times V_{n} \times \nabla f(X_{n})^{\top}. (\#eq:v-n-a)
-\end{equation}
+2. &#9761; \stixdanger{}  Argue  how the  [delta-method](#prop-delta-method)
+   yields that $\sqrt{n}(\psi_{n}^{a} - \Phi(P_{0}))$  converges in law to the
+   centered  Gaussian  law  with  a   variance  that  can  be  estimated  with
+   \begin{equation}  v_{n}^{a}  \equiv  \nabla f(X_{n})  \times  V_{n}  \times
+   \nabla f(X_{n})^{\top}. (\#eq:v-n-a) \end{equation}
 
 3. Check  that the  gradient $\nabla f$  of $f$ is  given by  $\nabla f(r,s,t,u)
    \equiv (1/s,  -r/s^{2}, -1/u, t/u^{2})$.  Point out  to the line  where the
    asymptotic variance of $\psi_{n}^{a}$ is estimated.
 
-## Assuming the mechanism of action known {#known-gbar-first-pass}
+## IPTW estimator assuming the mechanism of action known {#known-gbar-first-pass}
 
-### A simple IPTW substitution estimator
+### A simple substitution estimator
 
 Let us assume for a moment that we know $\Gbar_{0}$.  This would have been the
 case  indeed if  $P_{0}$  were a  controlled experiment.   Note  that, on  the
@@ -1423,6 +1426,9 @@ probability  of  treatment weighted)  estimator  because  of the  denominators
 $\ell\Gbar_{0}(A_{i},W_{i})$  in  its  definition.^[We  could  have  used  the
 alternative expression IPAW, where A (like  action) is substituted for T (like
 treatment).]
+
+In Section  \@ref(known-gbar-second-pass), we  develop another  IPTW estimator
+that does not assume that $\Gbar_{0}$ is known beforehand.
 
 ### Elementary statistical properties
 
@@ -1518,6 +1524,29 @@ to $\psi_{0}$,  and renormalized) as  estimated by kernel  density estimation.
 The latter is  close to the black curve, which  represents the standard normal
 density.
 
+
+# Nuisance parameters {#nuisance}
+
+## Anatomy of an expression {#anatomy}
+
+From now, all the  inference strategies that we will present  unfold in two or
+three  stages. For  all of  them,  the first  stage consists  in estimating  a
+selection  of features  of the  law  $P_{0}$ of  the experiment,  specifically
+chosen among  $Q_{0,W}$ (the marginal  law of $W$ under  $P_{0}$), $\Gbar_{0}$
+(the  conditional  probability  that  $A=1$   given  $W$  under  $P_{0}$)  and
+$\Qbar_{0}$ (the conditional mean of $Y$ given $A$ and $W$ under $P_{0}$). 
+
+In  this context,  because  they are  not the  parameter  of primary  interest
+(*i.e.*, they are  not the real-values feature $\Psi(P_{0})$),  they are often
+referred to as  *nuisance parameters* of $P_{0}$.  The unflaterring expression
+conveys the notion that their estimation  is merely an intermediate step along
+our path towards an inference of the target parameter.
+
+As for the reason why $Q_{0,W}$,  $\Gbar_{0}$ and $\Qbar_{0}$ are singled out,
+it is  because of  their role in  the definition of  $\Psi$ and  the efficient
+influence curve $D^{*}(P_{0})$.
+
+## 
 
 # ANTOINE
 
@@ -2312,17 +2341,17 @@ of} $\Qbar_{0}$ \tcg{(and of the marginal  law of} $W$\tcg{).  Once based on a
 ##
 ## not updated yet
 ##
+
 learned_features_fixed_sample_size <-
   learned_features_fixed_sample_size %>% # head(n = 100) %>%
   mutate(Qbar_hat_d = map(obs, ~ estimate_Qbar(., algorithm = working_model_Q_one)),
-         Qbar_hat_e = map(obs, ~ estimate_Qbar(., algorithm = kknn_algo,
-                                               trControl = kknn_control,
-                                               tuneGrid = kknn_grid))) %>%
+         Qbar_hat_e = map(obs, ~ estimate_Qbar(., algorithm = kknn_algo, ## bstTree
+                                               trControl = kknn_control, ## bstTree
+                                               tuneGrid = kknn_grid))) %>% ## bstTree
   mutate(blip_QW_d = map2(Qbar_hat_d, obs,
                           ~ compute_Qbar_hatAW(.y$A, .y$W, .x, blip = TRUE)),
          blip_QW_e = map2(Qbar_hat_e, obs,
                           ~ compute_Qbar_hatAW(.y$A, .y$W, .x, blip = TRUE)))
-
 
 psi_hat_de <- learned_features_fixed_sample_size %>%
   unnest(blip_QW_d, blip_QW_e) %>%
@@ -2357,7 +2386,7 @@ fig +
 \tcg{No that bad!   Yet, we know that} $\sqrt{n}$ \tcg{times  bias is bound to
 increase with sample size. To see this, check out the next chunks of code.}
 
-
+ 
 
 ```{r estimating-Qbar-two, eval = TRUE}
 ##
@@ -2388,9 +2417,9 @@ sample sizes.
 learned_features_varying_sample_size <-
   learned_features_varying_sample_size %>% 
   mutate(Qbar_hat_d = map(obs, ~ estimate_Qbar(., algorithm = working_model_Q_one)),
-         Qbar_hat_e = map(obs, ~ estimate_Qbar(., algorithm = kknn_algo,
-                                               trControl = kknn_control,
-                                               tuneGrid = kknn_grid))) %>%
+         Qbar_hat_e = map(obs, ~ estimate_Qbar(., algorithm = kknn_algo, ## bstTree
+                                               trControl = kknn_control, ## bstTree
+                                               tuneGrid = kknn_grid))) %>% ## bstTree
   mutate(blip_QW_d = map2(Qbar_hat_d, obs,
                           ~ compute_Qbar_hatAW(.y$A, .y$W, .x, blip = TRUE)),
          blip_QW_e = map2(Qbar_hat_e, obs,

@@ -1,3 +1,6 @@
+## -------------------
+## working_model_G_one
+## -------------------
 working_model_G_one <- list(
   model = function(...) {trim_glm_fit(glm(family = binomial(), ...))},
   formula = stats::as.formula(
@@ -11,6 +14,9 @@ working_model_G_one <- list(
 )
 attr(working_model_G_one, "ML") <- FALSE
 
+## -------------------
+## working_model_G_two
+## -------------------
 working_model_G_two <- list(
   model = function(...) {trim_glm_fit(glm(family = binomial(), ...))},
   formula = stats::as.formula(
@@ -24,6 +30,9 @@ working_model_G_two <- list(
 )
 attr(working_model_G_two, "ML") <- FALSE
 
+## ---------------------
+## working_model_G_three
+## ---------------------
 working_model_G_three <- list(
   model = function(...) {trim_glm_fit(glm(family = binomial(), ...))},
   formula = stats::as.formula(
@@ -35,7 +44,9 @@ working_model_G_three <- list(
 )
 attr(working_model_G_three, "ML") <- FALSE
 
-
+## -------------------
+## working_model_Q_one
+## -------------------
 working_model_Q_one <- list(
   model = function(...) {trim_glm_fit(glm(family = binomial(), ...))},
   formula = stats::as.formula(
@@ -46,8 +57,11 @@ working_model_Q_one <- list(
   type_of_preds = "response"
 )
 attr(working_model_Q_one, "ML") <- FALSE
+attr(working_model_Q_one, "stratify") <- FALSE
 
-
+## ---------
+## kknn_algo
+## ---------
 kknn_algo <- list(
   algo = function(dat, ...) {
     args <- list(...)
@@ -55,7 +69,7 @@ kknn_algo <- list(
       keep <- sample.int(nrow(dat), args$Subsample)
       dat <- dat[keep, ]
     }
-    fit <- caret::train(Y ~ I(10*A) + W, ## a tweak
+    fit <- caret::train(Y ~ I(10 * A + W), ## tweak
                         data = dat,
                         method = "kknn",
                         verbose = FALSE,
@@ -71,10 +85,56 @@ kknn_algo <- list(
   type_of_preds = "raw"
 )
 attr(kknn_algo, "ML") <- TRUE
+attr(kknn_algo, "stratify") <- FALSE
 
 kknn_grid <- expand.grid(kmax = 5, distance = 2, kernel = "gaussian")
 
-kknn_control <- caret::trainControl(method = "cv", number = 2,
+kknn_control <- caret::trainControl(method = "none",
                                     predictionBounds = c(0, 1),
                                     trim = TRUE,
                                     allowParallel = TRUE)
+## ------------------
+## boosting_tree_algo
+## ------------------
+bstTree_algo <- list(
+  algo = function(dat, ...) {
+    fit <- caret::train(Y ~ W,
+                        data = dat,
+                        method = "bstTree",
+                        ...)
+    return(fit)
+  },
+  type_of_preds = "raw"
+)
+attr(bstTree_algo, "ML") <- TRUE
+attr(bstTree_algo, "stratify") <- TRUE
+
+bstTree_grid <- expand.grid(mstop = 25, nu = 0.1,maxdepth = 10)
+
+bstTree_control <- caret::trainControl(method = "none", # method = "cv", number = 2,
+                                       predictionBounds = c(0, 1),
+                                       trim = TRUE,
+                                       allowParallel = TRUE)
+## ------------------
+## boosting_lm_algo
+## ------------------
+bstLm_algo <- list(
+  algo = function(dat, ...) {
+    fit <- caret::train(Y ~ W,
+                        data = dat,
+                        method = "BstLm",
+                        ...)
+    return(fit)
+  },
+  type_of_preds = "raw"
+)
+attr(bstLm_algo, "ML") <- TRUE
+attr(bstLm_algo, "stratify") <- TRUE
+
+bstLm_grid <- expand.grid(mstop = 50, nu = 0.1)
+
+bstLm_control <- caret::trainControl(method = "none", 
+                                     predictionBounds = c(0, 1),
+                                     trim = TRUE,
+                                     allowParallel = TRUE)
+

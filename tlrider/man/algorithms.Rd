@@ -10,6 +10,12 @@
 \alias{kknn_algo}
 \alias{kknn_grid}
 \alias{kknn_control}
+\alias{bstTree_algo}
+\alias{bstTree_grid}
+\alias{bstTree_control}
+\alias{bstLm_algo}
+\alias{bstLm_grid}
+\alias{bstLm_control}
 \title{Algorithms for the estimation of Gbar and Qbar}
 \format{Either  a  \code{list}   with  entries  'model',  'formula'  and
   'type_of_preds'  (with \code{attribue}  'ML'  set to  \code{FALSE}) or  a
@@ -31,6 +37,18 @@ kknn_algo
 kknn_grid
 
 kknn_control
+
+bstTree_algo
+
+bstTree_grid
+
+bstTree_control
+
+bstLm_algo
+
+bstLm_grid
+
+bstLm_control
 }
 \description{
 Algorithms  for the  estimation of  'Gbar' and  'Qbar'. Some  are based  on

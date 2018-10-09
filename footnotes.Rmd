@@ -140,10 +140,10 @@ $\Exp(U)$ are well  defined, it holds that $\Exp(\Exp(U|V))  = \Exp(U)$.], and
 the second and fifth hold by  definition of the conditional expectation.  This
 completes the proof.
 
-## The delta-method {#lemma-delta-method}
+## The delta-method {#prop-delta-method}
 
 Let  $f$  be a  map  from  $\Theta \subset  \bbR^{p}$  to  $\bbR^{q}$ that  is
-differentiable at $\theta\in Theta$. Let $X_{n}$ be a random vector taking its
+differentiable at $\theta\in \Theta$. Let $X_{n}$ be a random vector taking its
 values in $\Theta$.
 
 ```{proposition}

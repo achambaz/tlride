@@ -49,3 +49,27 @@ NULL
 #' @rdname algorithms
 "kknn_control"
 
+#' @docType data
+#' @rdname algorithms
+"bstTree_algo"
+
+#' @docType data
+#' @rdname algorithms
+"bstTree_grid"
+
+#' @docType data
+#' @rdname algorithms
+"bstTree_control"
+
+#' @docType data
+#' @rdname algorithms
+"bstLm_algo"
+
+#' @docType data
+#' @rdname algorithms
+"bstLm_grid"
+
+#' @docType data
+#' @rdname algorithms
+"bstLm_control"
+
