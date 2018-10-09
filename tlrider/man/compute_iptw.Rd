@@ -17,10 +17,6 @@ produced    by    an    object   of    \code{class}    \code{LAW}    (see
 \item{threshold}{A small  positive number (default  value 0.05) used  to bound
 'Gbar' away from zero.}
 }
-\value{
-A  \code{vector} of  length  2 containing  the value  of the  IPTW
-  estimator and that of the estimator of its standard deviation.
-}
 \description{
 Given a data set  consisting of realizations of (W,A,Y) in  [0,1] x {0,1} x
 [0,1] drawn  from a  common law  and the  conditional probability  that A=1
@@ -38,11 +34,15 @@ obs <- sample_from(experiment, n = 250)
 Gbar <- get_feature(experiment, "Gbar")
 
 ## compute the IPTW estimator
-psi_sig_n <- compute_iptw(obs, Gbar)
+(compute_iptw(obs, Gbar))
 
 }
 \references{
 Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
+
+  @return  A  \code{tibble} containing  the  value  of the  IPTW  estimator
+  ('psi_n'  column) and  that of  the estimator  of its  standard deviation
+  ('sig_n' column).
 }
 \seealso{
 \code{\link{estimate_Gbar}} to  estimate the  conditional probability

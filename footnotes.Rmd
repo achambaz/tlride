@@ -140,7 +140,22 @@ $\Exp(U)$ are well  defined, it holds that $\Exp(\Exp(U|V))  = \Exp(U)$.], and
 the second and fifth hold by  definition of the conditional expectation.  This
 completes the proof.
 
+## The delta-method {#lemma-delta-method}
 
+Let  $f$  be a  map  from  $\Theta \subset  \bbR^{p}$  to  $\bbR^{q}$ that  is
+differentiable at $\theta\in Theta$. Let $X_{n}$ be a random vector taking its
+values in $\Theta$.
+
+```{proposition}
+If $\sqrt{n} (X_{n} - \theta)$ converges in  law to the Gaussian law with mean
+$\mu$ and covariance  matrix $\Sigma$, then $\sqrt{n}  (f(X_{n}) - f(\theta))$
+converge in  law to the Gaussian  law with mean $\nabla  f(\theta) \times \mu$
+and  covariance   matrix  $\nabla   f(\theta)  \times  \Sigma   \times  \nabla
+f(\theta)^{\top}$.    In   addition,   if  $\Sigma_{n}$   estimates   $\Sigma$
+consistently then,  by Slutsky's lemma,  the asymptotic variance  of $\sqrt{n}
+(f(X_{n}) - f(\theta))$ is consistently estimated with $\nabla f(X_{n}) \times
+\Sigma_{n} \times \nabla f(X_{n})^{\top}$.
+```
 
 
 ## Asymptotic negligibility of the remainder term {#asymp-neglig-remain}

@@ -288,8 +288,9 @@ wrapper <- function(fit) {
 #'
 #' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
 #' 
-#' @return A  \code{vector} of  length  2 containing  the value  of the  IPTW
-#'   estimator and that of the estimator of its standard deviation.
+#'   @return  A  \code{tibble} containing  the  value  of the  IPTW  estimator
+#'   ('psi_n'  column) and  that of  the estimator  of its  standard deviation
+#'   ('sig_n' column).
 #'
 #' @examples
 #'
@@ -301,7 +302,7 @@ wrapper <- function(fit) {
 #' Gbar <- get_feature(experiment, "Gbar")
 #'
 #' ## compute the IPTW estimator
-#' psi_sig_n <- compute_iptw(obs, Gbar)
+#' (compute_iptw(obs, Gbar))
 #' 
 #' @export 
 compute_iptw <- function(dat, Gbar, threshold = 0.05) {
@@ -313,5 +314,5 @@ compute_iptw <- function(dat, Gbar, threshold = 0.05) {
   lGAW <- pmax(threshold, lGAW)
   psi_n <- mean(Y * (2 * A - 1) / lGAW)
   sig_n <- stats::sd(Y * (2 * A - 1) / lGAW) / sqrt(nrow(dat))
-  return(c(psi = psi_n, sig = sig_n))
+  tibble::tibble(psi_n = psi_n, sig_n = sig_n)
 }
