@@ -1531,10 +1531,10 @@ density.
 
 From now, all the  inference strategies that we will present  unfold in two or
 three  stages. For  all of  them,  the first  stage consists  in estimating  a
-selection  of features  of the  law  $P_{0}$ of  the experiment,  specifically
-chosen among  $Q_{0,W}$ (the marginal  law of $W$ under  $P_{0}$), $\Gbar_{0}$
-(the  conditional  probability  that  $A=1$   given  $W$  under  $P_{0}$)  and
-$\Qbar_{0}$ (the conditional mean of $Y$ given $A$ and $W$ under $P_{0}$). 
+selection of features of the law $P_{0}$ of the experiment.  Specifically, the
+features are chosen  among $Q_{0,W}$ (the marginal law of  $W$ under $P_{0}$),
+$\Gbar_{0}$ (the conditional  probability that $A=1$ given  $W$ under $P_{0}$)
+and $\Qbar_{0}$ (the conditional mean of $Y$ given $A$ and $W$ under $P_{0}$).
 
 In  this context,  because  they are  not the  parameter  of primary  interest
 (*i.e.*, they are  not the real-values feature $\Psi(P_{0})$),  they are often
@@ -1546,7 +1546,54 @@ As for the reason why $Q_{0,W}$,  $\Gbar_{0}$ and $\Qbar_{0}$ are singled out,
 it is  because of  their role in  the definition of  $\Psi$ and  the efficient
 influence curve $D^{*}(P_{0})$.
 
-## 
+## An algorithmic stance
+
+In general, we  can view an estimator  of any feature $f_0$ of  $P_{0}$ as the
+output of an algorithm $\Algo$ that maps any element of 
+
+\begin{equation*}    \calM^{\text{empirical}}     \equiv    \left\{\frac{1}{m}
+\sum_{i=1}^{m} \Dirac(o_{i}) : m \geq 1, o_{1}, \ldots, o_{m} \in [0,1] \times
+\{0,1\} \times [0,1]\right\} \end{equation*}
+
+to   the    set   $\calF$   where    $f_{0}$   is   know   to    live.   Here,
+$\calM^{\text{empirical}}$  can be  interpreted  as the  set  of all  possible
+empirical measures summarizing  the outcomes of any number  of replications of
+the experiment $P_{0}$. In particular, $P_{n}$ belongs to this set.
+
+The `tlrider` package includes such  template algorithms for the estimation of
+$Q_{0,W}$, $\Gbar_{0}$ and $\Qbar_{0}$. We  illustrate how they work and their
+use in the next subsections.
+
+### `QW`
+
+For instance, `estimate_QW` is an algorithm for the estimation of the marginal
+law of $W$ under $P_{0}$ (to see its man page, simply run `?estimate_QW`). The
+following chunk  of code  estimates $Q_{0,W}$  based on the  $n =  1000$ first
+observations in `obs`:
+
+```{r estimate-QW-one}
+QW_hat <- estimate_QW(head(obs, 1e3))
+```
+
+It is easy to sample independent observations from `QW_hat`. To do so, we make
+a copy of `experiment` and replace its marginal law of $W$ with that described
+by `QW_hat`:
+
+(ref:estimate-QW-two)   Histogram   representing   1000   observations   drawn
+independently from `QW_hat`.
+
+```{r estimate-QW-two, fig.cap = '(ref:estimate-QW-two)'}
+empirical_experiment <- copy(experiment)
+alter(empirical_experiment, QW = QW_hat)
+sample_from(empirical_experiment, 1e3) %>% as.tibble %>%
+  ggplot(aes(x = W)) + stat_bin(bins = 40)
+```
+
+### `Gbar`
+
+
+
+### `Qbar`
 
 # ANTOINE
 
@@ -1577,11 +1624,6 @@ data. We will consider approaches to  estimation of $\Gbar_0$ based on machine
 learning  (if the  `"ML"`  attribute  of `algorithm`  is  `TRUE`)  or not  (if
 `FALSE`).
 
-\tcg{There's a lot  to deparse in these  code chunks. I worry that  it will be
-overwhelming for  the reader. Is  it possible to  simplify the syntax  at all?
-E.g., could  we create  an S3  class for  algorithms? Not  sure what  the best
-strategy  is, but  as  it  is I  think  most readers  will  have  a hard  time
-understanding what these chunks do.}
 
 ```{r intro-est-G}
 ## estimate_G <- function(dat, algorithm, ...) {
@@ -1641,14 +1683,6 @@ from $W_1, \dots, W_n$ with equal probability $n^{-1}$.
 # not sure how this is being handled in the code 
 # and whether we need to introduce a function for this here?
 ```
-In  general, we  can view  an estimator  of $\Qbar_0$  (or any  other relevant
-nuisance parameter)  as an algorithm  $\hat{Q}: \calM \rightarrow  \calQ$ that
-maps a distribution from the model  into the nuisance parameter space. In this
-case, $\calQ$ consists of all functions mapping from $\{0,1\} \times [0,1]$ to
-$\bbR$. We can be our estimate $\Qbar_n$ as the algorithm $\hat{Q}$ applied on
-$P_{n}$,  the empirical  measure, *i.e.*,  the law  consisting in  drawing one
-among $O_{1}$, \ldots, $O_{n}$ with equal probabilities $n^{-1}$. Thus, we can
-write $\Qbar_n = \hat{Q}(P_n)$.
 
 ## &#9881; \gear Algorithms {#exo-algorithms}
 
@@ -2345,9 +2379,9 @@ of} $\Qbar_{0}$ \tcg{(and of the marginal  law of} $W$\tcg{).  Once based on a
 learned_features_fixed_sample_size <-
   learned_features_fixed_sample_size %>% # head(n = 100) %>%
   mutate(Qbar_hat_d = map(obs, ~ estimate_Qbar(., algorithm = working_model_Q_one)),
-         Qbar_hat_e = map(obs, ~ estimate_Qbar(., algorithm = kknn_algo, ## bstTree
-                                               trControl = kknn_control, ## bstTree
-                                               tuneGrid = kknn_grid))) %>% ## bstTree
+         Qbar_hat_e = map(obs, ~ estimate_Qbar(., algorithm = bstTree_algo, ## bstTree
+                                               trControl = bstTree_control, ## bstTree
+                                               tuneGrid = bstTree_grid))) %>% ## bstTree
   mutate(blip_QW_d = map2(Qbar_hat_d, obs,
                           ~ compute_Qbar_hatAW(.y$A, .y$W, .x, blip = TRUE)),
          blip_QW_e = map2(Qbar_hat_e, obs,
@@ -2417,9 +2451,9 @@ sample sizes.
 learned_features_varying_sample_size <-
   learned_features_varying_sample_size %>% 
   mutate(Qbar_hat_d = map(obs, ~ estimate_Qbar(., algorithm = working_model_Q_one)),
-         Qbar_hat_e = map(obs, ~ estimate_Qbar(., algorithm = kknn_algo, ## bstTree
-                                               trControl = kknn_control, ## bstTree
-                                               tuneGrid = kknn_grid))) %>% ## bstTree
+         Qbar_hat_e = map(obs, ~ estimate_Qbar(., algorithm = bstTree_algo, ## bstTree
+                                               trControl = bstTree_control, ## bstTree
+                                               tuneGrid = bstTree_grid))) %>% ## bstTree
   mutate(blip_QW_d = map2(Qbar_hat_d, obs,
                           ~ compute_Qbar_hatAW(.y$A, .y$W, .x, blip = TRUE)),
          blip_QW_e = map2(Qbar_hat_e, obs,
@@ -2522,11 +2556,35 @@ set_Qbar_Gbar <- function(obs, Qhat, Ghat) {
 }
 eic_hat <- function(obs, Qhat, Ghat, psi_hat) {
   Qbar <- function(newdata) {
+    stratify <- R.utils::Arguments$getLogical(attr(Qhat, "stratify"))
     if (!is.data.frame(newdata)) {
       newdata <- as.data.frame(newdata)
     }
-    predict(Qhat, newdata = newdata, type = Qhat$type_of_preds)
+    if (!stratify) {
+      fit <- Qhat %>% filter(.data$a == "both") %>%
+        pull(fit) %>% first
+      pred <- predict(fit, newdata = newdata, type = attr(Qhat, "type_of_preds"))
+    } else {
+      fit_one <- Qhat %>% filter(.data$a == "one") %>%
+        pull(fit) %>% first
+      fit_zero <- Qhat %>% filter(.data$a == "zero") %>%
+        pull(fit) %>% first
+      pred <- vector("numeric", nrow(newdata))
+      idx_one <- (newdata$A == 1)
+      if (sum(idx_one) > 0) {
+        pred[idx_one] <- stats::predict(fit_one,
+                                        newdata = newdata[idx_one, ],
+                                        type = attr(Qbar_hat, "type_of_preds"))
+      }
+      if (sum(!idx_one) > 0) {
+        pred[!idx_one] <- stats::predict(fit_zero,
+                                         newdata = newdata[!idx_one, ],
+                                         type = attr(Qbar_hat, "type_of_preds"))
+      }
+    }
+    return(pred)
   }
+
   Gbar <- function(newdata) {
     if (!is.data.frame(newdata)) {
       newdata <- as.data.frame(newdata)
@@ -2550,7 +2608,7 @@ estimators is then straightforward.
 
 (ref:one-step-two) Write caption.
 
-```{r one-step-two, fig.cap = '(ref:one-step-two)'}
+```{r one-step-two, fig.cap = '(ref:one-step-two)', eval = FALSE}
 ##
 ## not updated yet
 ##
@@ -2591,11 +2649,11 @@ ggplot() +
        x = expression(
          paste(sqrt(n/v[n]^{list(dos, eos)}) * (psi[n]^{list(dos, eos)} - psi[0]))))
 ```
-
-It seems  that the one-step correction  is quite good (in  particular, compare
+ 
+It seems that the one-step correction is quite good (in particular, compare
 `bias_de` with `bias_de_one_step`):
 
-```{r remove-soon}
+```{r remove-soon, eval = FALSE}
 ##
 ## not updated yet
 ##
@@ -2605,7 +2663,7 @@ bind_rows(bias_de, bias_de_one_step)
 What about the  estimation of the asymptotic variance, and  of the mean-square
 errors of the estimators?
 
-```{r enhance}
+```{r enhance, eval = FALSE}
 ##
 ## not updated yet
 ##

@@ -21,7 +21,7 @@ bookdown::gitbook:
     before_body: tlride_header.html
     in_header: mathjax_number.html
   css: tlride.css
-  mathjax: "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML"
+
 
 bookdown::pdf_book:
   toc: true
