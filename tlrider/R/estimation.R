@@ -230,6 +230,38 @@ compute_lGbar_hatAW <- function(A, W, Gbar_hat, threshold = 0.05) {
   return(pred)
 }
 
+#' Computes the conditional probability of A = 1 given W=W_i
+#'
+#' Given  realizations of  W  in [0,1]  and an  estimator  of the  conditional
+#' probability  that   A=1  given  W  (as   output  by  \code{estimate_Gbar}),
+#' \code{compute_Gbar_hatW}  computes  the  conditional probability  that  A=1
+#' given W=W_i.
+#'
+#' @param W A \code{vector} of real numbers between 0 and 1.
+#'
+#' @param Gbar_hat The output  of \code{estimate_Gbar}, derived by training an
+#'   algorithm on a learning data set (see '?estimate_Gbar').
+#'
+#' @param threshold A \code{numeric} taking values between 0 and 1/2 (defaults
+#'   to 0.05).
+#'
+#'@return  A \code{vector}  containing  'GW'  defined as  \eqn{Gbar_hat(W)}
+#'   bounded away from 0 and 1  by 'threshold', where \eqn{Gbar_hat(W)} is the
+#'   conditional probability that A=1 given W predicted by the fit 'Gbar_hat'.
+#'
+#' @family estimating functions
+#'
+#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
+#' 
+#' @export
+compute_Gbar_hatW <- function(W, Gbar_hat, threshold = 0.05) {
+  threshold <- R.utils::Arguments$getNumeric(threshold, c(0, 1/2))
+  dat <- data.frame(W = W)
+  GW <- stats::predict(Gbar_hat, newdata = dat, type = attr(Gbar_hat, "type_of_preds"))
+  pred <- pmin(1 - threshold, pmax(GW, threshold))
+  return(pred)
+}
+
 
 #' Computes the conditional expectation of Y given (A,W)=(A_i,W_i)
 #'

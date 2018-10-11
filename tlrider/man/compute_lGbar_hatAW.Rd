@@ -33,7 +33,7 @@ probability that A=A_i given W=W_i.
 Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
 }
 \seealso{
-Other estimating functions: \code{\link{compute_Qbar_hatAW}},
-  \code{\link{wrapper}}
+Other estimating functions: \code{\link{compute_Gbar_hatW}},
+  \code{\link{compute_Qbar_hatAW}}, \code{\link{wrapper}}
 }
 \concept{estimating functions}

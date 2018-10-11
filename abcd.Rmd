@@ -40,6 +40,27 @@ knitr::opts_chunk$set(
 
 options(dplyr.print_min = 6, dplyr.print_max = 6)
 ```
+```{r include=FALSE, cache=FALSE}
+options(digits = 3)
+
+knitr::opts_chunk$set(
+  comment = "#>",
+  collapse = TRUE,
+  cache = TRUE,
+  out.width = "70%",
+  fig.align = 'center',
+  fig.width = 6, # used to have: fig.width = 12,
+  fig.asp = 0.618, # used to have: fig.height = 4, 
+  fig.show = "hold",
+  fig.path = 'img/',
+  size = "tiny",
+  message = FALSE,
+  warning = FALSE,
+  warnings = FALSE
+)
+
+options(dplyr.print_min = 6, dplyr.print_max = 6)
+```
 # A ride
 
 
@@ -474,9 +495,12 @@ different actions involves *quantiles* as opposed to *averages*.
 Let \begin{equation*} Q_{0,Y}(y,  A, W) \equiv \int_{0}^y q_{0,Y}(u,  A, W) du
 \end{equation*} be the conditional cumulative distribution of reward $Y$ given
 $A$ and $W$, evaluated  at $y \in ]0,1[$, that is implied  by $P_0$.  For each
-action  $a  \in  \{0,1\}$  and   $c  \in  ]0,1[$,  introduce  \begin{equation}
+action $a \in \{0,1\}$ and $c \in ]0,1[$, introduce 
+
+\begin{equation}
 \gamma_{0,a,c}  \equiv  \inf  \left\{y  \in  ]0,1[ :  \int  Q_{0,Y}(y,  a,  w)
-dQ_{0,W}(w) \ge c \right\}. (\#eq:def-quantile)\end{equation}
+dQ_{0,W}(w) \ge c \right\}. (\#eq:def-quantile)
+\end{equation}
 
 It   is  not   very   difficult  to   check  (see   Problem   1  below)   that
 \begin{equation}\gamma_{0,a,c} =  \inf\left\{y \in ]0,1[  : \Pr_{\bbP_{0}}(Y_a
@@ -1562,38 +1586,158 @@ the experiment $P_{0}$. In particular, $P_{n}$ belongs to this set.
 
 The `tlrider` package includes such  template algorithms for the estimation of
 $Q_{0,W}$, $\Gbar_{0}$ and $\Qbar_{0}$. We  illustrate how they work and their
-use in the next subsections.
+use in the next sections.
 
-### `QW`
+## `QW`
 
-For instance, `estimate_QW` is an algorithm for the estimation of the marginal
-law of $W$ under $P_{0}$ (to see its man page, simply run `?estimate_QW`). The
-following chunk  of code  estimates $Q_{0,W}$  based on the  $n =  1000$ first
-observations in `obs`:
+For instance, `estimate_QW` is an algorithm  $\Algo$ for the estimation of the
+marginal  law  of  $W$  under  $P_{0}$  (to  see  its  man  page,  simply  run
+`?estimate_QW`).  It  is a map  from $\calM^{\text{empirical}}$ to the  set of
+laws on $[0,1]$. The following chunk  of code estimates $Q_{0,W}$ based on the
+$n = 1000$ first observations in `obs`:
 
 ```{r estimate-QW-one}
 QW_hat <- estimate_QW(head(obs, 1e3))
 ```
 
-It is easy to sample independent observations from `QW_hat`. To do so, we make
-a copy of `experiment` and replace its marginal law of $W$ with that described
-by `QW_hat`:
+It is  easy to sample  independent observations from  `QW_hat`.  To do  so, we
+create an  object of  class `LAW`  then set its  marginal law  of $W$  to that
+described by `QW_hat` and specify its `sample_from` feature:
 
-(ref:estimate-QW-two)   Histogram   representing   1000   observations   drawn
-independently from `QW_hat`.
+(ref:estimate-QW-two) Histogram representing 1000 observations drawn independently from `QW_hat`. The superimposed red curve is the true density of $Q_{0,W}$.
 
 ```{r estimate-QW-two, fig.cap = '(ref:estimate-QW-two)'}
-empirical_experiment <- copy(experiment)
+empirical_experiment <- LAW()
 alter(empirical_experiment, QW = QW_hat)
-sample_from(empirical_experiment, 1e3) %>% as.tibble %>%
-  ggplot(aes(x = W)) + stat_bin(bins = 40)
+alter(empirical_experiment, sample_from = function(n) {
+  QW <- get_feature(empirical_experiment, "QW")
+  W <- sample(pull(QW, "value"), n, prob = pull(QW, "weight"))
+  cbind(W = W, A = NA, Y = NA)
+})
+W <- sample_from(empirical_experiment, 1e3) %>% as.tibble
+W %>% ggplot() +
+  geom_histogram(aes(x = W, y = stat(density)), bins = 40) +
+  stat_function(fun = get_feature(experiment, "QW"), col = "red")
 ```
 
-### `Gbar`
+Note that all the $W$s sampled from `QW_hat` fall in the set $\{W_{1}, \ldots,
+W_{n}\}$ of  observed $W$s in `obs`  (an obvious fact given  the definition of
+the `sample_from` feature of `empirical_experiment`:
+
+```{r estimate-QW-three}
+(length(intersect(pull(W, W), head(obs[, "W"], 1e3))))
+```
+
+This  is   because  `estimate_QW`  estimates  $Q_{0,W}$   with  its  empirical
+counterpart, *i.e.*,
+
+\begin{equation*}\frac{1}{n} \sum_{i=1}^{n} \Dirac(W_{i}).\end{equation*}
 
 
+## `Gbar` {#nuisance-Gbar}
 
-### `Qbar`
+Another template algorithm is built-in into `tlrider`: `estimate_Gbar` (to see
+its   man   page,   simply  run   `?estimate_Gbar`).   Unlike   `estimate_QW`,
+`estimate_Gbar` needs further specification of the algorithm. The package also
+includes examples of such specifications. 
+
+There are two  sorts of specifications, of  which we say that  they are either
+*working model-based* or *machine learning-based*.  We discuss the former sort
+in  the   next  subsection.    The  latter  sort   is  discussed   in  Section
+\@ref(nuisance-Qbar-ml).
+
+### Working model-based algorithms
+
+Let us take a look at `working_model_G_one` for instance: 
+
+```{r estimate-Gbar-one}
+working_model_G_one
+```
+
+and focus  on its `model` and  `formula` attributes. The former  relies on the
+`glm` and `binomial`  functions from `base` `R`, and  on `trim_glm_fit` (which
+removes information  that we do  not need from  the standard output  of `glm`,
+simply run  `?trim_glm_fit` to see the  function's man page). The  latter is a
+`formula` that characterizes what we call a *working model* for $\Gbar_{0}$. 
+
+In words,  by using `working_model_G_one`  we implicitly choose  the so-called
+logistic   (or   negative   binomial)   loss   function   $L_{a}$   given   by
+
+\begin{equation} 
+(\#eq:logis-loss) -L_{a}(f)(A,W) \equiv A \log f(W) + (1 - A)
+\log (1 - f(W)) 
+\end{equation} 
+
+for  any  function  $f :  [0,1]  \to  [0,1]$  paired  with the  working  model
+\begin{equation*}   \calF_{1}   \equiv    \left\{f_{\theta}   :   \theta   \in
+\bbR^{5}\right\}  \end{equation*}  where,  for   any  $\theta  \in  \bbR^{5}$,
+\begin{equation*}\logit  f_{\theta}  (W)  \equiv \theta_{0}  +  \sum_{j=1}^{4}
+\theta_{j} W^{j/2}.\end{equation*}
+
+We  acted  as  oracles when  we  specified  the  working  model: it  is  *well
+specified*, *i.e.*, it happens that $\Gbar_{0}$ is the unique minimizer of the
+risk  entailed  by  $L_{a}$  over  $\calF_{1}$:  \begin{equation*}\Gbar_{0}  =
+\mathop{\arg\min}_{f_{\theta}        \in        \calF_{1}}        \Exp_{P_{0}}
+\left(L_{a}(f_{\theta})(A,W)\right).\end{equation*}  Therefore, the  estimator
+$\Gbar_{n}$ obtained by minimizing the empirical risk
+
+\begin{equation*}
+\Exp_{P_{n}} \left(L_{a}(f_{\theta})(A,W)\right)  = \frac{1}{n} \sum_{i=1}^{n}
+L_{a}(f_{\theta})(A_{i},W_{i})
+\end{equation*} 
+
+over $\calF_{1}$ estimates $\Gbar_{0}$ consistently.
+
+### Visualization
+
+To illustrate the use of the algorithm $\Algo_{\Gbar,1}$ obtained by combining
+`estimate_Gbar` and  `working_model_G_one`, let us estimate  $=Gbar_{0}$ based
+on the first $n = 1000$ observations in `obs`:
+
+```{r estimate-Gbar-two}
+Gbar_hat <- estimate_Gbar(head(obs, 1e3), algorithm = working_model_G_one)
+```
+
+Using     `compute_Gbar_hat_W`^[See     also    the     companion     function
+`compute_lGbar_hat_AW`  (run `?compute_lGbar_hat_AW`  to  see  its man  page.]
+(simply run  `?compute_Gbar_hat_W` to see  its man page)  makes it is  easy to
+compare visually the estimator  $\Gbar_{n} \equiv \Algo_{\Gbar,1}(P_{n})$ with
+its target $\Gbar0$:
+
+(ref:estimate-Gbar-three) Comparing $\Gbar_{n}\equiv \Algo_{\Gbar,1}(P_{n})$ and $\Gbar_{0}$. The estimator is consistent because the algorithm relies on a working model that is correctly specified.
+
+```{r estimate-Gbar-three, fig.cap = '(ref:estimate-Gbar-three)'}
+tibble(w = seq(0, 1, length.out = 1e3)) %>%
+  mutate("truth" = Gbar(w),
+         "estimated" = compute_Gbar_hatW(w, Gbar_hat)) %>%
+  gather("f", "value", -w) %>%
+  ggplot() + geom_line(aes(x = w, y = value, color = f), size = 1) +
+  labs(y = "f(w)",
+       title = bquote("Visualizing" ~ bar(G)[0] ~ "and" ~ hat(G)[n])) +
+  ylim(NA, 1)
+```
+
+## &#9881; \gear `Qbar`, working model-based algorithms {#nuisance-Qbar-wm}
+
+A third template algorithm is built-in into `tlrider`: `estimate_Qbar` (to see
+its   man  page,   simply   run   `?estimate_Qbar`).   Like   `estimate_Gbar`,
+`estimate_Qbar` needs further specification of the algorithm. The package also
+includes examples  of such  specifications, which can  also be  either working
+model-based (see Section \@ref(nuisance-Gbar)) or machine learning-based. 
+
+There are built-in specifications similar to `working_model_G_one`, *e.g.*, 
+
+```{r estimate-Qbar-one}
+working_model_Q_one
+```
+
+1. Drawing inspiration from Section \@ref(nuisance-Gbar), comment upon and use
+   the algorithm  $\Algo_{\Qbar,1}$ obtained by combining  `estimate_Gbar` and
+   `working_model_Q_one`. 
+
+## `Qbar`, machine learning-based algorithms {#nuisance-Qbar-ml}
+
+
 
 # ANTOINE
 
@@ -1610,63 +1754,6 @@ parameters in  a particular way as  to ensure that the  resultant estimator of
 the target parameter enjoys desirable properties.  In this second step we will
 make use of the theory developed in the previous subsection.
 
-## Estimating nuisance parameters
-
-The  first step  towards obtaining  estimates of  the target  parameter is  to
-propose  a method  for  estimating the  nuisance parameters.  In  the case  of
-$\Psi(P_0)$,  these  nuisance  parameters include  $\Gbar_0$,  $\Qbar_0$,  and
-$Q_{0,W}$. We will discuss estimation of each of these quantities in turn.
-
-In the  next code block,  we define  a function that  we will use  to estimate
-$\Gbar_0$.  The function  takes  a  data set  as  input  and a  user-specified
-algorithm for  estimating $\Gbar_0$  and returns the  fitted algorithm  on the
-data. We will consider approaches to  estimation of $\Gbar_0$ based on machine
-learning  (if the  `"ML"`  attribute  of `algorithm`  is  `TRUE`)  or not  (if
-`FALSE`).
-
-
-```{r intro-est-G}
-## estimate_G <- function(dat, algorithm, ...) {
-##   if (!is.data.frame(dat)) {
-##     dat <- as.data.frame(dat)
-##   }
-##   if (!attr(algorithm, "ML")) {
-##     fit <- algorithm[[1]](formula = algorithm[[2]], data = dat)
-##   } else {
-##     fit <- algorithm[[1]](dat, ...)
-##   }
-##   fit$type_of_preds <- algorithm$type_of_preds
-##   return(fit)
-## }
-```
-To make this  estimation procedure more concrete, let us  provide an algorithm
-for   estimation  of   $\Gbar_0$.   The  following   code   block  builds   an
-algorithm. \tcg{Again, this is complicated stuff. Can we simplify?}
-
-```{r unknown-Gbar-two}
-trim_glm_fit <- caret::getModelInfo("glm")$glm$trim
-working_model_G_one <- list(
-  model = function(...) { 
-    trim_glm_fit(glm(family = binomial(), ...))
-  },
-  formula = as.formula(
-    paste("A ~",
-          paste(c("I(W^", "I(abs(W - 5/12)^"),
-                rep(seq(1/2, 3/2, by = 1/2), each = 2),
-                sep = "", collapse = ") + "),
-          ")")
-  ),
-  type_of_preds = "response"
-)
-attr(working_model_G_one, "ML") <- FALSE
-working_model_G_one$formula
-```
-
-The next code chunk illustrates how the algorithm can be used to estimate $\Gbar_0$ based on the observed data `obs`. 
-
-```{r show-estimateG-in-action}
-
-```
 
 Similarly, we can define a function and a method for estimating $\Qbar_0$.
 
@@ -2130,21 +2217,6 @@ For sake of illustration, we choose argument `working_model_G_one` of function
 ## empty...
 ```
 
-In  words,  we choose  the  so-called  logistic  (or negative  binomial)  loss
-function    $L_{a}$    given   by    \begin{equation}    \label{eq:logis:loss}
--L_{a}(f)(A,W) \equiv A \log f(W) + (1 - A) \log (1 - f(W)) \end{equation} for
-any function $f : [0,1] \to [0,1]$ paired with the working model $\calF \equiv
-\left\{f_{\theta} :  \theta \in \bbR^{5}\right\}$  where, for any  $\theta \in
-\bbR^{5}$,  $\logit   f_{\theta}  (W)   \equiv  \theta_{0}   +  \sum_{j=1}^{4}
-\theta_{j}  W^{j/2}$. The  working model  is well  specified: it  happens that
-$\Gbar_{0}$  is the  unique minimizer  of the  risk entailed  by $L_{a}$  over
-$\calF$: \begin{equation*}\Gbar_{0} = \mathop{\arg\min}_{f_{\theta} \in \calF}
-\Exp_{P_{0}}   \left(L_{a}(f_{\theta})(A,W)\right).\end{equation*}  Therefore,
-the estimator $\Gbar_{n}$ output by `estimate_Gbar` and obtained by minimizing
-the        empirical         risk        \begin{equation*}        \Exp_{P_{n}}
-\left(L_{a}(f_{\theta})(A,W)\right)      =     \frac{1}{n}      \sum_{i=1}^{n}
-L_{a}(f_{\theta})(A_{i},W_{i})\end{equation*}   over    $\calF$   consistently
-estimates $\Gbar_{0}$.
 
 In light of  \eqref{eq:psi:n:b}, introduce \begin{equation}\psi_{n}^{c} \equiv
 \frac{1}{n}   \sum_{i=1}^{n}   \left(\frac{2A_{i}  -   1}{\ell\Gbar_{n}(A_{i},
