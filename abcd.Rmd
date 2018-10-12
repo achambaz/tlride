@@ -1985,7 +1985,7 @@ algorithm  $\Algo_{\Gbar,1}$  (first  line)  then *(ii)*  the  computation  of
 $\psi_{n}^{c}$ (second line), both based on the same observations as above.
 
 Note  how we  use function  `wrapper` (simply  run `?wrapper`  to see  its man
-page).
+page --- a little tricky).
 
 
 ### Elementary statistical properties {#elementary-stat-prop-iptw}

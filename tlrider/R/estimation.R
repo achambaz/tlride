@@ -354,10 +354,50 @@ compute_Qbar_hatAW <- function(A, W, Qbar_hat, blip = FALSE) {
 #'
 #' @export
 wrapper <- function(fit) {
-  pryr::unenclose(function(obs) {
-    obs <- as.data.frame(obs)
-    stats::predict(fit, newdata = obs, type = attr(fit, "type_of_preds"))
-  })
+  type_of_preds <- R.utils::Arguments$getCharacter(attr(fit, "type_of_preds"))
+  if (!is.null(attr(fit, "stratify"))) {
+    ## argument 'fit' is an output of 'estimate_Qbar'
+    stratify <- R.utils::Arguments$getLogical(attr(fit, "stratify"))
+    if (!stratify) {
+      fit <- fit %>% filter(.data$a == "both") %>%
+        pull(fit) %>% first
+      out <- pryr::unenclose(function(obs) {
+        obs <- as.data.frame(obs)
+        stats::predict(fit,
+                       newdata = obs,
+                       type = type_of_preds)
+      })
+    } else {
+      fit_one <- Qbar_hat %>% filter(.data$a == "one") %>%
+        pull(fit) %>% first
+      fit_zero <- Qbar_hat %>% filter(.data$a == "zero") %>%
+        pull(fit) %>% first
+      out <- pryr::unenclose(function(obs) {
+        obs <- as.data.frame(obs)
+        pred <- vector("numeric", nrow(obs))
+        idx_one <- (obs$A == 1)
+        if (sum(idx_one) > 0) {
+          pred[idx_one] <- stats::predict(fit_one,
+                                          newdata = obs[idx_one, ],
+                                          type = type_of_preds)
+        }
+        if (sum(!idx_one) > 0) {
+          pred[!idx_one] <- stats::predict(fit_zero,
+                                           newdata = obs[!idx_one, ],
+                                           type = type_of_preds)
+        }
+      })
+    }
+  } else {
+    ## argument 'fit' is an output of 'estimate_Gbar'
+    out <- pryr::unenclose(function(obs) {
+      obs <- as.data.frame(obs)
+      stats::predict(fit,
+                     newdata = obs,
+                     type = type_of_preds)
+    })
+  }
+  return(out)
 }
 
 #' Builds the IPTW estimator
@@ -403,7 +443,7 @@ wrapper <- function(fit) {
 compute_iptw <- function(dat, Gbar, threshold = 0.05) {
   threshold <- R.utils::Arguments$getNumeric(threshold, c(0, 1/2))
   W <- dat[, "W", drop = FALSE]
-  A <- dat[, "A"]
+  A <- dat[, "A", drop = FALSE]
   Y <- dat[, "Y"]
   lGAW <- A * Gbar(W) + (1 - A) * (1 - Gbar(W))
   lGAW <- pmax(threshold, lGAW)
