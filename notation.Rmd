@@ -26,7 +26,10 @@ $O_{1}, \ldots, O_{n}$ drawn independently from $P$, the empirical process.
 - $\calM$, the model, that is, the collection of *all* laws from which $O$
 can be drawn and that meet some constraints.
 
-- $Q_{W}$,  $Q_{0,W}$, marginal  laws  for  $W$  (under $P$  and  $P_{0}$,
+- $\calM^{\text{empirical}}$,  the collection of  all discrete laws  on $[0,1]
+  \times \{0,1\} \times [0,1]$, of which $P_{n}$ is a distinguished element.
+
+- $Q_{W}$, $Q_{0,W}$, marginal laws for $W$ (under $P$ and $P_{0}$,
 respectively).
   
 - $\Gbar(W) \equiv \Pr_{P}(A  = 1 | W)$, $\Gbar_0(W) \equiv  \Pr_{P_0}(A = 1 |
@@ -46,6 +49,8 @@ $P$ and $P_{0}$, respectively).
   
 - $\psi \equiv \Psi(P)$, $\psi_{0} \equiv \Psi(P_{0})$.
 
-
+- $\Algo$,  $\Algo_{\Gbar,1}$, $\Algo_{\Qbar,1}$, algorithms to  be trained on
+  $P_{n}$, *i.e.*,  mappings from $\calM^{\text{empirical}}$ to  the set where
+  lives   the feature targeted by the algorithm.
 
 

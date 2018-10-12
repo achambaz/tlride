@@ -61,6 +61,27 @@ knitr::opts_chunk$set(
 
 options(dplyr.print_min = 6, dplyr.print_max = 6)
 ```
+```{r include=FALSE, cache=FALSE}
+options(digits = 3)
+
+knitr::opts_chunk$set(
+  comment = "#>",
+  collapse = TRUE,
+  cache = TRUE,
+  out.width = "70%",
+  fig.align = 'center',
+  fig.width = 6, # used to have: fig.width = 12,
+  fig.asp = 0.618, # used to have: fig.height = 4, 
+  fig.show = "hold",
+  fig.path = 'img/',
+  size = "tiny",
+  message = FALSE,
+  warning = FALSE,
+  warnings = FALSE
+)
+
+options(dplyr.print_min = 6, dplyr.print_max = 6)
+```
 # A ride
 
 
@@ -122,7 +143,7 @@ run, it  generates an observation that  we call $O$.  We view $O$ as  a random
 variable drawn from *the law of the experiment* that we denote by $P_{0}$. 
 
 
-We view $P_{0}$ as an element of *the model* $\calM$.  The model is a
+We  view $P_{0}$  as  an element  of  *the  model* $\calM$.   The  model is  a
 collection of laws.  In particular, the  model contains all laws that we think
 may plausibly describe  the law of the experiment.  Thus,  the choice of model
 is based on our scientific knowledge of the experiment. The more we know about
@@ -177,7 +198,7 @@ times, independently:
 
 Acting as oracles,  we can peek into `experiment` and  *reveal* a selection of
 relevant  features  (simply run  `?reveal`  to  see  the  man page  of  method
-`reveal`).  Made by  us, the  selection exhibits  features that  will play  an
+`reveal`).  Made  by us,  the selection  exhibits features  that will  play an
 important role in the text.
 
 ```{r reveal-experiment}
@@ -871,16 +892,14 @@ every $P  \in \calM$ if  for each $P \in  \calM$, there exists  a (measurable)
 function $D^{*}(P)  : \calO \to  \bbR$ such that $\Exp_{P}(D^{*}(P)(O))  = 0$,
 $\Var_{P}(D^{*}(P)(O)) < \infty$, and, for  every fluctuation $\{P_{h} : h \in
 H\}$  with  score  $s$  at  $h  =  0$,  the  real-valued  mapping  $h  \mapsto
-\Psi(P_{h})$ is differentiable at $h=0$, with a derivative equal to
-\begin{equation} 
-\Exp_{P}  \left(D^{*}(P)(O) s(O)\right).   (\#eq:derivative)
-\end{equation}
-The object $D^*(P)$ in \@ref(eq:derivative) is  called a gradient of $\Psi$ at
-$P$.^[Interestingly,  if  a  fluctuation  $\{P_{h}  :  h  \in  H\}$  satisfies
-\@ref(eq:score) for a direction $s$ such  that $s\neq 0$, $\Exp_{P}(s(O)) = 0$
-and  $\Var_{P}  (s(O))  <  \infty$,  then $h  \mapsto  \Psi(P_{h})$  is  still
-differentiable  at  $h=0$  with  a derivative  equal  to  \@ref(eq:derivative)
-beyond fluctuations of the form \@ref(eq:fluct).]
+\Psi(P_{h})$  is  differentiable   at  $h=0$,  with  a   derivative  equal  to
+\begin{equation}  \Exp_{P}  \left(D^{*}(P)(O) s(O)\right).   (\#eq:derivative)
+\end{equation}  The  object  $D^*(P)$  in  \@ref(eq:derivative)  is  called  a
+gradient of $\Psi$  at $P$.^[Interestingly, if a fluctuation $\{P_{h}  : h \in
+H\}$  satisfies \@ref(eq:score)  for  a  direction $s$  such  that $s\neq  0$,
+$\Exp_{P}(s(O))  =  0$  and  $\Var_{P}  (s(O))  <  \infty$,  then  $h  \mapsto
+\Psi(P_{h})$  is still  differentiable at  $h=0$  with a  derivative equal  to
+\@ref(eq:derivative) beyond fluctuations of the form \@ref(eq:fluct).]
 
 
 ### A Euclidean perspective {#Euclidean-perspective}
@@ -910,17 +929,16 @@ approach $P$.  Thus, depending on the direction, \@ref(eq:derivative) may hold
 with different choices of $D^*$.].  Yet, in the special case that the model is
 nonparametric,  only a  single gradient  exists. The  unique gradient  is then
 referred to  as *the canonical  gradient* or *the efficient  influence curve*,
-for reasons that will be  clarified in Section \@ref(influence-curves).  In
-the  more general  setting,  the  canonical gradient  may  be  defined as  the
-minimizer of $D\mapsto \Var_{P} (D(O))$ over the set of all gradients.
+for reasons that will be clarified in Section \@ref(influence-curves).  In the
+more general setting,  the canonical gradient may be defined  as the minimizer
+of $D\mapsto \Var_{P} (D(O))$ over the set of all gradients.
 
-It  is  not difficult  to  check  that  the  efficient influence  curve  of
-statistical  mapping $\Psi$  \@ref(eq:psimap) at  $P \in  \calM$ can  be written  as
-\begin{align}
-D^{*}(P) & \equiv D_{1}^{*} (P) + D_{2}^{*} (P), \quad \text{where}  (\#eq:eif)\\
-D_{1}^{*}(P) (O) &\equiv \Qbar(1,W) - \Qbar(0,W) - \Psi(P), \notag\\ 
-D_{2}^{*}(P) (O) &\equiv \frac{2A-1}{\ell\Gbar(A,W)}(Y - \Qbar(A,W)).\notag 
-\end{align}
+It is not difficult to check that the efficient influence curve of statistical
+mapping  $\Psi$  \@ref(eq:psimap)   at  $P  \in  \calM$  can   be  written  as
+\begin{align}  D^{*}(P)  &  \equiv  D_{1}^{*}   (P)  +  D_{2}^{*}  (P),  \quad
+\text{where} (\#eq:eif)\\  D_{1}^{*}(P) (O) &\equiv \Qbar(1,W)  - \Qbar(0,W) -
+\Psi(P),  \notag\\ D_{2}^{*}(P)  (O)  &\equiv \frac{2A-1}{\ell\Gbar(A,W)}(Y  -
+\Qbar(A,W)).\notag \end{align}
 
 A `method` from package `tlrider` evaluates the efficient influence curve at a
 law described  by an object of  class `LAW`. It is  called `evaluate_eic`. For
@@ -1042,19 +1060,19 @@ Gaussian distribution with variance $\Var_P(\IC(O))$.
 
 ### Influence curves and gradients
 
-As it happens, influence curves of regular^[We can view $\psi_{n}$ as the
-by  product of  an  algorithm $\Psihat$  trained  on independent  observations
-$O_{1}, \ldots, O_{n}$  drawn from $P$.  We say that  the estimator is regular
-at $P$  if, for any direction  $s\neq 0$ such  that $\Exp_{P} (s(O)) =  0$ and
-$\Var_{P} (s(O))  < \infty$ and fluctuation  $\{P_{h} : h \in  H\}$ satisfying
-\@ref(eq:score), the estimator $\psi_{n,1/\sqrt{n}}$ of $\Psi(P_{1/\sqrt{n}})$
-obtained by  training $\Psihat$  on independent observations  $O_{1}$, \ldots,
-$O_{n}$    drawn    from    $P_{1/\sqrt{n}}$   is    such    that    $\sqrt{n}
-(\psi_{n,1/\sqrt{n}} - \Psi(P_{1/\sqrt{n}}))$ converges in law to a limit that
-does not depend on $s$.]  estimators  are intimately related to gradients.  In
-fact, if $\psi_n$  is a regular, asymptotically linear  estimator of $\Psi(P)$
-with influence curve $\IC$, then it must be true that $\Psi$ is a smooth
-at $P$ and  that $\IC$  is a  gradient of $\Psi$  at $P$. 
+As it happens,  influence curves of regular^[We can view  $\psi_{n}$ as the by
+product  of an  algorithm\index{algorithm}  $\Psihat$  trained on  independent
+observations $O_{1}, \ldots, O_{n}$ drawn from $P$.  We say that the estimator
+is regular at $P$ if, for any direction $s\neq 0$ such that $\Exp_{P} (s(O)) =
+0$  and $\Var_{P}  (s(O)) <  \infty$  and fluctuation  $\{P_{h} :  h \in  H\}$
+satisfying   \@ref(eq:score),    the   estimator    $\psi_{n,1/\sqrt{n}}$   of
+$\Psi(P_{1/\sqrt{n}})$   obtained  by   training   $\Psihat$  on   independent
+observations $O_{1}$, \ldots, $O_{n}$ drawn from $P_{1/\sqrt{n}}$ is such that
+$\sqrt{n} (\psi_{n,1/\sqrt{n}} - \Psi(P_{1/\sqrt{n}}))$  converges in law to a
+limit that  does not  depend on  $s$.]  estimators  are intimately  related to
+gradients.  In fact, if $\psi_n$ is a regular, asymptotically linear estimator
+of $\Psi(P)$ with influence curve $\IC$, then it must be true that $\Psi$ is a
+smooth at $P$ and that $\IC$ is a gradient of $\Psi$ at $P$.
 
 ### Asymptotic efficiency
 
@@ -1572,8 +1590,10 @@ influence curve $D^{*}(P_{0})$.
 
 ## An algorithmic stance
 
-In general, we  can view an estimator  of any feature $f_0$ of  $P_{0}$ as the
-output of an algorithm $\Algo$ that maps any element of 
+\index{algorithm|(}
+
+In general, we can view an estimator of any feature $f_0$ of $P_{0}$ as the
+output of an algorithm $\Algo$ that maps any element of
 
 \begin{equation*}    \calM^{\text{empirical}}     \equiv    \left\{\frac{1}{m}
 \sum_{i=1}^{m} \Dirac(o_{i}) : m \geq 1, o_{1}, \ldots, o_{m} \in [0,1] \times
@@ -1648,6 +1668,8 @@ in  the   next  subsection.    The  latter  sort   is  discussed   in  Section
 
 ### Working model-based algorithms
 
+\index{algorithm!working~model|(}
+
 Let us take a look at `working_model_G_one` for instance: 
 
 ```{r estimate-Gbar-one}
@@ -1686,12 +1708,22 @@ $\Gbar_{n}$ obtained by minimizing the empirical risk
 L_{a}(f_{\theta})(A_{i},W_{i})
 \end{equation*} 
 
-over $\calF_{1}$ estimates $\Gbar_{0}$ consistently.
+over $\calF_{1}$ estimates $\Gbar_{0}$ consistently. 
+
+Of course,  it is seldom  certain in real life  that the target  feature, here
+$\Gbar_{0}$,  belongs to  the working  model.^[In fact,  if one  knows nothing
+about the feature, then  it is *certain* that it does  not belong to whichever
+small  finite-dimensional working  model we  may  come up  with.] Suppose  for
+instance that we  choose a small finite-dimensional  working model $\calF_{2}$
+without  acting as  an  oracle.   Then consistency  certainly  fails to  hold.
+However,  if $\Gbar_{0}$  can nevertheless  be *projected*  unambiguously onto
+$\calF_{2}$ (an assumption  that cannot be checked), then  the estimator might
+converge to the projection. 
 
 ### Visualization
 
 To illustrate the use of the algorithm $\Algo_{\Gbar,1}$ obtained by combining
-`estimate_Gbar` and  `working_model_G_one`, let us estimate  $=Gbar_{0}$ based
+`estimate_Gbar` and  `working_model_G_one`, let us estimate  $\Gbar_{0}$ based
 on the first $n = 1000$ observations in `obs`:
 
 ```{r estimate-Gbar-two}
@@ -1723,7 +1755,8 @@ A third template algorithm is built-in into `tlrider`: `estimate_Qbar` (to see
 its   man  page,   simply   run   `?estimate_Qbar`).   Like   `estimate_Gbar`,
 `estimate_Qbar` needs further specification of the algorithm. The package also
 includes examples  of such  specifications, which can  also be  either working
-model-based (see Section \@ref(nuisance-Gbar)) or machine learning-based. 
+model-based (see Section \@ref(nuisance-Gbar))  or machine learning-based (see
+Sections \@ref(nuisance-Qbar-ml) and \@ref(nuisance-Qbar-ml-exo)). 
 
 There are built-in specifications similar to `working_model_G_one`, *e.g.*, 
 
@@ -1735,9 +1768,149 @@ working_model_Q_one
    the algorithm  $\Algo_{\Qbar,1}$ obtained by combining  `estimate_Gbar` and
    `working_model_Q_one`. 
 
-## `Qbar`, machine learning-based algorithms {#nuisance-Qbar-ml}
+\index{algorithm!working~model|)}
 
+## `Qbar` {#nuisance-Qbar-ml}
 
+### `Qbar`, machine learning-based algorithms
+
+\index{algorithm!machine~learning|(}
+
+We explained how algorithm $\Algo_{\Gbar,1}$ is based on a working model (and
+*you* did for  $\Algo_{\Qbar,1}$). It is not the case  that all algorithms are
+based on  working models  in the  same (admittedly  rather narrow)  sense.  We
+propose to say that those algorithms that are not based on working models like
+$\Algo_{\Gbar,1}$, for instance, are instead *machine learning-based*. 
+
+Typically, machine learning-based algorithms are more data-adaptive; they rely
+on larger working models, and/or fine-tune parameters that must be calibrated,
+*e.g.*  by   cross-validation.\index{algorithm!cross-validation}  Furthermore,
+they   call   for  being   stacked\index{algorithm!machine~learning!stacking},
+*i.e.*,   combined   by   means   of  another   outer   algorithm   (involving
+cross-validation)    into    a    more   powerful    machine    learning-based
+*meta-algorithm*.                           The                          super
+learning\index{algorithm!machine~learning!super~learning}  methodology   is  a
+popular stacking algorithm.
+
+We will elaborate further on this important topic in another forthcoming part.
+Here, we merely  illustrate the concept with two  specifications built-in into
+`tlrider`.   Based on  the *$k$-nearest  neighbors* non-parametric  estimating
+methodology, the  first one  is discussed  in the  next subsection.   Based on
+*boosted trees*, another non-parametric estimating methodology, the second one
+is used in the exercize that follows the next subsection.
+
+### `Qbar`, kNN algorithm
+
+Algorithm $\Algo_{\Qbar,\text{kNN}}$ is  obtained by combining `estimate_Qbar`
+and  `kknn_algo`.  The  training  of  $\Algo_{\Qbar,\text{kNN}}$ (*i.e.*,  the
+making of  the output $\Algo_{\Qbar,\text{kNN}} (P_{n})$  is implemented based
+on  function  `caret::train` of  the  `caret`  (classification and  regression
+training) package  (to see  its man page,  simply run  `?caret::train`).  Some
+additional specifications are provided in `kknn_grid` and `kknn_control`.
+
+In a  nutshell, $\Algo_{\Qbar,\text{kNN}}$ estimates  $\Qbar_{0}(1,\cdot)$ and
+$\Qbar_{0}(0,\cdot)$ separately.   Each of them  is estimated by  applying the
+$k$-nearest   neighbors  methodology   as  it   is  implemented   in  function
+`kknn::train.kknn` from  the `kknn` package (to  see its man page,  simply run
+`?kknn::train.kknn`).^[Specifically,  argument   `kmax`  (maximum   number  of
+neighbors  considered) is  set to  5,  argument `distance`  (parameter of  the
+Minkowski distance) is  set to 2, and argument `kernel`  is set to `gaussian`.
+The best  value of  $k$ is chosen  between 1 and  `kmax` by  leave-one-out. No
+outer  cross-validation  is  needed.]   The following  chunk  of  code  trains
+algorithm $\Algo_{\Qbar,\text{kNN}}$ on $P_{n}$:
+
+```{r estimate-Qbar-two}
+Qbar_hat_kknn <- estimate_Qbar(head(obs, 1e3),
+                               algorithm = kknn_algo,
+                               trControl = kknn_control,
+                               tuneGrid = kknn_grid)
+```
+
+Using `compute_Qbar_hat_AW` (simply run  `?compute_Qbar_hat_AW` to see its man
+page) makes it is easy to compare visually the estimator $\Qbar_{n,\text{kNN}}
+\equiv \Algo_{\Qbar,\text{kNN}}(P_{n})$  with its target $\Qbar0$,  see Figure
+\@ref(fig:estimate-Qbar-five).
+
+```{r estimate-Qbar-three}
+fig <- tibble(w = seq(0, 1, length.out = 1e3),
+              truth_1 = Qbar(cbind(A = 1, W = w)),
+              truth_0 = Qbar(cbind(A = 0, W = w)),
+              kNN_1 = compute_Qbar_hatAW(1, w, Qbar_hat_kknn),
+              kNN_0 = compute_Qbar_hatAW(0, w, Qbar_hat_kknn))
+```
+
+### `Qbar`, boosted trees algorithm
+
+Algorithm    $\Algo_{\Qbar,\text{trees}}$    is    obtained    by    combining
+`estimate_Qbar`      and      `bstTree_algo`.        The      training      of
+$\Algo_{\Qbar,\text{trees}}$    (*i.e.*,   the    making    of   the    output
+$\Algo_{\Qbar,\text{trees}}   (P_{n})$  is   implemented  based   on  function
+`caret::train`  of the  `caret`  package. Some  additional specifications  are
+provided in `bstTree_grid` and `bstTree_control`.
+
+In a nutshell, $\Algo_{\Qbar,\text{trees}}$ estimates $\Qbar_{0}(1,\cdot)$ and
+$\Qbar_{0}(0,\cdot)$ separately.  Each  of them is estimated  by boosted trees
+as  implemented in  function  `bst::bst` from  the  `bst` (gradient  boosting)
+package (to see its man page, simply run `?bst::bst`).^[Specifically, argument
+`mstop` (number of boosting iterations for prediction) is one among 10, 20 and
+30; argument `nu`  (stepsize of the shrinkage parameter) is  one among 0.1 and
+0.2; argument  `maxdepth` (maximum depth of  the base learner, a  tree) is one
+among 1, 2 and 5.  An outer  10-fold cross-validation is carried out to select
+the best  combination of fine-tune  parameters.]  The following chunk  of code
+trains algorithm $\Algo_{\Qbar,\text{trees}}$ on $P_{n}$, and reveals what are
+the optimal  fine-tune parameters  for the estimation  of $\Qbar_{0}(1,\cdot)$
+and $\Qbar_{0}(0,\cdot)$:
+
+```{r estimate-Qbar-four}
+Qbar_hat_trees <- estimate_Qbar(head(obs, 1e3),
+                                algorithm = bstTree_algo,
+                                trControl = bstTree_control,
+                                tuneGrid = bstTree_grid)
+
+Qbar_hat_trees %>% dplyr::filter(a == "one") %>% pull(fit) %>%
+  capture.output %>% tail(3) %>% str_wrap(width = 60) %>% cat
+                                                             
+Qbar_hat_trees %>% dplyr::filter(a == "zero") %>% pull(fit) %>%
+  capture.output %>% tail(3) %>% str_wrap(width = 60) %>% cat
+```
+
+We    can   compare    visually    the   estimators    $\Qbar_{n,\text{kNN}}$,
+$\Qbar_{n,\text{trees}}  \equiv  \Algo_{\Qbar,\text{trees}}(P_{n})$  with  its
+target $\Qbar0$, see Figure \@ref(fig:estimate-Qbar-five).
+
+(ref:estimate-Qbar-five) Comparing to their target two (machine learning-based) estimators of $\Qbar_{0}$, one based on the $k$-nearest neighbors and the other on boosted trees.
+
+```{r estimate-Qbar-five, fig.cap = '(ref:estimate-Qbar-five)'}
+fig %>%
+  mutate(trees_1 = compute_Qbar_hatAW(1, w, Qbar_hat_trees),
+         trees_0 = compute_Qbar_hatAW(0, w, Qbar_hat_trees)) %>%
+  gather("f", "value", -w) %>%
+  extract(f, c("f", "a"), "([^_]+)_([01]+)") %>%
+  mutate(a = paste0("a=", a)) %>%
+  ggplot +
+  geom_line(aes(x = w, y = value, color = f), size = 1) +
+  labs(y = "f(w)",
+       title = bquote("Visualizing" ~ bar(Q)[0] ~ "and its estimators")) +
+  ylim(NA, 1) +
+  facet_wrap(~ a)
+```
+
+## &#9881; \gear &#9761; \stixdanger{} `Qbar`, machine learning-based algorithms {#nuisance-Qbar-ml-exo}
+
+1. Using `estimate_Q`, make your  own machine learning-based algorithm for the
+   estimation of $\Qbar_{0}$.
+   
+2. Train your algorithm on the same data set as $\Algo_{\Qbar,\text{kNN}}$ and
+   $\Algo_{\Qbar,\text{trees}}$.  If,  like $\Algo_{\Qbar,\text{trees}}$, your
+   algorithm  includes  a fine-tuning  procedure,  comment  upon the  optimal,
+   data-driven specification.
+   
+3. Plot  your estimators  of $\Qbar_{0}(1,\cdot)$ and  $\Qbar_{0}(0,\cdot)$ on
+   Figure \@ref(fig:estimate-Qbar-five).
+
+\index{algorithm!machine~learning|)}
+
+\index{algorithm|)}
 
 # ANTOINE
 
@@ -2371,75 +2544,6 @@ would be legitimate.
 of} $\Qbar_{0}$ \tcg{(and of the marginal  law of} $W$\tcg{).  Once based on a
 (mis-specified) working model, and once based on a non-parametric algorithm.}
 
-```{r estimating-Qbar-one}
-## estimate_Q <- function(dat, algorithm, ...) {
-##   if (!is.data.frame(dat)) {
-##     dat <- as.data.frame(dat)
-##   }
-##   if (!attr(algorithm, "ML")) {
-##     fit <- algorithm[[1]](formula = algorithm[[2]], data = dat)
-##   } else {
-##     fit <- algorithm[[1]](dat, ...)
-##   }
-##   fit$type_of_preds <- algorithm$type_of_preds
-##   return(fit)
-## }
-
-## compute_QhatAW <- function(Y, A, W, Qhat, blip = FALSE) {
-##   if (!blip) {
-##     dat <- data.frame(Y = Y, A = A, W = W)
-##     pred <- predict(Qhat, newdata = dat, type = Qhat$type_of_preds)
-##   } else {
-##     pred <- predict(Qhat, newdata = data.frame(A = 1, W = W),
-##                     type = Qhat$type_of_preds) -
-##       predict(Qhat, newdata = data.frame(A = 0, W = W),
-##               type = Qhat$type_of_preds)
-##   }
-##   return(pred)  
-## }
-
-## working_model_Q_one <- list(
-##   model = function(...) {trim_glm_fit(glm(family = binomial(), ...))},
-##   formula = as.formula(
-##     paste("Y ~ A * (",
-##           paste("I(W^", seq(1/2, 3/2, by = 1/2), sep = "", collapse = ") + "),
-##           "))")
-##   ),
-##   type_of_preds = "response"
-## )
-## attr(working_model_Q_one, "ML") <- FALSE
-## working_model_Q_one$formula
-
-## ## k-NN
-## kknn_algo <- list(
-##   algo = function(dat, ...) {
-##     args <- list(...)
-##     if ("Subsample" %in% names(args)) {
-##       keep <- sample.int(nrow(dat), args$Subsample)
-##       dat <- dat[keep, ]
-##     }
-##     fit <- caret::train(Y ~ I(10*A) + W, ## a tweak
-##                         data = dat,
-##                         method = "kknn",
-##                         verbose = FALSE,
-##                         ...)
-##     fit$finalModel$fitted.values <- NULL
-##     ## nms <- names(fit$finalModel$data)
-##     ## for (ii in match(setdiff(nms, ".outcome"), nms)) {
-##     ##   fit$finalModel$data[[ii]] <- NULL
-##     ## }
-##     fit$trainingData <- NULL    
-##     return(fit)
-##   },
-##   type_of_preds = "raw"
-## )
-## attr(kknn_algo, "ML") <- TRUE
-## kknn_grid <- expand.grid(kmax = 5, distance = 2, kernel = "gaussian")
-## control <- trainControl(method = "cv", number = 2,
-##                         predictionBounds = c(0, 1),
-##                         trim = TRUE,
-##                         allowParallel = TRUE)
-```
 
 (ref:estimating-Qbar-one-bis) Write caption.
 
@@ -2451,9 +2555,9 @@ of} $\Qbar_{0}$ \tcg{(and of the marginal  law of} $W$\tcg{).  Once based on a
 learned_features_fixed_sample_size <-
   learned_features_fixed_sample_size %>% # head(n = 100) %>%
   mutate(Qbar_hat_d = map(obs, ~ estimate_Qbar(., algorithm = working_model_Q_one)),
-         Qbar_hat_e = map(obs, ~ estimate_Qbar(., algorithm = bstTree_algo, ## bstTree
-                                               trControl = bstTree_control, ## bstTree
-                                               tuneGrid = bstTree_grid))) %>% ## bstTree
+         Qbar_hat_e = map(obs, ~ estimate_Qbar(., algorithm = kknn_algo,
+                                               trControl = kknn_control,
+                                               tuneGrid = kknn_grid))) %>% 
   mutate(blip_QW_d = map2(Qbar_hat_d, obs,
                           ~ compute_Qbar_hatAW(.y$A, .y$W, .x, blip = TRUE)),
          blip_QW_e = map2(Qbar_hat_e, obs,
@@ -2523,9 +2627,9 @@ sample sizes.
 learned_features_varying_sample_size <-
   learned_features_varying_sample_size %>% 
   mutate(Qbar_hat_d = map(obs, ~ estimate_Qbar(., algorithm = working_model_Q_one)),
-         Qbar_hat_e = map(obs, ~ estimate_Qbar(., algorithm = bstTree_algo, ## bstTree
-                                               trControl = bstTree_control, ## bstTree
-                                               tuneGrid = bstTree_grid))) %>% ## bstTree
+         Qbar_hat_e = map(obs, ~ estimate_Qbar(., algorithm = kknn_algo, 
+                                               trControl = kknn_control, 
+                                               tuneGrid = kknn_grid))) %>% 
   mutate(blip_QW_d = map2(Qbar_hat_d, obs,
                           ~ compute_Qbar_hatAW(.y$A, .y$W, .x, blip = TRUE)),
          blip_QW_e = map2(Qbar_hat_e, obs,

@@ -109,9 +109,11 @@ bstTree_algo <- list(
 attr(bstTree_algo, "ML") <- TRUE
 attr(bstTree_algo, "stratify") <- TRUE
 
-bstTree_grid <- expand.grid(mstop = 25, nu = 0.1,maxdepth = 10)
+bstTree_grid <- expand.grid(mstop = c(10, 20, 30),
+                            nu = c(0.1, 0.2),
+                            maxdepth = c(1, 2, 5))
 
-bstTree_control <- caret::trainControl(method = "none", # method = "cv", number = 2,
+bstTree_control <- caret::trainControl(method = "cv", number = 10,
                                        predictionBounds = c(0, 1),
                                        trim = TRUE,
                                        allowParallel = TRUE)
@@ -131,9 +133,10 @@ bstLm_algo <- list(
 attr(bstLm_algo, "ML") <- TRUE
 attr(bstLm_algo, "stratify") <- TRUE
 
-bstLm_grid <- expand.grid(mstop = 50, nu = 0.1)
+bstLm_grid <- expand.grid(mstop = c(50, 100),
+                          nu = c(0.1, 0.2, 0.3))
 
-bstLm_control <- caret::trainControl(method = "none", 
+bstLm_control <- caret::trainControl(method = "cv", number = 10,
                                      predictionBounds = c(0, 1),
                                      trim = TRUE,
                                      allowParallel = TRUE)

@@ -30,6 +30,7 @@ bookdown::pdf_book:
   includes:
     in_header: tlride_header.tex
     before_body: tlride_before_body.tex
+    after_body: tlride_after_body.tex
   latex_engine: xelatex
   citation_package: natbib
 
