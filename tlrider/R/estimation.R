@@ -402,7 +402,7 @@ wrapper <- function(fit) {
 #' @export 
 compute_iptw <- function(dat, Gbar, threshold = 0.05) {
   threshold <- R.utils::Arguments$getNumeric(threshold, c(0, 1/2))
-  W <- dat[, "W"]
+  W <- dat[, "W", drop = FALSE]
   A <- dat[, "A"]
   Y <- dat[, "Y"]
   lGAW <- A * Gbar(W) + (1 - A) * (1 - Gbar(W))

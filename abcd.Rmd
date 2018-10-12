@@ -1571,7 +1571,9 @@ density.
 
 ## Anatomy of an expression {#anatomy}
 
-From now, all the  inference strategies that we will present  unfold in two or
+\index{nuisance~parameters|(}
+
+From now, all the inference strategies that we will present unfold in two or
 three  stages. For  all of  them,  the first  stage consists  in estimating  a
 selection of features of the law $P_{0}$ of the experiment.  Specifically, the
 features are chosen  among $Q_{0,W}$ (the marginal law of  $W$ under $P_{0}$),
@@ -1587,6 +1589,8 @@ our path towards an inference of the target parameter.
 As for the reason why $Q_{0,W}$,  $\Gbar_{0}$ and $\Qbar_{0}$ are singled out,
 it is  because of  their role in  the definition of  $\Psi$ and  the efficient
 influence curve $D^{*}(P_{0})$.
+
+\index{nuisance~parameters|)}
 
 ## An algorithmic stance
 
@@ -1876,7 +1880,10 @@ Qbar_hat_trees %>% dplyr::filter(a == "zero") %>% pull(fit) %>%
 
 We    can   compare    visually    the   estimators    $\Qbar_{n,\text{kNN}}$,
 $\Qbar_{n,\text{trees}}  \equiv  \Algo_{\Qbar,\text{trees}}(P_{n})$  with  its
-target $\Qbar0$, see Figure \@ref(fig:estimate-Qbar-five).
+target  $\Qbar0$,  see   Figure  \@ref(fig:estimate-Qbar-five).   In  summary,
+$\Qbar_{n,\text{kNN}}$ is rather good, though  very versatile at the vincinity
+of the  break points.  As for  $\Qbar_{n,\text{trees}}$, it  does not  seem to
+capture the shape of its target.
 
 (ref:estimate-Qbar-five) Comparing to their target two (machine learning-based) estimators of $\Qbar_{0}$, one based on the $k$-nearest neighbors and the other on boosted trees.
 
@@ -1911,6 +1918,240 @@ fig %>%
 \index{algorithm!machine~learning|)}
 
 \index{algorithm|)}
+
+# Two "naive" plug-in inference strategies 
+
+## Why "naive"?
+
+In  this section,  we  present  and discuss  two  plug-in  strategies for  the
+inference of $\Psi(P_{0})$. In light of Section \@ref(anatomy), both unfold in
+*two*  stages.   During  the  first  stage,  some  features  among  $Q_{0,W}$,
+$\Gbar_{0}$  and $\Qbar_{0}$  (the  $\Psi$-specific  nuisance parameters,  see
+Section \@ref(nuisance))\index{nuisance~parameters} are  estimated. During the
+second   stage,  the   estimators  are   substituted  for   their  theoretical
+counterparts  in the  definition  of $\Psi(P_{0})$,  thus yielding  estimators
+of $\Psi(P_{0})$.
+
+Although the strategies  sound well conceived, a  theoretical analysis reveals
+that they lack a third stage trying to correct an inherent flaw. They are thus
+said  *naive*. The  analysis and  a first  *modus operandi*  are presented  in
+Section \@ref(analysis-of-plug-in).
+
+## IPTW estimator {#known-gbar-second-pass}
+
+### Construction and computation
+
+In Section \@ref(known-gbar-first-pass), we developed an IPTW substitution
+estimator,    $\psi_{n}^{b}$,   *assuming    that*    we   knew    $\Gbar_{0}$
+beforehand.  What  if  we  did  not?  Obviously,  we  could  estimate  it  and
+substitute   the  estimator   of   $\ell\Gbar_{0}$   for  $\ell\Gbar_{0}$   in
+\@ref(eq:psi-n-b). 
+
+Let $\Algo_{\Gbar}$ be an algorithm designed for the estimation of $\Gbar_{0}$
+(see   Section  \@ref(nuisance-Gbar)).    We  denote   by  $\Gbar_{n}   \equiv
+\Algo_{\Gbar}(P_{n})$ the output  of the algorithm trained on  $P_{n}$, and by
+$\ell\Gbar_{n}$ the resulting (empirical) function given by
+
+\begin{equation*}
+\ell\Gbar_{n}(A,W) \equiv A \Gbar_{n}(W) + (1-A) (1 - \Gbar_{n}(W)).
+\end{equation*}
+
+In light of \@ref(eq:psi-n-b), introduce 
+
+\begin{equation*}
+\psi_{n}^{c}   \equiv   \frac{1}{n}    \sum_{i=1}^{n}   \left(\frac{2A_{i}   -
+1}{\ell\Gbar_{n}(A_{i}, W_{i})} Y_{i}\right).
+\end{equation*} 
+
+From a  computational point of  view, the `tlrider`  package makes it  easy to
+build $\psi_{n}^{c}$. Recall that 
+
+```{r psi-n-b-recall-one, eval = FALSE}
+compute_iptw(head(obs, 1e3), Gbar)
+```
+
+implements  the computation  of  $\psi_{n}^{b}$ based  on  the $n=1000$  first
+observations stored  in `obs`,  using the true  feature $\Gbar_{0}$  stored in
+`Gbar`,  see  Section  \@ref(empirical-inves-IPTW)  and  the  construction  of
+`psi_hat_ab`. Similarly,
+
+```{r psi-n-b-recall-two}
+Ghat <- estimate_Gbar(head(obs, 1e3), working_model_G_one)
+compute_iptw(head(obs, 1e3), wrapper(Ghat)) %>% pull(psi_n)
+```
+
+implements *(i)*  the estimation of $\Gbar_{0}$  with $\Gbar_{n}$/`Ghat` using
+algorithm  $\Algo_{\Gbar,1}$  (first  line)  then *(ii)*  the  computation  of
+$\psi_{n}^{c}$ (second line), both based on the same observations as above.
+
+Note  how we  use function  `wrapper` (simply  run `?wrapper`  to see  its man
+page).
+
+
+### Elementary statistical properties {#elementary-stat-prop-iptw}
+
+Because $\Gbar_{n}$ minimizes the empirical risk over a finite-dimensional and
+_well-specified working model_, $\sqrt{n} (\psi_{n}^{c} - \psi_{0})$ converges
+in law to a centered Gaussian law.
+
+### Empirical investigation
+
+Let  us compute  $\psi_{n}^{c}$ on  the same  `iter =  ` `r  iter` independent
+samples  of  independent  observations  drawn   from  $P_{0}$  as  in  Section
+\@ref(known-gbar-first-pass):
+
+
+
+For  simplicity,  we  consider  the  case that  $\Gbar_{0}$  is  estimated  by
+minimizing   a   loss    function   on   a   single    working   model,   both
+fine-tune-parameter-free.   By adopting  this  stance,  we exclude  estimating
+procedures  that involve  penalization (*e.g.*  the LASSO)  or aggregation  of
+competing   estimators  (*via*   stacking/super  learning)   --  see   Section
+\@ref(subsec:exo:one).   Defined  in  the  next chunk  of  code,  the  generic
+function `estimate_Gbar` fits a user-specified working model by minimizing the
+empirical risk  associated to  the user-specified  loss function  and provided
+data.
+
+
+
+
+
+```{r unknown-Gbar-two-bis}
+learned_features_fixed_sample_size <-
+  obs %>% as_tibble() %>%
+  mutate(id = (seq_len(n()) - 1) %% iter) %>%
+  nest(-id, .key = "obs") %>%
+  mutate(Gbar_hat = map(obs, ~ estimate_Gbar(., algorithm = working_model_G_one))) %>%
+  mutate(lGAW = map2(Gbar_hat, obs, ~ compute_lGbar_hatAW(.y$A, .y$W, .x)))
+
+
+psi_hat_abc <-
+  learned_features_fixed_sample_size %>%
+  unnest(obs, lGAW) %>%
+  group_by(id) %>%
+  summarize(est = mean(Y * (2 * A - 1) / lGAW)) %>%
+  mutate(std = sd(est),
+         clt = (est - psi_zero) / std,
+         type = "c") %>%
+  full_join(psi_hat_ab)
+
+## DEBUG : This was breaking when I compiled.
+(bias_abc <- psi_hat_abc %>% group_by(type) %>% summarise(bias = mean(clt)))
+```
+
+Note how we exploit the independent realizations of $\psi_{n}^{c}$ to estimate
+the  asymptotic variance  of the  estimator with  $v_{n}^{c}/n$. By  the above
+chunk of code,  the average of $\sqrt{n/v_{n}^{c}}  (\psi_{n}^{c} - \psi_{0})$
+computed across the realizations is equal to 
+`r round(bias_abc$bias[bias_abc$type=="c"],3)` (rounded to three decimal places
+--- see `bias_abc`).  We represent the empirical laws of  the recentered (with
+respect to  $\\psi_{0}$) and  renormalized $\psi_{n}^{a}$,  $\psi_{n}^{b}$ and
+$\psi_{n}^{c}$  in   Figures  \@ref(fig:unknown-Gbar-three)   (kernel  density
+estimators) and \@ref(fig:unknown-Gbar-four) (quantile-quantile plots). 
+ 
+(ref:unknown-Gbar-three)  Kernel  density  estimators  of  the  law  of  three
+estimators  of   $\psi_{0}$  (recentered  with  respect   to  $\psi_{0}$,  and
+renormalized), one of them misconceived  (a), one assuming that $\Gbar_{0}$ is
+known  (b) and  one that  hinges  on the  estimation of  $\Gbar_{0}$ (c).  The
+present  figure includes  Figure \@ref(fig:known-Gbar-one-b)  (but the  colors
+differ). Built based on `iter` independent realizations of each estimator.
+ 
+```{r unknown-Gbar-three, fig.cap = '(ref:unknown-Gbar-three)'}
+fig +
+  geom_density(aes(clt, fill = type, colour = type), psi_hat_abc, alpha = 0.1) +
+  geom_vline(aes(xintercept = bias, colour = type),
+             bias_abc, size = 1.5, alpha = 0.5) +
+  xlim(-3, 4) + 
+  labs(y = "",
+       x = expression(paste(sqrt(n/v[n]^{list(a, b, c)})*
+                            (psi[n]^{list(a, b, c)} - psi[0]))))
+```
+
+(ref:unknown-Gbar-four)  Quantile-quantile plot  of  the  standard normal  law
+against the  empirical laws  of three  estimators of  $\psi_{0}$, one  of them
+misconceived (a),  one assuming  that $\Gbar_{0}$  is known  (b) and  one that
+hinges  on  the  estimation  of   $\Gbar_{0}$  (c).   Built  based  on  `iter`
+independent realizations of each estimator.
+
+```{r unknown-Gbar-four, fig.cap = '(ref:unknown-Gbar-four)'}
+ggplot(psi_hat_abc, aes(sample = clt, fill = type, colour = type)) +
+  geom_abline(intercept = 0, slope = 1, alpha = 0.5) +
+  geom_qq(alpha = 1)
+```
+
+Figures \@ref(fig:unknown-Gbar-three)  and \@ref(fig:unknown-Gbar-four) reveal
+that $\psi_{n}^{c}$ behaves as well as $\psi_{n}^{b}$ --- but remember that we
+did not discuss how to estimate its asymptotic variance.
+
+## &#9881; \gear A nice title... {#exo-a-nice-title}
+
+1. Compute a numerical approximation of $\Exp_{P_{0}} (Y | A=1) - \Exp_{P_{0}}
+(Y  | A=0)$.  How accurate  is it?  \tcg{I would  perhaps suggest  moving this
+exercise and the  discussion of this parameter to earlier.  I.e., could have a
+whole section  on how our target  parameter differs from this  guy. Then could
+return to it in Sec. 3 with estimators?}
+
+2. Building upon the piece of code devoted to the repeated computation of
+$\psi_{n}^{b}$ and  its companion  quantities, construct  confidence intervals
+for  $\psi_{0}$ of  (asymptotic)  level  $95\%$, and  check  if the  empirical
+coverage is satisfactory.  Note that if  the coverage was exactly $95\%$, then
+the number of confidence intervals  that would contain $\psi_{0}$ would follow
+a binomial  law with parameters  `iter` and  `0.95`, and recall  that function
+`binom.test` performs  an exact  test of  a simple  null hypothesis  about the
+probability of success  in a Bernoulli experiment against  its three one-sided
+and two-sided alternatives.
+
+3.  The call to `compute_lGbar_hatAW` makes predictions on the same data points as
+those  exploited to  learn $\Gbar_{0}$  by fitting  the user-supplied  working
+model. Why  could that be problematic?  Can you think of  a simple workaround,
+implement and test it?
+
+4.  Discuss what happens when the dimension of the (still well-specified)
+working model grows. You could use the following chunk of code
+```{r exercises-one, eval = FALSE}
+powers <- ## make sure '1/2' and '1' belong to 'powers', eg
+  seq(1/4, 3, by = 1/4)
+working_model_G_two <- list(
+  model = function(...) {trim_glm_fit(glm(family = binomial(), ...))},
+  formula = as.formula(
+    paste("A ~",
+          paste(c("I(W^", "I(abs(W - 5/12)^"),
+                rep(powers, each = 2),
+                sep = "", collapse = ") + "),
+          ")")
+  ),
+  type_of_preds = "response"
+)
+attr(working_model_G_two, "ML") <- FALSE
+```
+play around with  argument `powers` (making sure that `1/2`  and `1` belong to
+it),   and   plot   graphics   similar   to   those   presented   in   Figures
+\@ref(fig:unknown-Gbar-three) and \@ref(fig:unknown-Gbar-four). 
+
+5. Discuss  what happens when the  working model is mis-specified.   You could
+use the following chunk of code:
+```{r exercises-two, eval = TRUE}
+transform <- c("cos", "sin", "sqrt", "log", "exp")
+working_model_G_three <- list(
+  model = function(...) {trim_glm_fit(glm(family = binomial(), ...))},
+  formula = as.formula(
+    paste("A ~",
+          paste("I(", transform, sep = "", collapse = "(W)) + "),
+          "(W))")
+  ),
+  type_of_preds = "response"
+)
+attr(working_model_G_three, "ML") <- FALSE
+(working_model_G_three$formula)
+```
+
+6.  &#9761; \stixdanger{} Drawing inspiration from \eqref{eq:v:n:b}, one may consider
+estimating the asymptotic  variance of $\psi_{n}^{c}$ with  the counterpart of
+$v_{n}^{b}$ obtained  by substituting  $\ell\Gbar_{n}$ for  $\ell\Gbar_{0}$ in
+\eqref{eq:v:n:b}.   By adapting  the piece  of  code devoted  to the  repeated
+computation of  $\psi_{n}^{b}$ and its  companion quantities, discuss  if that
+would be legitimate.
+
 
 # ANTOINE
 
@@ -2015,7 +2256,7 @@ of this poor behavior.
    subsection, let's now have them use it to repeat our simulation and compute
    the G-comp estimator based on this.}
 
-### &#9761; \stixdanger{} Analysis of plug-in estimator. \label{subsec:analysis-of-plug-in}
+### &#9761; \stixdanger{} Analysis of plug-in estimator. {#analysis-of-plug-in}
 
 
 In view of our estimators of $\Qbar_0$ and $\Gbar_0$ as algorithms that map from a 
@@ -2301,13 +2542,13 @@ generated by the loss-minimzation procedure should be *no worse* an estimate of 
 target than the initial estimate, but has been additionally endowed with the property that it 
 solves the efficient influence curve equation. 
 
-Assuming that the regularity conditions discussed in Section \ref{subsec:analysis-of-plug-in}
+Assuming that the regularity conditions discussed in Section \@ref(analysis-of-plug-in)
 are satisfied for $\Qbar_{n,\epsilon_n}$, then by (\ref{pre_one_step}), \[
   \psi_n^* = \Psi(\hat{P}_n^*) = \int (\Qbar_{n,\epsilon_n}(1,w) - \Qbar_{n,\epsilon_n}(0,w)) dQ_{n,W} , 
 \]
 is an asymptotically efficient estimator of $\psi_0$. We have thus achieved our goal of generating an efficient plug-in estimator of $\psi_0$ that is guaranteed to obey bounds
 on the parameter space. We may construct asymptotically justified confidence intervals 
-and hypothesis tests exactly as in Section \ref{subsec:analysis-of-plug-in}, but replacing
+and hypothesis tests exactly as in Section \@ref(analysis-of-plug-in), but replacing
 $\Qbar_n$ by $\Qbar_{n,\epsilon_n}$. 
 
 The next code examines TMLE in a simulation and confirms the theoretical properties of the
@@ -2333,208 +2574,6 @@ we end up with an estimate of $\psi_0$ that is outside the parameter space.}
 
 
 
-## Inference assuming the mechanism of action known, or not, second pass {#known-gbar-second-pass}
-
-
-At  the beginning  of  Section \@ref(known-gbar-first-pass),  we assumed  that
-$\Gbar_{0}$ was known.  Let us suppose now  that it is not.  The definition of
-$\psi_{n}^{b}$ can be adapted to  overcome this difficulty, by substituting an
-estimator of $\ell\Gbar_{0}$ for $\ell\Gbar_{0}$ in \eqref{eq:psi:n:b}.
-
-For  simplicity,  we  consider  the  case that  $\Gbar_{0}$  is  estimated  by
-minimizing   a   loss    function   on   a   single    working   model,   both
-fine-tune-parameter-free.   By adopting  this  stance,  we exclude  estimating
-procedures  that involve  penalization (*e.g.*  the LASSO)  or aggregation  of
-competing   estimators  (*via*   stacking/super  learning)   --  see   Section
-\@ref(subsec:exo:one).   Defined  in  the  next chunk  of  code,  the  generic
-function `estimate_Gbar` fits a user-specified working model by minimizing the
-empirical risk  associated to  the user-specified  loss function  and provided
-data.
-
-\tcg{Comment on new structure of} `estimate_Gbar` \tcg{and say a few words about}
-`compute_lGbar_hatAW`.
-
-```{r unknown-Gbar-one}
-## estimate_Gbar <- function(dat, algorithm, ...) {
-##   if (!is.data.frame(dat)) {
-##     dat <- as.data.frame(dat)
-##   }
-##   if (!attr(algorithm, "ML")) {
-##     fit <- algorithm[[1]](formula = algorithm[[2]], data = dat)
-##   } else {
-##     fit <- algorithm[[1]](dat, ...)
-##   }
-##   fit$type_of_preds <- algorithm$type_of_preds
-##   return(fit)
-## }
-
-## compute_lGbar_hatAW <- function(A, W, Ghat, threshold = 0.05) {
-##   dat <- data.frame(A = A, W = W)
-##   Ghat_W <- predict(Ghat, newdata = dat, type = Ghat$type_of_preds)
-##   lGAW <- A * Ghat_W + (1 - A) * (1 - Ghat_W)
-##   pred <- pmin(1 - threshold, pmax(lGAW, threshold))
-##   return(pred)
-## }
-```
-
-
-Note how the  prediction of any $\ell\Gbar_{0}(A,W)$ is  manually bounded away
-from 0 and 1 at the last  but one line of `compute_lGhatAW`. This is desirable
-because  the *inverse*  of  each $\ell\Gbar_{0}(A_{i},W_{i})$  appears in  the
-definition of $\psi_{n}^{b}$ \eqref{eq:psi:n:b}.
-
-For sake of illustration, we choose argument `working_model_G_one` of function
-`estimate_Gbar` as follows:
-
-```{r fake}
-## empty...
-```
-
-
-In light of  \eqref{eq:psi:n:b}, introduce \begin{equation}\psi_{n}^{c} \equiv
-\frac{1}{n}   \sum_{i=1}^{n}   \left(\frac{2A_{i}  -   1}{\ell\Gbar_{n}(A_{i},
-W_{i})}   Y_{i}\right).\end{equation}   Because  $\Gbar_{n}$   minimizes   the
-empirical  risk over  a finite-dimensional  and well-specified  working model,
-$\sqrt{n} (\psi_{n}^{c} -  \psi_{0})$ converges in law to  a centered Gaussian
-law. Let us compute $\psi_{n}^{c}$ on the  same `iter = ` `r iter` independent
-samples  of  independent  observations  drawn   from  $P_{0}$  as  in  Section
-\@ref(known-gbar-first-pass):
-
-```{r unknown-Gbar-two-bis}
-learned_features_fixed_sample_size <-
-  obs %>% as_tibble() %>%
-  mutate(id = (seq_len(n()) - 1) %% iter) %>%
-  nest(-id, .key = "obs") %>%
-  mutate(Gbar_hat = map(obs, ~ estimate_Gbar(., algorithm = working_model_G_one))) %>%
-  mutate(lGAW = map2(Gbar_hat, obs, ~ compute_lGbar_hatAW(.y$A, .y$W, .x)))
-
-
-psi_hat_abc <-
-  learned_features_fixed_sample_size %>%
-  unnest(obs, lGAW) %>%
-  group_by(id) %>%
-  summarize(est = mean(Y * (2 * A - 1) / lGAW)) %>%
-  mutate(std = sd(est),
-         clt = (est - psi_zero) / std,
-         type = "c") %>%
-  full_join(psi_hat_ab)
-
-## DEBUG : This was breaking when I compiled.
-(bias_abc <- psi_hat_abc %>% group_by(type) %>% summarise(bias = mean(clt)))
-```
-
-Note how we exploit the independent realizations of $\psi_{n}^{c}$ to estimate
-the  asymptotic variance  of the  estimator with  $v_{n}^{c}/n$. By  the above
-chunk of code,  the average of $\sqrt{n/v_{n}^{c}}  (\psi_{n}^{c} - \psi_{0})$
-computed across the realizations is equal to 
-`r round(bias_abc$bias[bias_abc$type=="c"],3)` (rounded to three decimal places
---- see `bias_abc`).  We represent the empirical laws of  the recentered (with
-respect to  $\\psi_{0}$) and  renormalized $\psi_{n}^{a}$,  $\psi_{n}^{b}$ and
-$\psi_{n}^{c}$  in   Figures  \@ref(fig:unknown-Gbar-three)   (kernel  density
-estimators) and \@ref(fig:unknown-Gbar-four) (quantile-quantile plots). 
- 
-(ref:unknown-Gbar-three)  Kernel  density  estimators  of  the  law  of  three
-estimators  of   $\psi_{0}$  (recentered  with  respect   to  $\psi_{0}$,  and
-renormalized), one of them misconceived  (a), one assuming that $\Gbar_{0}$ is
-known  (b) and  one that  hinges  on the  estimation of  $\Gbar_{0}$ (c).  The
-present  figure includes  Figure \@ref(fig:known-Gbar-one-b)  (but the  colors
-differ). Built based on `iter` independent realizations of each estimator.
- 
-```{r unknown-Gbar-three, fig.cap = '(ref:unknown-Gbar-three)'}
-fig +
-  geom_density(aes(clt, fill = type, colour = type), psi_hat_abc, alpha = 0.1) +
-  geom_vline(aes(xintercept = bias, colour = type),
-             bias_abc, size = 1.5, alpha = 0.5) +
-  xlim(-3, 4) + 
-  labs(y = "",
-       x = expression(paste(sqrt(n/v[n]^{list(a, b, c)})*
-                            (psi[n]^{list(a, b, c)} - psi[0]))))
-```
-
-(ref:unknown-Gbar-four)  Quantile-quantile plot  of  the  standard normal  law
-against the  empirical laws  of three  estimators of  $\psi_{0}$, one  of them
-misconceived (a),  one assuming  that $\Gbar_{0}$  is known  (b) and  one that
-hinges  on  the  estimation  of   $\Gbar_{0}$  (c).   Built  based  on  `iter`
-independent realizations of each estimator.
-
-```{r unknown-Gbar-four, fig.cap = '(ref:unknown-Gbar-four)'}
-ggplot(psi_hat_abc, aes(sample = clt, fill = type, colour = type)) +
-  geom_abline(intercept = 0, slope = 1, alpha = 0.5) +
-  geom_qq(alpha = 1)
-```
-
-Figures \@ref(fig:unknown-Gbar-three)  and \@ref(fig:unknown-Gbar-four) reveal
-that $\psi_{n}^{c}$ behaves as well as $\psi_{n}^{b}$ --- but remember that we
-did not discuss how to estimate its asymptotic variance.
-
-## &#9881; \gear A nice title... {#exo-a-nice-title}
-
-1. Compute a numerical approximation of $\Exp_{P_{0}} (Y | A=1) - \Exp_{P_{0}}
-(Y  | A=0)$.  How accurate  is it?  \tcg{I would  perhaps suggest  moving this
-exercise and the  discussion of this parameter to earlier.  I.e., could have a
-whole section  on how our target  parameter differs from this  guy. Then could
-return to it in Sec. 3 with estimators?}
-
-2. Building upon the piece of code devoted to the repeated computation of
-$\psi_{n}^{b}$ and  its companion  quantities, construct  confidence intervals
-for  $\psi_{0}$ of  (asymptotic)  level  $95\%$, and  check  if the  empirical
-coverage is satisfactory.  Note that if  the coverage was exactly $95\%$, then
-the number of confidence intervals  that would contain $\psi_{0}$ would follow
-a binomial  law with parameters  `iter` and  `0.95`, and recall  that function
-`binom.test` performs  an exact  test of  a simple  null hypothesis  about the
-probability of success  in a Bernoulli experiment against  its three one-sided
-and two-sided alternatives.
-
-3.  The call to `compute_lGbar_hatAW` makes predictions on the same data points as
-those  exploited to  learn $\Gbar_{0}$  by fitting  the user-supplied  working
-model. Why  could that be problematic?  Can you think of  a simple workaround,
-implement and test it?
-
-4.  Discuss what happens when the dimension of the (still well-specified)
-working model grows. You could use the following chunk of code
-```{r exercises-one, eval = FALSE}
-powers <- ## make sure '1/2' and '1' belong to 'powers', eg
-  seq(1/4, 3, by = 1/4)
-working_model_G_two <- list(
-  model = function(...) {trim_glm_fit(glm(family = binomial(), ...))},
-  formula = as.formula(
-    paste("A ~",
-          paste(c("I(W^", "I(abs(W - 5/12)^"),
-                rep(powers, each = 2),
-                sep = "", collapse = ") + "),
-          ")")
-  ),
-  type_of_preds = "response"
-)
-attr(working_model_G_two, "ML") <- FALSE
-```
-play around with  argument `powers` (making sure that `1/2`  and `1` belong to
-it),   and   plot   graphics   similar   to   those   presented   in   Figures
-\@ref(fig:unknown-Gbar-three) and \@ref(fig:unknown-Gbar-four). 
-
-5. Discuss  what happens when the  working model is mis-specified.   You could
-use the following chunk of code:
-```{r exercises-two, eval = TRUE}
-transform <- c("cos", "sin", "sqrt", "log", "exp")
-working_model_G_three <- list(
-  model = function(...) {trim_glm_fit(glm(family = binomial(), ...))},
-  formula = as.formula(
-    paste("A ~",
-          paste("I(", transform, sep = "", collapse = "(W)) + "),
-          "(W))")
-  ),
-  type_of_preds = "response"
-)
-attr(working_model_G_three, "ML") <- FALSE
-(working_model_G_three$formula)
-```
-
-6.  &#9761; \stixdanger{} Drawing inspiration from \eqref{eq:v:n:b}, one may consider
-estimating the asymptotic  variance of $\psi_{n}^{c}$ with  the counterpart of
-$v_{n}^{b}$ obtained  by substituting  $\ell\Gbar_{n}$ for  $\ell\Gbar_{0}$ in
-\eqref{eq:v:n:b}.   By adapting  the piece  of  code devoted  to the  repeated
-computation of  $\psi_{n}^{b}$ and its  companion quantities, discuss  if that
-would be legitimate.
 
 ## Inference based on the estimation of the reward regression {#inference-reward-regression}
 
