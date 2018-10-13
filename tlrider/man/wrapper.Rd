@@ -4,10 +4,14 @@
 \alias{wrapper}
 \title{A convenient wrapper to make predictions based on a fit}
 \usage{
-wrapper(fit)
+wrapper(fit, unenclose = TRUE)
 }
 \arguments{
 \item{fit}{A fit as output by \code{estimate_Gbar} or \code{estimate_Qbar}.}
+
+\item{unenclose}{A \code{logical}  indicating whether or not  the function
+should be  \code{pryr::unenclose}d ("yes"  in general,  "no" in  calls to
+\code{mutate} for instance). Defaults to \code{TRUE}.}
 }
 \value{
 A function to make predictions.

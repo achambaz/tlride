@@ -561,7 +561,8 @@ statistical     model    \begin{equation*}\{P_{\theta}     :    \theta     \in
 T\}.\end{equation*} The statistical model is identifiable, meaning that if two
 elements $P_{\theta}$  and $P_{\theta'}$ coincide, then  necessarily $\theta =
 \theta'$.   Therefore, there  exists a  unique  $\theta_{0} \in  T$ such  that
-$P_{0} = P_{\theta_{0}}$, and one wishes to estimate $\theta_{0}$.
+$P_{0}     =    P_{\theta_{0}}$,     and     one     wishes    to     estimate
+$\theta_{0}$.\index{identifiability}
 
 For instance,  each $P_{\theta}$ could be  the Gaussian law with  mean $\theta
 \in T  \equiv \bbR$ and variance  1, and one  could wish to estimate  the mean
@@ -1359,7 +1360,7 @@ $\psi_{0}$ or, rather (though equivalently), $\Psi(P_{0})$.
 
 # A simple inference strategy {#simple-strategy}
 
-## A cautionary parenthesis
+## A cautionary detour
 
 Let us introduce first the following estimator: 
 
@@ -1498,11 +1499,12 @@ Section \@ref(empirical-inves-IPTW).
 The  next chunk  of code  investigates the  empirical behaviors  of estimators
 $\psi_{n}^{a}$ and  $\psi_{n}^{b}$. As explained in  Section \@ref(inference),
 we first make `iter`  data sets out of the `obs` data  set (second line), then
-build the to  estimators on each of  them (fourth and fifth  lines). After the
-first series of commands the object `psi_hat_ab`, a `tibble`, contains 
-`r 2*iter` rows and five columns.  For each smaller data set (identified by its
-`id`), two rows contain the values  of either $\psi_{n}^{a}$ (if `type` equals
-`a`) or $\psi_{n}^{b}$ (if `type` equals `b`).
+build the estimators on each of them (fourth and fifth lines). After the first
+series of  commands the object  `psi_hat_ab`, a `tibble`, contains  `r 2*iter`
+rows and  four columns.  For each  smaller data set (identified  by its `id`),
+two    rows    contain   the    values    of    either   $\psi_{n}^{a}$    and
+$\sqrt{v_{n}^{a}}/\sqrt{n}$  (if  `type`  equals `a`)  or  $\psi_{n}^{b}$  and
+$\sqrt{v_{n}^{b}}/\sqrt{n}$ (if  `type` equals `b`).
 
 After  the second  series of  commands, the  object `psi_hat_ab`  contains, in
 addition,  the values  of  the  recentered (with  respect  to $\psi_{0}$)  and
@@ -1525,7 +1527,7 @@ psi_hat_ab <- obs %>% as_tibble() %>%
          est_b = map(obs, ~ compute_iptw(as.matrix(.), Gbar))) %>%
   gather(`est_a`, `est_b`, key = "type", value = "estimates") %>%
   extract(type, "type", "_([ab])$") %>%
-  unnest(estimates)
+  unnest(estimates) %>% select(-obs)
 
 (psi_hat_ab)
 
@@ -1535,7 +1537,8 @@ psi_hat_ab <- psi_hat_ab %>%
 
 (psi_hat_ab)
 
-(bias_ab <- psi_hat_ab %>% group_by(type) %>% summarise(bias = mean(clt)))
+(bias_ab <- psi_hat_ab %>%
+   group_by(type) %>% summarise(bias = mean(clt)))
 
 fig <- ggplot() +
   geom_line(aes(x = x, y = y), 
@@ -1700,12 +1703,12 @@ for  any  function  $f :  [0,1]  \to  [0,1]$  paired  with the  working  model
 \begin{equation*}\logit  f_{\theta}  (W)  \equiv \theta_{0}  +  \sum_{j=1}^{4}
 \theta_{j} W^{j/2}.\end{equation*}
 
-We  acted  as  oracles when  we  specified  the  working  model: it  is  *well
-specified*, *i.e.*, it happens that $\Gbar_{0}$ is the unique minimizer of the
-risk  entailed  by  $L_{a}$  over  $\calF_{1}$:  \begin{equation*}\Gbar_{0}  =
+We  acted   as  oracles   when  we   specified  the   working  model:   it  is
+*well-specified*, *i.e.*, it happens that  $\Gbar_{0}$ is the unique minimizer
+of the risk entailed by $L_{a}$ over $\calF_{1}$: \begin{equation*}\Gbar_{0} =
 \mathop{\arg\min}_{f_{\theta}        \in        \calF_{1}}        \Exp_{P_{0}}
 \left(L_{a}(f_{\theta})(A,W)\right).\end{equation*}  Therefore, the  estimator
-$\Gbar_{n}$ obtained by minimizing the empirical risk
+$\Gbar_{n}$ obtained by minimizing the empirical risk\index{well/mis-specified}
 
 \begin{equation*}
 \Exp_{P_{n}} \left(L_{a}(f_{\theta})(A,W)\right)  = \frac{1}{n} \sum_{i=1}^{n}
@@ -1985,69 +1988,100 @@ algorithm  $\Algo_{\Gbar,1}$  (first  line)  then *(ii)*  the  computation  of
 $\psi_{n}^{c}$ (second line), both based on the same observations as above.
 
 Note  how we  use function  `wrapper` (simply  run `?wrapper`  to see  its man
-page --- a little tricky).
+page).
 
 
 ### Elementary statistical properties {#elementary-stat-prop-iptw}
 
-Because $\Gbar_{n}$ minimizes the empirical risk over a finite-dimensional and
-_well-specified working model_, $\sqrt{n} (\psi_{n}^{c} - \psi_{0})$ converges
-in law to a centered Gaussian law.
+Because $\Gbar_{n}$  minimizes the  empirical risk over  a finite-dimensional,
+identifiable, and **well-specified** working  model, $\sqrt{n} (\psi_{n}^{c} -
+\psi_{0})$ converges  in law  to a centered  Gaussian law.\index{identifiable}
+Moreover, the asymptotic  variance of $\sqrt{n} (\psi_{n}^{c}  - \psi_{0})$ is
+consistently estimated with\index{well/mis-specified} 
 
-### Empirical investigation
+\begin{align*}            v_{n}^{c}            &\equiv            \Var_{P_{n}}
+\left(\frac{2A-1}{\ell\Gbar_{n}(A,W)}Y\right)      \\      &=      \frac{1}{n}
+\sum_{i=1}^{n}\left(\frac{2A_{i}-1}{\ell\Gbar_{n}   (A_{i},W_{i})}   Y_{i}   -
+\psi_{n}^{c}\right)^{2}.  \end{align*}
+
+We  investigate *empirically*  the statistical  behavior of  $\psi_{n}^{c}$ in
+Section \@ref(empirical-inves-IPTW-bis).
+
+Before proceeding, let us touch upon what would have happened if we had used a
+less amenable  algorithm $\Algo_{\Gbar}$. For instance,  $\Algo_{\Gbar}$ could
+still be  well-specified^[Well-specified *e.g.* in  the sense that  the target
+$\Gbar_{0}$ of $\Algo_{\Gbar}$ belongs to the closure of the algorithm's image
+$\Algo_{\Gbar}(\calM^{\text{empirical}})$   or,  in   other   words,  can   be
+approximated  arbitrarily  well  by  an  output of  the  algorithm.]   but  so
+*versatile/complex*   (as   opposed   to    being   based   on   well-behaved,
+finite-dimensional parametric  model) that  the estimator  $\Gbar_{n}$, though
+still  consistent,  would  converge  slowly to  its  target.   Then,  root-$n$
+consistency   would    fail   to   hold.    Or    $\Algo_{\Gbar}$   could   be
+mis-specified\index{well/mis-specified} and there would be no guarantee at all
+that the resulting estimator $\psi_{n}^{c}$ be even consistent.
+
+
+
+### Empirical investigation {#empirical-inves-IPTW-bis}
 
 Let  us compute  $\psi_{n}^{c}$ on  the same  `iter =  ` `r  iter` independent
 samples  of  independent  observations  drawn   from  $P_{0}$  as  in  Section
-\@ref(known-gbar-first-pass):
+\@ref(known-gbar-first-pass).  As  explained in Sections  \@ref(inference) and
+\@ref(empirical-inves-IPTW), we first  make `iter` data sets out  of the `obs`
+data set (third line), then train  algorithm $\Algo_{\Gbar,1}$ on each of them
+(fifth  to seventh  lines).  After  the first  series of  commands the  object
+`learned_features_fixed_sample_size`, a `tibble`, contains `r iter` rows and
+three columns.  
 
+We  created `learned_features_fixed_sample_size`  to store  the estimators  of
+$\Gbar_{0}$ for future  use. We will at  a later stage enrich  the object, for
+instance  by adding  to  it  estimators of  $\Qbar_{0}$  obtained by  training
+different algorithms on each smaller data set.
 
-
-For  simplicity,  we  consider  the  case that  $\Gbar_{0}$  is  estimated  by
-minimizing   a   loss    function   on   a   single    working   model,   both
-fine-tune-parameter-free.   By adopting  this  stance,  we exclude  estimating
-procedures  that involve  penalization (*e.g.*  the LASSO)  or aggregation  of
-competing   estimators  (*via*   stacking/super  learning)   --  see   Section
-\@ref(subsec:exo:one).   Defined  in  the  next chunk  of  code,  the  generic
-function `estimate_Gbar` fits a user-specified working model by minimizing the
-empirical risk  associated to  the user-specified  loss function  and provided
-data.
-
-
-
-
+In the  second series  of commands,  the object  `psi_hat_abc` is  obtained by
+adding to  `psi_hat_ab` (see Section \@ref(empirical-inves-IPTW))  an `r iter`
+by  four  `tibble`  containing  notably   the  values  of  $\psi_{n}^{c}$  and
+$\sqrt{v_{n}^{c}}/\sqrt{n}$  computed by  calling  `compute_iptw`. The  object
+also contains  the values of the  recentered (with respect to  $\psi_{0}$) and
+renormalized $\sqrt{n}/\sqrt{v_{n}^{c}}  (\psi_{n}^{c} -  \psi_{0})$. Finally,
+`bias_abc`  can be  interpreted  as an  amount of  bias  (at the  renormalized
+scale).
 
 ```{r unknown-Gbar-two-bis}
 learned_features_fixed_sample_size <-
   obs %>% as_tibble() %>%
   mutate(id = (seq_len(n()) - 1) %% iter) %>%
   nest(-id, .key = "obs") %>%
-  mutate(Gbar_hat = map(obs, ~ estimate_Gbar(., algorithm = working_model_G_one))) %>%
-  mutate(lGAW = map2(Gbar_hat, obs, ~ compute_lGbar_hatAW(.y$A, .y$W, .x)))
-
+  mutate(Gbar_hat =
+           map(obs,
+               ~ estimate_Gbar(., algorithm = working_model_G_one)))
 
 psi_hat_abc <-
   learned_features_fixed_sample_size %>%
-  unnest(obs, lGAW) %>%
-  group_by(id) %>%
-  summarize(est = mean(Y * (2 * A - 1) / lGAW)) %>%
-  mutate(std = sd(est),
-         clt = (est - psi_zero) / std,
+  mutate(est_c =
+           map2(obs, Gbar_hat,
+                ~ compute_iptw(as.matrix(.x), wrapper(.y, FALSE)))) %>%
+  unnest(est_c) %>% select(-Gbar_hat, -obs) %>%
+  mutate(clt = (psi_n - psi_zero) / sig_n,
          type = "c") %>%
   full_join(psi_hat_ab)
 
-## DEBUG : This was breaking when I compiled.
-(bias_abc <- psi_hat_abc %>% group_by(type) %>% summarise(bias = mean(clt)))
+(bias_abc <- psi_hat_abc %>%
+   group_by(type) %>% summarise(bias = mean(clt)))
 ```
 
-Note how we exploit the independent realizations of $\psi_{n}^{c}$ to estimate
-the  asymptotic variance  of the  estimator with  $v_{n}^{c}/n$. By  the above
-chunk of code,  the average of $\sqrt{n/v_{n}^{c}}  (\psi_{n}^{c} - \psi_{0})$
-computed across the realizations is equal to 
+By the above chunk of code, the average of $\sqrt{n/v_{n}^{c}} (\psi_{n}^{c} -
+\psi_{0})$ computed across the realizations is equal to 
 `r round(bias_abc$bias[bias_abc$type=="c"],3)` (rounded to three decimal places
---- see `bias_abc`).  We represent the empirical laws of  the recentered (with
-respect to  $\\psi_{0}$) and  renormalized $\psi_{n}^{a}$,  $\psi_{n}^{b}$ and
-$\psi_{n}^{c}$  in   Figures  \@ref(fig:unknown-Gbar-three)   (kernel  density
-estimators) and \@ref(fig:unknown-Gbar-four) (quantile-quantile plots). 
+--- see  `bias_abc`). In words, the  average bias of $\psi_{n}^{c}$  is of the
+same  magnitude  as   that  of  $\psi_{n}^{b}$  despite  the   fact  that  the
+construction of $\psi_{n}^{c}$ hinges on  the estimation of $\Gbar_{0}$ (based
+on the well-specified algorithm $\Algo_{\Gbar,1}$.
+
+We represent the empirical laws of the recentered (with respect to $\psi_{0}$)
+and renormalized $\psi_{n}^{a}$, $\psi_{n}^{b}$  and $\psi_{n}^{c}$ in Figures
+\@ref(fig:unknown-Gbar-three)     (kernel      density     estimators)     and
+\@ref(fig:unknown-Gbar-four) (quantile-quantile plots).
  
 (ref:unknown-Gbar-three)  Kernel  density  estimators  of  the  law  of  three
 estimators  of   $\psi_{0}$  (recentered  with  respect   to  $\psi_{0}$,  and
@@ -2071,7 +2105,7 @@ fig +
 against the  empirical laws  of three  estimators of  $\psi_{0}$, one  of them
 misconceived (a),  one assuming  that $\Gbar_{0}$  is known  (b) and  one that
 hinges  on  the  estimation  of   $\Gbar_{0}$  (c).   Built  based  on  `iter`
-independent realizations of each estimator.
+independent realizations of each estimator. 
 
 ```{r unknown-Gbar-four, fig.cap = '(ref:unknown-Gbar-four)'}
 ggplot(psi_hat_abc, aes(sample = clt, fill = type, colour = type)) +
@@ -2081,17 +2115,12 @@ ggplot(psi_hat_abc, aes(sample = clt, fill = type, colour = type)) +
 
 Figures \@ref(fig:unknown-Gbar-three)  and \@ref(fig:unknown-Gbar-four) reveal
 that $\psi_{n}^{c}$ behaves as well as $\psi_{n}^{b}$ --- but remember that we
-did not discuss how to estimate its asymptotic variance.
+acted as oracles when we chose the well-specified algorithm $\Algo_{\Gbar,1}$.
 
-## &#9881; \gear A nice title... {#exo-a-nice-title}
+## &#9881; \gear Investigating further the IPTW inference strategy {#exo-a-nice-title}
 
-1. Compute a numerical approximation of $\Exp_{P_{0}} (Y | A=1) - \Exp_{P_{0}}
-(Y  | A=0)$.  How accurate  is it?  \tcg{I would  perhaps suggest  moving this
-exercise and the  discussion of this parameter to earlier.  I.e., could have a
-whole section  on how our target  parameter differs from this  guy. Then could
-return to it in Sec. 3 with estimators?}
 
-2. Building upon the piece of code devoted to the repeated computation of
+1. Building  upon the chunks  of code devoted  to the repeated  computation of
 $\psi_{n}^{b}$ and  its companion  quantities, construct  confidence intervals
 for  $\psi_{0}$ of  (asymptotic)  level  $95\%$, and  check  if the  empirical
 coverage is satisfactory.  Note that if  the coverage was exactly $95\%$, then
@@ -2101,22 +2130,20 @@ a binomial  law with parameters  `iter` and  `0.95`, and recall  that function
 probability of success  in a Bernoulli experiment against  its three one-sided
 and two-sided alternatives.
 
-3.  The call to `compute_lGbar_hatAW` makes predictions on the same data points as
-those  exploited to  learn $\Gbar_{0}$  by fitting  the user-supplied  working
-model. Why  could that be problematic?  Can you think of  a simple workaround,
-implement and test it?
+2.  Repeat the  analysis developed  in  response to  problem 1  above but  for
+$\psi_{n}^{c}$.
 
-4.  Discuss what happens when the dimension of the (still well-specified)
-working model grows. You could use the following chunk of code
-```{r exercises-one, eval = FALSE}
-powers <- ## make sure '1/2' and '1' belong to 'powers', eg
-  seq(1/4, 3, by = 1/4)
+3. Discuss what happens when the dimension of the (still well-specified)\index{well/mis-specified} working model grows.  Start with the built-in working model `working_model_G_two`.  The following chunk of code re-defines `working_model_G_two`
+
+```{r working-model-G-two, eval = FALSE}
+## make sure '1/2' and '1' belong to 'powers'
+powers <- rep(seq(1/4, 3, by = 1/4), each = 2) 
 working_model_G_two <- list(
   model = function(...) {trim_glm_fit(glm(family = binomial(), ...))},
-  formula = as.formula(
+  formula = stats::as.formula(
     paste("A ~",
           paste(c("I(W^", "I(abs(W - 5/12)^"),
-                rep(powers, each = 2),
+                powers, 
                 sep = "", collapse = ") + "),
           ")")
   ),
@@ -2124,82 +2151,24 @@ working_model_G_two <- list(
 )
 attr(working_model_G_two, "ML") <- FALSE
 ```
-play around with  argument `powers` (making sure that `1/2`  and `1` belong to
+
+4. Play around with argument `powers` (making sure that `1/2` and `1` belong to
 it),   and   plot   graphics   similar   to   those   presented   in   Figures
-\@ref(fig:unknown-Gbar-three) and \@ref(fig:unknown-Gbar-four). 
+\@ref(fig:unknown-Gbar-three) and \@ref(fig:unknown-Gbar-four).
 
-5. Discuss  what happens when the  working model is mis-specified.   You could
-use the following chunk of code:
-```{r exercises-two, eval = TRUE}
-transform <- c("cos", "sin", "sqrt", "log", "exp")
-working_model_G_three <- list(
-  model = function(...) {trim_glm_fit(glm(family = binomial(), ...))},
-  formula = as.formula(
-    paste("A ~",
-          paste("I(", transform, sep = "", collapse = "(W)) + "),
-          "(W))")
-  ),
-  type_of_preds = "response"
-)
-attr(working_model_G_three, "ML") <- FALSE
-(working_model_G_three$formula)
-```
+5. Discuss    what     happens     when    the     working    model     is
+mis-specified.\index{well/mis-specified}  You could  use the  built-in working
+model `working_model_G_three`.
 
-6.  &#9761; \stixdanger{} Drawing inspiration from \eqref{eq:v:n:b}, one may consider
-estimating the asymptotic  variance of $\psi_{n}^{c}$ with  the counterpart of
-$v_{n}^{b}$ obtained  by substituting  $\ell\Gbar_{n}$ for  $\ell\Gbar_{0}$ in
-\eqref{eq:v:n:b}.   By adapting  the piece  of  code devoted  to the  repeated
-computation of  $\psi_{n}^{b}$ and its  companion quantities, discuss  if that
-would be legitimate.
+6. &#9761; \stixdanger{} Is it legitimate to infer the asymptotic variance
+of   $\psi_{n}^{c}$   with   $v_{n}^{c}$   when   one   relies   on   a   very
+data-adaptive/versatile algorithm to estimate $\Gbar_{0}$?
+
+## G-computation estimator
 
 
-# ANTOINE
-
-## Building estimators
 
 
-Each of  the strategies  we discuss be  described in two  steps. In  the first
-step, we obtain estimators of the quantities relevant to evaluating the target
-parameter and  its efficient influence  curve. Because estimation  of these
-quantities is merely  an intermediate step along our path  towards an estimate
-of  the  target   parameter,  we  refer  to  these   quantities  as  *nuisance
-parameters*. In  the second step,  we combine  the estimators of  the nuisance
-parameters in  a particular way as  to ensure that the  resultant estimator of
-the target parameter enjoys desirable properties.  In this second step we will
-make use of the theory developed in the previous subsection.
-
-
-Similarly, we can define a function and a method for estimating $\Qbar_0$.
-
-```{r intro-estimateQ-method}
-# introduce code for estimation of $\Qbar_0$ 
-# and show how it works 
-```
-
-To  estimate $Q_{0,W}$,  the  distribution  of $W$,  we  will  simply use  the
-empirical measure of  $W_1, \dots, W_n$, that is, the  law describing sampling
-from $W_1, \dots, W_n$ with equal probability $n^{-1}$.
-
-```{r intro-to-estimateQW}
-# not sure how this is being handled in the code 
-# and whether we need to introduce a function for this here?
-```
-
-## &#9881; \gear Algorithms {#exo-algorithms}
-
-1. \tcg{Depending on how above goes,  define your own algorithm for estimating
-   $\Gbar_0$ and/or $\Qbar_0$?}
-
-\tcg{Do we  need a  remark on  simulation studies?  I.e., something  like: *In
-order  to  study the  frequentist  operating  characteristics of  the  various
-estimators of the  target parameter, we will use Monte  Carlo simulation. That
-is,  we will  repeatedly sample  $n$ independent  observations from  $P_0$ and
-build our  estimator on each  realization of  our experiment.* Don't  know how
-much detail we need  to go into, but adding something like  this would give us
-an excuse to get  all of the estimation of the nuisance  parameters out of the
-way. Again, it all depends on how we/you want to structure the code.}
-
-## Simple estimation strategies
 
 Equation (\ref{eq:psi0}) suggests the following, simple estimator of $\psi_0$ \[
 \psi_{n}  \equiv   \int  \left(\Qbar_{n}(1,   w)  -   \Qbar_{n}(0,  w)\right) dQ_{n,W}(w) , 
@@ -2234,16 +2203,23 @@ study the bias, variance, and weak convergence of the estimators.
 # maybe have three estimators? one with correct parametric model, one with misspecified parametric model and one with knn?
 ```
 
-The simulation demonstrates the following key points. For correctly-specified parametric
-regressions, the plug-in estimator exhibits excellent behavior: its bias disappears
-faster than $n^{-1/2}$, its variance is close to that of an efficient estimator in large samples, and its sampling distribution is approximately Gaussian. However, misspecified 
-parametric regressions demonstrate very poor behavior indeed. Their bias does not disappear, even in large samples and thus their sampling distribution is not centered around the truth. 
-This may suggest that we should be instead using more flexible regression techniques in
-order to ensure that our estimate $\Qbar_n$ is as close to $\Qbar_0$ as possible. However,
-we find that, in spite of the excellent fit of $\Qbar_n$ to $\Qbar_0$, the plug-in estimate based on $k$-nearest neighbors exhibits non-negligible bias. In particular, the bias is 
-not disappearing faster than $n^{-1/2}$. Thus, the center point of the sampling distribution of $n^{1/2}$ times our estimator is moving farther from the truth as sample size increases. 
-In the next subsection, we analyze the plug-in estimator to understand the source
-of this poor behavior. 
+The  simulation  demonstrates the  following  key  points. For  well-specified
+parametric regressions, the plug-in estimator exhibits excellent behavior: its
+bias disappears  faster than $n^{-1/2}$, its  variance is close to  that of an
+efficient  estimator  in  large  samples, and  its  sampling  distribution  is
+approximately   Gaussian.   However,   mis-specified  parametric   regressions
+demonstrate very poor behavior indeed. Their  bias does not disappear, even in
+large samples and thus their sampling  distribution is not centered around the
+truth.   This may  suggest  that  we should  be  instead  using more  flexible
+regression techniques  in order to  ensure that  our estimate $\Qbar_n$  is as
+close  to $\Qbar_0$  as  possible. However,  we  find that,  in  spite of  the
+excellent  fit  of $\Qbar_n$  to  $\Qbar_0$,  the  plug-in estimate  based  on
+$k$-nearest neighbors exhibits non-negligible bias. In particular, the bias is
+not  disappearing faster  than  $n^{-1/2}$.   Thus, the  center  point of  the
+sampling distribution of $n^{1/2}$ times  our estimator is moving farther from
+the truth  as sample size increases.   In the next subsection,  we analyze the
+plug-in    estimator    to    understand    the   source    of    this    poor
+behavior. \index{well/mis-specified}
 
 ## &#9881; \gear Plug-in estimate {#exo-plug-in-estimate}
 
@@ -2319,6 +2295,12 @@ This simulation demonstrates that, as expected, $n^{1/2}P_n D^*(\hat{P}_n) \righ
 2. \tcg{Design a simulation study to empirically evaluate $n^{1/2} (P_n - P_0) (D^*(\hat{P}_n) - D^*(P_0))$}.
 
 3. \tcg{A "difficult" exercise. Repeat exercise 2, but let's try to break Donsker conditions. E.g., could we blow the Donsker condition up by including an increasing number of polynomials?}
+
+# ANTOINE
+
+## Building estimators
+
+
 
 ### One-step corrections
 
@@ -2581,7 +2563,8 @@ we end up with an estimate of $\psi_0$ that is outside the parameter space.}
 
 \tcg{Demonstrating the  inference of} $\psi_{0}$ \tcg{based  on the estimation
 of} $\Qbar_{0}$ \tcg{(and of the marginal  law of} $W$\tcg{).  Once based on a
-(mis-specified) working model, and once based on a non-parametric algorithm.}
+(mis-specified) working model, and once  based on a non-parametric algorithm.}
+\index{well/mis-specified}
 
 
 (ref:estimating-Qbar-one-bis) Write caption.

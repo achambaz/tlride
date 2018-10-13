@@ -348,31 +348,36 @@ compute_Qbar_hatAW <- function(A, W, Qbar_hat, blip = FALSE) {
 #'
 #' @param fit A fit as output by \code{estimate_Gbar} or \code{estimate_Qbar}.
 #'
+#' @param unenclose A \code{logical}  indicating whether or not  the function
+#'   should be  \code{pryr::unenclose}d ("yes"  in general,  "no" in  calls to
+#'   \code{mutate} for instance). Defaults to \code{TRUE}.
+#' 
 #' @return A function to make predictions.
 #'
 #' @family estimating functions
 #'
 #' @export
-wrapper <- function(fit) {
+wrapper <- function(fit, unenclose = TRUE) {
+  unenclose <- R.utils::Arguments$getLogical(unenclose)
   type_of_preds <- R.utils::Arguments$getCharacter(attr(fit, "type_of_preds"))
   if (!is.null(attr(fit, "stratify"))) {
     ## argument 'fit' is an output of 'estimate_Qbar'
     stratify <- R.utils::Arguments$getLogical(attr(fit, "stratify"))
     if (!stratify) {
       fit <- fit %>% filter(.data$a == "both") %>%
-        pull(fit) %>% first
-      out <- pryr::unenclose(function(obs) {
+        pull("fit") %>% first
+      out <- function(obs) {
         obs <- as.data.frame(obs)
         stats::predict(fit,
                        newdata = obs,
                        type = type_of_preds)
-      })
+      }
     } else {
-      fit_one <- Qbar_hat %>% filter(.data$a == "one") %>%
-        pull(fit) %>% first
-      fit_zero <- Qbar_hat %>% filter(.data$a == "zero") %>%
-        pull(fit) %>% first
-      out <- pryr::unenclose(function(obs) {
+      fit_one <- fit %>% filter(.data$a == "one") %>%
+        pull("fit") %>% first
+      fit_zero <- fit %>% filter(.data$a == "zero") %>%
+        pull("fit") %>% first
+      out <- function(obs) {
         obs <- as.data.frame(obs)
         pred <- vector("numeric", nrow(obs))
         idx_one <- (obs$A == 1)
@@ -386,16 +391,19 @@ wrapper <- function(fit) {
                                            newdata = obs[!idx_one, ],
                                            type = type_of_preds)
         }
-      })
+      }
     }
   } else {
     ## argument 'fit' is an output of 'estimate_Gbar'
-    out <- pryr::unenclose(function(obs) {
+    out <- function(obs) {
       obs <- as.data.frame(obs)
       stats::predict(fit,
                      newdata = obs,
                      type = type_of_preds)
-    })
+    }
+  }
+  if (unenclose) {
+    out <- pryr::unenclose(out)
   }
   return(out)
 }
