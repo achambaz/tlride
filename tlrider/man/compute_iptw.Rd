@@ -17,12 +17,21 @@ produced    by    an    object   of    \code{class}    \code{LAW}    (see
 \item{threshold}{A small  positive number (default  value 0.05) used  to bound
 'Gbar' away from zero.}
 }
+\value{
+A  \code{tibble} containing  the  value  of the  IPTW  estimator
+  ('psi_n'  column) and  that of  the estimator  of its  standard deviation
+  ('sig_n' column).
+}
 \description{
 Given a data set  consisting of realizations of (W,A,Y) in  [0,1] x {0,1} x
 [0,1] drawn  from a  common law  and the  conditional probability  that A=1
 given W, the so called 'Gbar' feature  of the law, either a priori known or
 estimated  beforehand, \code{compute_iptw}  builds  the  IPTW estimator  of
 \eqn{Psi} at the law that generated the data set.
+}
+\details{
+Caution:  the estimator  of the  standard deviation  of the  IPTW
+  estimator can be trusted only in very specific circumstances.
 }
 \examples{
 
@@ -39,12 +48,9 @@ Gbar <- get_feature(experiment, "Gbar")
 }
 \references{
 Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
-
-  @return  A  \code{tibble} containing  the  value  of the  IPTW  estimator
-  ('psi_n'  column) and  that of  the estimator  of its  standard deviation
-  ('sig_n' column).
 }
 \seealso{
-\code{\link{estimate_Gbar}} to  estimate the  conditional probability
-  that A=1 given W.
+\code{\link{estimate_Gbar}}   to  estimate   the   conditional
+  probability that A=1 given  W, \code{\link{compute_gcomp}} to compute the
+  G-computation estimator.
 }

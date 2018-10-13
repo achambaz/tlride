@@ -82,6 +82,27 @@ knitr::opts_chunk$set(
 
 options(dplyr.print_min = 6, dplyr.print_max = 6)
 ```
+```{r include=FALSE, cache=FALSE}
+options(digits = 3)
+
+knitr::opts_chunk$set(
+  comment = "#>",
+  collapse = TRUE,
+  cache = TRUE,
+  out.width = "70%",
+  fig.align = 'center',
+  fig.width = 6, # used to have: fig.width = 12,
+  fig.asp = 0.618, # used to have: fig.height = 4, 
+  fig.show = "hold",
+  fig.path = 'img/',
+  size = "tiny",
+  message = FALSE,
+  warning = FALSE,
+  warnings = FALSE
+)
+
+options(dplyr.print_min = 6, dplyr.print_max = 6)
+```
 # A ride
 
 
@@ -1540,7 +1561,7 @@ psi_hat_ab <- psi_hat_ab %>%
 (bias_ab <- psi_hat_ab %>%
    group_by(type) %>% summarise(bias = mean(clt)))
 
-fig <- ggplot() +
+fig_bias_ab <- ggplot() +
   geom_line(aes(x = x, y = y), 
             data = tibble(x = seq(-3, 3, length.out = 1e3),
                           y = dnorm(x)),
@@ -1550,7 +1571,7 @@ fig <- ggplot() +
   geom_vline(aes(xintercept = bias, colour = type),
              bias_ab, size = 1.5, alpha = 0.5)
   
-fig +
+fig_bias_ab +
   labs(y = "",
        x = expression(paste(sqrt(n/v[n]^{list(a, b)})*
                             (psi[n]^{list(a, b)} - psi[0]))))
@@ -2091,7 +2112,7 @@ present  figure includes  Figure \@ref(fig:known-Gbar-one-b)  (but the  colors
 differ). Built based on `iter` independent realizations of each estimator.
  
 ```{r unknown-Gbar-three, fig.cap = '(ref:unknown-Gbar-three)'}
-fig +
+fig_bias_ab +
   geom_density(aes(clt, fill = type, colour = type), psi_hat_abc, alpha = 0.1) +
   geom_vline(aes(xintercept = bias, colour = type),
              bias_abc, size = 1.5, alpha = 0.5) +
@@ -2570,35 +2591,35 @@ of} $\Qbar_{0}$ \tcg{(and of the marginal  law of} $W$\tcg{).  Once based on a
 (ref:estimating-Qbar-one-bis) Write caption.
 
 ```{r estimating-Qbar-one-bis, fig.cap = '(ref:estimating-Qbar-one-bis)'}
-##
-## not updated yet
-##
-
 learned_features_fixed_sample_size <-
-  learned_features_fixed_sample_size %>% # head(n = 100) %>%
+  learned_features_fixed_sample_size %>% 
   mutate(Qbar_hat_d = map(obs, ~ estimate_Qbar(., algorithm = working_model_Q_one)),
          Qbar_hat_e = map(obs, ~ estimate_Qbar(., algorithm = kknn_algo,
                                                trControl = kknn_control,
-                                               tuneGrid = kknn_grid))) %>% 
-  mutate(blip_QW_d = map2(Qbar_hat_d, obs,
-                          ~ compute_Qbar_hatAW(.y$A, .y$W, .x, blip = TRUE)),
-         blip_QW_e = map2(Qbar_hat_e, obs,
-                          ~ compute_Qbar_hatAW(.y$A, .y$W, .x, blip = TRUE)))
+                                               tuneGrid = kknn_grid))) %>%
+  mutate(QW = map(obs, estimate_QW),
+         est_d = pmap(list(QW, Qbar_hat_d, n()),
+                      ~ compute_gcomp(..1, wrapper(..2, FALSE), ..3)),
+         est_e = pmap(list(QW, Qbar_hat_e, n()),
+                      ~ compute_gcomp(..1, wrapper(..2, FALSE), ..3)))
 
 psi_hat_de <- learned_features_fixed_sample_size %>%
-  unnest(blip_QW_d, blip_QW_e) %>%
-  group_by(id) %>%
-  summarize(est_d = mean(blip_QW_d),
-            est_e = mean(blip_QW_e)) %>%
-  mutate(std_d = sd(est_d),
-         std_e = sd(est_e),
-         clt_d = (est_d - psi_zero) / std_d,
-         clt_e = (est_e - psi_zero) / std_e) %>% 
-  gather("key", "value", -id) %>%
-  extract(key, c("what", "type"), "([^_]+)_([de])") %>%
-  spread(what, value)
+  select(est_d, est_e) %>%
+  gather(`est_d`, `est_e`, key = "type", value = "estimates") %>%
+  extract(type, "type", "_([de])$") %>% 
+  unnest(estimates) %>%
+  group_by(type) %>%
+  mutate(sig_alt = sd(psi_n)) %>%
+  mutate(clt_ = (psi_n - psi_zero) / sig_n,
+         clt_alt = (psi_n - psi_zero) / sig_alt) %>%
+  gather(`clt_`, `clt_alt`, key = "key", value = "clt") %>%
+  extract(key, "key", "_(.*)$") %>%
+  mutate(key = ifelse(key == "", TRUE, FALSE)) %>%
+  rename("auto_renormalization" = key)
 
-(bias_de <- psi_hat_de %>% group_by(type) %>% summarize(bias = mean(clt)))
+(bias_de <- psi_hat_de %>%
+   group_by(type, auto_renormalization) %>%
+   summarize(bias = mean(clt)))
 
 fig <- ggplot() +
   geom_line(aes(x = x, y = y), 
@@ -2608,7 +2629,11 @@ fig <- ggplot() +
   geom_density(aes(clt, fill = type, colour = type),
                psi_hat_de, alpha = 0.1) +
   geom_vline(aes(xintercept = bias, colour = type),
-             bias_de, size = 1.5, alpha = 0.5)
+             bias_de, size = 1.5, alpha = 0.5) +
+  facet_wrap(~ auto_renormalization,
+             labeller = as_labeller(c(`TRUE` = "auto-renormalization: TRUE",
+                                      `FALSE` = "auto-renormalization: FALSE")),
+             nrow = 2, scales = "free")
   
 fig +
   labs(y = "",
@@ -2642,7 +2667,7 @@ earlier.  We thus obtain `r nrow(obs) %/% block_size` independent realizations
 of each estimator derived on  data sets of `r length(sample_size)`, increasing
 sample sizes.
 
-```{r estimating-Qbar-three, eval = TRUE}
+```{r estimating-Qbar-three, eval = FALSE}
 ##
 ## not updated yet
 ## 
@@ -2680,7 +2705,7 @@ for  two  inference methodology  of  $\psi_{0}$  based  on the  estimation  of
 $\Qbar_{0}$.   Big  dots  represent  the average  biases  and  vertical  lines
 represent twice the standard error.
 
-```{r estimating-Qbar-four, fig.width = 5, fig.height = 5, fig.cap = '(ref:estimating-Qbar-four)'}
+```{r estimating-Qbar-four, fig.width = 5, fig.height = 5, fig.cap = '(ref:estimating-Qbar-four)', eval = FALSE}
 ##
 ## not updated yet
 ##

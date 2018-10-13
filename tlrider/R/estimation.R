@@ -151,8 +151,8 @@ estimate_Qbar <- function(dat, algorithm, ...) {
       fit_zero <- algorithm[[1]](dat[!idx_one, ], ...)
     }
   }
-  fit <- tibble(a = c("both", "one", "zero"),
-                fit = list(fit_both, fit_one, fit_zero))
+  fit <- dplyr::tibble(a = c("both", "one", "zero"),
+                       fit = list(fit_both, fit_one, fit_zero))
   attr(fit, "type_of_preds") <- algorithm$type_of_preds
   attr(fit, "stratify") <- attr(algorithm, "stratify")
   return(fit)
@@ -296,16 +296,16 @@ compute_Qbar_hatAW <- function(A, W, Qbar_hat, blip = FALSE) {
   if (!blip) {
     dat <- data.frame(Y = NA, A = A, W = W)
     if (!stratify) {
-      fit <- Qbar_hat %>% filter(.data$a == "both") %>%
-        pull(fit) %>% first
+      fit <- Qbar_hat %>% dplyr::filter(.data$a == "both") %>%
+        dplyr::pull("fit") %>% dplyr::first()
       pred <- stats::predict(fit,
                              newdata = dat,
                              type = attr(Qbar_hat, "type_of_preds"))
     } else {
-      fit_one <- Qbar_hat %>% filter(.data$a == "one") %>%
-        pull(fit) %>% first
-      fit_zero <- Qbar_hat %>% filter(.data$a == "zero") %>%
-        pull(fit) %>% first
+      fit_one <- Qbar_hat %>% dplyr::filter(.data$a == "one") %>%
+        dplyr::pull("fit") %>% dplyr::first()
+      fit_zero <- Qbar_hat %>% dplyr::filter(.data$a == "zero") %>%
+        dplyr::pull("fit") %>% dplyr::first()
       pred <- vector("numeric", nrow(dat))
       idx_one <- (dat$A == 1)
       if (sum(idx_one) > 0) {
@@ -321,17 +321,17 @@ compute_Qbar_hatAW <- function(A, W, Qbar_hat, blip = FALSE) {
     }
   } else {
     if (!stratify) {
-      fit <- Qbar_hat %>% filter(.data$a == "both") %>%
-        pull(fit) %>% first
+      fit <- Qbar_hat %>% dplyr::filter(.data$a == "both") %>%
+        dplyr::pull("fit") %>% dplyr::first()
       pred <- stats::predict(fit, newdata = data.frame(A = 1, W = W),
                              type = attr(Qbar_hat, "type_of_preds")) -
         stats::predict(fit, newdata = data.frame(A = 0, W = W),
                        type = attr(Qbar_hat, "type_of_preds"))
     } else {
-      fit_one <- Qbar_hat %>% filter(.data$a == "one") %>%
-        pull(fit) %>% first
-      fit_zero <- Qbar_hat %>% filter(.data$a == "zero") %>%
-        pull(fit) %>% first
+      fit_one <- Qbar_hat %>% dplyr::filter(.data$a == "one") %>%
+        dplyr::pull("fit") %>% dplyr::first()
+      fit_zero <- Qbar_hat %>% dplyr::filter(.data$a == "zero") %>%
+        dplyr::pull("fit") %>% dplyr::first()
       pred <- stats::predict(fit_one, newdata = data.frame(A = 1, W = W),
                              type = attr(Qbar_hat, "type_of_preds")) -
         stats::predict(fit_zero, newdata = data.frame(A = 0, W = W),
@@ -364,8 +364,8 @@ wrapper <- function(fit, unenclose = TRUE) {
     ## argument 'fit' is an output of 'estimate_Qbar'
     stratify <- R.utils::Arguments$getLogical(attr(fit, "stratify"))
     if (!stratify) {
-      fit <- fit %>% filter(.data$a == "both") %>%
-        pull("fit") %>% first
+      fit <- fit %>% dplyr::filter(.data$a == "both") %>%
+        dplyr::pull("fit") %>% dplyr::first()
       out <- function(obs) {
         obs <- as.data.frame(obs)
         stats::predict(fit,
@@ -373,10 +373,10 @@ wrapper <- function(fit, unenclose = TRUE) {
                        type = type_of_preds)
       }
     } else {
-      fit_one <- fit %>% filter(.data$a == "one") %>%
-        pull("fit") %>% first
-      fit_zero <- fit %>% filter(.data$a == "zero") %>%
-        pull("fit") %>% first
+      fit_one <- fit %>% dplyr::filter(.data$a == "one") %>%
+        dplyr::pull("fit") %>% dplyr::first()
+      fit_zero <- fit %>% dplyr::filter(.data$a == "zero") %>%
+        dplyr::pull("fit") %>% dplyr::first()
       out <- function(obs) {
         obs <- as.data.frame(obs)
         pred <- vector("numeric", nrow(obs))
@@ -426,14 +426,18 @@ wrapper <- function(fit, unenclose = TRUE) {
 #' @param  threshold A small  positive number (default  value 0.05) used  to bound
 #'   'Gbar' away from zero.
 #' 
-#' @seealso \code{\link{estimate_Gbar}} to  estimate the  conditional probability
-#'   that A=1 given W.
+#' @seealso \code{\link{estimate_Gbar}}   to  estimate   the   conditional
+#'   probability that A=1 given  W, \code{\link{compute_gcomp}} to compute the
+#'   G-computation estimator.
 #'
 #' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
 #' 
-#'   @return  A  \code{tibble} containing  the  value  of the  IPTW  estimator
+#' @return  A  \code{tibble} containing  the  value  of the  IPTW  estimator
 #'   ('psi_n'  column) and  that of  the estimator  of its  standard deviation
 #'   ('sig_n' column).
+#'
+#' @details Caution:  the estimator  of the  standard deviation  of the  IPTW
+#'   estimator can be trusted only in very specific circumstances.
 #'
 #' @examples
 #'
@@ -460,3 +464,69 @@ compute_iptw <- function(dat, Gbar, threshold = 0.05) {
   tibble::tibble(psi_n = psi_n, sig_n = sig_n)
 }
   
+#' Builds the G-computation estimator
+#'
+#' Given a marginal law  of W and a conditional expectation  of Y given (A,W),
+#' the so called 'GW' and 'Qbar' features  of the law of an experiment, either
+#' a  priori known  or estimated  beforehand, \code{compute_gcomp}  builds the
+#' G-computation estimator  of \eqn{Psi}  at that law.
+#'
+#' @param QW  The marginal  law of  'W', a  \code{tibble} with  columns named
+#'   'value' and 'weight' (a discrete law) as output by \code{estimate_QW}.
+#' 
+#' @param  Qbar   The  conditional  expectation of 'Y' given '(A,W)', a \code{function}.  
+#'
+#' @param nobs The sample size of the data set used to estimate the above 'QW'
+#'   and  'Qbar', an  \code{integer}.  Used  only  for the  estimation of  the
+#'   standard deviation of the G-computation  estimator, which is not reliable.
+#'   
+#' @seealso \code{\link{estimate_QW}}  to  estimate the  marginal  law of  W,
+#'   \code{\link{estimate_Qbar}} to estimate  the conditional probability that
+#'   A=1 given  W, \code{\link{compute_iptw}}  to compute the  IPTW estimator,
+#'   \code{\link{wrapper}}.
+#'
+#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
+#' 
+#' @return  A  \code{tibble} containing  the  value  of the  G-computation  estimator
+#'   ('psi_n'  column) and  that of  the estimator  of its  standard deviation
+#'   ('sig_n' column).
+#'
+#' @details Caution:  the estimator  of the  standard deviation  of the  IPTW
+#'   estimator can be trusted only in very specific circumstances.
+#' 
+#' @examples
+#'
+#' ## create an experiment and draw a data set from it
+#' example(tlrider, echo = FALSE)
+#' obs <- sample_from(experiment, n = 250)
+#'
+#' ## estimate 'QW' and 'Qbar'
+#' QW_hat <- estimate_QW(obs)
+#' Qbar_hat <- estimate_Qbar(obs, working_model_Q_one)
+#'
+#' ## wrap 'Qbar_hat' (a fit) into a function
+#' Qbar_hat_fun <- wrapper(Qbar_hat, FALSE)
+#' 
+#' ## compute the G-computation estimator
+#' (compute_gcomp(QW_hat, Qbar_hat_fun, nrow(obs)))
+#' 
+#' @export 
+compute_gcomp <- function(QW, Qbar, nobs) {
+  nobs <- R.utils::Arguments$getInteger(nobs, c(1, Inf))
+  if (FALSE) {## does not work, unfortunately
+    xprmnt <- LAW()
+    alter(xprmnt, "QW" = QW)
+    alter(xprmnt, "Qbar" = Qbar)
+    psi_n <- evaluate_psi(xprmnt)
+  }
+  if (!identical(names(QW), c("value", "weight"))) {
+    stop(stringr::str_c("Argument 'QW' is not a valid discrete law.\n"))
+  }
+  W <- dplyr::pull(QW, "value")
+  out <- Qbar(cbind(A = 1, W = W)) - Qbar(cbind(A = 0, W = W))
+  psi_n <- stats::weighted.mean(out, dplyr::pull(QW, "weight"))
+  sig_n <- stats::weighted.mean((out - psi_n)^2, dplyr::pull(QW, "weight"))
+  sig_n <- sqrt(sig_n)/sqrt(nobs)
+  tibble::tibble(psi_n = psi_n, sig_n = sig_n)
+}
+
