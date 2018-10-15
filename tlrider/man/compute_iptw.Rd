@@ -30,8 +30,9 @@ estimated  beforehand, \code{compute_iptw}  builds  the  IPTW estimator  of
 \eqn{Psi} at the law that generated the data set.
 }
 \details{
-Caution:  the estimator  of the  standard deviation  of the  IPTW
-  estimator can be trusted only in very specific circumstances.
+Caution: when the 'Gbar'  feature is estimated, the  estimator of
+  the  standard deviation  of  the IPTW  estimator  is conservative,  i.e.,
+  over-estimates its target.
 }
 \examples{
 

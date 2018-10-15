@@ -82,27 +82,6 @@ knitr::opts_chunk$set(
 
 options(dplyr.print_min = 6, dplyr.print_max = 6)
 ```
-```{r include=FALSE, cache=FALSE}
-options(digits = 3)
-
-knitr::opts_chunk$set(
-  comment = "#>",
-  collapse = TRUE,
-  cache = TRUE,
-  out.width = "70%",
-  fig.align = 'center',
-  fig.width = 6, # used to have: fig.width = 12,
-  fig.asp = 0.618, # used to have: fig.height = 4, 
-  fig.show = "hold",
-  fig.path = 'img/',
-  size = "tiny",
-  message = FALSE,
-  warning = FALSE,
-  warnings = FALSE
-)
-
-options(dplyr.print_min = 6, dplyr.print_max = 6)
-```
 # A ride
 
 
@@ -1636,10 +1615,10 @@ The `tlrider` package includes such  template algorithms for the estimation of
 $Q_{0,W}$, $\Gbar_{0}$ and $\Qbar_{0}$. We  illustrate how they work and their
 use in the next sections.
 
-## `QW`
+## `QW` {#nuisance-QW}
 
-For instance, `estimate_QW` is an algorithm  $\Algo$ for the estimation of the
-marginal  law  of  $W$  under  $P_{0}$  (to  see  its  man  page,  simply  run
+For instance, `estimate_QW` is an algorithm $\Algo_{Q_{W}}$ for the estimation
+of the  marginal law of  $W$ under  $P_{0}$ (to see  its man page,  simply run
 `?estimate_QW`).  It  is a map  from $\calM^{\text{empirical}}$ to the  set of
 laws on $[0,1]$. The following chunk  of code estimates $Q_{0,W}$ based on the
 $n = 1000$ first observations in `obs`:
@@ -1692,7 +1671,7 @@ includes examples of such specifications.
 There are two  sorts of specifications, of  which we say that  they are either
 *working model-based* or *machine learning-based*.  We discuss the former sort
 in  the   next  subsection.    The  latter  sort   is  discussed   in  Section
-\@ref(nuisance-Qbar-ml).
+\@ref(nuisance-Qbar).
 
 ### Working model-based algorithms
 
@@ -1784,7 +1763,7 @@ its   man  page,   simply   run   `?estimate_Qbar`).   Like   `estimate_Gbar`,
 `estimate_Qbar` needs further specification of the algorithm. The package also
 includes examples  of such  specifications, which can  also be  either working
 model-based (see Section \@ref(nuisance-Gbar))  or machine learning-based (see
-Sections \@ref(nuisance-Qbar-ml) and \@ref(nuisance-Qbar-ml-exo)). 
+Sections \@ref(nuisance-Qbar) and \@ref(nuisance-Qbar-ml-exo)). 
 
 There are built-in specifications similar to `working_model_G_one`, *e.g.*, 
 
@@ -1798,11 +1777,12 @@ working_model_Q_one
 
 \index{algorithm!working~model|)}
 
-## `Qbar` {#nuisance-Qbar-ml}
+## `Qbar` {#nuisance-Qbar}
 
 ### `Qbar`, machine learning-based algorithms
 
 \index{algorithm!machine~learning|(}
+
 
 We explained how algorithm $\Algo_{\Gbar,1}$ is based on a working model (and
 *you* did for  $\Algo_{\Qbar,1}$). It is not the case  that all algorithms are
@@ -1827,7 +1807,7 @@ methodology, the  first one  is discussed  in the  next subsection.   Based on
 *boosted trees*, another non-parametric estimating methodology, the second one
 is used in the exercize that follows the next subsection.
 
-### `Qbar`, kNN algorithm
+### `Qbar`, kNN algorithm {#Qbar-knn-algo}
 
 Algorithm $\Algo_{\Qbar,\text{kNN}}$ is  obtained by combining `estimate_Qbar`
 and  `kknn_algo`.  The  training  of  $\Algo_{\Qbar,\text{kNN}}$ (*i.e.*,  the
@@ -2016,9 +1996,11 @@ page).
 
 Because $\Gbar_{n}$  minimizes the  empirical risk over  a finite-dimensional,
 identifiable, and **well-specified** working  model, $\sqrt{n} (\psi_{n}^{c} -
-\psi_{0})$ converges  in law  to a centered  Gaussian law.\index{identifiable}
+\psi_{0})$ converges in law to a centered Gaussian law.\index{identifiability}
 Moreover, the asymptotic  variance of $\sqrt{n} (\psi_{n}^{c}  - \psi_{0})$ is
-consistently estimated with\index{well/mis-specified} 
+**conservatively**^[In words,  $v_{n}^{c}$ converges to an  upper-bound of the
+true        asymptotic         variance.]\index{conservative}        estimated
+with\index{well/mis-specified}
 
 \begin{align*}            v_{n}^{c}            &\equiv            \Var_{P_{n}}
 \left(\frac{2A-1}{\ell\Gbar_{n}(A,W)}Y\right)      \\      &=      \frac{1}{n}
@@ -2026,7 +2008,9 @@ consistently estimated with\index{well/mis-specified}
 \psi_{n}^{c}\right)^{2}.  \end{align*}
 
 We  investigate *empirically*  the statistical  behavior of  $\psi_{n}^{c}$ in
-Section \@ref(empirical-inves-IPTW-bis).
+Section  \@ref(empirical-inves-IPTW-bis). For  an analysis  of the  reason why
+$v_{n}^{c}$  is  a  conservative  estimator  of  the  asymptotic  variance  of
+$\sqrt{n} (\psi_{n}^{c} - \psi_{0})$, see [here](#iptw-est-var).
 
 Before proceeding, let us touch upon what would have happened if we had used a
 less amenable  algorithm $\Algo_{\Gbar}$. For instance,  $\Algo_{\Gbar}$ could
@@ -2097,7 +2081,7 @@ By the above chunk of code, the average of $\sqrt{n/v_{n}^{c}} (\psi_{n}^{c} -
 --- see  `bias_abc`). In words, the  average bias of $\psi_{n}^{c}$  is of the
 same  magnitude  as   that  of  $\psi_{n}^{b}$  despite  the   fact  that  the
 construction of $\psi_{n}^{c}$ hinges on  the estimation of $\Gbar_{0}$ (based
-on the well-specified algorithm $\Algo_{\Gbar,1}$.
+on the well-specified algorithm $\Algo_{\Gbar,1}$).
 
 We represent the empirical laws of the recentered (with respect to $\psi_{0}$)
 and renormalized $\psi_{n}^{a}$, $\psi_{n}^{b}$  and $\psi_{n}^{c}$ in Figures
@@ -2134,9 +2118,70 @@ ggplot(psi_hat_abc, aes(sample = clt, fill = type, colour = type)) +
   geom_qq(alpha = 1)
 ```
 
-Figures \@ref(fig:unknown-Gbar-three)  and \@ref(fig:unknown-Gbar-four) reveal
-that $\psi_{n}^{c}$ behaves as well as $\psi_{n}^{b}$ --- but remember that we
-acted as oracles when we chose the well-specified algorithm $\Algo_{\Gbar,1}$.
+Figures \@ref(fig:unknown-Gbar-three) and \@ref(fig:unknown-Gbar-four) confirm
+that $\psi_{n}^{c}$ behaves as well as $\psi_{n}^{b}$ in terms of bias --- but
+remember that we  acted as oracles when we chose  the well-specified algorithm
+$\Algo_{\Gbar,1}$. They  also corroborate  that $v_{n}^{c}$, the  estimator of
+the  asymptotic   variance  of   $\sqrt{n}  (\psi_{n}^{c}  -   \psi_{0})$,  is
+conservative: for  instance, the corresponding  bell-shaped blue curve  is too
+much concentrated around its axis of symmetry. 
+
+The actual asymptotic variance of  $\sqrt{n} (\psi_{n}^{c} - \psi_{0})$ can be
+estimated  with the  empirical  variance  of the  `iter`  replications of  the
+construction   of  $\psi_{n}^{c}$.
+
+```{r unknow-Gbar-five}
+(emp_sig_n <- psi_hat_abc %>% filter(type == "c") %>%
+   summarize(sd(psi_n)) %>% pull)
+(summ_sig_n <- psi_hat_abc %>% filter(type == "c") %>% select(sig_n) %>%
+   summary)
+```
+
+```{r unknown-Gbar-six, echo = FALSE}
+mean_sig_n <- psi_hat_abc %>% filter(type == "c") %>%
+  select(sig_n) %>% pull %>% mean
+```
+
+The empirical standard deviation is approximately 
+`r  round(mean_sig_n/emp_sig_n, 3)`  times smaller  than the  average
+*estimated*  standard   deviation.  The  estimator  is   conservative  indeed!
+Furthermore, note  the better fit with  the density of the  standard normal
+density    of  the  kernel  density estimator  of  the  law  of  $\sqrt{n}
+(\psi_{n}^{c} - \psi_{0})$ **renormalized with** `emp_sig_n`.
+
+(ref:unknown-Gbar-seven)  Kernel  density  estimators  of  the  law  of  three
+estimators  of   $\psi_{0}$  (recentered  with  respect   to  $\psi_{0}$,  and
+renormalized), one of them misconceived  (a), one assuming that $\Gbar_{0}$ is
+known (b) and one that hinges on the estimation of $\Gbar_{0}$ **and an
+estimator of the asymptotic variance computed across the replications** (c). The
+present  figure includes  Figure \@ref(fig:known-Gbar-one-b)  (but the  colors
+differ). Built based on `iter` independent realizations of each estimator.
+
+
+```{r unknown-Gbar-seven, fig.cap = '(ref:unknown-Gbar-seven)'}
+clt_c <- psi_hat_abc %>% filter(type == "c") %>%
+  mutate(clt = clt * sig_n /  emp_sig_n)
+
+fig_bias_ab +
+  geom_density(aes(clt, fill = type, colour = type), clt_c, alpha = 0.1) +
+  geom_vline(aes(xintercept = bias, colour = type),
+             bias_abc, size = 1.5, alpha = 0.5) +
+  xlim(-3, 4) + 
+  labs(y = "",
+       x = expression(paste(sqrt(n/v[n]^{list(a, b, c)})*
+                            (psi[n]^{list(a, b, c)} - psi[0]))))
+```
+
+**Workaround.**  In  a  real  world   data-analysis,  one  could  correct  the
+estimation of the asymptotic variance of $\sqrt{n} (\psi_{n}^{c} - \psi_{0})$.
+We  could for  instance  derive  the influence  function  as  it is  described
+[here](#iptw-est-var)  and  use  the  corresponding  influence  function-based
+estimator of  the variance.   Or one  could rely  on the  bootstrap.^[That is,
+replicate the  construction of  $\psi_{n}^{c}$ many times  based on  data sets
+obtained  by  resampling  from  the  original  data  set,  then  estimate  the
+asymptotic  variance with  the empirical  variance of  $\psi_{n}^{c}$ computed
+across the replications.] This, however, would only make sense if one knew for
+sure that the algorithm for the estimation of $\Gbar_{0}$ is well-specified.
 
 ## &#9881; \gear Investigating further the IPTW inference strategy {#exo-a-nice-title}
 
@@ -2151,10 +2196,8 @@ a binomial  law with parameters  `iter` and  `0.95`, and recall  that function
 probability of success  in a Bernoulli experiment against  its three one-sided
 and two-sided alternatives.
 
-2.  Repeat the  analysis developed  in  response to  problem 1  above but  for
-$\psi_{n}^{c}$.
 
-3. Discuss what happens when the dimension of the (still well-specified)\index{well/mis-specified} working model grows.  Start with the built-in working model `working_model_G_two`.  The following chunk of code re-defines `working_model_G_two`
+2. Discuss what happens when the dimension of the (still well-specified)\index{well/mis-specified} working model grows.  Start with the built-in working model `working_model_G_two`.  The following chunk of code re-defines `working_model_G_two`
 
 ```{r working-model-G-two, eval = FALSE}
 ## make sure '1/2' and '1' belong to 'powers'
@@ -2173,33 +2216,101 @@ working_model_G_two <- list(
 attr(working_model_G_two, "ML") <- FALSE
 ```
 
-4. Play around with argument `powers` (making sure that `1/2` and `1` belong to
+3. Play around with argument `powers` (making sure that `1/2` and `1` belong to
 it),   and   plot   graphics   similar   to   those   presented   in   Figures
 \@ref(fig:unknown-Gbar-three) and \@ref(fig:unknown-Gbar-four).
 
-5. Discuss    what     happens     when    the     working    model     is
+4. Discuss    what     happens     when    the     working    model     is
 mis-specified.\index{well/mis-specified}  You could  use the  built-in working
 model `working_model_G_three`.
 
-6. &#9761; \stixdanger{} Is it legitimate to infer the asymptotic variance
+5. Repeat the  analysis developed  in  response to  problem 1  above but  for
+$\psi_{n}^{c}$.  What  can  you  say  about the  coverage  of  the  confidence
+intervals? 
+
+6. &#9761;  \stixdanger{} (Follow-up  to problem  5). Implement  the bootstrap
+procedure evoked at the end of Section \@ref(empirical-inves-IPTW-bis). Repeat
+the analysis  developed in response  to problem  1. Compare your  results with
+those to problem 5.
+
+7. &#9761; \stixdanger{} Is it legitimate to infer the asymptotic variance
 of   $\psi_{n}^{c}$   with   $v_{n}^{c}$   when   one   relies   on   a   very
 data-adaptive/versatile algorithm to estimate $\Gbar_{0}$?
 
-## G-computation estimator
 
 
+## G-computation estimator {#Gcomp-estimator}
+
+### Construction and computation
+
+Let $\Algo_{Q_{W}}$ be  an algorithm designed for the  estimation of $Q_{0,W}$
+(see   Section   \@ref(nuisance-QW)).    We    denote   by   $Q_{n,W}   \equiv
+\Algo_{Q_{W}}(P_{n})$ the output of the algorithm trained on $P_{n}$.
 
 
+Let $\Algo_{\Qbar}$ be an algorithm designed for the estimation of $\Qbar_{0}$
+(see   Section  \@ref(nuisance-Qbar)).    We  denote   by  $\Qbar_{n}   \equiv
+\Algo_{\Qbar}(P_{n})$ the output of the algorithm trained on $P_{n}$. 
 
-Equation (\ref{eq:psi0}) suggests the following, simple estimator of $\psi_0$ \[
-\psi_{n}  \equiv   \int  \left(\Qbar_{n}(1,   w)  -   \Qbar_{n}(0,  w)\right) dQ_{n,W}(w) , 
-\]
-where $\Qbar_n$ is an estimate of $\Qbar_0$ and $Q_{n,W}$ is an estimate of $Q_{0,W}$. 
-In words, this estimator is implemented by first estimating the regression of $Y$ on $A$ 
-and $W$. The estimated regression function is marginalized with respect to the 
-estimated law of $W$. This estimator is referred to as a standardization or G-computation
-estimator. We refer to this estimator as a "plug-in" estimator since it can be 
-obtained by "plugging in" estimates of relevant quantities into (\ref{eq:psi0}). 
+Equation \@ref(eq:psi-zero) suggests the following, simple estimator of
+$\Psi(P_0)$:
+
+\begin{equation*} 
+\psi_{n}   \equiv   \int   \left(\Qbar_{n}(1,   w)   -   \Qbar_{n}(0,w)\right)
+dQ_{n,W}(w).
+\end{equation*} 
+
+In words,  this estimator is implemented  by first regressing $Y$  on $(A,W)$,
+then by marginalizing with respect to the estimated law of $W$.  The resulting
+estimator  is   referred  to  as  a   *G-computation*  (or  *standardization*)
+estimator.
+
+From a  computational point of  view, the `tlrider`  package makes it  easy to
+build the $G$-computation estimator. Recall that we have already estimated the
+marginal  law  $Q_{0,W}$  of  $W$  under $P_{0}$  by  training  the  algorithm
+$\Algo_{Q_{W}}$ as it is implemented in  `estimate_QW` on the $n = 1000$ first
+observations in `obs` (see Section \@ref(nuisance-QW)):
+
+```{r estimate-QW-one-redo, eval = FALSE}
+QW_hat <- estimate_QW(head(obs, 1e3))
+```
+
+Recall  that  $\Algo_{\Qbar,1}$  is  the   algorithm  for  the  estimation  of
+$\Qbar_{0}$  as  it  is  implemented  in  `estimate_Qbar`  with  its  argument
+`algorithm`   set  to   the   built-in   `working_model_Q_one`  (see   Section
+\@ref(nuisance-Qbar-wm)). Recall  also that $\Algo_{\Qbar,\text{kNN}}$  is the
+algorithm  for  the  estimation  of   $\Qbar_{0}$  as  it  is  implemented  in
+`estimate_Qbar` with its argument `algorithm`  set to the built-in `kknn_algo`
+(see Section \@ref(Qbar-knn-algo)).  We have already trained the latter on the
+$n=1000$ first observations in `obs`. Let us train the former on the same data
+set:
+
+```{r psi-n-de-redo, eval = FALSE}
+Qbar_hat_kknn <- estimate_Qbar(head(obs, 1e3),
+                               algorithm = kknn_algo,
+                               trControl = kknn_control,
+                               tuneGrid = kknn_grid)
+```
+
+```{r psi-n-de-one}
+Qbar_hat_d <- estimate_Qbar(head(obs, 1e3), working_model_Q_one)
+```
+
+With these  estimators handy,  computing the  $G$-computation estimator  is as
+simple as running the following chunk of code:
+
+```{r psi-n-de-two}
+(compute_gcomp(QW_hat, wrapper(Qbar_hat_kknn, FALSE), 1e3))
+(compute_gcomp(QW_hat, wrapper(Qbar_hat_d, FALSE), 1e3))
+```
+
+
+Note how we use function `wrapper` again,  and that it is necessary to provide
+the  number of  observations  upon which  the estimation  of  the $Q_{W}$  and
+$\Qbar$ features of $P_{0}$.
+
+
+### Elementary statistical properties
 
 A plug-in estimate of $\psi_0$ is constructed based on `B` independent draws from $P_0$.
 This estimator uses a parametric estimator of $\Qbar_0$.
@@ -2633,7 +2744,7 @@ fig <- ggplot() +
   facet_wrap(~ auto_renormalization,
              labeller = as_labeller(c(`TRUE` = "auto-renormalization: TRUE",
                                       `FALSE` = "auto-renormalization: FALSE")),
-             nrow = 2, scales = "free")
+             scales = "free")
   
 fig +
   labs(y = "",
@@ -2700,10 +2811,7 @@ include the  realizations of the  estimators derived earlier and  contained in
 `psi_hat_de`   (thus  breaking   the   independence   between  components   of
 `root_n_bias`, a small price to pay in this context).
 
-(ref:estimating-Qbar-four) Evolution of root-$n$ times bias versus sample size
-for  two  inference methodology  of  $\psi_{0}$  based  on the  estimation  of
-$\Qbar_{0}$.   Big  dots  represent  the average  biases  and  vertical  lines
-represent twice the standard error.
+(ref:estimating-Qbar-four) Evolution of root-$n$ times bias versus sample size for two inference methodology of $\psi_{0}$ based on the estimation of $\Qbar_{0}$.  Big dots represent the average biases and vertical lines represent twice the standard error.
 
 ```{r estimating-Qbar-four, fig.width = 5, fig.height = 5, fig.cap = '(ref:estimating-Qbar-four)', eval = FALSE}
 ##

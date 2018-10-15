@@ -436,8 +436,9 @@ wrapper <- function(fit, unenclose = TRUE) {
 #'   ('psi_n'  column) and  that of  the estimator  of its  standard deviation
 #'   ('sig_n' column).
 #'
-#' @details Caution:  the estimator  of the  standard deviation  of the  IPTW
-#'   estimator can be trusted only in very specific circumstances.
+#' @details  Caution: when the 'Gbar'  feature is estimated, the  estimator of
+#'   the  standard deviation  of  the IPTW  estimator  is conservative,  i.e.,
+#'   over-estimates its target.
 #'
 #' @examples
 #'
@@ -491,7 +492,7 @@ compute_iptw <- function(dat, Gbar, threshold = 0.05) {
 #'   ('psi_n'  column) and  that of  the estimator  of its  standard deviation
 #'   ('sig_n' column).
 #'
-#' @details Caution:  the estimator  of the  standard deviation  of the  IPTW
+#' @details Caution:  the estimator  of the  standard deviation  of the  G-computation
 #'   estimator can be trusted only in very specific circumstances.
 #' 
 #' @examples
