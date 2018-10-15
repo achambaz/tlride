@@ -1881,8 +1881,8 @@ Qbar_hat_trees %>% dplyr::filter(a == "one") %>% pull(fit) %>%
 Qbar_hat_trees %>% dplyr::filter(a == "zero") %>% pull(fit) %>%
   capture.output %>% tail(3) %>% str_wrap(width = 60) %>% cat
 ```
-
-We    can   compare    visually    the   estimators    $\Qbar_{n,\text{kNN}}$,
+ 
+We can compare visually the estimators $\Qbar_{n,\text{kNN}}$,
 $\Qbar_{n,\text{trees}}  \equiv  \Algo_{\Qbar,\text{trees}}(P_{n})$  with  its
 target  $\Qbar0$,  see   Figure  \@ref(fig:estimate-Qbar-five).   In  summary,
 $\Qbar_{n,\text{kNN}}$ is rather good, though  very versatile at the vincinity
@@ -2152,10 +2152,12 @@ density    of  the  kernel  density estimator  of  the  law  of  $\sqrt{n}
 (ref:unknown-Gbar-seven)  Kernel  density  estimators  of  the  law  of  three
 estimators  of   $\psi_{0}$  (recentered  with  respect   to  $\psi_{0}$,  and
 renormalized), one of them misconceived  (a), one assuming that $\Gbar_{0}$ is
-known (b) and one that hinges on the estimation of $\Gbar_{0}$ **and an
-estimator of the asymptotic variance computed across the replications** (c). The
-present  figure includes  Figure \@ref(fig:known-Gbar-one-b)  (but the  colors
-differ). Built based on `iter` independent realizations of each estimator.
+known  (b) and  one that  hinges  on the  estimation of  $\Gbar_{0}$ **and  an
+estimator  of  the  asymptotic  variance computed  across  the  replications**
+(c). The  present figure includes Figure  \@ref(fig:known-Gbar-one-b) (but the
+colors     differ)    and     it    should     be    compared     to    Figure
+\@ref(fig:unknown-Gbar-four). Built  based on `iter`  independent realizations
+of each estimator.
 
 
 ```{r unknown-Gbar-seven, fig.cap = '(ref:unknown-Gbar-seven)'}
@@ -2255,10 +2257,10 @@ Let $\Algo_{\Qbar}$ be an algorithm designed for the estimation of $\Qbar_{0}$
 Equation \@ref(eq:psi-zero) suggests the following, simple estimator of
 $\Psi(P_0)$:
 
-\begin{equation*} 
+\begin{equation} 
 \psi_{n}   \equiv   \int   \left(\Qbar_{n}(1,   w)   -   \Qbar_{n}(0,w)\right)
-dQ_{n,W}(w).
-\end{equation*} 
+dQ_{n,W}(w). (\#eq:Gcomp-estimator)
+\end{equation} 
 
 In words,  this estimator is implemented  by first regressing $Y$  on $(A,W)$,
 then by marginalizing with respect to the estimated law of $W$.  The resulting
@@ -2266,7 +2268,7 @@ estimator  is   referred  to  as  a   *G-computation*  (or  *standardization*)
 estimator.
 
 From a  computational point of  view, the `tlrider`  package makes it  easy to
-build the $G$-computation estimator. Recall that we have already estimated the
+build the G-computation  estimator. Recall that we have  already estimated the
 marginal  law  $Q_{0,W}$  of  $W$  under $P_{0}$  by  training  the  algorithm
 $\Algo_{Q_{W}}$ as it is implemented in  `estimate_QW` on the $n = 1000$ first
 observations in `obs` (see Section \@ref(nuisance-QW)):
@@ -2296,7 +2298,7 @@ Qbar_hat_kknn <- estimate_Qbar(head(obs, 1e3),
 Qbar_hat_d <- estimate_Qbar(head(obs, 1e3), working_model_Q_one)
 ```
 
-With these  estimators handy,  computing the  $G$-computation estimator  is as
+With  these estimators  handy,  computing the  G-computation  estimator is  as
 simple as running the following chunk of code:
 
 ```{r psi-n-de-two}
@@ -2312,30 +2314,166 @@ $\Qbar$ features of $P_{0}$.
 
 ### Elementary statistical properties
 
-A plug-in estimate of $\psi_0$ is constructed based on `B` independent draws from $P_0$.
-This estimator uses a parametric estimator of $\Qbar_0$.
+This subsection is very similar to its counterpart for the IMPT estimator, see
+Section \@ref(elementary-stat-prop-iptw).  
 
-```{r show-g-comp-computation}
+Let  us denote  by  $\Qbar_{n,1}$ the  output  of algorithm  $\Algo_{\Qbar,1}$
+trained on  $P_{n}$, and recall  that $\Qbar_{n,\text{kNN}}$ is the  output of
+algorithm  $\Algo_{\Qbar,\text{kNN}}$ trained  on $P_{n}$.  Let $\psi_{n}^{d}$
+and $\psi_{n}^{e}$  be the  G-computation estimators obtained  by substituting
+$\Qbar_{n,1}$     and     $\Qbar_{n,\text{kNN}}$    for     $\Qbar_{n}$     in
+\@ref(eq:Gcomp-estimator), respectively. 
 
+
+Because $\Qbar_{n,1}$ minimizes the  empirical risk over a finite-dimensional,
+identifiable, and **well-specified** working  model, $\sqrt{n} (\psi_{n}^{d} -
+\psi_{0})$ converges in law to a centered Gaussian law.\index{identifiability}
+Moreover, the asymptotic  variance of $\sqrt{n} (\psi_{n}^{d}  - \psi_{0})$ is
+**anti-conservatively**^[In words,  $v_{n}^{d}$ converges to a  lower-bound of
+the      true     asymptotic      variance.]\index{conservative}     estimated
+with\index{well/mis-specified}
+
+\begin{align*}            v_{n}^{d}            &\equiv            \Var_{P_{n}}
+\left(\Qbar_{n,1}(1,\cdot) - \Qbar_{n,1}(0,\cdot)\right) \\ &= \frac{1}{n}
+\sum_{i=1}^{n}\left(\Qbar_{n,1}(1,W_{i})         -        \Qbar_{n,1}(0,W_{i})
+-\psi_{n}^{d}\right)^{2}.  \end{align*} 
+
+We  investigate *empirically*  the statistical  behavior of  $\psi_{n}^{d}$ in
+Section  \@ref(empirical-inves-Gcomp).   For an  analysis  of  the reason  why
+$v_{n}^{d}$ is  an anti-conservative estimator  of the asymptotic  variance of
+$\sqrt{n} (\psi_{n}^{d} - \psi_{0})$,  see [here](#gcomp-est-var).  We wish to
+emphasize   that  anti-conservativeness   is  even   more  embarrassing   that
+conservativeness (both  being contingent on  the fact that the  algorithms are
+well-specified, fact that cannot be true in the present case).
+
+What would happen  if we used a less amenable  algorithm $\Algo_{\Qbar}$.  For
+instance,   $\Algo_{\Qbar}$    could   still   be   well-specified    but   so
+*versatile/complex*   (as   opposed   to    being   based   on   well-behaved,
+finite-dimensional parametric  model) that  the estimator  $\Qbar_{n}$, though
+still  consistent,  would  converge  slowly to  its  target.   Then,  root-$n$
+consistency would  fail to  hold.  We can  explore empirically  this situation
+with     estimator     $\psi_{n}^{e}$     that     hinges     on     algorithm
+$\Algo_{\Qbar,\text{kNN}}$.       Or       $\Algo_{\Qbar}$      could       be
+mis-specified\index{well/mis-specified} and there would be no guarantee at all
+that the resulting estimator $\psi_{n}$ be even consistent.
+
+### Empirical investigation {#empirical-inves-Gcomp}
+
+
+
+Let us  compute $\psi_{n}^{d}$  $\psi_{n}^{e}$ and  on the same  `iter =  ` `r
+iter` independent samples of independent observations drawn from $P_{0}$ as in
+Sections \@ref(known-gbar-first-pass) and \@ref(empirical-inves-IPTW-bis).  We
+first enrich  object `learned_features_fixed_sample_size` that was  created in
+Section   \@ref(empirical-inves-IPTW-bis),   adding   to  it   estimators   of
+$\Qbar_{0}$   obtained   by    training   algorithms   $\Algo_{\Qbar,1}$   and
+$\Algo_{\Qbar,\text{kNN}}$ on each smaller data set.
+
+The second series of commands creates  object `psi_hat_de`, an `r iter` by six
+`tibble`    containing   notably    the   values    of   $\psi_{n}^{d}$    and
+$\sqrt{v_{n}^{d}}/\sqrt{n}$ computed by calling  `compute_gcomp`, and those of
+the    recentered   (with    respect   to    $\psi_{0}$)   and    renormalized
+$\sqrt{n}/\sqrt{v_{n}^{d}}  (\psi_{n}^{d}  -   \psi_{0})$.   Because  we  know
+beforehand that $v_{n}^{d}$ under-estimates  the actual asymptotic variance of
+$\sqrt{v_{n}^{d}}/\sqrt{n}$,  the   `tibble`  also  includes  the   values  of
+$\sqrt{n}/\sqrt{v^{*}} (\psi_{n}^{d} - \psi_{0})$  where the estimator $v^{*}$
+of  the   asymptotic  variance  is   computed  *across  the   replications  of
+$\psi_{n}^{d}$*.
+
+ANTOINE
+
+Finally, `bias_de` can be interpreted as an amount of bias (at the
+renormalized scale).
+
+
+(... r code...)
+
+
+By the above chunk of code, the average of $\sqrt{n/v_{n}^{c}} (\psi_{n}^{c} -
+\psi_{0})$ computed across the realizations is equal to 
+`r round(bias_abc$bias[bias_abc$type=="c"],3)` (rounded to three decimal places
+--- see  `bias_abc`). In words, the  average bias of $\psi_{n}^{c}$  is of the
+same  magnitude  as   that  of  $\psi_{n}^{b}$  despite  the   fact  that  the
+construction of $\psi_{n}^{c}$ hinges on  the estimation of $\Gbar_{0}$ (based
+on the well-specified algorithm $\Algo_{\Gbar,1}$).
+
+We represent the empirical laws of the recentered (with respect to $\psi_{0}$)
+and renormalized $\psi_{n}^{a}$, $\psi_{n}^{b}$  and $\psi_{n}^{c}$ in Figures
+\@ref(fig:unknown-Gbar-three)     (kernel      density     estimators)     and
+\@ref(fig:unknown-Gbar-four) (quantile-quantile plots).
+
+(... r code...)
+
+Figures \@ref(fig:unknown-Gbar-three) and \@ref(fig:unknown-Gbar-four) confirm
+that $\psi_{n}^{c}$ behaves as well as $\psi_{n}^{b}$ in terms of bias --- but
+remember that we  acted as oracles when we chose  the well-specified algorithm
+$\Algo_{\Gbar,1}$. They  also corroborate  that $v_{n}^{c}$, the  estimator of
+the  asymptotic   variance  of   $\sqrt{n}  (\psi_{n}^{c}  -   \psi_{0})$,  is
+conservative: for  instance, the corresponding  bell-shaped blue curve  is too
+much concentrated around its axis of symmetry. 
+
+The actual asymptotic variance of  $\sqrt{n} (\psi_{n}^{c} - \psi_{0})$ can be
+estimated  with the  empirical  variance  of the  `iter`  replications of  the
+construction   of  $\psi_{n}^{c}$.
+
+```{r eval = FALSE}
+(emp_sig_n <- psi_hat_abc %>% filter(type == "c") %>%
+   summarize(sd(psi_n)) %>% pull)
+(summ_sig_n <- psi_hat_abc %>% filter(type == "c") %>% select(sig_n) %>%
+   summary)
+``` 
+
+```{r eval = FALSE, echo = FALSE}
+mean_sig_n <- psi_hat_abc %>% filter(type == "c") %>%
+  select(sig_n) %>% pull %>% mean
 ```
 
-Alternatively, we could construct a plug-in estimate based on a more flexible regression 
-technique. The following code shows construction of a plug-in estimate based on $k$-nearest
-neighbors regression. 
+The empirical standard deviation is approximately 
+`r  round(mean_sig_n/emp_sig_n, 3)`  times smaller  than the  average
+*estimated*  standard   deviation.  The  estimator  is   conservative  indeed!
+Furthermore, note  the better fit with  the density of the  standard normal
+density    of  the  kernel  density estimator  of  the  law  of  $\sqrt{n}
+(\psi_{n}^{c} - \psi_{0})$ **renormalized with** `emp_sig_n`.
 
-```{r show-another-gcomp}
+(ref:unknown-Gbar-seven)  Kernel  density  estimators  of  the  law  of  three
+estimators  of   $\psi_{0}$  (recentered  with  respect   to  $\psi_{0}$,  and
+renormalized), one of them misconceived  (a), one assuming that $\Gbar_{0}$ is
+known  (b) and  one that  hinges  on the  estimation of  $\Gbar_{0}$ **and  an
+estimator  of  the  asymptotic  variance computed  across  the  replications**
+(c). The  present figure includes Figure  \@ref(fig:known-Gbar-one-b) (but the
+colors     differ)    and     it    should     be    compared     to    Figure
+\@ref(fig:unknown-Gbar-four). Built  based on `iter`  independent realizations
+of each estimator.
 
+
+```{r fig.cap = '(ref:unknown-Gbar-seven)', eval = FALSE}
+clt_c <- psi_hat_abc %>% filter(type == "c") %>%
+  mutate(clt = clt * sig_n /  emp_sig_n)
+
+fig_bias_ab +
+  geom_density(aes(clt, fill = type, colour = type), clt_c, alpha = 0.1) +
+  geom_vline(aes(xintercept = bias, colour = type),
+             bias_abc, size = 1.5, alpha = 0.5) +
+  xlim(-3, 4) + 
+  labs(y = "",
+       x = expression(paste(sqrt(n/v[n]^{list(a, b, c)})*
+                            (psi[n]^{list(a, b, c)} - psi[0]))))
 ```
 
-We now inquire as to the stochastic properties of such an estimator. In this section,
-we study the estimators properties via Monte Carlo simulation. In particular, we 
-study the bias, variance, and weak convergence of the estimators. 
+**Workaround.**  In  a  real  world   data-analysis,  one  could  correct  the
+estimation of the asymptotic variance of $\sqrt{n} (\psi_{n}^{c} - \psi_{0})$.
+We  could for  instance  derive  the influence  function  as  it is  described
+[here](#iptw-est-var)  and  use  the  corresponding  influence  function-based
+estimator of  the variance.   Or one  could rely  on the  bootstrap.^[That is,
+replicate the  construction of  $\psi_{n}^{c}$ many times  based on  data sets
+obtained  by  resampling  from  the  original  data  set,  then  estimate  the
+asymptotic  variance with  the empirical  variance of  $\psi_{n}^{c}$ computed
+across the replications.] This, however, would only make sense if one knew for
+sure that the algorithm for the estimation of $\Gbar_{0}$ is well-specified.
 
-```{r simulation-with-parametric-and-knn}
-# maybe have three estimators? one with correct parametric model, one with misspecified parametric model and one with knn?
-```
+ANTOINE
 
-The  simulation  demonstrates the  following  key  points. For  well-specified
+The simulation demonstrates the following key points. For well-specified
 parametric regressions, the plug-in estimator exhibits excellent behavior: its
 bias disappears  faster than $n^{-1/2}$, its  variance is close to  that of an
 efficient  estimator  in  large  samples, and  its  sampling  distribution  is
