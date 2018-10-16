@@ -1204,13 +1204,19 @@ The equations  for the definition  of the parameter \@ref(eq:psimap),  form of
 the  canonical   gradient  \@ref(eq:eif),   and  linearization   of  parameter
 \@ref(eq:taylor-expansion) combine to determine the remainder: 
 
-\begin{align}
-\Rem_{P_0}(P) &\equiv \Psi(P) - \Psi(P_0) - (P_0 - P)D^*(P) (\#eq:remainder-one) \\ 
-&=    \Exp_{P_0}   \left[    \left(\Gbar_0(W)   -
-\Gbar(W)\right)           \times          \left(\frac{\Qbar_0(1,W)           -
+\begin{equation}
+\Rem_{P_0}(P)    \equiv   \Psi(P)    -   \Psi(P_0)    -   (P_0    -   P)D^*(P)
+(\#eq:remainder-one)
+\end{equation}
+
+hence 
+
+\begin{multline} 
+\Rem_{P_0}(P)=   \Exp_{P_0}   \Bigg[   \left(\Gbar_0(W)   -
+\Gbar(W)\right) \\          \times          \left(\frac{\Qbar_0(1,W)           -
 \Qbar(1,W)}{\ell\Gbar(1,W)} + \frac{\Qbar_0(0,W) - \Qbar(0,W)}{\ell\Gbar(0,W)}
-\right) \right]. (\#eq:remainder)
-\end{align}
+\right) \Bigg]. (\#eq:remainder) 
+\end{multline}
 
 Acting   as  oracles,   we   can  compute   explicitly   the  remainder   term
 $\Rem_{P_0}(P)$.  The  `evaluate_remainder` method makes it  very easy (simply
@@ -2324,26 +2330,36 @@ $\Qbar_{n,1}$     and     $\Qbar_{n,\text{kNN}}$    for     $\Qbar_{n}$     in
 \@ref(eq:Gcomp-estimator), respectively. 
 
 
-Because $\Qbar_{n,1}$ minimizes the  empirical risk over a finite-dimensional,
-identifiable, and **well-specified** working  model, $\sqrt{n} (\psi_{n}^{d} -
-\psi_{0})$ converges in law to a centered Gaussian law.\index{identifiability}
-Moreover, the asymptotic  variance of $\sqrt{n} (\psi_{n}^{d}  - \psi_{0})$ is
+If    $\Qbar_{n,\bullet}$   minimized    the    empirical    risk   over    a
+finite-dimensional, identifiable,  and **well-specified** working  model, then
+$\sqrt{n}  (\psi_{n}^{\bullet}  -  \psi_{0})$  would converge  in  law  to  a
+centered Gaussian law (here $\psi_{n}^{\bullet}$ represents the G-computation
+estimator  obtained by  substituting $\Qbar_{n,\bullet}$  for $\Qbar_{n}$  in
+\@ref(eq:Gcomp-estimator)).\index{identifiability}  Moreover,  the  asymptotic
+variance  of $\sqrt{n}  (\psi_{n}^{\bullet} -  \psi_{0})$ would  be estimated
 **anti-conservatively**^[In words,  $v_{n}^{d}$ converges to a  lower-bound of
-the      true     asymptotic      variance.]\index{conservative}     estimated
-with\index{well/mis-specified}
+the true asymptotic variance.]\index{conservative} with\index{well/mis-specified}
 
-\begin{align*}            v_{n}^{d}            &\equiv            \Var_{P_{n}}
+\begin{align} 
+v_{n}^{d}            &\equiv            \Var_{P_{n}}
 \left(\Qbar_{n,1}(1,\cdot) - \Qbar_{n,1}(0,\cdot)\right) \\ &= \frac{1}{n}
 \sum_{i=1}^{n}\left(\Qbar_{n,1}(1,W_{i})         -        \Qbar_{n,1}(0,W_{i})
--\psi_{n}^{d}\right)^{2}.  \end{align*} 
+-\psi_{n}^{d}\right)^{2}.  (\#eq:var-Gcomp-n) 
+\end{align} 
 
-We  investigate *empirically*  the statistical  behavior of  $\psi_{n}^{d}$ in
+Unfortunately,    algorithm    $\Algo_{\Qbar,1}$    is    mis-specified    and
+$\Algo_{\Qbar,\text{kNN}}$  is  not  based  on  a  finite-dimensional  working
+model.  Nevertheless, function  `compute_gcomp`  estimates  (in general,  very
+poorly) the asymptotic variance with \@ref(eq:var-Gcomp-n).
+
+We investigate *empirically* the statistical behavior of $\psi_{n}^{d}$ in
 Section  \@ref(empirical-inves-Gcomp).   For an  analysis  of  the reason  why
 $v_{n}^{d}$ is  an anti-conservative estimator  of the asymptotic  variance of
 $\sqrt{n} (\psi_{n}^{d} - \psi_{0})$,  see [here](#gcomp-est-var).  We wish to
 emphasize   that  anti-conservativeness   is  even   more  embarrassing   that
 conservativeness (both  being contingent on  the fact that the  algorithms are
-well-specified, fact that cannot be true in the present case).
+well-specified, fact  that cannot be  true in the  present case in  real world
+situations).
 
 What would happen  if we used a less amenable  algorithm $\Algo_{\Qbar}$.  For
 instance,   $\Algo_{\Qbar}$    could   still   be   well-specified    but   so
@@ -2358,7 +2374,7 @@ that the resulting estimator $\psi_{n}$ be even consistent.
 
 ### Empirical investigation {#empirical-inves-Gcomp}
 
-Let us compute $\psi_{n}^{d}$ $\psi_{n}^{e}$ and on the same `iter = ` 
+Let us compute $\psi_{n}^{d}$ and $\psi_{n}^{e}$ on the same `iter = ` 
 `r iter` independent samples of independent observations drawn from $P_{0}$ as in
 Sections \@ref(known-gbar-first-pass) and \@ref(empirical-inves-IPTW-bis).  We
 first enrich  object `learned_features_fixed_sample_size` that was  created in
@@ -2373,25 +2389,36 @@ the    recentered   (with    respect   to    $\psi_{0}$)   and    renormalized
 $\sqrt{n}/\sqrt{v_{n}^{d}}  (\psi_{n}^{d}  -   \psi_{0})$.   Because  we  know
 beforehand that $v_{n}^{d}$ under-estimates  the actual asymptotic variance of
 $\sqrt{n} (\psi_{n}^{d} - \psi_{0})$, the `tibble` also includes the values of
-$\sqrt{n}/\sqrt{v^{*}} (\psi_{n}^{d} - \psi_{0})$  where the estimator $v^{*}$
-of  the   asymptotic  variance  is   computed  *across  the   replications  of
+$\sqrt{n}/\sqrt{v^{d*}}  (\psi_{n}^{d}   -  \psi_{0})$  where   the  estimator
+$v^{d*}$ of  the asymptotic variance  is computed *across the  replications of
 $\psi_{n}^{d}$*.   The  tibble  includes  the same  quantities  pertaining  to
 $\psi_{n}^{e}$, although  there is no  theoretical guarantee that  the central
 limit theorem does hold and, even  if it did, that the counterpart $v_{n}^{e}$
 to  $v_{n}^{d}$ estimates  in any  way  the asymptotic  variance of  $\sqrt{n}
-(\psi_{n}^{e} - \psi_{0})$. 
+(\psi_{n}^{e} - \psi_{0})$.
 
-Finally,   `bias_de`   reports   amounts   of  bias   (at   the   renormalized
-scale**s**). There is one value of bias  for each combination of *(i)* type of
-the estimator (`d` or `e`) and  *(ii)* how the renormalization is carried out,
+Finally,  `bias_de` reports  amounts of  bias (at  the renormalized  scales ---
+plural). There is one value of bias  for each combination of *(i)* type of the
+estimator (`d`  or `e`)  and *(ii)*  how the  renormalization is  carried out,
 either based on $v_{n}^{d}$ and $v_{n}^{e}$ (`auto_renormalization` is `TRUE`)
 *or*  on  the  estimator  of  the  asymptotic  variance  computed  across  the
 replications of  $\psi_{n}^{d}$ and $\psi_{n}^{e}$  (`auto_renormalization` is
 `FALSE`).
 
-ANTOINE
 
-(ref:estimating-Qbar-one-bis) Write caption.
+
+(ref:estimating-Qbar-one-bis)  Kernel density  estimators  of the  law of  two
+estimators  of   $\psi_{0}$  (recentered  with  respect   to  $\psi_{0}$,  and
+renormalized).     The   estimators    respectively   hinge    on   algorithms
+$\Algo_{\Qbar,1}$   (d)  and   $\Algo_{\Qbar,\text{kNN}}$   (e)  to   estimate
+$\Qbar_{0}$.    Two   renormalization    schemes   are    considered,   either
+based on  an estimator of the  asymptotic variance (left) or  on the empirical
+variance  computed   across  the   `iter`  independent  replications   of  the
+estimators  (right). We  emphasize  that the  $x$-axis  ranges differ  starkly
+between the left and right plots.
+
+
+
 
 ```{r estimating-Qbar-one-bis, fig.cap = '(ref:estimating-Qbar-one-bis)'}
 learned_features_fixed_sample_size <-
@@ -2432,7 +2459,7 @@ psi_hat_de <- learned_features_fixed_sample_size %>%
 
 fig <- ggplot() +
   geom_line(aes(x = x, y = y), 
-            data = tibble(x = seq(-3, 3, length.out = 1e3),
+            data = tibble(x = seq(-4, 4, length.out = 1e3),
                           y = dnorm(x)),
             linetype = 1, alpha = 0.5) +
   geom_density(aes(clt, fill = type, colour = type),
@@ -2451,95 +2478,102 @@ fig +
                             (psi[n]^{list(d, e)} - psi[0]))))
 ```
 
-\tcg{No that bad!   Yet, we know that} $\sqrt{n}$ \tcg{times  bias is bound to
-increase with sample size. To see this, check out the next chunks of code.}
-
-
-
-
-By the above chunk of code, the average of $\sqrt{n/v_{n}^{c}} (\psi_{n}^{c} -
-\psi_{0})$ computed across the realizations is equal to 
-`r round(bias_abc$bias[bias_abc$type=="c"],3)` (rounded to three decimal places
---- see  `bias_abc`). In words, the  average bias of $\psi_{n}^{c}$  is of the
-same  magnitude  as   that  of  $\psi_{n}^{b}$  despite  the   fact  that  the
-construction of $\psi_{n}^{c}$ hinges on  the estimation of $\Gbar_{0}$ (based
-on the well-specified algorithm $\Algo_{\Gbar,1}$).
-
+```{r bias-de, echo = FALSE}
+bias_d_T <- bias_de %>%
+  filter(type == "d" & auto_renormalization) %>%
+  pull(bias) %>% round(digits = 3)
+bias_d_F <- bias_de %>%
+  filter(type == "d" & !auto_renormalization) %>%
+  pull(bias) %>% round(digits = 3)
+bias_e_T <- bias_de %>%
+  filter(type == "e" & auto_renormalization) %>%
+  pull(bias) %>% round(digits = 3)
+bias_e_F <- bias_de %>%
+  filter(type == "e" & !auto_renormalization) %>%
+  pull(bias) %>% round(digits = 3)
+```
+ 
 We represent the empirical laws of the recentered (with respect to $\psi_{0}$)
-and renormalized $\psi_{n}^{a}$, $\psi_{n}^{b}$  and $\psi_{n}^{c}$ in Figures
-\@ref(fig:unknown-Gbar-three)     (kernel      density     estimators)     and
-\@ref(fig:unknown-Gbar-four) (quantile-quantile plots).
+and    renormalized    $\psi_{n}^{d}$    and    $\psi_{n}^{e}$    in    Figure
+\@ref(fig:estimating-Qbar-one-bis)    (kernel   density    estimators).    Two
+renormalization schemes  are considered, either  based on an estimator  of the
+asymptotic variance  (left) or on  the empirical variance computed  across the
+`iter` independent replications of the  estimators (right).  We emphasize that
+the $x$-axis ranges differ starkly between the left and right plots.
 
-(... r code...)
 
-Figures \@ref(fig:unknown-Gbar-three) and \@ref(fig:unknown-Gbar-four) confirm
-that $\psi_{n}^{c}$ behaves as well as $\psi_{n}^{b}$ in terms of bias --- but
-remember that we  acted as oracles when we chose  the well-specified algorithm
-$\Algo_{\Gbar,1}$. They  also corroborate  that $v_{n}^{c}$, the  estimator of
-the  asymptotic   variance  of   $\sqrt{n}  (\psi_{n}^{c}  -   \psi_{0})$,  is
-conservative: for  instance, the corresponding  bell-shaped blue curve  is too
-much concentrated around its axis of symmetry. 
+Two  important  comments   are  in  order.   First,  on  the   one  hand,  the
+G-computation estimator  $\psi_{n}^{d}$ is biased. Specifically,  by the above
+chunk of code, the averages  of $\sqrt{n/v_{n}^{d}} (\psi_{n}^{d} - \psi_{0})$
+and  $\sqrt{n/v_{n}^{d*}}  (\psi_{n}^{d}  -  \psi_{0})$  computed  across  the
+realizations are equal to `r bias_d_T` and `r bias_d_F` (both rounded to three
+decimal  places ---  see `bias_de`).   On  the other  hand, the  G-computation
+estimator   $\psi_{n}^{e}$  is   biased   too,  though   slightly  less   than
+$\psi_{n}^{d}$.  Specifically,  by the  above chunk of  code, the  averages of
+$\sqrt{n/v_{n}^{e}}   (\psi_{n}^{e}   -    \psi_{0})$   and   $\sqrt{n/v^{e*}}
+(\psi_{n}^{e} - \psi_{0})$ computed across the realizations are equal to 
+`r bias_e_T` and `r bias_e_F` (both rounded to three decimal places --- see
+`bias_de`). We  can provide an oracular  explanation. Estimator $\psi_{n}^{d}$
+suffers     from    the     poor    approximation     of    $\Qbar_{0}$     by
+$\Algo_{\Qbar,1}(P_{n})$, a  result of  the algorithm's  mis-specification. As
+for  $\psi_{n}^{e}$,  it   behaves  better  because  $\Algo_{\Qbar,\text{kNN}}
+(P_{n})$  approximates $\Qbar_{0}$  better  than $\Algo_{\Qbar,1}(P_{n})$,  an
+apparent consequence of the greater versatility of the algorithm.
 
-The actual asymptotic variance of  $\sqrt{n} (\psi_{n}^{c} - \psi_{0})$ can be
-estimated  with the  empirical  variance  of the  `iter`  replications of  the
-construction   of  $\psi_{n}^{c}$.
+Second,  we get  a visual  confirmation that  $v_{n}^{d}$ under-estimates  the
+actual  asymptotic  variance  of  $\sqrt{n} (\psi_{n}^{d}  -  \psi_{0})$:  the
+right-hand  side red  bell-shaped curve  is too  dispersed.  In  contrast, the
+right-hand side blue bell-shaped curve is  much closer to the black curve that
+represents the  density of the standard  normal law. Looking at  the left-hand
+side plot reveals  that the empirical law of  $\sqrt{n/v^{d*}} (\psi_{n}^{d} -
+\psi_{0})$, once translated to compensate for the bias, is rather close to the
+black curve. This means that  the random variable is approximately distributed
+like  a Gaussian  random  variable.  On  the contrary,  the  empirical law  of
+$\sqrt{n/v^{e*}} (\psi_{n}^{e}  - \psi_{0})$  does not strike  us as  being as
+closely Gaussian-like as that  of $\sqrt{n/v^{d*}} (\psi_{n}^{d} - \psi_{0})$.
+By    being    more    data-adaptive   than    $\Algo_{\Qbar,1}$,    algorithm
+$\Algo_{\Qbar,\text{kNN}}$ yields a better  estimator of $\Qbar_{0}$. However,
+the rate of convergence of  $\Algo_{\Qbar,\text{kNN}}(P_{n})$ to its limit may
+be slower than root-$n$, invalidating a central limit theorem.
+ 
+How do  the estimated variances  of $\psi_{n}^{d}$ and  $\psi_{n}^{e}$ compare
+with their empirical counterparts (computed  across the `iter` replications of
+the construction of the two  estimators)?
 
-```{r eval = FALSE}
-(emp_sig_n <- psi_hat_abc %>% filter(type == "c") %>%
-   summarize(sd(psi_n)) %>% pull)
-(summ_sig_n <- psi_hat_abc %>% filter(type == "c") %>% select(sig_n) %>%
-   summary)
+```{r var-de}
+## psi_n^d
+(psi_hat_de %>% ungroup %>%
+   filter(type == "d" & auto_renormalization) %>% pull(sig_n) %>% summary)
+## psi_n^e
+(psi_hat_de %>% ungroup %>%
+   filter(type == "e" & auto_renormalization) %>% pull(sig_n) %>% summary)
 ``` 
 
-```{r eval = FALSE, echo = FALSE}
-mean_sig_n <- psi_hat_abc %>% filter(type == "c") %>%
-  select(sig_n) %>% pull %>% mean
+```{r echo = FALSE}
+emp_sig_n_d <- psi_hat_de %>% ungroup %>%
+   filter(type == "d" & auto_renormalization) %>% pull(sig_n) %>% mean
+emp_sig_n_e <- psi_hat_de %>% ungroup %>%
+  filter(type == "e" & auto_renormalization) %>% pull(sig_n) %>% mean
+
+mean_sig_n_d <- psi_hat_de %>% ungroup %>%
+  filter(type == "d" & !auto_renormalization) %>% select(sig_alt) %>% pull %>% mean ## it is constant
+mean_sig_n_e <- psi_hat_de %>% ungroup %>%
+  filter(type == "e" & !auto_renormalization) %>% select(sig_alt) %>% pull %>% mean ## it is constant
 ```
 
-The empirical standard deviation is approximately 
-`r  round(mean_sig_n/emp_sig_n, 3)`  times smaller  than the  average
-*estimated*  standard   deviation.  The  estimator  is   conservative  indeed!
-Furthermore, note  the better fit with  the density of the  standard normal
-density    of  the  kernel  density estimator  of  the  law  of  $\sqrt{n}
-(\psi_{n}^{c} - \psi_{0})$ **renormalized with** `emp_sig_n`.
 
-(ref:unknown-Gbar-seven)  Kernel  density  estimators  of  the  law  of  three
-estimators  of   $\psi_{0}$  (recentered  with  respect   to  $\psi_{0}$,  and
-renormalized), one of them misconceived  (a), one assuming that $\Gbar_{0}$ is
-known  (b) and  one that  hinges  on the  estimation of  $\Gbar_{0}$ **and  an
-estimator  of  the  asymptotic  variance computed  across  the  replications**
-(c). The  present figure includes Figure  \@ref(fig:known-Gbar-one-b) (but the
-colors     differ)    and     it    should     be    compared     to    Figure
-\@ref(fig:unknown-Gbar-four). Built  based on `iter`  independent realizations
-of each estimator.
+The empirical standard deviation of $\psi_{n}^{d}$ is approximately 
+`r round(mean_sig_n_d/emp_sig_n_d, 3)` times larger than the average *estimated*
+standard deviation.  The estimator  is anti-conservative indeed! 
+
+As for the empirical standard deviation of $\psi_{n}^{e}$, it is approximately 
+`r round(mean_sig_n_e/emp_sig_n_e, 3)` times larger than the average *estimated*
+standard deviation. 
 
 
-```{r fig.cap = '(ref:unknown-Gbar-seven)', eval = FALSE}
-clt_c <- psi_hat_abc %>% filter(type == "c") %>%
-  mutate(clt = clt * sig_n /  emp_sig_n)
 
-fig_bias_ab +
-  geom_density(aes(clt, fill = type, colour = type), clt_c, alpha = 0.1) +
-  geom_vline(aes(xintercept = bias, colour = type),
-             bias_abc, size = 1.5, alpha = 0.5) +
-  xlim(-3, 4) + 
-  labs(y = "",
-       x = expression(paste(sqrt(n/v[n]^{list(a, b, c)})*
-                            (psi[n]^{list(a, b, c)} - psi[0]))))
-```
-
-**Workaround.**  In  a  real  world   data-analysis,  one  could  correct  the
-estimation of the asymptotic variance of $\sqrt{n} (\psi_{n}^{c} - \psi_{0})$.
-We  could for  instance  derive  the influence  function  as  it is  described
-[here](#iptw-est-var)  and  use  the  corresponding  influence  function-based
-estimator of  the variance.   Or one  could rely  on the  bootstrap.^[That is,
-replicate the  construction of  $\psi_{n}^{c}$ many times  based on  data sets
-obtained  by  resampling  from  the  original  data  set,  then  estimate  the
-asymptotic  variance with  the empirical  variance of  $\psi_{n}^{c}$ computed
-across the replications.] This, however, would only make sense if one knew for
-sure that the algorithm for the estimation of $\Gbar_{0}$ is well-specified.
-
-ANTOINE
+ANTOINE  --  Utiliser  le  paragraphe ci-dessous  pour  ecrire  transition  et
+proposer un exercice.
 
 The simulation demonstrates the following key points. For well-specified
 parametric regressions, the plug-in estimator exhibits excellent behavior: its
@@ -2566,11 +2600,13 @@ behavior. \index{well/mis-specified}
    that $W \sim  \mbox{Normal}(\mu, \sigma^2)$ where $\mu$  and $\sigma^2$ are
    unknown.
 
-2. \tcg{If we  asked them to implement a regression  estimator in the previous
+2. \tcg{If we asked them to implement a regression estimator in the previous
    subsection, let's now have them use it to repeat our simulation and compute
    the G-comp estimator based on this.}
 
-### &#9761; \stixdanger{} Analysis of plug-in estimator. {#analysis-of-plug-in}
+3. Implement G-computation estimator based on well-specified working model.
+
+# &#9761; \stixdanger{} Analysis of plug-in estimator. {#analysis-of-plug-in}
 
 
 In view of our estimators of $\Qbar_0$ and $\Gbar_0$ as algorithms that map from a 
