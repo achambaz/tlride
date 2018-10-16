@@ -1512,7 +1512,7 @@ renormalized   $\sqrt{n}/\sqrt{v_{n}^{a}}  (\psi_{n}^{a}   -  \psi_{0})$   and
 $\sqrt{n}/\sqrt{v_{n}^{b}}  (\psi_{n}^{b}  -   \psi_{0})$,  where  $v_{n}^{a}$
 \@ref(eq:v-n-a)  and  $v_{n}^{b}$   \@ref(eq:v-n-b)  estimate  the  asymptotic
 variances  of   $\psi_{n}^{a}$  and  $\psi_{n}^{b}$,   respectively.  Finally,
-`bias_ab` can be interpreted as an amount of bias (at the renormalized scale).
+`bias_ab` reports amounts of bias (at the renormalized scale).
 
 (ref:known-Gbar-one-b) Kernel density estimators of the law of two estimators
 of $\psi_{0}$ (recentered  with respect to $\psi_{0}$,  and renormalized), one
@@ -2049,8 +2049,7 @@ by  four  `tibble`  containing  notably   the  values  of  $\psi_{n}^{c}$  and
 $\sqrt{v_{n}^{c}}/\sqrt{n}$  computed by  calling  `compute_iptw`. The  object
 also contains  the values of the  recentered (with respect to  $\psi_{0}$) and
 renormalized $\sqrt{n}/\sqrt{v_{n}^{c}}  (\psi_{n}^{c} -  \psi_{0})$. Finally,
-`bias_abc`  can be  interpreted  as an  amount of  bias  (at the  renormalized
-scale).
+`bias_abc`  reports  amounts of  bias  (at the  renormalized scale).
 
 ```{r unknown-Gbar-two-bis}
 learned_features_fixed_sample_size <-
@@ -2314,8 +2313,8 @@ $\Qbar$ features of $P_{0}$.
 
 ### Elementary statistical properties
 
-This subsection is very similar to its counterpart for the IMPT estimator, see
-Section \@ref(elementary-stat-prop-iptw).  
+This subsection is very similar to its counterpart for the IPTW estimator, see
+Section \@ref(elementary-stat-prop-iptw). 
 
 Let  us denote  by  $\Qbar_{n,1}$ the  output  of algorithm  $\Algo_{\Qbar,1}$
 trained on  $P_{n}$, and recall  that $\Qbar_{n,\text{kNN}}$ is the  output of
@@ -2359,10 +2358,8 @@ that the resulting estimator $\psi_{n}$ be even consistent.
 
 ### Empirical investigation {#empirical-inves-Gcomp}
 
-
-
-Let us  compute $\psi_{n}^{d}$  $\psi_{n}^{e}$ and  on the same  `iter =  ` `r
-iter` independent samples of independent observations drawn from $P_{0}$ as in
+Let us compute $\psi_{n}^{d}$ $\psi_{n}^{e}$ and on the same `iter = ` 
+`r iter` independent samples of independent observations drawn from $P_{0}$ as in
 Sections \@ref(known-gbar-first-pass) and \@ref(empirical-inves-IPTW-bis).  We
 first enrich  object `learned_features_fixed_sample_size` that was  created in
 Section   \@ref(empirical-inves-IPTW-bis),   adding   to  it   estimators   of
@@ -2375,18 +2372,89 @@ $\sqrt{v_{n}^{d}}/\sqrt{n}$ computed by calling  `compute_gcomp`, and those of
 the    recentered   (with    respect   to    $\psi_{0}$)   and    renormalized
 $\sqrt{n}/\sqrt{v_{n}^{d}}  (\psi_{n}^{d}  -   \psi_{0})$.   Because  we  know
 beforehand that $v_{n}^{d}$ under-estimates  the actual asymptotic variance of
-$\sqrt{v_{n}^{d}}/\sqrt{n}$,  the   `tibble`  also  includes  the   values  of
+$\sqrt{n} (\psi_{n}^{d} - \psi_{0})$, the `tibble` also includes the values of
 $\sqrt{n}/\sqrt{v^{*}} (\psi_{n}^{d} - \psi_{0})$  where the estimator $v^{*}$
 of  the   asymptotic  variance  is   computed  *across  the   replications  of
-$\psi_{n}^{d}$*.
+$\psi_{n}^{d}$*.   The  tibble  includes  the same  quantities  pertaining  to
+$\psi_{n}^{e}$, although  there is no  theoretical guarantee that  the central
+limit theorem does hold and, even  if it did, that the counterpart $v_{n}^{e}$
+to  $v_{n}^{d}$ estimates  in any  way  the asymptotic  variance of  $\sqrt{n}
+(\psi_{n}^{e} - \psi_{0})$. 
+
+Finally,   `bias_de`   reports   amounts   of  bias   (at   the   renormalized
+scale**s**). There is one value of bias  for each combination of *(i)* type of
+the estimator (`d` or `e`) and  *(ii)* how the renormalization is carried out,
+either based on $v_{n}^{d}$ and $v_{n}^{e}$ (`auto_renormalization` is `TRUE`)
+*or*  on  the  estimator  of  the  asymptotic  variance  computed  across  the
+replications of  $\psi_{n}^{d}$ and $\psi_{n}^{e}$  (`auto_renormalization` is
+`FALSE`).
 
 ANTOINE
 
-Finally, `bias_de` can be interpreted as an amount of bias (at the
-renormalized scale).
+(ref:estimating-Qbar-one-bis) Write caption.
+
+```{r estimating-Qbar-one-bis, fig.cap = '(ref:estimating-Qbar-one-bis)'}
+learned_features_fixed_sample_size <-
+  learned_features_fixed_sample_size %>% 
+  mutate(Qbar_hat_d =
+           map(obs,
+               ~ estimate_Qbar(., algorithm = working_model_Q_one)),
+         Qbar_hat_e =
+           map(obs,
+               ~ estimate_Qbar(., algorithm = kknn_algo,
+                               trControl = kknn_control,
+                               tuneGrid = kknn_grid))) %>%
+  mutate(QW = map(obs, estimate_QW),
+         est_d =
+           pmap(list(QW, Qbar_hat_d, n()),
+                ~ compute_gcomp(..1, wrapper(..2, FALSE), ..3)),
+         est_e =
+           pmap(list(QW, Qbar_hat_e, n()),
+                ~ compute_gcomp(..1, wrapper(..2, FALSE), ..3)))
+
+psi_hat_de <- learned_features_fixed_sample_size %>%
+  select(est_d, est_e) %>%
+  gather(`est_d`, `est_e`, key = "type", value = "estimates") %>%
+  extract(type, "type", "_([de])$") %>% 
+  unnest(estimates) %>%
+  group_by(type) %>%
+  mutate(sig_alt = sd(psi_n)) %>%
+  mutate(clt_ = (psi_n - psi_zero) / sig_n,
+         clt_alt = (psi_n - psi_zero) / sig_alt) %>%
+  gather(`clt_`, `clt_alt`, key = "key", value = "clt") %>%
+  extract(key, "key", "_(.*)$") %>%
+  mutate(key = ifelse(key == "", TRUE, FALSE)) %>%
+  rename("auto_renormalization" = key)
+
+(bias_de <- psi_hat_de %>%
+   group_by(type, auto_renormalization) %>%
+   summarize(bias = mean(clt)))
+
+fig <- ggplot() +
+  geom_line(aes(x = x, y = y), 
+            data = tibble(x = seq(-3, 3, length.out = 1e3),
+                          y = dnorm(x)),
+            linetype = 1, alpha = 0.5) +
+  geom_density(aes(clt, fill = type, colour = type),
+               psi_hat_de, alpha = 0.1) +
+  geom_vline(aes(xintercept = bias, colour = type),
+             bias_de, size = 1.5, alpha = 0.5) +
+  facet_wrap(~ auto_renormalization,
+             labeller =
+               as_labeller(c(`TRUE` = "auto-renormalization: TRUE",
+                             `FALSE` = "auto-renormalization: FALSE")),
+             scales = "free")
+  
+fig +
+  labs(y = "",
+       x = expression(paste(sqrt(n/v[n]^{list(d, e)})*
+                            (psi[n]^{list(d, e)} - psi[0]))))
+```
+
+\tcg{No that bad!   Yet, we know that} $\sqrt{n}$ \tcg{times  bias is bound to
+increase with sample size. To see this, check out the next chunks of code.}
 
 
-(... r code...)
 
 
 By the above chunk of code, the average of $\sqrt{n/v_{n}^{c}} (\psi_{n}^{c} -
@@ -2566,7 +2634,7 @@ This simulation demonstrates that, as expected, $n^{1/2}P_n D^*(\hat{P}_n) \righ
 
 3. \tcg{A "difficult" exercise. Repeat exercise 2, but let's try to break Donsker conditions. E.g., could we blow the Donsker condition up by including an increasing number of polynomials?}
 
-# ANTOINE
+# Going further
 
 ## Building estimators
 
@@ -2827,71 +2895,7 @@ we end up with an estimate of $\psi_0$ that is outside the parameter space.}
 
 
 
-## Inference based on the estimation of the reward regression {#inference-reward-regression}
-
-\tcg{Comment on structure of} `estimate_Qbar`, similar to that of `estimate_Gbar`.
-
-\tcg{Demonstrating the  inference of} $\psi_{0}$ \tcg{based  on the estimation
-of} $\Qbar_{0}$ \tcg{(and of the marginal  law of} $W$\tcg{).  Once based on a
-(mis-specified) working model, and once  based on a non-parametric algorithm.}
-\index{well/mis-specified}
-
-
-(ref:estimating-Qbar-one-bis) Write caption.
-
-```{r estimating-Qbar-one-bis, fig.cap = '(ref:estimating-Qbar-one-bis)'}
-learned_features_fixed_sample_size <-
-  learned_features_fixed_sample_size %>% 
-  mutate(Qbar_hat_d = map(obs, ~ estimate_Qbar(., algorithm = working_model_Q_one)),
-         Qbar_hat_e = map(obs, ~ estimate_Qbar(., algorithm = kknn_algo,
-                                               trControl = kknn_control,
-                                               tuneGrid = kknn_grid))) %>%
-  mutate(QW = map(obs, estimate_QW),
-         est_d = pmap(list(QW, Qbar_hat_d, n()),
-                      ~ compute_gcomp(..1, wrapper(..2, FALSE), ..3)),
-         est_e = pmap(list(QW, Qbar_hat_e, n()),
-                      ~ compute_gcomp(..1, wrapper(..2, FALSE), ..3)))
-
-psi_hat_de <- learned_features_fixed_sample_size %>%
-  select(est_d, est_e) %>%
-  gather(`est_d`, `est_e`, key = "type", value = "estimates") %>%
-  extract(type, "type", "_([de])$") %>% 
-  unnest(estimates) %>%
-  group_by(type) %>%
-  mutate(sig_alt = sd(psi_n)) %>%
-  mutate(clt_ = (psi_n - psi_zero) / sig_n,
-         clt_alt = (psi_n - psi_zero) / sig_alt) %>%
-  gather(`clt_`, `clt_alt`, key = "key", value = "clt") %>%
-  extract(key, "key", "_(.*)$") %>%
-  mutate(key = ifelse(key == "", TRUE, FALSE)) %>%
-  rename("auto_renormalization" = key)
-
-(bias_de <- psi_hat_de %>%
-   group_by(type, auto_renormalization) %>%
-   summarize(bias = mean(clt)))
-
-fig <- ggplot() +
-  geom_line(aes(x = x, y = y), 
-            data = tibble(x = seq(-3, 3, length.out = 1e3),
-                          y = dnorm(x)),
-            linetype = 1, alpha = 0.5) +
-  geom_density(aes(clt, fill = type, colour = type),
-               psi_hat_de, alpha = 0.1) +
-  geom_vline(aes(xintercept = bias, colour = type),
-             bias_de, size = 1.5, alpha = 0.5) +
-  facet_wrap(~ auto_renormalization,
-             labeller = as_labeller(c(`TRUE` = "auto-renormalization: TRUE",
-                                      `FALSE` = "auto-renormalization: FALSE")),
-             scales = "free")
-  
-fig +
-  labs(y = "",
-       x = expression(paste(sqrt(n/v[n]^{list(d, e)})*(psi[n]^{list(d, e)} - psi[0]))))
-```
-
-\tcg{No that bad!   Yet, we know that} $\sqrt{n}$ \tcg{times  bias is bound to
-increase with sample size. To see this, check out the next chunks of code.}
-
+ANTOINE
  
 
 ```{r estimating-Qbar-two, eval = TRUE}
