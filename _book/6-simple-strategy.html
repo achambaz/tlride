@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>A Ride in Targeted Learning Territory</title>
+  <meta name="description" content="To do…">
+  <meta name="generator" content="bookdown 0.7 and GitBook 2.6.7">
+
+  <meta property="og:title" content="A Ride in Targeted Learning Territory" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:image" content="cover.jpg" />
+  <meta property="og:description" content="To do…" />
+  <meta name="github-repo" content="achambaz/tlride" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="A Ride in Targeted Learning Territory" />
+  
+  <meta name="twitter:description" content="To do…" />
+  <meta name="twitter:image" content="cover.jpg" />
+
+<meta name="author" content="David Benkeser (Emory University)">
+<meta name="author" content="Antoine Chambaz (Université Paris Descartes)">
+
+
+<meta name="date" content="2018-10-18">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+<link rel="prev" href="5-inference.html">
+<link rel="next" href="7-nuisance.html">
+<script src="assets/jquery-2.2.3/jquery.min.js"></script>
+<link href="assets/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+  CommonHTML: {
+    scale: 90,
+    linebreaks: {
+      automatic: true
+    }
+  },
+  SVG: {
+    linebreaks: {
+      automatic: true
+    }
+  }, 
+  displayAlign: "left"
+  });
+</script>
+<script type="text/javascript"
+	src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async>
+</script><!-- see also '_output.yaml'
+src="https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"
+src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML" 
+src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"
+-->
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+<link rel="stylesheet" href="tlride.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><strong><a href="./">TLRIDE</a></strong></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a></li>
+<li class="chapter" data-level="1" data-path="1-a-ride.html"><a href="1-a-ride.html"><i class="fa fa-check"></i><b>1</b> A ride</a><ul>
+<li class="chapter" data-level="1.1" data-path="1-a-ride.html"><a href="1-a-ride.html#introduction"><i class="fa fa-check"></i><b>1.1</b> Introduction</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="1-a-ride.html"><a href="1-a-ride.html#causal-story"><i class="fa fa-check"></i><b>1.1.1</b> A causal story</a></li>
+<li class="chapter" data-level="1.1.2" data-path="1-a-ride.html"><a href="1-a-ride.html#tlrider-package"><i class="fa fa-check"></i><b>1.1.2</b> The <code>tlrider</code> package</a></li>
+<li class="chapter" data-level="1.1.3" data-path="1-a-ride.html"><a href="1-a-ride.html#discuss"><i class="fa fa-check"></i><b>1.1.3</b> What we will discuss</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="1-a-ride.html"><a href="1-a-ride.html#simulation-study"><i class="fa fa-check"></i><b>1.2</b> A simulation study</a><ul>
+<li class="chapter" data-level="1.2.1" data-path="1-a-ride.html"><a href="1-a-ride.html#reproducible-experiment"><i class="fa fa-check"></i><b>1.2.1</b> Reproducible experiment as a law</a></li>
+<li class="chapter" data-level="1.2.2" data-path="1-a-ride.html"><a href="1-a-ride.html#synthetic-experiment"><i class="fa fa-check"></i><b>1.2.2</b> A synthetic reproducible experiment</a></li>
+<li class="chapter" data-level="1.2.3" data-path="1-a-ride.html"><a href="1-a-ride.html#revealing-experiment"><i class="fa fa-check"></i><b>1.2.3</b> Revealing <code>experiment</code></a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="1-a-ride.html"><a href="1-a-ride.html#exo-visualization"><i class="fa fa-check"></i><b>1.3</b> ⚙ Visualization</a></li>
+<li class="chapter" data-level="1.4" data-path="1-a-ride.html"><a href="1-a-ride.html#exo-make-own-experiment"><i class="fa fa-check"></i><b>1.4</b> ⚙ Make your own experiment</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="2-parameter.html"><a href="2-parameter.html"><i class="fa fa-check"></i><b>2</b> The parameter of interest</a><ul>
+<li class="chapter" data-level="2.1" data-path="2-parameter.html"><a href="2-parameter.html#parameter-first-pass"><i class="fa fa-check"></i><b>2.1</b> The parameter of interest</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="2-parameter.html"><a href="2-parameter.html#definition"><i class="fa fa-check"></i><b>2.1.1</b> Definition</a></li>
+<li class="chapter" data-level="2.1.2" data-path="2-parameter.html"><a href="2-parameter.html#causal-interpretation"><i class="fa fa-check"></i><b>2.1.2</b> A causal interpretation</a></li>
+<li class="chapter" data-level="2.1.3" data-path="2-parameter.html"><a href="2-parameter.html#causal-computation"><i class="fa fa-check"></i><b>2.1.3</b> A causal computation</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="2-parameter.html"><a href="2-parameter.html#exo-alternative-parameter-first-pass"><i class="fa fa-check"></i><b>2.2</b> ⚙ An alternative parameter of interest</a></li>
+<li class="chapter" data-level="2.3" data-path="2-parameter.html"><a href="2-parameter.html#parameter-second-pass"><i class="fa fa-check"></i><b>2.3</b> The statistical mapping of interest</a><ul>
+<li class="chapter" data-level="2.3.1" data-path="2-parameter.html"><a href="2-parameter.html#opening"><i class="fa fa-check"></i><b>2.3.1</b> Opening discussion</a></li>
+<li class="chapter" data-level="2.3.2" data-path="2-parameter.html"><a href="2-parameter.html#parameter-mapping"><i class="fa fa-check"></i><b>2.3.2</b> The parameter as the value of a statistical mapping at the experiment</a></li>
+<li class="chapter" data-level="2.3.3" data-path="2-parameter.html"><a href="2-parameter.html#value-another-experiment"><i class="fa fa-check"></i><b>2.3.3</b> The value of the statistical mapping at another experiment</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="2-parameter.html"><a href="2-parameter.html#exo-alternative-parameter-second-pass"><i class="fa fa-check"></i><b>2.4</b> ⚙ Alternative statistical mapping</a></li>
+<li class="chapter" data-level="2.5" data-path="2-parameter.html"><a href="2-parameter.html#parameter-third-pass"><i class="fa fa-check"></i><b>2.5</b> Representations</a><ul>
+<li class="chapter" data-level="2.5.1" data-path="2-parameter.html"><a href="2-parameter.html#yet-another"><i class="fa fa-check"></i><b>2.5.1</b> Yet another representation</a></li>
+<li class="chapter" data-level="2.5.2" data-path="2-parameter.html"><a href="2-parameter.html#rep-to-est"><i class="fa fa-check"></i><b>2.5.2</b> From representations to estimation strategies</a></li>
+</ul></li>
+<li class="chapter" data-level="2.6" data-path="2-parameter.html"><a href="2-parameter.html#exo-alternative-parameter-third-pass"><i class="fa fa-check"></i><b>2.6</b> ⚙ Alternative representation</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="3-smooth.html"><a href="3-smooth.html"><i class="fa fa-check"></i><b>3</b> Smoothness</a><ul>
+<li class="chapter" data-level="3.1" data-path="3-smooth.html"><a href="3-smooth.html#smooth-first-pass"><i class="fa fa-check"></i><b>3.1</b> Fluctuating smoothly</a><ul>
+<li class="chapter" data-level="3.1.1" data-path="3-smooth.html"><a href="3-smooth.html#fluctuations"><i class="fa fa-check"></i><b>3.1.1</b> The <code>another_experiment</code> fluctuation</a></li>
+<li class="chapter" data-level="3.1.2" data-path="3-smooth.html"><a href="3-smooth.html#numerical-illus"><i class="fa fa-check"></i><b>3.1.2</b> Numerical illustration</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="3-smooth.html"><a href="3-smooth.html#exo-yet-another-experiment"><i class="fa fa-check"></i><b>3.2</b> ⚙ Yet another experiment</a></li>
+<li class="chapter" data-level="3.3" data-path="3-smooth.html"><a href="3-smooth.html#smooth-second-pass"><i class="fa fa-check"></i><b>3.3</b> ☡  More on fluctuations and smoothness</a><ul>
+<li class="chapter" data-level="3.3.1" data-path="3-smooth.html"><a href="3-smooth.html#fluctuations"><i class="fa fa-check"></i><b>3.3.1</b> Fluctuations</a></li>
+<li class="chapter" data-level="3.3.2" data-path="3-smooth.html"><a href="3-smooth.html#smoothness-and-gradients"><i class="fa fa-check"></i><b>3.3.2</b> Smoothness and gradients</a></li>
+<li class="chapter" data-level="3.3.3" data-path="3-smooth.html"><a href="3-smooth.html#Euclidean-perspective"><i class="fa fa-check"></i><b>3.3.3</b> A Euclidean perspective</a></li>
+<li class="chapter" data-level="3.3.4" data-path="3-smooth.html"><a href="3-smooth.html#canonical-gradient"><i class="fa fa-check"></i><b>3.3.4</b> The canonical gradient</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="3-smooth.html"><a href="3-smooth.html#revisiting"><i class="fa fa-check"></i><b>3.4</b> A fresh look at <code>another_experiment</code></a><ul>
+<li class="chapter" data-level="3.4.1" data-path="3-smooth.html"><a href="3-smooth.html#deriving-the-efficient-influence-curve"><i class="fa fa-check"></i><b>3.4.1</b> Deriving the efficient influence curve</a></li>
+<li class="chapter" data-level="3.4.2" data-path="3-smooth.html"><a href="3-smooth.html#numerical-validation"><i class="fa fa-check"></i><b>3.4.2</b> Numerical validation</a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="3-smooth.html"><a href="3-smooth.html#influence-curves"><i class="fa fa-check"></i><b>3.5</b> ☡  Asymptotic linearity and statistical efficiency</a><ul>
+<li class="chapter" data-level="3.5.1" data-path="3-smooth.html"><a href="3-smooth.html#asymptotic-linearity"><i class="fa fa-check"></i><b>3.5.1</b> Asymptotic linearity</a></li>
+<li class="chapter" data-level="3.5.2" data-path="3-smooth.html"><a href="3-smooth.html#influence-curves-and-gradients"><i class="fa fa-check"></i><b>3.5.2</b> Influence curves and gradients</a></li>
+<li class="chapter" data-level="3.5.3" data-path="3-smooth.html"><a href="3-smooth.html#asymptotic-efficiency"><i class="fa fa-check"></i><b>3.5.3</b> Asymptotic efficiency</a></li>
+</ul></li>
+<li class="chapter" data-level="3.6" data-path="3-smooth.html"><a href="3-smooth.html#exo-cramer-rao"><i class="fa fa-check"></i><b>3.6</b> ⚙ Cramér-Rao bounds</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="4-double-robustness.html"><a href="4-double-robustness.html"><i class="fa fa-check"></i><b>4</b> Double-robustness</a><ul>
+<li class="chapter" data-level="4.1" data-path="4-double-robustness.html"><a href="4-double-robustness.html#linear-approximation"><i class="fa fa-check"></i><b>4.1</b> Linear approximations of parameters</a><ul>
+<li class="chapter" data-level="4.1.1" data-path="4-double-robustness.html"><a href="4-double-robustness.html#from-gradients-to-estimators"><i class="fa fa-check"></i><b>4.1.1</b> From gradients to estimators</a></li>
+<li class="chapter" data-level="4.1.2" data-path="4-double-robustness.html"><a href="4-double-robustness.html#another-Euclidean-perspective"><i class="fa fa-check"></i><b>4.1.2</b> A Euclidean perspective</a></li>
+<li class="chapter" data-level="4.1.3" data-path="4-double-robustness.html"><a href="4-double-robustness.html#the-remainder-term"><i class="fa fa-check"></i><b>4.1.3</b> The remainder term</a></li>
+<li class="chapter" data-level="4.1.4" data-path="4-double-robustness.html"><a href="4-double-robustness.html#expressing-the-remainder-term-as-a-function-of-the-relevant-features"><i class="fa fa-check"></i><b>4.1.4</b> Expressing the remainder term as a function of the relevant features</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="4-double-robustness.html"><a href="4-double-robustness.html#exo-remainder-term"><i class="fa fa-check"></i><b>4.2</b> ⚙ The remainder term</a></li>
+<li class="chapter" data-level="4.3" data-path="4-double-robustness.html"><a href="4-double-robustness.html#def-double-robustness"><i class="fa fa-check"></i><b>4.3</b> ☡  Double-robustness</a><ul>
+<li class="chapter" data-level="4.3.1" data-path="4-double-robustness.html"><a href="4-double-robustness.html#the-key-property"><i class="fa fa-check"></i><b>4.3.1</b> The key property</a></li>
+<li class="chapter" data-level="4.3.2" data-path="4-double-robustness.html"><a href="4-double-robustness.html#direct-consequence"><i class="fa fa-check"></i><b>4.3.2</b> Its direct consequence</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="4-double-robustness.html"><a href="4-double-robustness.html#exo-double-robustness"><i class="fa fa-check"></i><b>4.4</b> ⚙ Double-robustness</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="5-inference.html"><a href="5-inference.html"><i class="fa fa-check"></i><b>5</b> Inference</a><ul>
+<li class="chapter" data-level="5.1" data-path="5-inference.html"><a href="5-inference.html#where-we-stand"><i class="fa fa-check"></i><b>5.1</b> Where we stand</a></li>
+<li class="chapter" data-level="5.2" data-path="5-inference.html"><a href="5-inference.html#where-we-go"><i class="fa fa-check"></i><b>5.2</b> Where we go</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html"><i class="fa fa-check"></i><b>6</b> A simple inference strategy</a><ul>
+<li class="chapter" data-level="6.1" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#a-cautionary-detour"><i class="fa fa-check"></i><b>6.1</b> A cautionary detour</a></li>
+<li class="chapter" data-level="6.2" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#delta-method"><i class="fa fa-check"></i><b>6.2</b> ⚙ Delta-method</a></li>
+<li class="chapter" data-level="6.3" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#known-gbar-first-pass"><i class="fa fa-check"></i><b>6.3</b> IPTW estimator assuming the mechanism of action known</a><ul>
+<li class="chapter" data-level="6.3.1" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#a-simple-substitution-estimator"><i class="fa fa-check"></i><b>6.3.1</b> A simple substitution estimator</a></li>
+<li class="chapter" data-level="6.3.2" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#elementary-statistical-properties"><i class="fa fa-check"></i><b>6.3.2</b> Elementary statistical properties</a></li>
+<li class="chapter" data-level="6.3.3" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#empirical-inves-IPTW"><i class="fa fa-check"></i><b>6.3.3</b> Empirical investigation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="7-nuisance.html"><a href="7-nuisance.html"><i class="fa fa-check"></i><b>7</b> Nuisance parameters</a><ul>
+<li class="chapter" data-level="7.1" data-path="7-nuisance.html"><a href="7-nuisance.html#anatomy"><i class="fa fa-check"></i><b>7.1</b> Anatomy of an expression</a></li>
+<li class="chapter" data-level="7.2" data-path="7-nuisance.html"><a href="7-nuisance.html#an-algorithmic-stance"><i class="fa fa-check"></i><b>7.2</b> An algorithmic stance</a></li>
+<li class="chapter" data-level="7.3" data-path="7-nuisance.html"><a href="7-nuisance.html#nuisance-QW"><i class="fa fa-check"></i><b>7.3</b> <code>QW</code></a></li>
+<li class="chapter" data-level="7.4" data-path="7-nuisance.html"><a href="7-nuisance.html#nuisance-Gbar"><i class="fa fa-check"></i><b>7.4</b> <code>Gbar</code></a><ul>
+<li class="chapter" data-level="7.4.1" data-path="7-nuisance.html"><a href="7-nuisance.html#working-model-based-algorithms"><i class="fa fa-check"></i><b>7.4.1</b> Working model-based algorithms</a></li>
+<li class="chapter" data-level="7.4.2" data-path="7-nuisance.html"><a href="7-nuisance.html#visualization"><i class="fa fa-check"></i><b>7.4.2</b> Visualization</a></li>
+</ul></li>
+<li class="chapter" data-level="7.5" data-path="7-nuisance.html"><a href="7-nuisance.html#nuisance-Qbar-wm"><i class="fa fa-check"></i><b>7.5</b> ⚙ <code>Qbar</code>, working model-based algorithms</a></li>
+<li class="chapter" data-level="7.6" data-path="7-nuisance.html"><a href="7-nuisance.html#nuisance-Qbar"><i class="fa fa-check"></i><b>7.6</b> <code>Qbar</code></a><ul>
+<li class="chapter" data-level="7.6.1" data-path="7-nuisance.html"><a href="7-nuisance.html#qbar-machine-learning-based-algorithms"><i class="fa fa-check"></i><b>7.6.1</b> <code>Qbar</code>, machine learning-based algorithms</a></li>
+<li class="chapter" data-level="7.6.2" data-path="7-nuisance.html"><a href="7-nuisance.html#Qbar-knn-algo"><i class="fa fa-check"></i><b>7.6.2</b> <code>Qbar</code>, kNN algorithm</a></li>
+<li class="chapter" data-level="7.6.3" data-path="7-nuisance.html"><a href="7-nuisance.html#qbar-boosted-trees-algorithm"><i class="fa fa-check"></i><b>7.6.3</b> <code>Qbar</code>, boosted trees algorithm</a></li>
+</ul></li>
+<li class="chapter" data-level="7.7" data-path="7-nuisance.html"><a href="7-nuisance.html#nuisance-Qbar-ml-exo"><i class="fa fa-check"></i><b>7.7</b> ⚙ ☡  <code>Qbar</code>, machine learning-based algorithms</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="8-two-naive-plug-in-inference-strategies.html"><a href="8-two-naive-plug-in-inference-strategies.html"><i class="fa fa-check"></i><b>8</b> Two “naive” plug-in inference strategies</a><ul>
+<li class="chapter" data-level="8.1" data-path="8-two-naive-plug-in-inference-strategies.html"><a href="8-two-naive-plug-in-inference-strategies.html#why-naive"><i class="fa fa-check"></i><b>8.1</b> Why “naive”?</a></li>
+<li class="chapter" data-level="8.2" data-path="8-two-naive-plug-in-inference-strategies.html"><a href="8-two-naive-plug-in-inference-strategies.html#known-gbar-second-pass"><i class="fa fa-check"></i><b>8.2</b> IPTW estimator</a><ul>
+<li class="chapter" data-level="8.2.1" data-path="8-two-naive-plug-in-inference-strategies.html"><a href="8-two-naive-plug-in-inference-strategies.html#construction-and-computation"><i class="fa fa-check"></i><b>8.2.1</b> Construction and computation</a></li>
+<li class="chapter" data-level="8.2.2" data-path="8-two-naive-plug-in-inference-strategies.html"><a href="8-two-naive-plug-in-inference-strategies.html#elementary-stat-prop-iptw"><i class="fa fa-check"></i><b>8.2.2</b> Elementary statistical properties</a></li>
+<li class="chapter" data-level="8.2.3" data-path="8-two-naive-plug-in-inference-strategies.html"><a href="8-two-naive-plug-in-inference-strategies.html#empirical-inves-IPTW-bis"><i class="fa fa-check"></i><b>8.2.3</b> Empirical investigation</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="8-two-naive-plug-in-inference-strategies.html"><a href="8-two-naive-plug-in-inference-strategies.html#exo-a-nice-title"><i class="fa fa-check"></i><b>8.3</b> ⚙ Investigating further the IPTW inference strategy</a></li>
+<li class="chapter" data-level="8.4" data-path="8-two-naive-plug-in-inference-strategies.html"><a href="8-two-naive-plug-in-inference-strategies.html#Gcomp-estimator"><i class="fa fa-check"></i><b>8.4</b> G-computation estimator</a><ul>
+<li class="chapter" data-level="8.4.1" data-path="8-two-naive-plug-in-inference-strategies.html"><a href="8-two-naive-plug-in-inference-strategies.html#construction-and-computation-1"><i class="fa fa-check"></i><b>8.4.1</b> Construction and computation</a></li>
+<li class="chapter" data-level="8.4.2" data-path="8-two-naive-plug-in-inference-strategies.html"><a href="8-two-naive-plug-in-inference-strategies.html#elementary-statistical-properties-1"><i class="fa fa-check"></i><b>8.4.2</b> Elementary statistical properties</a></li>
+<li class="chapter" data-level="8.4.3" data-path="8-two-naive-plug-in-inference-strategies.html"><a href="8-two-naive-plug-in-inference-strategies.html#empirical-inves-Gcomp"><i class="fa fa-check"></i><b>8.4.3</b> Empirical investigation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="9-work-in-progress.html"><a href="9-work-in-progress.html"><i class="fa fa-check"></i><b>9</b> Work in progress</a></li>
+<li class="chapter" data-level="10" data-path="10-notation.html"><a href="10-notation.html"><i class="fa fa-check"></i><b>10</b> Notation</a></li>
+<li class="chapter" data-level="11" data-path="11-proofs.html"><a href="11-proofs.html"><i class="fa fa-check"></i><b>11</b> Basic results and their proofs</a><ul>
+<li class="chapter" data-level="11.1" data-path="11-proofs.html"><a href="11-proofs.html#npsem"><i class="fa fa-check"></i><b>11.1</b> NPSEM</a></li>
+<li class="chapter" data-level="11.2" data-path="11-proofs.html"><a href="11-proofs.html#identification"><i class="fa fa-check"></i><b>11.2</b> Identification</a></li>
+<li class="chapter" data-level="11.3" data-path="11-proofs.html"><a href="11-proofs.html#confidence-interval"><i class="fa fa-check"></i><b>11.3</b> Building a confidence interval</a><ul>
+<li class="chapter" data-level="11.3.1" data-path="11-proofs.html"><a href="11-proofs.html#clt"><i class="fa fa-check"></i><b>11.3.1</b> CLT &amp; Slutsky’s lemma</a></li>
+<li class="chapter" data-level="11.3.2" data-path="11-proofs.html"><a href="11-proofs.html#order"><i class="fa fa-check"></i><b>11.3.2</b> CLT and order statistics</a></li>
+</ul></li>
+<li class="chapter" data-level="11.4" data-path="11-proofs.html"><a href="11-proofs.html#another-rep"><i class="fa fa-check"></i><b>11.4</b> Another representation of the parameter of interest</a></li>
+<li class="chapter" data-level="11.5" data-path="11-proofs.html"><a href="11-proofs.html#prop-delta-method"><i class="fa fa-check"></i><b>11.5</b> The delta-method</a></li>
+<li class="chapter" data-level="11.6" data-path="11-proofs.html"><a href="11-proofs.html#asymp-neglig-remain"><i class="fa fa-check"></i><b>11.6</b> Asymptotic negligibility of the remainder term</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="12-references.html"><a href="12-references.html"><i class="fa fa-check"></i><b>12</b> References</a></li>
+<li class="chapter" data-level="13" data-path="13-more-proofs.html"><a href="13-more-proofs.html"><i class="fa fa-check"></i><b>13</b> More results and their proofs</a><ul>
+<li class="chapter" data-level="13.1" data-path="13-more-proofs.html"><a href="13-more-proofs.html#estimation-of-the-asymptotic-variance-of-an-estimator"><i class="fa fa-check"></i><b>13.1</b> Estimation of the asymptotic variance of an estimator</a><ul>
+<li class="chapter" data-level="13.1.1" data-path="13-more-proofs.html"><a href="13-more-proofs.html#iptw-est-var"><i class="fa fa-check"></i><b>13.1.1</b> IPTW estimator based on a well-specified model</a></li>
+<li class="chapter" data-level="13.1.2" data-path="13-more-proofs.html"><a href="13-more-proofs.html#gcomp-est-var"><i class="fa fa-check"></i><b>13.1.2</b> G-computation estimator based on a well-specified model</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="14" data-path="14-references-1.html"><a href="14-references-1.html"><i class="fa fa-check"></i><b>14</b> References</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">A Ride in Targeted Learning Territory</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+\(\newcommand{\bbO}{\mathbb{O}}\)
+\(\newcommand{\bbD}{\mathbb{D}}\)
+\(\newcommand{\bbP}{\mathbb{P}}\)
+\(\newcommand{\bbR}{\mathbb{R}}\)
+\(\newcommand{\Algo}{\widehat{\mathcal{A}}}\)
+\(\newcommand{\calF}{\mathcal{F}}\)
+\(\newcommand{\calM}{\mathcal{M}}\)
+\(\newcommand{\calP}{\mathcal{P}}\)
+\(\newcommand{\calO}{\mathcal{O}}\)
+\(\newcommand{\calQ}{\mathcal{Q}}\)
+\(\newcommand{\Exp}{\textrm{E}}\)
+\(\newcommand{\IC}{\textrm{IC}}\)
+\(\newcommand{\Gbar}{\bar{G}}\)
+\(\newcommand{\one}{\textbf{1}}\)
+\(\renewcommand{\Pr}{\textrm{Pr}}\)
+\(\newcommand{\Psihat}{\widehat{\Psi}}\)
+\(\newcommand{\Qbar}{\bar{Q}}\)
+\(\newcommand{\tcg}[1]{\textcolor{olive}{#1}}\)
+\(\DeclareMathOperator{\Dirac}{Dirac}\)
+\(\DeclareMathOperator{\expit}{expit}\)
+\(\DeclareMathOperator{\logit}{logit}\)
+\(\DeclareMathOperator{\Rem}{Rem}\)
+\(\DeclareMathOperator{\Var}{Var}\)
+<div id="simple-strategy" class="section level1">
+<h1><span class="header-section-number">Section 6</span> A simple inference strategy</h1>
+<div id="a-cautionary-detour" class="section level2">
+<h2><span class="header-section-number">6.1</span> A cautionary detour</h2>
+<p>Let us introduce first the following estimator:</p>
+<span class="math display" id="eq:cautionary">\[\begin{align}
+\notag \psi_{n}^{a}
+&amp;\equiv \frac{\Exp_{P_{n}} (AY)}{\Exp_{P_{n}} (A)} - \frac{\Exp_{P_{n}}
+((1-A)Y)}{\Exp_{P_{n}}(1-A)} \\ 
+&amp;=          \frac{\sum_{i=1}^{n}         \one\{A_{i}=Y_{i}=1\}}{\sum_{i=1}^{n}
+\one\{A_{i}=1\}}                     -                    \frac{\sum_{i=1}^{n}
+\one\{A_{i}=0,Y_{i}=1\}}{\sum_{i=1}^{n}\one\{A_{i}=0\}}. \tag{6.1} 
+\end{align}\]</span>
+It estimates
+<span class="math display">\[\begin{align*}\Phi(P_{0})    &amp;\equiv    \frac{\Exp_{P_{0}}
+(AY)}{\Exp_{P_{0}} (A)} - \frac{\Exp_{P_{0}} ((1-A)Y)}{\Exp_{P_{0}} (1-A)}\\&amp;=
+\Exp_{P_{0}} (Y | A=1) - \Exp_{P_{0}} (Y | A=0).\end{align*}\]</span>
+<p>We seize this opportunity to demonstrate numerically the obvious fact that <span class="math inline">\(\psi_{n}^{a}\)</span> <em>does not</em> estimate <span class="math inline">\(\Psi(P_{0})\)</span> because, in general, <span class="math inline">\(\Psi(P_{0})\)</span> and <span class="math inline">\(\Phi(P_{0})\)</span> differ. This is apparent in the following alternative expression of <span class="math inline">\(\Phi(P_{0})\)</span>:</p>
+<span class="math display">\[\begin{align*} \Phi(P_{0}) &amp;= \Exp_{P_{0}} \left(\Exp_{P_0}(Y \mid A, W) |A=1)
+\right) -  \Exp_{P_{0}} \left(\Exp_{P_0}(Y \mid  A, W) | A=0\right)\\  &amp;= \int
+\Qbar_{0}(1, w) dP_{0,W|A=1}(w) - \int \Qbar_{0}(0, w) dP_{0,W|A=0}(w).
+\end{align*}\]</span>
+<p>Contrast the above equalities and <a href="2-parameter.html#eq:psi-zero">(2.1)</a>. In the latter, the outer integral is against the marginal law of <span class="math inline">\(W\)</span> under <span class="math inline">\(P_{0}\)</span>. In the former, the outer integrals are respectively against the conditional laws of <span class="math inline">\(W\)</span> given <span class="math inline">\(A=1\)</span> and <span class="math inline">\(A=0\)</span> under <span class="math inline">\(P_{0}\)</span>.</p>
+</div>
+<div id="delta-method" class="section level2">
+<h2><span class="header-section-number">6.2</span> ⚙ Delta-method</h2>
+<p>Consider the next chunk of code:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">compute_irrelevant_estimator &lt;-<span class="st"> </span><span class="cf">function</span>(obs) {
+  Y &lt;-<span class="st"> </span><span class="kw">pull</span>(obs, Y)
+  A &lt;-<span class="st"> </span><span class="kw">pull</span>(obs, A)
+  psi_n &lt;-<span class="st"> </span><span class="kw">mean</span>(A <span class="op">*</span><span class="st"> </span>Y) <span class="op">/</span><span class="st"> </span><span class="kw">mean</span>(A) <span class="op">-</span><span class="st"> </span><span class="kw">mean</span>((<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>A) <span class="op">*</span><span class="st"> </span>Y) <span class="op">/</span><span class="st"> </span><span class="kw">mean</span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>A)
+  Var_n &lt;-<span class="st"> </span><span class="kw">cov</span>(<span class="kw">cbind</span>(A <span class="op">*</span><span class="st"> </span>Y, A, (<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>A) <span class="op">*</span><span class="st"> </span>Y, (<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>A)))
+  phi_n &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span> <span class="op">/</span><span class="st"> </span><span class="kw">mean</span>(A), <span class="op">-</span><span class="kw">mean</span>(A <span class="op">*</span><span class="st"> </span>Y) <span class="op">/</span><span class="st"> </span><span class="kw">mean</span>(A)<span class="op">^</span><span class="dv">2</span>,
+             <span class="op">-</span><span class="dv">1</span> <span class="op">/</span><span class="st"> </span><span class="kw">mean</span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>A),
+             <span class="kw">mean</span>((<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>A) <span class="op">*</span><span class="st"> </span>Y) <span class="op">/</span><span class="st"> </span><span class="kw">mean</span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>A)<span class="op">^</span><span class="dv">2</span>)
+  var_n &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(<span class="kw">t</span>(phi_n) <span class="op">%*%</span><span class="st"> </span>Var_n <span class="op">%*%</span><span class="st"> </span>phi_n)
+  sig_n &lt;-<span class="st"> </span><span class="kw">sqrt</span>(var_n <span class="op">/</span><span class="st"> </span><span class="kw">nrow</span>(obs))
+  <span class="kw">tibble</span>(<span class="dt">psi_n =</span> psi_n, <span class="dt">sig_n =</span> sig_n)
+}</code></pre></div>
+<p>Function <code>compute_irrelevant_estimator</code> computes the estimator <span class="math inline">\(\psi_{n}^{a}\)</span> <a href="6-simple-strategy.html#eq:cautionary">(6.1)</a> based on the data set in <code>obs</code>.</p>
+Introduce <span class="math inline">\(X_{n} \equiv n^{-1}\sum_{i=1}^{n} \left(A_{i}Y_{i}, A_{i}, (1-A_{i})Y_{i}, 1-A_{i}\right)^{\top}\)</span> and <span class="math inline">\(X \equiv \left(AY, A, (1-A)Y, 1-A\right)^{\top}\)</span>. It happens that <span class="math inline">\(X_{n}\)</span> is asymptotically Gaussian: as <span class="math inline">\(n\)</span> goes to infinity,
+<span class="math display">\[\begin{equation*}\sqrt{n} \left(X_{n}  -  \Exp_{P_{0}}
+(X)\right)\end{equation*}\]</span>
+converges in law to the centered Gaussian law with covariance matrix
+<span class="math display">\[\begin{equation*}V_{0} \equiv \Exp_{P_{0}} \left((X
+- \Exp_{P_{0}} (X)) \times (X- \Exp_{P_{0}} (X))^{\top}\right).\end{equation*}\]</span>
+<p>Let <span class="math inline">\(f:\bbR\times \bbR^{*} \times \bbR\times \bbR^{*}\)</span> be given by <span class="math inline">\(f(r,s,t,u) = r/s - t/u\)</span>. The function is differentiable.</p>
+<ol style="list-style-type: decimal">
+<li><p>Check that <span class="math inline">\(\psi_{n}^{a} = f(X_{n})\)</span>. Point out to the line where <span class="math inline">\(\psi_{n}^{a}\)</span> is computed in the body of <code>compute_irrelevant_estimator</code>. Also point out to the line where the above asymptotic variance of <span class="math inline">\(X_{n}\)</span> is estimated with its empirical counterpart, say <span class="math inline">\(V_{n}\)</span>.</p></li>
+<li>☡  Argue how the <a href="11-proofs.html#prop-delta-method">delta-method</a> yields that <span class="math inline">\(\sqrt{n}(\psi_{n}^{a} - \Phi(P_{0}))\)</span> converges in law to the centered Gaussian law with a variance that can be estimated with
+<span class="math display" id="eq:v-n-a">\[\begin{equation}  v_{n}^{a}  \equiv  \nabla f(X_{n})  \times  V_{n}  \times
+   \nabla f(X_{n})^{\top}. \tag{6.2} \end{equation}\]</span></li>
+<li><p>Check that the gradient <span class="math inline">\(\nabla f\)</span> of <span class="math inline">\(f\)</span> is given by <span class="math inline">\(\nabla f(r,s,t,u)  \equiv (1/s, -r/s^{2}, -1/u, t/u^{2})\)</span>. Point out to the line where the asymptotic variance of <span class="math inline">\(\psi_{n}^{a}\)</span> is estimated.</p></li>
+</ol>
+</div>
+<div id="known-gbar-first-pass" class="section level2">
+<h2><span class="header-section-number">6.3</span> IPTW estimator assuming the mechanism of action known</h2>
+<div id="a-simple-substitution-estimator" class="section level3">
+<h3><span class="header-section-number">6.3.1</span> A simple substitution estimator</h3>
+<p>Let us assume for a moment that we know <span class="math inline">\(\Gbar_{0}\)</span>. This would have been the case indeed if <span class="math inline">\(P_{0}\)</span> were a controlled experiment. Note that, on the contrary, assuming <span class="math inline">\(\Qbar_{0}\)</span> known would be difficult to justify.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Gbar &lt;-<span class="st"> </span><span class="kw">get_feature</span>(experiment, <span class="st">&quot;Gbar&quot;</span>)</code></pre></div>
+<p>The alternative expression <a href="2-parameter.html#eq:psi-zero-b">(2.7)</a> suggests to estimate <span class="math inline">\(\Psi(P_{0})\)</span> with</p>
+<span class="math display" id="eq:psi-n-b">\[\begin{align}
+\psi_{n}^{b}  &amp;\equiv \Exp_{P_{n}}  \left( \frac{2A-1}{\ell  \Gbar_{0}(A,W)} Y
+\right) \\ 
+&amp;       =        \frac{1}{n}       \sum_{i=1}^{n}       \left(\frac{2A_{i}-1}{
+\ell\Gbar_{0}(A_{i},W_{i})}Y_{i} \right). \tag{6.3}
+\end{align}\]</span>
+<p>Note how <span class="math inline">\(P_{n}\)</span> is substituted for <span class="math inline">\(P_{0}\)</span> in <a href="6-simple-strategy.html#eq:psi-n-b">(6.3)</a> relative to <a href="2-parameter.html#eq:psi-zero-b">(2.7)</a>. This justifies that we call <span class="math inline">\(\psi_{n}^{b}\)</span> a <em>substitution estimator</em> (for the same reason, <span class="math inline">\(\psi_{n}^{a}\)</span> is a substitution estimator of <span class="math inline">\(\Phi(P_{0})\)</span>). It is also dubbed an IPTW (inverse probability of treatment weighted) estimator because of the denominators <span class="math inline">\(\ell\Gbar_{0}(A_{i},W_{i})\)</span> in its definition.<a href="#fn9" class="footnoteRef" id="fnref9"><sup>9</sup></a></p>
+<p>In Section <a href="8-two-naive-plug-in-inference-strategies.html#known-gbar-second-pass">8.2</a>, we develop another IPTW estimator that does not assume that <span class="math inline">\(\Gbar_{0}\)</span> is known beforehand.</p>
+</div>
+<div id="elementary-statistical-properties" class="section level3">
+<h3><span class="header-section-number">6.3.2</span> Elementary statistical properties</h3>
+It is easy to check that <span class="math inline">\(\psi_{n}^{b}\)</span> estimates <span class="math inline">\(\Psi(P_{0})\)</span> consistently, but this is too little to request from an estimator of <span class="math inline">\(\psi_{0}\)</span>. Better, <span class="math inline">\(\psi_{n}^{b}\)</span> also satisfies a central limit theorem: <span class="math inline">\(\sqrt{n} (\psi_{n}^{b} - \psi_{0})\)</span> converges in law to a centered Gaussian law with asymptotic variance
+<span class="math display">\[\begin{equation*}v^{b}     \equiv     \Var_{P_{0}}
+\left(\frac{2A-1}{\ell\Gbar_{0}(A,W)}Y\right),\end{equation*}\]</span>
+<p>where <span class="math inline">\(v^{b}\)</span> can be consistently estimated by its empirical counterpart</p>
+<span class="math display" id="eq:v-n-b">\[\begin{align}
+\tag{6.4}      v_{n}^{b}       &amp;\equiv      \Var_{P_{n}}
+\left(\frac{2A-1}{\ell\Gbar_{0}(A,W)}Y\right) \\ 
+&amp;=        \frac{1}{n}        \sum_{i=1}^{n}\left(\frac{2A_{i}-1}{\ell\Gbar_{0}
+(A_{i},W_{i})} Y_{i} - \psi_{n}^{b}\right)^{2}.
+\end{align}\]</span>
+<p>We investigate <em>empirically</em> the statistical behavior of <span class="math inline">\(\psi_{n}^{b}\)</span> in Section <a href="6-simple-strategy.html#empirical-inves-IPTW">6.3.3</a>.</p>
+</div>
+<div id="empirical-inves-IPTW" class="section level3">
+<h3><span class="header-section-number">6.3.3</span> Empirical investigation</h3>
+<p>The next chunk of code investigates the empirical behaviors of estimators <span class="math inline">\(\psi_{n}^{a}\)</span> and <span class="math inline">\(\psi_{n}^{b}\)</span>. As explained in Section <a href="5-inference.html#inference">5</a>, we first make <code>iter</code> data sets out of the <code>obs</code> data set (second line), then build the estimators on each of them (fourth and fifth lines). After the first series of commands the object <code>psi_hat_ab</code>, a <code>tibble</code>, contains 200 rows and four columns. For each smaller data set (identified by its <code>id</code>), two rows contain the values of either <span class="math inline">\(\psi_{n}^{a}\)</span> and <span class="math inline">\(\sqrt{v_{n}^{a}}/\sqrt{n}\)</span> (if <code>type</code> equals <code>a</code>) or <span class="math inline">\(\psi_{n}^{b}\)</span> and <span class="math inline">\(\sqrt{v_{n}^{b}}/\sqrt{n}\)</span> (if <code>type</code> equals <code>b</code>).</p>
+<p>After the second series of commands, the object <code>psi_hat_ab</code> contains, in addition, the values of the recentered (with respect to <span class="math inline">\(\psi_{0}\)</span>) and renormalized <span class="math inline">\(\sqrt{n}/\sqrt{v_{n}^{a}} (\psi_{n}^{a} - \psi_{0})\)</span> and <span class="math inline">\(\sqrt{n}/\sqrt{v_{n}^{b}} (\psi_{n}^{b} - \psi_{0})\)</span>, where <span class="math inline">\(v_{n}^{a}\)</span> <a href="6-simple-strategy.html#eq:v-n-a">(6.2)</a> and <span class="math inline">\(v_{n}^{b}\)</span> <a href="6-simple-strategy.html#eq:v-n-b">(6.4)</a> estimate the asymptotic variances of <span class="math inline">\(\psi_{n}^{a}\)</span> and <span class="math inline">\(\psi_{n}^{b}\)</span>, respectively. Finally, <code>bias_ab</code> reports amounts of bias (at the renormalized scale).</p>
+
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">psi_hat_ab &lt;-<span class="st"> </span>obs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as_tibble</span>() <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">id =</span> (<span class="kw">seq_len</span>(<span class="kw">n</span>()) <span class="op">-</span><span class="st"> </span><span class="dv">1</span>) <span class="op">%%</span><span class="st"> </span>iter) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">nest</span>(<span class="op">-</span>id, <span class="dt">.key =</span> <span class="st">&quot;obs&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">est_a =</span> <span class="kw">map</span>(obs, <span class="op">~</span><span class="st"> </span><span class="kw">compute_irrelevant_estimator</span>(.)),
+         <span class="dt">est_b =</span> <span class="kw">map</span>(obs, <span class="op">~</span><span class="st"> </span><span class="kw">compute_iptw</span>(<span class="kw">as.matrix</span>(.), Gbar))) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">gather</span>(<span class="st">`</span><span class="dt">est_a</span><span class="st">`</span>, <span class="st">`</span><span class="dt">est_b</span><span class="st">`</span>, <span class="dt">key =</span> <span class="st">&quot;type&quot;</span>, <span class="dt">value =</span> <span class="st">&quot;estimates&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">extract</span>(type, <span class="st">&quot;type&quot;</span>, <span class="st">&quot;_([ab])$&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">unnest</span>(estimates) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(<span class="op">-</span>obs)
+
+(psi_hat_ab)
+<span class="co">#&gt; # A tibble: 200 x 4</span>
+<span class="co">#&gt;      id type  psi_n  sig_n</span>
+<span class="co">#&gt;   &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt;  &lt;dbl&gt;</span>
+<span class="co">#&gt; 1     0 a     0.130 0.0174</span>
+<span class="co">#&gt; 2     1 a     0.126 0.0180</span>
+<span class="co">#&gt; 3     2 a     0.112 0.0161</span>
+<span class="co">#&gt; 4     3 a     0.116 0.0164</span>
+<span class="co">#&gt; 5     4 a     0.110 0.0187</span>
+<span class="co">#&gt; 6     5 a     0.140 0.0178</span>
+<span class="co">#&gt; # ... with 194 more rows</span>
+
+psi_hat_ab &lt;-<span class="st"> </span>psi_hat_ab <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">group_by</span>(id) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">clt =</span> (psi_n <span class="op">-</span><span class="st"> </span>psi_zero) <span class="op">/</span><span class="st"> </span>sig_n)
+
+(psi_hat_ab)
+<span class="co">#&gt; # A tibble: 200 x 5</span>
+<span class="co">#&gt; # Groups:   id [100]</span>
+<span class="co">#&gt;      id type  psi_n  sig_n   clt</span>
+<span class="co">#&gt;   &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;</span>
+<span class="co">#&gt; 1     0 a     0.130 0.0174  2.71</span>
+<span class="co">#&gt; 2     1 a     0.126 0.0180  2.40</span>
+<span class="co">#&gt; 3     2 a     0.112 0.0161  1.78</span>
+<span class="co">#&gt; 4     3 a     0.116 0.0164  2.01</span>
+<span class="co">#&gt; 5     4 a     0.110 0.0187  1.42</span>
+<span class="co">#&gt; 6     5 a     0.140 0.0178  3.19</span>
+<span class="co">#&gt; # ... with 194 more rows</span>
+
+(bias_ab &lt;-<span class="st"> </span>psi_hat_ab <span class="op">%&gt;%</span>
+<span class="st">   </span><span class="kw">group_by</span>(type) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">summarise</span>(<span class="dt">bias =</span> <span class="kw">mean</span>(clt)))
+<span class="co">#&gt; # A tibble: 2 x 2</span>
+<span class="co">#&gt;   type    bias</span>
+<span class="co">#&gt;   &lt;chr&gt;  &lt;dbl&gt;</span>
+<span class="co">#&gt; 1 a     1.53  </span>
+<span class="co">#&gt; 2 b     0.0922</span>
+
+fig_bias_ab &lt;-<span class="st"> </span><span class="kw">ggplot</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">x =</span> x, <span class="dt">y =</span> y), 
+            <span class="dt">data =</span> <span class="kw">tibble</span>(<span class="dt">x =</span> <span class="kw">seq</span>(<span class="op">-</span><span class="dv">3</span>, <span class="dv">3</span>, <span class="dt">length.out =</span> <span class="fl">1e3</span>),
+                          <span class="dt">y =</span> <span class="kw">dnorm</span>(x)),
+            <span class="dt">linetype =</span> <span class="dv">1</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_density</span>(<span class="kw">aes</span>(clt, <span class="dt">fill =</span> type, <span class="dt">colour =</span> type),
+               psi_hat_ab, <span class="dt">alpha =</span> <span class="fl">0.1</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_vline</span>(<span class="kw">aes</span>(<span class="dt">xintercept =</span> bias, <span class="dt">colour =</span> type),
+             bias_ab, <span class="dt">size =</span> <span class="fl">1.5</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>)
+  
+fig_bias_ab <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">y =</span> <span class="st">&quot;&quot;</span>,
+       <span class="dt">x =</span> <span class="kw">expression</span>(<span class="kw">paste</span>(<span class="kw">sqrt</span>(n<span class="op">/</span>v[n]<span class="op">^</span>{<span class="kw">list</span>(a, b)})<span class="op">*</span>
+<span class="st">                            </span>(psi[n]<span class="op">^</span>{<span class="kw">list</span>(a, b)} <span class="op">-</span><span class="st"> </span>psi[<span class="dv">0</span>]))))</code></pre></div>
+<div class="figure" style="text-align: center"><span id="fig:known-Gbar-one-b"></span>
+<img src="img/known-Gbar-one-b-1.png" alt="Kernel density estimators of the law of two estimators of \(\psi_{0}\) (recentered with respect to \(\psi_{0}\), and renormalized), one of them misconceived (a), the other assuming that \(\Gbar_{0}\) is known (b). Built based on iter independent realizations of each estimator." width="70%" />
+<p class="caption">
+Figure 6.1: Kernel density estimators of the law of two estimators of <span class="math inline">\(\psi_{0}\)</span> (recentered with respect to <span class="math inline">\(\psi_{0}\)</span>, and renormalized), one of them misconceived (a), the other assuming that <span class="math inline">\(\Gbar_{0}\)</span> is known (b). Built based on <code>iter</code> independent realizations of each estimator.
+</p>
+</div>
+<p>By the above chunk of code, the averages of <span class="math inline">\(\sqrt{n/v_{n}^{a}} (\psi_{n}^{a} - \psi_{0})\)</span> and <span class="math inline">\(\sqrt{n/v_{n}^{b}} (\psi_{n}^{b} - \psi_{0})\)</span> computed across the realizations of the two estimators are respectively equal to 1.526 and 0.092 (see <code>bias_ab</code>). Interpreted as amounts of bias, those two quantities are represented by vertical lines in Figure <a href="6-simple-strategy.html#fig:known-Gbar-one-b">6.1</a>. The red and blue bell-shaped curves represent the empirical laws of <span class="math inline">\(\psi_{n}^{a}\)</span> and <span class="math inline">\(\psi_{n}^{b}\)</span> (recentered with respect to <span class="math inline">\(\psi_{0}\)</span>, and renormalized) as estimated by kernel density estimation. The latter is close to the black curve, which represents the standard normal density.</p>
+</div>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="9">
+<li id="fn9"><p>We could have used the alternative expression IPAW, where A (like action) is substituted for T (like treatment).<a href="6-simple-strategy.html#fnref9">↩</a></p></li>
+</ol>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="5-inference.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="7-nuisance.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="assets/gitbook-2.6.7/js/app.min.js"></script>
+<script src="assets/gitbook-2.6.7/js/lunr.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="assets/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": null,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": ["tlride-book.pdf"],
+"toc": {
+"collapse": "section",
+"scroll_hightlight": true,
+"toolbar": {
+"position": "static"
+},
+"edit": null,
+"download": "pdf",
+"search": true,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+}
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "";
+    if (src === "" || src === "true") src = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(src))
+      src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
