@@ -21,8 +21,8 @@ favicon: "favicon.png"
 # Welcome {-} 
 
 This is either the  website or the text called __"A  Ride in Targeted Learning
-Territory"__. In the former case, the text can be dowloaded by clicking on the
-dedicated button  in the  top part  of the  webpage. In  the latter  case, the
+Territory"__. In  the former case, the  text can be downloaded  by clicking on
+the dedicated button in  the top part of the webpage. In  the latter case, the
 website can be browsed [here](http://achambaz.github.io/tlride "TLRIDE").
 
 
