@@ -1,0 +1,15 @@
+book_filename: "tlride-book"
+
+chapter_name: "Section "
+
+new_session: yes
+
+rmd_files: [
+  "index.rmd",
+  "abcd.Rmd",
+  "notation.Rmd",
+  "appendix_a.Rmd",
+  "appendix_b.Rmd"
+]
+
+before_chapter_script: "_common.R"

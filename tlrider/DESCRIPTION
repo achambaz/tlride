@@ -1,0 +1,24 @@
+Package: tlrider
+Title: A Companion Package to the Article "A Ride in Targeted Learning Territory"
+Version: 1.0.0
+Authors@R: as.person(c(
+  "Antoine Chambaz <antoine.chambaz@parisdescartes.fr> [aut, cre]",
+  "David Benkeser <benkeser@emory.edu> [aut]"))
+Description: The companion package to the article "A Ride in Targeted Learning Territory" provides simple objects and methods to define statistical experiments, run and learn from them. See the article.
+Depends: R (>= 3.4.0)
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.1.0
+Imports: bst,
+    caret,
+    dplyr,
+    magrittr,
+    pryr,
+    R.methodsS3,
+    R.oo,
+    R.utils,
+    rlang,
+    stats,
+    stringr,
+    tibble

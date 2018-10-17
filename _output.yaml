@@ -1,0 +1,53 @@
+bookdown::gitbook:
+  lib_dir: assets
+  split_by: chapter+number
+  config:
+    sharing: null
+    toc:
+      collapse: section
+      scroll_hightlight: yes
+      before: |
+        <li><strong><a href="./">TLRIDE</a></strong></li>
+      toolbar:
+        position: static
+      edit : null
+      download: "pdf"
+      search: yes
+      fontsettings:
+        theme: white
+        family: sans
+        size: 2
+  includes:
+    before_body: tlride_header.html
+    in_header: mathjax_number.html
+  css: tlride.css
+
+
+bookdown::pdf_book:
+  toc: true
+  toc_depth: 2
+  number_sections: true
+  includes:
+    in_header: tlride_header.tex
+    before_body: tlride_before_body.tex
+    after_body: tlride_after_body.tex
+  latex_engine: xelatex
+  citation_package: natbib
+
+bookdown::pdf_document2:
+  toc: true
+  toc_depth: 2
+  number_sections: true
+  includes:
+    in_header: tlride_header.tex
+  latex_engine: pdflatex
+  citation_package: natbib
+
+bookdown::tufte_book2:
+  toc: true
+  toc_depth: 2
+  number_sections: true
+  includes:
+    in_header: tlride_header.tex
+  latex_engine: pdflatex
+  citation_package: natbib
