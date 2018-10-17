@@ -1031,8 +1031,9 @@ sd_hat <- sd(vars)
 (slope_CI <- slope_hat + c(-1, 1) * qnorm(1 - alpha / 2) * sd_hat / sqrt(B))
 ```
 
-Equal to  `r round(slope_approx,  3)` (rounded to  three decimal  places), the
-first numerical approximation `slope_approx` is not too off!
+Equal  to `r  round(slope_approx, 3)`  (rounded  to three  decimal places  ---
+hereafter, all  rounding will be to  three decimal places as  well), the first
+numerical approximation `slope_approx` is not too off!
 
 ## &#9761; \stixdanger{} Asymptotic linearity and statistical efficiency {#influence-curves}
 
@@ -1566,8 +1567,7 @@ By   the  above   chunk   of  code,   the   averages  of   $\sqrt{n/v_{n}^{a}}
 (\psi_{n}^{a} - \psi_{0})$ and  $\sqrt{n/v_{n}^{b}} (\psi_{n}^{b} - \psi_{0})$
 computed across the realizations of  the two estimators are respectively equal
 to `r round(bias_ab$bias[bias_ab$type=="a"],3)` and 
-`r round(bias_ab$bias[bias_ab$type=="b"], 3)` (both rounded to three decimal
-places  ---  see  `bias_ab`).   Interpreted  as amounts  of  bias,  those  two
+`r round(bias_ab$bias[bias_ab$type=="b"], 3)` (see `bias_ab`).  Interpreted as amounts of bias, those two
 quantities    are     represented    by     vertical    lines     in    Figure
 \@ref(fig:known-Gbar-one-b). The red and blue bell-shaped curves represent the
 empirical laws  of $\psi_{n}^{a}$ and $\psi_{n}^{b}$  (recentered with respect
@@ -2082,8 +2082,7 @@ psi_hat_abc <-
 
 By the above chunk of code, the average of $\sqrt{n/v_{n}^{c}} (\psi_{n}^{c} -
 \psi_{0})$ computed across the realizations is equal to 
-`r round(bias_abc$bias[bias_abc$type=="c"],3)` (rounded to three decimal places
---- see  `bias_abc`). In words, the  average bias of $\psi_{n}^{c}$  is of the
+`r round(bias_abc$bias[bias_abc$type=="c"],3)` (see  `bias_abc`). In words, the  average bias of $\psi_{n}^{c}$  is of the
 same  magnitude  as   that  of  $\psi_{n}^{b}$  despite  the   fact  that  the
 construction of $\psi_{n}^{c}$ hinges on  the estimation of $\Gbar_{0}$ (based
 on the well-specified algorithm $\Algo_{\Gbar,1}$).
@@ -2374,6 +2373,8 @@ that the resulting estimator $\psi_{n}$ be even consistent.
 
 ### Empirical investigation {#empirical-inves-Gcomp}
 
+**Fixed sample size**
+
 Let us compute $\psi_{n}^{d}$ and $\psi_{n}^{e}$ on the same `iter = ` 
 `r iter` independent samples of independent observations drawn from $P_{0}$ as in
 Sections \@ref(known-gbar-first-pass) and \@ref(empirical-inves-IPTW-bis).  We
@@ -2506,13 +2507,12 @@ Two  important  comments   are  in  order.   First,  on  the   one  hand,  the
 G-computation estimator  $\psi_{n}^{d}$ is biased. Specifically,  by the above
 chunk of code, the averages  of $\sqrt{n/v_{n}^{d}} (\psi_{n}^{d} - \psi_{0})$
 and  $\sqrt{n/v_{n}^{d*}}  (\psi_{n}^{d}  -  \psi_{0})$  computed  across  the
-realizations are equal to `r bias_d_T` and `r bias_d_F` (both rounded to three
-decimal  places ---  see `bias_de`).   On  the other  hand, the  G-computation
+realizations are equal to `r bias_d_T` and `r bias_d_F` (see `bias_de`).   On  the other  hand, the  G-computation
 estimator   $\psi_{n}^{e}$  is   biased   too,  though   slightly  less   than
 $\psi_{n}^{d}$.  Specifically,  by the  above chunk of  code, the  averages of
 $\sqrt{n/v_{n}^{e}}   (\psi_{n}^{e}   -    \psi_{0})$   and   $\sqrt{n/v^{e*}}
 (\psi_{n}^{e} - \psi_{0})$ computed across the realizations are equal to 
-`r bias_e_T` and `r bias_e_F` (both rounded to three decimal places --- see
+`r bias_e_T` and `r bias_e_F` (see
 `bias_de`). We  can provide an oracular  explanation. Estimator $\psi_{n}^{d}$
 suffers     from    the     poor    approximation     of    $\Qbar_{0}$     by
 $\Algo_{\Qbar,1}(P_{n})$, a  result of  the algorithm's  mis-specification. As
@@ -2570,9 +2570,126 @@ As for the empirical standard deviation of $\psi_{n}^{e}$, it is approximately
 `r round(mean_sig_n_e/emp_sig_n_e, 3)` times larger than the average *estimated*
 standard deviation. 
 
+**Varying sample size**
+
+```{r estimating-Qbar-two, eval = TRUE}
+##
+## not updated yet
+##
+
+sample_size <- c(2e3, 3e3)
+block_size <- sum(sample_size)
 
 
-ANTOINE  --  Utiliser  le  paragraphe ci-dessous  pour  ecrire  transition  et
+learned_features_varying_sample_size <- obs %>% as.tibble %>% 
+  head(n = (nrow(.) %/% block_size) * block_size) %>% 
+  mutate(block = label(1:nrow(.), sample_size)) %>%
+  nest(-block, .key = "obs")
+```
+
+First, we cut the  data set into independent sub-data sets  of sample size $n$
+in $\{$ `r sample_size` $\}$.  Second, we infer $\psi_{0}$ as shown two chunks
+earlier.  We thus obtain `r nrow(obs) %/% block_size` independent realizations
+of each estimator derived on  data sets of `r length(sample_size)`, increasing
+sample sizes.
+
+```{r estimating-Qbar-three}
+learned_features_varying_sample_size <-
+  learned_features_varying_sample_size %>%
+  mutate(Qbar_hat_d =
+           map(obs,
+               ~ estimate_Qbar(., algorithm = working_model_Q_one)),
+         Qbar_hat_e =
+           map(obs,
+               ~ estimate_Qbar(., algorithm = kknn_algo,
+                               trControl = kknn_control,
+                               tuneGrid = kknn_grid))) %>%
+  mutate(QW = map(obs, estimate_QW),
+         est_d =
+           pmap(list(QW, Qbar_hat_d, n()),
+                ~ compute_gcomp(..1, wrapper(..2, FALSE), ..3)),
+         est_e =
+           pmap(list(QW, Qbar_hat_e, n()),
+                ~ compute_gcomp(..1, wrapper(..2, FALSE), ..3)))
+
+root_n_bias <- learned_features_varying_sample_size %>%
+  mutate(block = unlist(map(strsplit(block, "_"), ~.x[2])),
+         sample_size = sample_size[as.integer(block)]) %>%
+  select(block, sample_size, est_d, est_e) %>%
+  gather(`est_d`, `est_e`, key = "type", value = "estimates") %>%
+  extract(type, "type", "_([de])$") %>% 
+  unnest(estimates) %>%
+  group_by(block, type) %>%
+  mutate(sig_alt = sd(psi_n)) %>%
+  mutate(clt_ = (psi_n - psi_zero) / sig_n,
+         clt_alt = (psi_n - psi_zero) / sig_alt) %>%
+  gather(`clt_`, `clt_alt`, key = "key", value = "clt") %>%
+  extract(key, "key", "_(.*)$") %>%
+  mutate(key = ifelse(key == "", TRUE, FALSE)) %>%
+  rename("auto_renormalization" = key)
+```
+The  `tibble`  called  `root_n_bias`  reports  root-$n$  times  bias  for  all
+combinations of  estimator and sample  size. The  next chunk of  code presents
+visually our findings, see Figure \@ref(fig:estimating-Qbar-four). Note how we
+include the  realizations of the  estimators derived earlier and  contained in
+`psi_hat_de`   (thus  breaking   the   independence   between  components   of
+`root_n_bias`, a small price to pay in this context).
+
+(ref:estimating-Qbar-four) Evolution of root-$n$ times bias versus sample size for two inference methodology of $\psi_{0}$ based on the estimation of $\Qbar_{0}$.  Big dots represent the average biases and vertical lines represent twice the standard error.
+
+```{r estimating-Qbar-four, fig.width = 5, fig.height = 5, fig.cap = '(ref:estimating-Qbar-four)'}
+root_n_bias <- learned_features_fixed_sample_size %>%
+   mutate(block = "0",
+          sample_size = B/iter) %>%  # because *fixed* sample size
+   select(block, sample_size, est_d, est_e) %>%
+   gather(`est_d`, `est_e`, key = "type", value = "estimates") %>%
+   extract(type, "type", "_([de])$") %>% 
+   unnest(estimates) %>%
+   group_by(block, type) %>%
+   mutate(sig_alt = sd(psi_n)) %>%
+   mutate(clt_ = (psi_n - psi_zero) / sig_n,
+          clt_alt = (psi_n - psi_zero) / sig_alt) %>%
+   gather(`clt_`, `clt_alt`, key = "key", value = "clt") %>%
+   extract(key, "key", "_(.*)$") %>%
+   mutate(key = ifelse(key == "", TRUE, FALSE)) %>%
+   rename("auto_renormalization" = key) %>%
+   full_join(root_n_bias)
+ 
+root_n_bias %>%
+  ggplot() +
+  stat_summary(aes(x = sample_size, y = clt,
+                   group = interaction(sample_size, type),
+                   color = type),
+               fun.data = mean_se, fun.args = list(mult = 2),
+               position = position_dodge(width = 250), cex = 1) +
+  stat_summary(aes(x = sample_size, y = clt,
+                   group = interaction(sample_size, type),
+                   color = type),
+               fun.data = mean_se, fun.args = list(mult = 2),
+               position = position_dodge(width = 250), cex = 1,
+               geom = "errorbar", width = 750) +
+  stat_summary(aes(x = sample_size, y = clt,
+                   color = type),
+               fun.y = mean,
+               position = position_dodge(width = 250),
+               geom = "polygon", fill = NA) +
+  geom_point(aes(x = sample_size, y = clt,
+                 group = interaction(sample_size, type),
+                 color = type),
+             position = position_dodge(width = 250),
+             alpha = 0.1) +
+  scale_x_continuous(breaks = unique(c(B / iter, sample_size))) +
+  labs(x = "sample size n",
+       y = expression(paste(sqrt(n) * (psi[n]^{list(d, e)} - psi[0])))) +
+  facet_wrap(~ auto_renormalization,
+             labeller =
+               as_labeller(c(`TRUE` = "auto-renormalization: TRUE",
+                             `FALSE` = "auto-renormalization: FALSE")),
+             scales = "free")
+```	
+
+
+ANTOINE -- Utiliser le paragraphe ci-dessous pour ecrire transition et
 proposer un exercice.
 
 The simulation demonstrates the following key points. For well-specified
@@ -2606,7 +2723,7 @@ behavior. \index{well/mis-specified}
 
 3. Implement G-computation estimator based on well-specified working model.
 
-# &#9761; \stixdanger{} Analysis of plug-in estimator. {#analysis-of-plug-in}
+# &#9761; \stixdanger{} General analysis of plug-in estimators {#analysis-of-plug-in}
 
 
 In view of our estimators of $\Qbar_0$ and $\Gbar_0$ as algorithms that map from a 
@@ -2670,13 +2787,9 @@ This simulation demonstrates that, as expected, $n^{1/2}P_n D^*(\hat{P}_n) \righ
 
 3. \tcg{A "difficult" exercise. Repeat exercise 2, but let's try to break Donsker conditions. E.g., could we blow the Donsker condition up by including an increasing number of polynomials?}
 
-# Going further
+# Going further (in progress)
 
-## Building estimators
-
-
-
-### One-step corrections
+## One-step corrections
 
 In this section, we discuss a simple strategy for correcting the behavior of the plug-in
 estimate of $\psi_0$. Recall that an estimator $\psi_n$ of $\psi_0$ 
@@ -2704,7 +2817,7 @@ The next code chunk demonstrates that the one-step correction indeed yields an
 efficient estimator of $\psi_0$. 
 
 ```{r show-one-step-in-simulation}
-
+## show on-step in simulation
 ```
 
 Recall also that the central  limit theorem provides for the weak convergence of 
@@ -2716,15 +2829,172 @@ with unit variance.
 
 
 ```{r show-weak-convergence}
-
+## show weak convergence
 ```
 
 This convergence result also paves the way for the construction of Wald-style confidence intervals with coverage probability $1-\alpha$, which take the form $\psi_n \pm n^{-1/2} \sigma_n z_{1-\alpha/2}$, where $z_{1-\alpha/2}$ is the $1 - \alpha/2$ quantile of a 
 center Gaussian variate with unit variance. 
 
 ```{r show-confidence-intervals}
-
+## show confidence intervals
 ```
+
+## One-step estimation {#one-step-estimation}
+
+Function  `set_Qbar_Gbar`  implements the  change  of  the `Qbar`  and  `Gbar`
+attributes of `obs` (which are accessible only by oracles).
+
+```{r one-step-one}
+##
+## not updated yet
+##
+set_Qbar_Gbar <- function(obs, Qhat, Ghat) {
+  attr(obs, "Qbar") <- function(newdata) {
+    if (!is.data.frame(newdata)) {
+      newdata <- as.data.frame(newdata)
+    }
+    predict(Qhat, newdata = newdata, type = Qhat$type_of_preds)
+  }
+  attr(obs, "Gbar") <- function(newdata) {
+    if (!is.data.frame(newdata)) {
+      newdata <- as.data.frame(newdata)
+    }
+    predict(Ghat, newdata = newdata, type = Ghat$type_of_preds)
+  }
+  return(obs)
+}
+eic_hat <- function(obs, Qhat, Ghat, psi_hat) {
+  Qbar <- function(newdata) {
+    stratify <- R.utils::Arguments$getLogical(attr(Qhat, "stratify"))
+    if (!is.data.frame(newdata)) {
+      newdata <- as.data.frame(newdata)
+    }
+    if (!stratify) {
+      fit <- Qhat %>% filter(.data$a == "both") %>%
+        pull(fit) %>% first
+      pred <- predict(fit, newdata = newdata, type = attr(Qhat, "type_of_preds"))
+    } else {
+      fit_one <- Qhat %>% filter(.data$a == "one") %>%
+        pull(fit) %>% first
+      fit_zero <- Qhat %>% filter(.data$a == "zero") %>%
+        pull(fit) %>% first
+      pred <- vector("numeric", nrow(newdata))
+      idx_one <- (newdata$A == 1)
+      if (sum(idx_one) > 0) {
+        pred[idx_one] <- stats::predict(fit_one,
+                                        newdata = newdata[idx_one, ],
+                                        type = attr(Qbar_hat, "type_of_preds"))
+      }
+      if (sum(!idx_one) > 0) {
+        pred[!idx_one] <- stats::predict(fit_zero,
+                                         newdata = newdata[!idx_one, ],
+                                         type = attr(Qbar_hat, "type_of_preds"))
+      }
+    }
+    return(pred)
+  }
+
+  Gbar <- function(newdata) {
+    if (!is.data.frame(newdata)) {
+      newdata <- as.data.frame(newdata)
+    }
+    predict(Ghat, newdata = newdata, type = Ghat$type_of_preds)
+  }
+  QAW <- Qbar(obs[, c("A", "W")])
+  QoneW <- Qbar(cbind(A = 1, W = obs[, "W"]))
+  QzeroW <- Qbar(cbind(A = 0, W = obs[, "W"]))
+  GW <- Gbar(obs[, "W", drop = FALSE])
+  lGAW <- obs[, "A"] * GW + (1 - obs[, "A"]) * (1 - GW)
+  out <- (QoneW - QzeroW - psi_hat) + (2 * obs[, "A"] - 1) / lGAW * (obs[, "Y"] - QAW)
+  out <- out[[1]]
+  return(out)
+}
+```
+
+We  first call  function  `eic_hat` to  compute the  values  of the  estimated
+efficient influence curve at the observations  in `obs`. Constructing  the one-step
+estimators is then straightforward.
+
+(ref:one-step-two) Write caption.
+
+```{r one-step-two, fig.cap = '(ref:one-step-two)', eval = FALSE}
+##
+## not updated yet
+##
+psi_hat_de_one_step <- learned_features_fixed_sample_size %>%
+  mutate(est_d = map(blip_QW_d, mean),
+         est_e = map(blip_QW_e, mean)) %>%
+  mutate(eic_obs_d = pmap(list(obs, Qbar_hat_d, Gbar_hat, est_d),
+                          eic_hat),
+         eic_obs_e = pmap(list(obs, Qbar_hat_e, Gbar_hat, est_e),
+                          eic_hat)) %>%
+  unnest(blip_QW_d, eic_obs_d,
+         blip_QW_e, eic_obs_e) %>%
+  group_by(id) %>%
+  summarize(est_d = mean(blip_QW_d) + mean(eic_obs_d),
+            std_d = sd(eic_obs_d),
+            clt_d = sqrt(n()) * (est_d - psi_zero) / std_d,
+            est_e = mean(blip_QW_e) + mean(eic_obs_e),
+            std_e = sd(eic_obs_e),
+            clt_e = sqrt(n()) * (est_e - psi_zero) / std_e) %>%
+  gather("key", "value", -id) %>%
+  extract(key, c("what", "type"), "([^_]+)_([de])") %>%
+  spread(what, value) %>%
+  mutate(type = paste0(type, "_one_step"))
+  
+(bias_de_one_step <- psi_hat_de_one_step %>%
+   group_by(type) %>% summarize(bias = mean(clt)))
+
+ggplot() +
+  geom_line(aes(x = x, y = y), 
+            data = tibble(x = seq(-3, 3, length.out = 1e3),
+                          y = dnorm(x)),
+            linetype = 1, alpha = 0.5) +
+  geom_density(aes(clt, fill = type, colour = type),
+               psi_hat_de_one_step, alpha = 0.1) +
+  geom_vline(aes(xintercept = bias, colour = type),
+             bias_de_one_step, size = 1.5, alpha = 0.5) +  
+  labs(y = "",
+       x = expression(
+         paste(sqrt(n/v[n]^{list(dos, eos)}) * (psi[n]^{list(dos, eos)} - psi[0]))))
+```
+ 
+It seems that the one-step correction is quite good (in particular, compare
+`bias_de` with `bias_de_one_step`):
+
+```{r remove-soon, eval = FALSE}
+##
+## not updated yet
+##
+bind_rows(bias_de, bias_de_one_step)
+```
+
+What about the  estimation of the asymptotic variance, and  of the mean-square
+errors of the estimators?
+
+```{r enhance, eval = FALSE}
+##
+## not updated yet
+##
+psi_hat_de %>%
+  full_join(psi_hat_de_one_step) %>% group_by(type) %>%
+  summarize(sd = mean(std * ifelse(str_detect(type, "one_step"), 1, NA),
+                      se = sd(est) * sqrt(n()),
+                      mse = mean((est - psi_zero)^2) * n()))
+```
+
+The  `sd`  (*estimator*  of  the   asymptotic  standard  deviation)  and  `se`
+(*empirical*  standard  deviation)  entries  for type  `d_one_step`  are  very
+similar: this indicates  that the inference of the asymptotic  variance of the
+`d`-variant  of the  one-step estimator  based  on the  influence curve  is
+accurate.  *This  comes as a  surprise, since theory suggests  that estimation
+should be  conservative, that is, that  the estimator should produce  an upper
+bound  to the  actual asymptotic  variance.*  On the  contrary, the  influence
+curve-based  estimator   of  the   asymptotic  variance  is   clearly  very
+conservative  for type  `e_one-step`.  As  for the  mean square  error, it  is
+diminished by the one-step update for type  `d` and enlarged for type `e`, the
+`d_one_step` estimator exhibiting the smallest mean square error.
+
 
 ## &#9761; \stixdanger{} Targeted minimum loss-based estimation {#TMLE}
 
@@ -2911,291 +3181,31 @@ The next code examines TMLE in a simulation and confirms the theoretical propert
 estimator. 
 
 ```{r show-a-tmle-simulation}
-
+## show a tmle simulation
 ```
 
 __Exercises__
 
-1. \tcg{Confirm the derivative of log-likelihood loss along submodel?}
+1. Confirm the derivative of log-likelihood loss along submodel?
 
-2. \tcg{Consider a linear submodel through $\Qbar_n$, $\calQ_2{\Gbar_n} = \{\Qbar_{n,\epsilon}(A,W) = \Qbar_{n}(A,W) + \epsilon (2A-1)/\ell\Gbar_n(A,W) : \epsilon \in ]-10,10[ \}$. Plot regression functions corresponding to $\epsilon = -5, 0, 5$ and $a = 0, 1$. Do you notice anything wrong with these regressions? (Here I'm trying to show that this is not a valid submodel. But maybe for small enough parameter space on $\delta$ we could end up with
-a valid submodel? But maybe then the MLE would be at the boundary and we wouldn't have that
-the equation is satisfied necessarily. So maybe this isn't a good route to go down with a problem?)}
+2. Consider   a  linear  submodel  through   $\Qbar_n$,  $\calQ_2{\Gbar_n}  =
+\{\Qbar_{n,\epsilon}(A,W)       =        \Qbar_{n}(A,W)       +       \epsilon
+(2A-1)/\ell\Gbar_n(A,W) : \epsilon \in ]-10,10[ \}$. Plot regression functions
+corresponding to $\epsilon = -5, 0, 5$ and  $a = 0, 1$. Do you notice anything
+wrong with  these regressions?  (Here I'm trying  to show that  this is  not a
+valid submodel.  But maybe  for small  enough parameter  space on  $\delta$ we
+could end  up with a valid  submodel? But maybe then  the MLE would be  at the
+boundary and we  wouldn't have that the equation is  satisfied necessarily. So
+maybe this isn't a good route to go down with a problem?)
 
-3. \tcg{Depending on whether we decide that this is a reasonable train of thought, I would
-have them show that for squared error loss that we generate the proper score, so that 
-at least we will satisfy the equation. Could then have them do a simulation and see how often
-we end up with an estimate of $\psi_0$ that is outside the parameter space.}
-
-
-
-
-
-ANTOINE
- 
-
-```{r estimating-Qbar-two, eval = TRUE}
-##
-## not updated yet
-##
-
-sample_size <- c(4e3, 9e3)
-block_size <- sum(sample_size)
+3. Depending on whether we decide that  this is a reasonable train of thought,
+I would have them show that for squared error loss that we generate the proper
+score, so that at least we will  satisfy the equation. Could then have them do
+a simulation and see how often we end  up with an estimate of $\psi_0$ that is
+outside the parameter space.
 
 
-learned_features_varying_sample_size <- obs %>% as.tibble %>% 
-  head(n = (nrow(.) %/% block_size) * block_size) %>% 
-  mutate(block = label(1:nrow(.), sample_size)) %>%
-  nest(-block, .key = "obs")
 
-```
-
-First, we cut the  data set into independent sub-data sets  of sample size $n$
-in $\{$ `r sample_size` $\}$.  Second, we infer $\psi_{0}$ as shown two chunks
-earlier.  We thus obtain `r nrow(obs) %/% block_size` independent realizations
-of each estimator derived on  data sets of `r length(sample_size)`, increasing
-sample sizes.
-
-```{r estimating-Qbar-three, eval = FALSE}
-##
-## not updated yet
-## 
-learned_features_varying_sample_size <-
-  learned_features_varying_sample_size %>% 
-  mutate(Qbar_hat_d = map(obs, ~ estimate_Qbar(., algorithm = working_model_Q_one)),
-         Qbar_hat_e = map(obs, ~ estimate_Qbar(., algorithm = kknn_algo, 
-                                               trControl = kknn_control, 
-                                               tuneGrid = kknn_grid))) %>% 
-  mutate(blip_QW_d = map2(Qbar_hat_d, obs,
-                          ~ compute_Qbar_hatAW(.y$A, .y$W, .x, blip = TRUE)),
-         blip_QW_e = map2(Qbar_hat_e, obs,
-                          ~ compute_Qbar_hatAW(.y$A, .y$W, .x, blip = TRUE)))
-
-root_n_bias <- learned_features_varying_sample_size %>%
-  unnest(blip_QW_d, blip_QW_e) %>%
-  group_by(block) %>%
-  summarize(clt_d = sqrt(n()) * (mean(blip_QW_d) - psi_zero),
-            clt_e = sqrt(n()) * (mean(blip_QW_e) - psi_zero)) %>%
-  gather("key", "value", -block) %>%
-  extract(key, c("what", "type"), "([^_]+)_([de])") %>%
-  spread(what, value) %>%
-  mutate(block = unlist(map(strsplit(block, "_"), ~.x[2])),
-         sample_size = sample_size[as.integer(block)])
-```
-The  `tibble`  called  `root_n_bias`  reports  root-$n$  times  bias  for  all
-combinations of  estimator and sample  size. The  next chunk of  code presents
-visually our findings, see Figure \@ref(fig:estimating-Qbar-four). Note how we
-include the  realizations of the  estimators derived earlier and  contained in
-`psi_hat_de`   (thus  breaking   the   independence   between  components   of
-`root_n_bias`, a small price to pay in this context).
-
-(ref:estimating-Qbar-four) Evolution of root-$n$ times bias versus sample size for two inference methodology of $\psi_{0}$ based on the estimation of $\Qbar_{0}$.  Big dots represent the average biases and vertical lines represent twice the standard error.
-
-```{r estimating-Qbar-four, fig.width = 5, fig.height = 5, fig.cap = '(ref:estimating-Qbar-four)', eval = FALSE}
-##
-## not updated yet
-##
-root_n_bias <- learned_features_fixed_sample_size %>%
-  mutate(sample_size = B/iter) %>%  # because *fixed* sample size
-  unnest(blip_QW_d, blip_QW_e) %>%
-  group_by(id) %>%
-  summarize(clt_d = sqrt(n()) * (mean(blip_QW_d) - psi_zero),
-            clt_e = sqrt(n()) * (mean(blip_QW_e) - psi_zero),
-            sample_size = sample_size[1]) %>%
-  gather("key", "clt", -id, -sample_size) %>%
-  extract(key, c("what", "type"), "([^_]+)_([de])") %>%
-  mutate(block = "0") %>% select(-id, -what) %>%
-  full_join(root_n_bias)
-
-root_n_bias %>%
-  ggplot() +
-  stat_summary(aes(x = sample_size, y = clt,
-                   group = interaction(sample_size, type),
-                   color = type),
-               fun.data = mean_se, fun.args = list(mult = 2),
-               position = position_dodge(width = 250), cex = 1) +
-  stat_summary(aes(x = sample_size, y = clt,
-                   group = interaction(sample_size, type),
-                   color = type),
-               fun.data = mean_se, fun.args = list(mult = 2),
-               position = position_dodge(width = 250), cex = 1,
-               geom = "errorbar", width = 750) +
-  stat_summary(aes(x = sample_size, y = clt,
-                   color = type),
-               fun.y = mean, 
-               position = position_dodge(width = 250),
-               geom = "polygon", fill = NA) +
-  geom_point(aes(x = sample_size, y = clt,
-                 group = interaction(sample_size, type),
-                 color = type),
-             position = position_dodge(width = 250),
-             alpha = 0.1) +
-  scale_x_continuous(breaks = unique(c(B / iter, sample_size))) +
-  labs(x = "sample size n",
-       y = expression(paste(sqrt(n) * (psi[n]^{list(d, e)} - psi[0]))))
-
-## execute
-## rm(learned_features_fixed_sample_size)
-## as soon as possible!
-```	
-
-## One-step estimation {#one-step-estimation}
-
-Function  `set_Qbar_Gbar`  implements the  change  of  the `Qbar`  and  `Gbar`
-attributes of `obs` (which are accessible only by oracles).
-
-```{r one-step-one}
-##
-## not updated yet
-##
-set_Qbar_Gbar <- function(obs, Qhat, Ghat) {
-  attr(obs, "Qbar") <- function(newdata) {
-    if (!is.data.frame(newdata)) {
-      newdata <- as.data.frame(newdata)
-    }
-    predict(Qhat, newdata = newdata, type = Qhat$type_of_preds)
-  }
-  attr(obs, "Gbar") <- function(newdata) {
-    if (!is.data.frame(newdata)) {
-      newdata <- as.data.frame(newdata)
-    }
-    predict(Ghat, newdata = newdata, type = Ghat$type_of_preds)
-  }
-  return(obs)
-}
-eic_hat <- function(obs, Qhat, Ghat, psi_hat) {
-  Qbar <- function(newdata) {
-    stratify <- R.utils::Arguments$getLogical(attr(Qhat, "stratify"))
-    if (!is.data.frame(newdata)) {
-      newdata <- as.data.frame(newdata)
-    }
-    if (!stratify) {
-      fit <- Qhat %>% filter(.data$a == "both") %>%
-        pull(fit) %>% first
-      pred <- predict(fit, newdata = newdata, type = attr(Qhat, "type_of_preds"))
-    } else {
-      fit_one <- Qhat %>% filter(.data$a == "one") %>%
-        pull(fit) %>% first
-      fit_zero <- Qhat %>% filter(.data$a == "zero") %>%
-        pull(fit) %>% first
-      pred <- vector("numeric", nrow(newdata))
-      idx_one <- (newdata$A == 1)
-      if (sum(idx_one) > 0) {
-        pred[idx_one] <- stats::predict(fit_one,
-                                        newdata = newdata[idx_one, ],
-                                        type = attr(Qbar_hat, "type_of_preds"))
-      }
-      if (sum(!idx_one) > 0) {
-        pred[!idx_one] <- stats::predict(fit_zero,
-                                         newdata = newdata[!idx_one, ],
-                                         type = attr(Qbar_hat, "type_of_preds"))
-      }
-    }
-    return(pred)
-  }
-
-  Gbar <- function(newdata) {
-    if (!is.data.frame(newdata)) {
-      newdata <- as.data.frame(newdata)
-    }
-    predict(Ghat, newdata = newdata, type = Ghat$type_of_preds)
-  }
-  QAW <- Qbar(obs[, c("A", "W")])
-  QoneW <- Qbar(cbind(A = 1, W = obs[, "W"]))
-  QzeroW <- Qbar(cbind(A = 0, W = obs[, "W"]))
-  GW <- Gbar(obs[, "W", drop = FALSE])
-  lGAW <- obs[, "A"] * GW + (1 - obs[, "A"]) * (1 - GW)
-  out <- (QoneW - QzeroW - psi_hat) + (2 * obs[, "A"] - 1) / lGAW * (obs[, "Y"] - QAW)
-  out <- out[[1]]
-  return(out)
-}
-```
-
-We  first call  function  `eic_hat` to  compute the  values  of the  estimated
-efficient influence curve at the observations  in `obs`. Constructing  the one-step
-estimators is then straightforward.
-
-(ref:one-step-two) Write caption.
-
-```{r one-step-two, fig.cap = '(ref:one-step-two)', eval = FALSE}
-##
-## not updated yet
-##
-psi_hat_de_one_step <- learned_features_fixed_sample_size %>%
-  mutate(est_d = map(blip_QW_d, mean),
-         est_e = map(blip_QW_e, mean)) %>%
-  mutate(eic_obs_d = pmap(list(obs, Qbar_hat_d, Gbar_hat, est_d),
-                          eic_hat),
-         eic_obs_e = pmap(list(obs, Qbar_hat_e, Gbar_hat, est_e),
-                          eic_hat)) %>%
-  unnest(blip_QW_d, eic_obs_d,
-         blip_QW_e, eic_obs_e) %>%
-  group_by(id) %>%
-  summarize(est_d = mean(blip_QW_d) + mean(eic_obs_d),
-            std_d = sd(eic_obs_d),
-            clt_d = sqrt(n()) * (est_d - psi_zero) / std_d,
-            est_e = mean(blip_QW_e) + mean(eic_obs_e),
-            std_e = sd(eic_obs_e),
-            clt_e = sqrt(n()) * (est_e - psi_zero) / std_e) %>%
-  gather("key", "value", -id) %>%
-  extract(key, c("what", "type"), "([^_]+)_([de])") %>%
-  spread(what, value) %>%
-  mutate(type = paste0(type, "_one_step"))
-  
-(bias_de_one_step <- psi_hat_de_one_step %>%
-   group_by(type) %>% summarize(bias = mean(clt)))
-
-ggplot() +
-  geom_line(aes(x = x, y = y), 
-            data = tibble(x = seq(-3, 3, length.out = 1e3),
-                          y = dnorm(x)),
-            linetype = 1, alpha = 0.5) +
-  geom_density(aes(clt, fill = type, colour = type),
-               psi_hat_de_one_step, alpha = 0.1) +
-  geom_vline(aes(xintercept = bias, colour = type),
-             bias_de_one_step, size = 1.5, alpha = 0.5) +  
-  labs(y = "",
-       x = expression(
-         paste(sqrt(n/v[n]^{list(dos, eos)}) * (psi[n]^{list(dos, eos)} - psi[0]))))
-```
- 
-It seems that the one-step correction is quite good (in particular, compare
-`bias_de` with `bias_de_one_step`):
-
-```{r remove-soon, eval = FALSE}
-##
-## not updated yet
-##
-bind_rows(bias_de, bias_de_one_step)
-```
-
-What about the  estimation of the asymptotic variance, and  of the mean-square
-errors of the estimators?
-
-```{r enhance, eval = FALSE}
-##
-## not updated yet
-##
-psi_hat_de %>%
-  full_join(psi_hat_de_one_step) %>% group_by(type) %>%
-  summarize(sd = mean(std * ifelse(str_detect(type, "one_step"), 1, NA),
-                      se = sd(est) * sqrt(n()),
-                      mse = mean((est - psi_zero)^2) * n()))
-```
-
-The  `sd`  (*estimator*  of  the   asymptotic  standard  deviation)  and  `se`
-(*empirical*  standard  deviation)  entries  for type  `d_one_step`  are  very
-similar: this indicates  that the inference of the asymptotic  variance of the
-`d`-variant  of the  one-step estimator  based  on the  influence curve  is
-accurate.  *This  comes as a  surprise, since theory suggests  that estimation
-should be  conservative, that is, that  the estimator should produce  an upper
-bound  to the  actual asymptotic  variance.*  On the  contrary, the  influence
-curve-based  estimator   of  the   asymptotic  variance  is   clearly  very
-conservative  for type  `e_one-step`.  As  for the  mean square  error, it  is
-diminished by the one-step update for type  `d` and enlarged for type `e`, the
-`d_one_step` estimator exhibiting the smallest mean square error.
-
-## Targeted inference {#targeted-inference}
 
 
 # (APPENDIX) Appendix {-}
