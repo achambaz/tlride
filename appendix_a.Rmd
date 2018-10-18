@@ -176,6 +176,6 @@ o_{P_0}(n^{-1/4})\end{equation*}     *and*    \begin{equation*}\|\Gbar_n     -
 
 
 
-`r if (knitr::is_html_output()) '# References'`
+
    
    

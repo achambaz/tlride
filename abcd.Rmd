@@ -82,6 +82,9 @@ knitr::opts_chunk$set(
 
 options(dplyr.print_min = 6, dplyr.print_max = 6)
 ```
+
+# (PART) On the road {-}
+
 # A ride
 
 
@@ -1042,8 +1045,10 @@ numerical approximation `slope_approx` is not too off!
 Suppose  that  $O_{1},  \ldots,  O_{n}$ are  drawn  independently  from  $P\in
 \calM$. If an estimator $\psi_n$ of $\Psi(P)$ can be written as
 
-\begin{equation*}  \psi_n  =  \Psi(P) +  \frac{1}{n}\sum_{i=1}^n  \IC(O_i)  +
-o_{P}(1/\sqrt{n})\end{equation*}
+\begin{equation} 
+\psi_n  =  \Psi(P) +  \frac{1}{n}\sum_{i=1}^n  \IC(O_i)  +
+o_{P}(1/\sqrt{n}) (\#eq:asymptotic-lin)
+\end{equation}
 
 for some function  $\IC : \calO \to  \bbR$ such that $\Exp_P(\IC(O))  = 0$ and
 $\Var_{P}(\IC(O))  < \infty$,  then we  say that  $\psi_n$ is  *asymptotically
@@ -2247,7 +2252,7 @@ data-adaptive/versatile algorithm to estimate $\Gbar_{0}$?
 
 ## G-computation estimator {#Gcomp-estimator}
 
-### Construction and computation
+### Construction and computation {#Gcomp-construction}
 
 Let $\Algo_{Q_{W}}$ be  an algorithm designed for the  estimation of $Q_{0,W}$
 (see   Section   \@ref(nuisance-QW)).    We    denote   by   $Q_{n,W}   \equiv
@@ -2409,14 +2414,14 @@ replications of  $\psi_{n}^{d}$ and $\psi_{n}^{e}$  (`auto_renormalization` is
 
 
 (ref:estimating-Qbar-one-bis)  Kernel density  estimators  of the  law of  two
-estimators  of   $\psi_{0}$  (recentered  with  respect   to  $\psi_{0}$,  and
-renormalized).     The   estimators    respectively   hinge    on   algorithms
+G-computation estimators of $\psi_{0}$ (recentered with respect to $\psi_{0}$,
+and   renormalized).   The   estimators  respectively   hinge  on   algorithms
 $\Algo_{\Qbar,1}$   (d)  and   $\Algo_{\Qbar,\text{kNN}}$   (e)  to   estimate
-$\Qbar_{0}$.    Two   renormalization    schemes   are    considered,   either
-based on  an estimator of the  asymptotic variance (left) or  on the empirical
-variance  computed   across  the   `iter`  independent  replications   of  the
-estimators  (right). We  emphasize  that the  $x$-axis  ranges differ  starkly
-between the left and right plots.
+$\Qbar_{0}$.  Two renormalization  schemes are considered, either  based on an
+estimator  of the  asymptotic variance  (left)  or on  the empirical  variance
+computed  across  the  `iter`   independent  replications  of  the  estimators
+(right). We emphasize that the $x$-axis ranges differ starkly between the left
+and right plots.
 
 
 
@@ -2571,13 +2576,9 @@ As for the empirical standard deviation of $\psi_{n}^{e}$, it is approximately
 standard deviation. 
 
 **Varying sample size**
-
+ 
 ```{r estimating-Qbar-two, eval = TRUE}
-##
-## not updated yet
-##
-
-sample_size <- c(2e3, 3e3)
+sample_size <- c(5e3, 15e3)
 block_size <- sum(sample_size)
 
 
@@ -2588,7 +2589,7 @@ learned_features_varying_sample_size <- obs %>% as.tibble %>%
 ```
 
 First, we cut the  data set into independent sub-data sets  of sample size $n$
-in $\{$ `r sample_size` $\}$.  Second, we infer $\psi_{0}$ as shown two chunks
+in $\{$`r sample_size`$\}$.  Second, we infer $\psi_{0}$ as shown two chunks
 earlier.  We thus obtain `r nrow(obs) %/% block_size` independent realizations
 of each estimator derived on  data sets of `r length(sample_size)`, increasing
 sample sizes.
@@ -2635,7 +2636,11 @@ include the  realizations of the  estimators derived earlier and  contained in
 `psi_hat_de`   (thus  breaking   the   independence   between  components   of
 `root_n_bias`, a small price to pay in this context).
 
-(ref:estimating-Qbar-four) Evolution of root-$n$ times bias versus sample size for two inference methodology of $\psi_{0}$ based on the estimation of $\Qbar_{0}$.  Big dots represent the average biases and vertical lines represent twice the standard error.
+(ref:estimating-Qbar-four) Evolution of root-$n$ times bias versus sample size
+for two  G-computation estimators  of $\psi_{0}$. The  estimators respectively
+hinge on  algorithms $\Algo_{\Qbar,1}$ (d) and  $\Algo_{\Qbar,\text{kNN}}$ (e)
+to estimate $\Qbar_{0}$.   Big dots represent the average  biases and vertical
+lines represent twice the standard error.
 
 ```{r estimating-Qbar-four, fig.width = 5, fig.height = 5, fig.cap = '(ref:estimating-Qbar-four)'}
 root_n_bias <- learned_features_fixed_sample_size %>%
@@ -2655,42 +2660,273 @@ root_n_bias <- learned_features_fixed_sample_size %>%
    rename("auto_renormalization" = key) %>%
    full_join(root_n_bias)
  
-root_n_bias %>%
+root_n_bias %>% filter(auto_renormalization) %>%
+  mutate(rnb = sqrt(sample_size) * (psi_n - psi_zero)) %>%
+  group_by(sample_size, type) %>%
   ggplot() +
-  stat_summary(aes(x = sample_size, y = clt,
+  stat_summary(aes(x = sample_size, y = rnb,
                    group = interaction(sample_size, type),
                    color = type),
-               fun.data = mean_se, fun.args = list(mult = 2),
+               fun.data = mean_se, fun.args = list(mult = 1),
                position = position_dodge(width = 250), cex = 1) +
-  stat_summary(aes(x = sample_size, y = clt,
+  stat_summary(aes(x = sample_size, y = rnb,
                    group = interaction(sample_size, type),
                    color = type),
-               fun.data = mean_se, fun.args = list(mult = 2),
+               fun.data = mean_se, fun.args = list(mult = 1),
                position = position_dodge(width = 250), cex = 1,
                geom = "errorbar", width = 750) +
-  stat_summary(aes(x = sample_size, y = clt,
+  stat_summary(aes(x = sample_size, y = rnb,
                    color = type),
                fun.y = mean,
                position = position_dodge(width = 250),
                geom = "polygon", fill = NA) +
-  geom_point(aes(x = sample_size, y = clt,
+  geom_point(aes(x = sample_size, y = rnb,
                  group = interaction(sample_size, type),
                  color = type),
              position = position_dodge(width = 250),
              alpha = 0.1) +
   scale_x_continuous(breaks = unique(c(B / iter, sample_size))) +
   labs(x = "sample size n",
-       y = expression(paste(sqrt(n) * (psi[n]^{list(d, e)} - psi[0])))) +
-  facet_wrap(~ auto_renormalization,
-             labeller =
-               as_labeller(c(`TRUE` = "auto-renormalization: TRUE",
-                             `FALSE` = "auto-renormalization: FALSE")),
-             scales = "free")
+       y = expression(paste(sqrt(n) * (psi[n]^{list(d, e)} - psi[0]))))
 ```	
 
+Root-$n$ bias for $\psi_{n}^{d}$ (red lines  and points) is positive and tends
+to increase from sample size `r B/iter` to `r sample_size[1]` and from 
+`r sample_size[1]` to `r sample_size[2]`.  Moreover, root-$n$ bias tends to be
+larger for $\psi_{n}^{d}$ than for  $\psi_{n}^{e}$. In addition, root-$n$ bias
+for $\psi_{n}^{e}$ tends to increase from sample size `r B/iter` to 
+`r sample_size[2]`, where it tends to be positive too.^[We use the expression
+``tend to''  because controlling for  multiple testing makes it  impossible to
+make a firm statement.]  
 
-# Work in progress
+In essence, we observe that the bias does not vanish faster than root-$n$. For
+$\psi_{n}^{d}$,  this is  because  $\Algo_{\Qbar,1}$ is  mis-specified and  we
+expect that the  bias increases at rate root-$n$. For  $\psi_{n}^{e}$, this is
+because  the estimator  produced by  the versatile  $\Algo_{\Qbar,\text{kNN}}$
+converges slowly  to its limit. Can  anything be done to  amend $\psi_{n}^{d}$
+and $\psi_{n}^{e}$?
 
+
+## &#9881; \gear Investigating further the G-computation estimation strategy {#exo-plug-in-estimate}
+
+1. Implement the  G-computation estimator  based on  well-specified working
+   model.   To   do  so,   *(i)*  create   a  copy   `working_model_Q_two`  of
+   `working_model_Q_one`, *(ii)* replace its `family` entry in such a way that
+   $\Qbar_{0}$ falls in the corresponding working model, and *(iii)* adapt the
+   chunk    of   code    where   we    computed   `Qbar_hat_d`    in   Section
+   \@ref(Gcomp-construction). 
+
+2. Evaluate the empirical properties of the estimator of problem 1.
+
+3. Create a function to estimate the  marginal law $Q_{0,W}$ of $W$ by maximum
+   likelihood estimation based on a mis-specified model that assumes (wrongly)
+   that $W$ is drawn from a Gaussian law with unknown mean and variance.
+
+4. &#9761; \stixdanger{} Implement the G-computation estimator using either
+   `working_model_Q_one`  or   `working_model_Q_two`  and  the   estimator  of
+   $Q_{0,W}$ of problem 3.
+
+
+# (PART) Roadwork ahead {-}
+
+
+
+# &#9761; \stixdanger{} General analysis of plug-in estimators {#analysis-of-plug-in}
+
+
+Recall that  $\Algo_{Q_{W}}$ is  an algorithm designed  for the  estimation of
+$Q_{0,W}$  (see Section  \@ref(nuisance-QW)) and  that we  denote by  $Q_{n,W}
+\equiv \Algo_{Q_{W}}(P_{n})$ the  output of the algorithm  trained on $P_{n}$.
+Likewise,  $\Algo_{\Gbar}$  and  $\Algo_{\Qbar}$ are  two  generic  algorithms
+designed for  the estimation of  $\Gbar_{0}$ and of $\Qbar_{0}$  (see Sections
+\@ref(nuisance-Gbar)    and     \@ref(nuisance-Qbar)),    $\Gbar_{n}    \equiv
+\Algo_{\Gbar}(P_{n})$  and $\Qbar_{n}  \equiv \Algo_{\Qbar}(P_{n})$  are their
+outputs once trained on $P_{n}$.
+
+Let us now introduce $\Phat_n$ a law in $\calM$ such that the $Q_{W}$, $\Gbar$
+and   $\Qbar$  features   of  $\Phat_n$   equal  $Q_{n,W}$,   $\Gbar_{n}$  and
+$\Qbar_{n}$,  respectively.  We  say that  any such  law is  *compatible* with
+$Q_{n,W}$, $\Gbar_n$ and $\Qbar_n$.
+
+Now, let us substitute $\Phat_n$ for $P$ in \@ref(eq:taylor-expansion):
+
+\begin{equation} 
+(\#eq:hard-to-study)  \Psi(\Phat_n)  -  \Psi(P_0)   =  -  P_0  D^*(\Phat_n)  +
+\Rem_{P_0}(\Phat_n) . 
+\end{equation} 
+
+We   show  [here](#app-analysis-of-plug-in)   that,   under  some   regularity
+conditions  (*i.e.*, conditions  on the  complexity/versatility of  algorithms
+$\Algo_{\Gbar}$ and $\Algo_{\Qbar}$),
+
+\begin{align} 
+\Psi(\Phat_n) &=\Psi(P_0) + P_{n} D^*(P_0) - P_{n} D^*(\Phat_n) +
+o_{P_0}(n^{-1/2}) (\#eq:pre-one-step) \\ 
+\notag &= \Psi(P_0) + \frac{1}{n} \sum_{i=1}^n D^*(P_0)(O_i) -
+\frac{1}{n} \sum_{i=1}^n D^*(\Phat_n)(O_i) + o_{P_0}(n^{-1/2}).
+\end{align}
+
+In   light    of   \@ref(eq:asymptotic-lin),   $\Psi(\Phat_{n})$    would   be
+asymptotically linear  with influence curve  $D^{*}(P_{0})$ in the  absence of
+the random term  $-P_{n} D^*(\Phat_n)$. Unfortunately, it turns  out that this
+term  can  degrade   dramatically  the  behavior  of   the  plug-in  estimator
+$\Psi(\Phat_{n})$.
+
+Notice that  the data appear  in this term  twice: once through  $\Phat_n$ and
+once through $P_n$ itself.  Thus, the  term involves an empirical average of a
+data-dependent transformation of the data. Such terms are difficult to analyze
+in general.   In particular, we  have no reason  to suspect that  if $\Phat_n$
+relies  on  versatile   algorithms,  then  it  term   will  be  asymptotically
+negligible. Indeed, we  can study numerically study the behavior  of this term
+via Monte Carlo simulation. The next code chunk analyzes its behavior.
+
+```{r show-rootn-times-PnDstar-blow up}
+##
+```
+
+This simulation demonstrates that, as expected, $n^{1/2}P_n D^*(\Phat_n) \rightarrow \infty$ and thus is the source of the poor behavior of the plug-in estimate. 
+
+
+1.     Design   a   simulation   study  to   empirically   evaluate   $n^{1/2}
+   R_{P_0}(\Phat_n)$.
+
+2. Design  a simulation  study to  empirically evaluate  $n^{1/2} (P_n  - P_0)
+   (D^*(\Phat_n) - D^*(P_0))$.
+
+3. A "difficult" exercise.  Repeat exercise  2, but let's try to break Donsker
+   conditions.  E.g., could  we blow the Donsker condition up  by including an
+   increasing number of polynomials?
+
+
+
+# One-step corrections {#one-step}
+
+In this section,  we discuss a simple strategy for  correcting the behavior of
+the  plug-in  estimate of  $\psi_0$.  Recall  that  an estimator  $\psi_n$  of
+$\psi_0$  is  asymptotically  linear  if  we can  write  $\psi_n  =  \psi_0  +
+\frac{1}{n}  \sum_{i=1}^n \mbox{IF}(O_i)  +  o_{P_0}(n^{-1/2})$.  Now, in  the
+previous  subsection we  saw that,  under certain  regularity conditions,  the
+plug-in estimator  could be  written as  \begin{equation} \label{pre_one_step}
+\Psi(\Phat_n)  =   \Psi(P_0)  +   \frac{1}{n}  \sum_{i=1}^n   D^*(P_0)(O_i)  -
+\frac{1}{n}     \sum_{i=1}^n     D^*(\Phat_n)(O_i)    +     o_{P_0}(n^{-1/2}).
+\end{equation}  In other  words, we  found  that the  estimator *very  nearly*
+allowed for an asymptotically linear expression; however, the problematic term
+$\frac{1}{n}  \sum_{i=1}^n   D^*(\Phat_n)(O_i)$  prevents  the   plug-in  from
+attaining  asymptotic  linearity. Nevertheless,  (\ref{pre_one_step})  implies
+that  \[   \Psi(\Phat_n)  +   \frac{1}{n}  \sum_{i=1}^n   D^*(\Phat_n)(O_i)  =
+\Psi(P_0) + \frac{1}{n} \sum_{i=1}^n D^*(P_0)(O_i) + o_{P_0}(n^{-1/2}).  \] In
+other  words,  under the  regularity  conditions  introduced in  the  previous
+subsection,   the   corrected   plug-in   estimator   \[   \psi_n^{+}   \equiv
+\Psi(\Phat_n)   +  \frac{1}{n}   \sum_{i=1}^n  D^*(\Phat_n)(O_i)   \]  is   an
+asymptotically linear estimator  with influence curve equal  to D^*(P_0). That
+is to say,  in light of section  \ref{subsec:parameter:third}, $\psi_n^{+}$ is
+an *asymptotically efficient* estimate of $\psi_0$!
+
+This simple strategy for generating asymptotically linear and efficient estimators 
+is often referred to as a one-step estimator, since it generalizes the familiar
+one-step Newton-Raphson estimator that is often used in the context of parametric models. 
+
+The next code chunk demonstrates that the one-step correction indeed yields an 
+efficient estimator of $\psi_0$. 
+
+```{r show-one-step-in-simulation}
+## show on-step in simulation
+```
+
+Recall also that the central  limit theorem provides for the weak convergence of 
+asymptotically linear estimators of $\psi_0$ to a centered Gaussian distribution with 
+variance $\Var_{P_0}(D^*(P_0))$. The fact that the form of the asymptotic variance is
+explicitly available through our knowledge of $D^*$ allows for simple estimators 
+of the asymptotic variance of $\psi_n^{+}$. Namely, under weak conditions, the empirical variance of $D^*(\Phat_n)$ will consistently estimate $\Var_{P_0}(D^*(P_0))$. Denoting this estimate by $\hat{\sigma}_n^2$, by Slutsky's theorem, we can argue that $n^{1/2}(\psi_n^{+} - \psi_0) / \hat{sigma}_n$ converges in distribution to that of a centered Gaussian variate 
+with unit variance. 
+
+
+```{r show-weak-convergence}
+## show weak convergence
+```
+
+This convergence result also paves the way for the construction of Wald-style confidence intervals with coverage probability $1-\alpha$, which take the form $\psi_n \pm n^{-1/2} \sigma_n z_{1-\alpha/2}$, where $z_{1-\alpha/2}$ is the $1 - \alpha/2$ quantile of a 
+center Gaussian variate with unit variance. 
+
+```{r show-confidence-intervals}
+## show confidence intervals
+```
+
+## One-step estimation {#one-step-estimation}
+
+Function  `set_Qbar_Gbar`  implements the  change  of  the `Qbar`  and  `Gbar`
+attributes of `obs` (which are accessible only by oracles).
+
+```{r one-step-one}
+##
+## not updated yet
+##
+set_Qbar_Gbar <- function(obs, Qhat, Ghat) {
+  attr(obs, "Qbar") <- function(newdata) {
+    if (!is.data.frame(newdata)) {
+      newdata <- as.data.frame(newdata)
+    }
+    predict(Qhat, newdata = newdata, type = Qhat$type_of_preds)
+  }
+  attr(obs, "Gbar") <- function(newdata) {
+    if (!is.data.frame(newdata)) {
+      newdata <- as.data.frame(newdata)
+    }
+    predict(Ghat, newdata = newdata, type = Ghat$type_of_preds)
+  }
+  return(obs)
+}
+eic_hat <- function(obs, Qhat, Ghat, psi_hat) {
+  Qbar <- function(newdata) {
+    stratify <- R.utils::Arguments$getLogical(attr(Qhat, "stratify"))
+    if (!is.data.frame(newdata)) {
+      newdata <- as.data.frame(newdata)
+    }
+    if (!stratify) {
+      fit <- Qhat %>% filter(.data$a == "both") %>%
+        pull(fit) %>% first
+      pred <- predict(fit, newdata = newdata, type = attr(Qhat, "type_of_preds"))
+    } else {
+      fit_one <- Qhat %>% filter(.data$a == "one") %>%
+        pull(fit) %>% first
+      fit_zero <- Qhat %>% filter(.data$a == "zero") %>%
+        pull(fit) %>% first
+      pred <- vector("numeric", nrow(newdata))
+      idx_one <- (newdata$A == 1)
+      if (sum(idx_one) > 0) {
+        pred[idx_one] <- stats::predict(fit_one,
+                                        newdata = newdata[idx_one, ],
+                                        type = attr(Qbar_hat, "type_of_preds"))
+      }
+      if (sum(!idx_one) > 0) {
+        pred[!idx_one] <- stats::predict(fit_zero,
+                                         newdata = newdata[!idx_one, ],
+                                         type = attr(Qbar_hat, "type_of_preds"))
+      }
+    }
+    return(pred)
+  }
+
+  Gbar <- function(newdata) {
+    if (!is.data.frame(newdata)) {
+      newdata <- as.data.frame(newdata)
+    }
+    predict(Ghat, newdata = newdata, type = Ghat$type_of_preds)
+  }
+  QAW <- Qbar(obs[, c("A", "W")])
+  QoneW <- Qbar(cbind(A = 1, W = obs[, "W"]))
+  QzeroW <- Qbar(cbind(A = 0, W = obs[, "W"]))
+  GW <- Gbar(obs[, "W", drop = FALSE])
+  lGAW <- obs[, "A"] * GW + (1 - obs[, "A"]) * (1 - GW)
+  out <- (QoneW - QzeroW - psi_hat) + (2 * obs[, "A"] - 1) / lGAW * (obs[, "Y"] - QAW)
+  out <- out[[1]]
+  return(out)
+}
+```
+
+We  first call  function  `eic_hat` to  compute the  values  of the  estimated
+efficient influence curve at the observations  in `obs`. Constructing  the one-step
+estimators is then straightforward.
 
 (ref:one-step-two) Write caption.
 
@@ -2772,8 +3008,11 @@ conservative  for type  `e_one-step`.  As  for the  mean square  error, it  is
 diminished by the one-step update for type  `d` and enlarged for type `e`, the
 `d_one_step` estimator exhibiting the smallest mean square error.
 
+ 
 
-## &#9761; \stixdanger{} Targeted minimum loss-based estimation {#TMLE}
+
+
+# &#9761; \stixdanger{} Targeted minimum loss-based estimation {#TMLE}
 
 In the previous section, we introduced the one-step corrected estimator of
 $\psi_0$. This estimator added a correction term to the plug-in estimator, 
@@ -2792,14 +3031,14 @@ an additional term to the plug-in and therefore may result in an estimate of $\p
 that is outside its parameter space. Upon closer examination of the efficient influence
 curve $D^*$, we see that this may occur more frequently when $\ell \Gbar_n(A_i,W_i)$ is 
 close to zero for at least some $i$. In words, if there are observations in our 
-data set that we observed under actions $A_i$ that were estimated to be unlikely given the context $W_i$. In such cases, $D^*(\hat{P}_n)(O_i)$, and consequently the one-step 
+data set that we observed under actions $A_i$ that were estimated to be unlikely given the context $W_i$. In such cases, $D^*(\Phat_n)(O_i)$, and consequently the one-step 
 correction term, may be large and cause the one-step estimate to fall outside the parameter
 space. 
 
 Another way to understand this behavior is to recognize the one-step estimator as
 a plug-in estimator that is corrected *in the parameter space of $\psi_0$*. On the
 other hand, we might consider performing a correction *in the parameter space of $\Qbar_0$*. 
-In particular, consider a $\hat{P}_n^*$ that is compatible with the estimates $\Qbar_n^*$, $\Gbar_n$, and $Q_{n,W}$, but moreover is such that $P_n D^*(\hat{P}_n^*) = 0$ (or at the very least equals to $o_{P_0}(n^{-1/2})$). If indeed, such estimates can be generated, then the 
+In particular, consider a $\Phat_n^*$ that is compatible with the estimates $\Qbar_n^*$, $\Gbar_n$, and $Q_{n,W}$, but moreover is such that $P_n D^*(\Phat_n^*) = 0$ (or at the very least equals to $o_{P_0}(n^{-1/2})$). If indeed, such estimates can be generated, then the 
 plug-in estimator \[
   \psi_n^* \equiv \int (\Qbar_n^*(1,w) - \Qbar_n^*(0,w)) dQ_{n,W}(w)
 \]
@@ -2810,10 +3049,10 @@ bounds on the parameter space.
 Our strategy for constructing such a plug-in estimate begins by generating an 
 initial estimate $\Qbar_n$ of $\Qbar_0$ and an estimate $\Gbar_n$ of $\Gbar_0$. These initial estimate should strive to be as close as possible to their respective targets. We use
 the empirical distribution $Q_{n,W}$ as estimate of $Q_{0,W}$. Now, note that for *any*
-estimate $\Qbar_n$ of $\Qbar_0$ and a distribution $\hat{P}_n^*$ that is compatible with 
+estimate $\Qbar_n$ of $\Qbar_0$ and a distribution $\Phat_n^*$ that is compatible with 
 $\Qbar_n$ and $Q_{n,W}$, 
 \begin{align*}
-  P_n D_1^*(\hat{P}_n^*) &= \frac{1}{n} \sum_{i=1}^n D_1^(\hat{P}_n^*)(O_i)\\
+  P_n D_1^*(\Phat_n^*) &= \frac{1}{n} \sum_{i=1}^n D_1^(\Phat_n^*)(O_i)\\
   &= \frac{1}{n} \sum_{i=1}^n \left( \Qbar_n(1,W_i) - \Qbar_n(0,W_i) - \int (\Qbar_n(1,w) - \Qbar_n(0,w)) dQ_{n,W}(w) \right) \\
   &= \frac{1}{n} \sum_{i=1}^n \left( \Qbar_n(1,W_i) - \Qbar_n(0,W_i) - \frac{1}{n}\sum_{j=1}^n (\Qbar_n(1,W_j) - \Qbar_n(0,W_j)) \right)\\
   &= \frac{1}{n} \sum_{i=1}^n (\Qbar_n(1,W_i) - \Qbar_n(0,W_i)) - \frac{n}{n^2}\sum_{j=1}^n (\Qbar_n(1,W_j) - \Qbar_n(0,W_j)) \\
@@ -2821,7 +3060,7 @@ $\Qbar_n$ and $Q_{n,W}$,
 \end{align*}
 
 In words, this shows that so long as we use the empirical distribution $Q_{n,W}$ to estimate
-$Q_{0,W}$, by its very construction we will have that $P_n D_1^*(\hat{P}_n^*) = 0$. 
+$Q_{0,W}$, by its very construction we will have that $P_n D_1^*(\Phat_n^*) = 0$. 
 
 ```{r show-first-piece-solved}
 # maybe would be helpful to include a bit of code here
@@ -2831,11 +3070,11 @@ $Q_{0,W}$, by its very construction we will have that $P_n D_1^*(\hat{P}_n^*) = 
 # it is quite dense. 
 ```
 
-It thus remains to devise a strategy for ensuring that $P_n D_2^*(\hat{P}_n^*) = 0$. To 
+It thus remains to devise a strategy for ensuring that $P_n D_2^*(\Phat_n^*) = 0$. To 
 achieve this, we consider an approach for revising our initial estimate of $\Qbar_0$. That is, 
 we propose a method for selecting an estimate of $\Qbar_0$ that is "near to" $\Qbar_n$, but is 
-such that for any law $\hat{P}_n^*$ that is compatible with this revised estimate,
-$P_n D^*(\hat{P}_n^*) = 0$. Because $\Qbar_n$ is our best (initial) estimate of true 
+such that for any law $\Phat_n^*$ that is compatible with this revised estimate,
+$P_n D^*(\Phat_n^*) = 0$. Because $\Qbar_n$ is our best (initial) estimate of true 
 regression $\Qbar_0$, the new regression that we pick should be *at least as good* of an 
 estimate of $\Qbar_0$ as $\Qbar_n$. So first, we must propose a way to move between 
 regressions in our model, and then we must propose a way to move to a new regression that 
@@ -2903,7 +3142,7 @@ $\Qbar_0$ by moving through the model space via submodels of the form $\calQ(\Gb
 
 Now, we hope that we have achieved our goal of finding a new regression fit that is *at least 
 as good* as our initial estimate. However, recall that our true purpose is to generate an 
-estimate of $\Qbar_0$ such that for any $\hat{P}_n^*$ that is compatible with such an estimate $P_n D^*(\hat{P}_n^*) = 0$. Have we achieved this goal as well? Consider the fact that because the minimum value of $\bbD_n(\Qbar_{n,\delta})$ is achieved at $\delta = 0$, it must be true that the derivative of $\bbD_n(\Qbar_{n,\delta})$ with respect to $\delta$ is zero when evaluated at $\delta = 0$. That is, \begin{equation} \label{deriv_equals_zero}
+estimate of $\Qbar_0$ such that for any $\Phat_n^*$ that is compatible with such an estimate $P_n D^*(\Phat_n^*) = 0$. Have we achieved this goal as well? Consider the fact that because the minimum value of $\bbD_n(\Qbar_{n,\delta})$ is achieved at $\delta = 0$, it must be true that the derivative of $\bbD_n(\Qbar_{n,\delta})$ with respect to $\delta$ is zero when evaluated at $\delta = 0$. That is, \begin{equation} \label{deriv_equals_zero}
   \frac{d}{d\delta} \bbD_n(\Qbar_{n,\delta}) |_{\delta = 0} = 0 . 
 \end{equation}
 Indeed, we can produce plot of $\bbD_n(\Qbar_{n,\delta})$ for a fine grid of $\delta$ to 
@@ -2925,7 +3164,7 @@ With some effort, one can show that \begin{align*}
 \end{align*}
 
 This shows that the analytical form of the left-hand-side of (\ref{deriv_equals_zero}) equals
-$P_n D_{2}^{*}(\hat{P}^*_n)$ for a $\hat{P}_n^*$ that is compatible with $\Qbar_{n,\epsilon_n}$ and $\Gbar_n$. But then equation (\ref{deriv_equals_zero}) also implies that $P_n D_{2}^{*}(\hat{P}^*_n) = 0$! 
+$P_n D_{2}^{*}(\Phat^*_n)$ for a $\Phat_n^*$ that is compatible with $\Qbar_{n,\epsilon_n}$ and $\Gbar_n$. But then equation (\ref{deriv_equals_zero}) also implies that $P_n D_{2}^{*}(\Phat^*_n) = 0$! 
 
 How did this happen? Recalling Section \ref{subsec:being:smooth:one} there were many possible submodels that we may choose to move through our model space. 
 It was no mistake that we selected the particular submodel $\calQ(\Gbar_n)$. 
@@ -2947,7 +3186,7 @@ solves the efficient influence curve equation.
 
 Assuming that the regularity conditions discussed in Section \@ref(analysis-of-plug-in)
 are satisfied for $\Qbar_{n,\epsilon_n}$, then by (\ref{pre_one_step}), \[
-  \psi_n^* = \Psi(\hat{P}_n^*) = \int (\Qbar_{n,\epsilon_n}(1,w) - \Qbar_{n,\epsilon_n}(0,w)) dQ_{n,W} , 
+  \psi_n^* = \Psi(\Phat_n^*) = \int (\Qbar_{n,\epsilon_n}(1,w) - \Qbar_{n,\epsilon_n}(0,w)) dQ_{n,W} , 
 \]
 is an asymptotically efficient estimator of $\psi_0$. We have thus achieved our goal of generating an efficient plug-in estimator of $\psi_0$ that is guaranteed to obey bounds
 on the parameter space. We may construct asymptotically justified confidence intervals 

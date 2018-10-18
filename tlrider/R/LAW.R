@@ -377,7 +377,7 @@ setMethodS3(
   ellipsis <- list(...)
   if (length(intersect(names(some_relevant_features), c("Qbar", "QW"))) != 2) {
     stop(stringr::str_c("Is law '", deparse(substitute(this)),
-                        "' an element of the model where 'Psi' is defined?\n"))
+                        "' sufficiently characterized?\n"))
   } else {
     Qbar <- get_feature(this, "Qbar", ...)
     QW <- get_feature(this, "QW", ...)
