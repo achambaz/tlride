@@ -69,41 +69,6 @@ anti-conservativeness.
 
 *Urgent need of polishing.*
 
-We remind readers of our shorthand notation, \begin{equation*} P_0
-D^*(\Phat_n)  \equiv \Exp_{P_0}\left(  \frac{2A -  1}{\ell \Gbar_n(A,W)}  (Y -
-\Qbar_n(A,W))  +  \Qbar_n(1,W)  -   \Qbar_n(0,W)  -  \Psi(\Phat_n)  \right)  .
-\end{equation*}  To facilitate  our study  of (\ref{hard_to_study}),  we write
-\begin{align*}   \Psi(\Phat_n)   -  \Psi(P_0)   &=   -   P_0  D^*(\Phat_n)   +
-R_{P_0}(\Phat_n) \pm  P_n D^*(\Phat_n) \\  &= (P_n  - P_0) D^*(\Phat_n)  - P_n
-D^*(\Phat_n) +  R_{P_0}(\Phat_n) \pm (P_n  - P_0) D^*(P_0)  \\ &= (P_n  - P_0)
-D^*(P_0) - P_n  D^*(\Phat_n) + R_{P_0}(\Phat_n) + (P_n -  P_0) (D^*(\Phat_n) -
-D^*(P_0)) .  \end{align*}
-
-The first term can be written $(P_n - P_0) D^*(P_0) \equiv n^{-1} \sum_{i=1}^n
-D^*(P_0)(O_i)$, since $\Exp_{P_0}(D^*(P_0))  = 0$. Because this term  is a sum
-of independent  transformations of  the data  that have  mean zero  and finite
-variance, we can use standard tools such  as the weak law of large numbers and
-central limit theorem to study its behavior.
-
-The term  $R_{P_0}(\Phat_n)$ is  an expectation involving  the product  of two
-differences, one between $\Qbar_n$ and  $\Qbar_0$, the other between $\Gbar_n$
-and $\Gbar_0$. Intuitively, we expect that if $\Qbar_n$ and $\Gbar_n$ are good
-estimates of $\Qbar_0$ and $\Gbar_0$,  respectively, then the expectation of a
-product  of differences  between these  quantities  should be  small, and,  we
-should hope, negligible in large samples. Formal conditions for the asymptotic
-negligibility  of  this  term  [can  be  made](#asymp-neglig-remain)  via  the
-Cauchy-Schwarz inequality.
-
-Considering the  final term $(P_n -  P_0) (D^*(\Phat_n) - D^*(P_0)),$  we note
-that this  term two involves a  product of two differences,  one between $P_n$
-and $P_0$ and one between $D^*(\Phat_n)$  and $D^*(P_0)$. Thus, we should hope
-that this term too will be  negligible in large samples. Formal conditions for
-the  asymptotic  negligibility of  this  term  are  provided by  results  from
-empirical process  theory\footnote{If $D^*(\Phat_n)$ falls in  a $P_0$-Donsker
-class with  probability tending to 1  and $P_0 \left( D^*(\Phat_n)  - D^*(P_0)
-\right)^2$ converges  to zero in  probability as $n \rightarrow  \infty$, then
-$(P_n  - P_0)  (D^*(\Phat_n) -  D^*(P_0)) =  o_{P_0}(n^{-1/2})$.}. We  proceed
-assuming that such conditions are satisfied.
 
 
 `r if (knitr::is_html_output()) '# References'`
