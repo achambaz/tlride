@@ -23,6 +23,12 @@ $O = O_{i}$ with probability $n^{-1}$ for each $1 \leq i \leq n$.
 - $\sqrt{n} (P_{n} - P)$, where $P_{n}$ is the empirical measure associated to
 $O_{1}, \ldots, O_{n}$ drawn independently from $P$, the empirical process.
 
+- $X_n = o_{P_0}(1)$ if $X_n$, a random variable built from $O_{1}$, \ldots,
+$O_{n}$ independently drawn from $P_0$, converges in probability to zero, that
+is,  if $P_0(|X_n|  > t)$  converges to  zero  for all  $t>0$ as  $n$ goes  to
+infinity.  If  $n^{c}  X_n  =  o_{P_0}(1)$,   then  one  also  writes  $X_n  =
+o_{P_0}(n^{-c})$. 
+
 - $\calM$, the model, that is, the collection of *all* laws from which $O$
 can be drawn and that meet some constraints.
 
