@@ -2728,7 +2728,9 @@ and $\psi_{n}^{e}$?
    `working_model_Q_one`  or   `working_model_Q_two`  and  the   estimator  of
    $Q_{0,W}$ of problem 3.
 
-# &#9761; \stixdanger{} General analysis of plug-in estimators {#analysis-of-plug-in}
+# One-step correction {#one-step}
+
+## &#9761; \stixdanger{} General analysis of plug-in estimators {#analysis-of-plug-in}
 
 
 Recall that  $\Algo_{Q_{W}}$ is  an algorithm designed  for the  estimation of
@@ -2771,6 +2773,10 @@ the random term  $-P_{n} D^*(\Phat_n)$. Unfortunately, it turns  out that this
 term  can  degrade   dramatically  the  behavior  of   the  plug-in  estimator
 $\Psi(\Phat_{n})$.
 
+
+## One-step correction {#huber-one-step}
+
+[@Pfanzagl82], [@LeCam69]
 
 # (PART) Roadwork ahead {-}
 
