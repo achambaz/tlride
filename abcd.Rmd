@@ -2764,11 +2764,11 @@ $\Gbar_{0}$ and $\Qbar_{0}$, it holds that
 \Psi(\Phat_n) - \Psi(P_0) &= - P_{n} D^*(\Phat_n) +
  P_{n} D^*(P_0) + 
 o_{P_0}(1/\sqrt{n}) (\#eq:pre-one-step) \\ 
-\notag &= -\frac{1}{n} \sum_{i=1}^n D^*(\Phat_n)(O_i) + \frac{1}{n} \sum_{i=1}^n D^*(P_0)(O_i)  + o_{P_0}(1/\sqrt{n}). 
+\notag &= - P_{n} D^*(\Phat_n)+ \frac{1}{n} \sum_{i=1}^n D^*(P_0)(O_i)  + o_{P_0}(1/\sqrt{n}). 
 \end{align}
 
 In   light    of   \@ref(eq:asymptotic-lin),   $\Psi(\Phat_{n})$    would   be
-asymptotically linear  with influence curve  $D^{*}(P_{0})$ in the  absence of
+asymptotically linear  with influence curve  $\IC=D^{*}(P_{0})$ in the  absence of
 the random term  $-P_{n} D^*(\Phat_n)$. Unfortunately, it turns  out that this
 term  can  degrade   dramatically  the  behavior  of   the  plug-in  estimator
 $\Psi(\Phat_{n})$.
@@ -2776,7 +2776,24 @@ $\Psi(\Phat_{n})$.
 
 ## One-step correction {#huber-one-step}
 
-[@Pfanzagl82], [@LeCam69]
+Luckily, *a very simple workaround* allows to circumvent the problem. Proposed
+in  [@LeCam69] (see  also [@Pfanzagl82]  and [@vdV98]),  the workaround  merely
+consists in subtracting the random term  to the initial estimator, that is, in
+estimating $\Psi(P_0)$ not with $\Psi(\Phat_n)$ but instead with
+\begin{equation}
+\psinos  \triangleq  \Psi(\Phat_n)  +  P_{n} D^*(\Phat_n)  =  \Psi(\Phat_n)  +
+\frac{1}{n} \sum_{i=1}^{n} D^*(\Phat_n)(O_{i}). (\#eq:def-one-step)
+\end{equation}
+
+Obviously,  in light  of \@ref(eq:pre-one-step),  $\psinos$ is  asymptotically
+linear with influence curve $\IC=D^{*}(P_{0})$. Thus, by the central limit
+theorem,  $\sqrt{n} (\psinos  - \Psi(P_0))$  converges  in law  to a  centered
+Gaussian distribution with variance 
+\begin{equation}
+  \Var_{P_0}(D^{*}(P_{0})(O)) = \Exp_{P_0}(D^{*}(P_{0})(O)).
+\end{equation}
+
+Under the 
 
 # (PART) Roadwork ahead {-}
 
@@ -2785,7 +2802,7 @@ $\Psi(\Phat_{n})$.
 
 
 
-# One-step corrections {#one-step}
+# One-step corrections {#one-step-corr}
 
 In a hurry, let us demonstrate how  the one-step correction unfolds when it is
 applied to the estimators $\psi_{n}^{d}$ and $\psi_{n}^{e}$ that we studied in

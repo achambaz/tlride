@@ -139,13 +139,13 @@ that  for $a=  0,1$,  $\ell\Gbar_{n}(a,W) \geq  \delta  > 0$  $Q_{0,W}$-almost
 everywhere.
 
 The   Cauchy-Schwarz  inequality   then   implies  that,   for   $a  =   0,1$,
-\begin{equation*}\Rem_{P_0}(\hat{P}_n)   \le   \frac{2}{\delta}   \max_{a=0,1}
+\begin{equation*}\Rem_{P_0}(\Phat_n)   \le   \frac{2}{\delta}   \max_{a=0,1}
 \left(  \|\Qbar_n   (a,\cdot)  -  \Qbar_0  (a,\cdot)\|_{P_0}   \right)  \times
 \|\Gbar_n  -   \Gbar_0\|_{P_0}.\end{equation*}  Therefore,  if   for  $a=0,1$,
 \begin{equation*}\|\Qbar_n(a,\cdot)      -     \Qbar_0(a,\cdot)\|_{P_0}      =
 o_{P_0}(n^{-1/4})\end{equation*}     *and*    \begin{equation*}\|\Gbar_n     -
 \Gbar_0\|_{P_0}        =         o_{P_0}(n^{-1/4}),\end{equation*}        then
-\begin{equation*}\Rem_{P_0}(\hat{P}_n) = o_{P_0}(n^{-1/2}).\end{equation*}
+\begin{equation*}\Rem_{P_0}(\Phat_n) = o_{P_0}(n^{-1/2}).\end{equation*}
 
 
 `r if (knitr::is_html_output()) '# References'`
