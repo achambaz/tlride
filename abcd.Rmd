@@ -377,8 +377,8 @@ alter(my_experiment,   ## characterize its relevant features
 
 ```{r my-own-experiment-c}
 obs <- sample_from(my_experiment, 1e4)
-obs %>% as.tibble %>% group_by(W, A, Y) %>% summarize(how_many = n())
-obs %>% as.tibble %>% group_by(W, A) %>% summarize(prob = mean(Y))
+obs %>% as_tibble %>% group_by(W, A, Y) %>% summarize(how_many = n())
+obs %>% as_tibble %>% group_by(W, A) %>% summarize(prob = mean(Y))
 ```
 
 5. Now, make your own experiment.
@@ -1654,7 +1654,7 @@ alter(empirical_experiment, sample_from = function(n) {
   W <- sample(pull(QW, "value"), n, prob = pull(QW, "weight"))
   cbind(W = W, A = NA, Y = NA)
 })
-W <- sample_from(empirical_experiment, 1e3) %>% as.tibble
+W <- sample_from(empirical_experiment, 1e3) %>% as_tibble
 W %>% ggplot() +
   geom_histogram(aes(x = W, y = stat(density)), bins = 40) +
   stat_function(fun = get_feature(experiment, "QW"), col = "red")
@@ -2584,7 +2584,7 @@ sample_size <- c(5e3, 15e3)
 block_size <- sum(sample_size)
 
 
-learned_features_varying_sample_size <- obs %>% as.tibble %>% 
+learned_features_varying_sample_size <- obs %>% as_tibble %>% 
   head(n = (nrow(.) %/% block_size) * block_size) %>% 
   mutate(block = label(1:nrow(.), sample_size)) %>%
   nest(-block, .key = "obs")
@@ -2820,38 +2820,16 @@ differ between the left and right plots.
 
 
 ```{r one-step-one, fig.cap = '(ref:one-step-one)'}
-apply_one_step <- function(obs, Gbar_hat, Qbar_hat, psi_hat) {
-  eic <- function(dat) {
-    if (length(intersect(c("W", "A", "Y"), names(dat))) == 3) {
-      stop(stringr::str_c("Argument 'dat' of ",
-                          deparse(substitute(this)),
-                          " should contain columns named 'W', 'A' and 'Y'.\n"))
-    } 
-    QAW <- Qbar_hat(dat[, c("A", "W")])
-    QoneW <- Qbar_hat(cbind(A = 1, W = dat[, "W"]))
-    QzeroW <- Qbar_hat(cbind(A = 0, W = dat[, "W"]))
-    GW <- Gbar_hat(dat[, "W", drop = FALSE])
-    lGAW <- dat[, "A"] * GW + (1 - dat[, "A"]) * (1 - GW)
-    out <- (QoneW - QzeroW - psi_hat) + (2 * dat[, "A"] - 1) / lGAW * (dat[, "Y"] - QAW)
-    out <- as.vector(out)
-    return(out)
-  }
-  eic_obs <- eic(obs)
-  psi_n <- psi_hat + mean(eic_obs)
-  sig_n <- sd(eic_obs)/sqrt(nrow(obs))
-  tibble::tibble(psi_n = psi_n, sig_n = sig_n)
-}
-
 psi_hat_de_one_step <- learned_features_fixed_sample_size %>%
   mutate(os_est_d =
            pmap(list(obs, Gbar_hat, Qbar_hat_d, est_d),
-                ~ apply_one_step(as.matrix(..1),
+                ~ apply_one_step_correction(as.matrix(..1),
                                  wrapper(..2, FALSE),
                                  wrapper(..3, FALSE),
                                  ..4$psi_n)),
          os_est_e =
            pmap(list(obs, Gbar_hat, Qbar_hat_e, est_e),
-                ~ apply_one_step(as.matrix(..1),
+                ~ apply_one_step_correction(as.matrix(..1),
                                  wrapper(..2, FALSE),
                                  wrapper(..3, FALSE),
                                  ..4$psi_n))) %>%

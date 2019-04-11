@@ -482,8 +482,8 @@ compute_iptw <- function(dat, Gbar, threshold = 0.05) {
 #'   standard deviation of the G-computation  estimator, which is not reliable.
 #'   
 #' @seealso \code{\link{estimate_QW}}  to  estimate the  marginal  law of  W,
-#'   \code{\link{estimate_Qbar}} to estimate  the conditional probability that
-#'   A=1 given  W, \code{\link{compute_iptw}}  to compute the  IPTW estimator,
+#'   \code{\link{estimate_Qbar}} to estimate  the conditional expectation of Y
+#'   given  (A,W), \code{\link{compute_iptw}}  to compute the  IPTW estimator,
 #'   \code{\link{wrapper}}.
 #'
 #' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
@@ -530,4 +530,87 @@ compute_gcomp <- function(QW, Qbar, nobs) {
   sig_n <- sqrt(sig_n)/sqrt(nobs)
   tibble::tibble(psi_n = psi_n, sig_n = sig_n)
 }
+
+#' Applies a one-step correction to an initial estimator
+#'
+#' Given an  (initial) substitution  estimator of \eqn{\Psi}  at the  law that
+#' generated    the    data    set    used    to    build    the    estimator,
+#' \code{apply_one_step_correction}  updates  it  in  one  single  step.   The
+#' correction exploits\itemize{\item the so called  'Gbar' feature of the law,
+#' either a  priori known or  estimated \item the  estimator of the  so called
+#' 'Qbar' feature  of the law  that was built and  used to derive  the initial
+#' estimator \item the initial estimator \item  the data set used to infer the
+#' above features and parameter.}
+#'
+#' @param  dat The learning data  set. Must have the  same form as a  data set
+#'   produced by an object of \code{class} \code{LAW} (see '?tlrider').
+#'
+#' @param  Gbar  The actual  'Gbar'  feature  of  the  law, if  it  is  known
+#'   beforehand, or an estimator  thereof, the output of \code{estimate_Gbar},
+#'   derived  by   training  an  algorithm   on  a  learning  data   set  (see
+#'   '?estimate_Gbar').
+#'
+#' @param Qbar  The output  of \code{estimate_Qbar},  derived by  training an
+#'   algorithm on a learning data set (see '?estimate_Qbar').
+#'
+#' @param psi A \code{numeric}, the estimator to be corrected in one step.
+#'
+#' @seealso   \code{\link{estimate_Gbar}}   to  estimate   the   conditional
+#'   probability that A=1 given W, \code{\link{estimate_Qbar}} to estimate the
+#'   conditional expectation of Y  given (A,W), \code{\link{compute_gcomp}} to
+#'   compute the G-computation estimator, \code{\link{wrapper}}.
+#'
+#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
+#' 
+#' @return A \code{tibble} containing  the value of updated estimator ('psi_n'
+#'   column)  and that  of the  estimator of  its standard  deviation ('sig_n'
+#'   column).
+#'
+#' @details Caution:  the estimator of the standard deviation  of the updated
+#'   estimator can be trusted only in very specific circumstances.
+#' 
+#' @examples
+#'
+#' ## create an experiment and draw a data set from it
+#' example(tlrider, echo = FALSE)
+#' obs <- sample_from(experiment, n = 250)
+#'
+#' ## estimate 'QW', 'Gbar' and 'Qbar'
+#' QW_hat <- estimate_QW(obs)
+#' Gbar_hat <- estimate_Gbar(obs, working_model_G_one)
+#' Qbar_hat <- estimate_Qbar(obs, working_model_Q_one)
+#'
+#' ## wrap 'Gbar_hat' and 'Qbar_hat' (two fits) into two functions
+#' Gbar_hat_fun <- wrapper(Gbar_hat, FALSE)
+#' Qbar_hat_fun <- wrapper(Qbar_hat, FALSE)
+#' 
+#' ## compute the G-computation estimator
+#' psi_hat <- compute_gcomp(QW_hat, Qbar_hat_fun, nrow(obs))
+#'
+#' ## apply the one-step correction
+#' (apply_one_step_correction(obs, Gbar_hat_fun, Qbar_hat_fun, psi_hat))
+#' 
+#' @export 
+apply_one_step_correction <- function(dat, Gbar, Qbar, psi) {
+  eic <- function(obs) {
+    if (length(intersect(c("W", "A", "Y"), names(obs))) == 3) {
+      stop(stringr::str_c("Argument 'obs' of ",
+                          deparse(substitute(this)),
+                          " should contain columns named 'W', 'A' and 'Y'.\n"))
+    } 
+    QAW <- Qbar(obs[, c("A", "W")])
+    QoneW <- Qbar(cbind(A = 1, W = obs[, "W"]))
+    QzeroW <- Qbar(cbind(A = 0, W = obs[, "W"]))
+    GW <- Gbar(obs[, "W", drop = FALSE])
+    lGAW <- obs[, "A"] * GW + (1 - obs[, "A"]) * (1 - GW)
+    out <- (QoneW - QzeroW - psi$psi_n) + (2 * obs[, "A"] - 1) / lGAW * (obs[, "Y"] - QAW)
+    out <- as.vector(out)
+    return(out)
+  }
+  eic_dat <- eic(dat)
+  psi_n <- psi$psi_n + mean(eic_dat)
+  sig_n <- sd(eic_dat)/sqrt(nrow(dat))
+  tibble::tibble(psi_n = psi_n, sig_n = sig_n)
+}
+
 
