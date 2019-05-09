@@ -1465,10 +1465,7 @@ $\sqrt{n}/\sqrt{v_{n}^{b}}  (\psi_{n}^{b}  -   \psi_{0})$,  where  $v_{n}^{a}$
 variances  of   $\psi_{n}^{a}$  and  $\psi_{n}^{b}$,   respectively.  Finally,
 `bias_ab` reports amounts of bias (at the renormalized scale).
 
-(ref:known-Gbar-one-b) Kernel density estimators of the law of two estimators
-of $\psi_{0}$ (recentered  with respect to $\psi_{0}$,  and renormalized), one
-of  them  misconceived (a),  the  other  assuming  that $\Gbar_{0}$  is  known
-(b). Built based on `iter` independent realizations of each estimator.
+(ref:known-Gbar-one-b) Kernel density estimators of the law of two estimators of $\psi_{0}$ (recentered with respect to $\psi_{0}$, and renormalized), one of them misconceived (a), the other assuming that $\Gbar_{0}$ is known (b). Built based on `iter` independent realizations of each estimator.
 
 ```{r known-Gbar-one-b, fig.cap = '(ref:known-Gbar-one-b)'}
 psi_hat_ab <- obs %>% as_tibble() %>%
@@ -2036,12 +2033,7 @@ and renormalized $\psi_{n}^{a}$, $\psi_{n}^{b}$  and $\psi_{n}^{c}$ in Figures
 \@ref(fig:unknown-Gbar-three)     (kernel      density     estimators)     and
 \@ref(fig:unknown-Gbar-four) (quantile-quantile plots).
  
-(ref:unknown-Gbar-three)  Kernel  density  estimators  of  the  law  of  three
-estimators  of   $\psi_{0}$  (recentered  with  respect   to  $\psi_{0}$,  and
-renormalized), one of them misconceived  (a), one assuming that $\Gbar_{0}$ is
-known  (b) and  one that  hinges  on the  estimation of  $\Gbar_{0}$ (c).  The
-present  figure includes  Figure \@ref(fig:known-Gbar-one-b)  (but the  colors
-differ). Built based on `iter` independent realizations of each estimator.
+(ref:unknown-Gbar-three) Kernel density estimators of the law of three estimators of $\psi_{0}$ (recentered with respect to $\psi_{0}$, and renormalized), one of them misconceived (a), one assuming that $\Gbar_{0}$ is known (b) and one that hinges on the estimation of $\Gbar_{0}$ (c).  The present figure includes Figure \@ref(fig:known-Gbar-one-b) (but the colors differ). Built based on `iter` independent realizations of each estimator.
  
 ```{r unknown-Gbar-three, fig.cap = '(ref:unknown-Gbar-three)'}
 fig_bias_ab +
@@ -2054,11 +2046,7 @@ fig_bias_ab +
                             (psi[n]^{list(a, b, c)} - psi[0]))))
 ```
 
-(ref:unknown-Gbar-four)  Quantile-quantile plot  of  the  standard normal  law
-against the  empirical laws  of three  estimators of  $\psi_{0}$, one  of them
-misconceived (a),  one assuming  that $\Gbar_{0}$  is known  (b) and  one that
-hinges  on  the  estimation  of   $\Gbar_{0}$  (c).   Built  based  on  `iter`
-independent realizations of each estimator. 
+(ref:unknown-Gbar-four) Quantile-quantile plot of the standard normal law against the empirical laws of three estimators of $\psi_{0}$, one of them misconceived (a), one assuming that $\Gbar_{0}$ is known (b) and one that hinges on the estimation of $\Gbar_{0}$ (c).  Built based on `iter` independent realizations of each estimator.
 
 ```{r unknown-Gbar-four, fig.cap = '(ref:unknown-Gbar-four)'}
 ggplot(psi_hat_abc, aes(sample = clt, fill = type, colour = type)) +
@@ -2097,15 +2085,7 @@ Furthermore, note  the better fit with  the density of the  standard normal
 density    of  the  kernel  density estimator  of  the  law  of  $\sqrt{n}
 (\psi_{n}^{c} - \psi_{0})$ **renormalized with** `emp_sig_n`.
 
-(ref:unknown-Gbar-seven)  Kernel  density  estimators  of  the  law  of  three
-estimators  of   $\psi_{0}$  (recentered  with  respect   to  $\psi_{0}$,  and
-renormalized), one of them misconceived  (a), one assuming that $\Gbar_{0}$ is
-known  (b) and  one that  hinges  on the  estimation of  $\Gbar_{0}$ **and  an
-estimator  of  the  asymptotic  variance computed  across  the  replications**
-(c). The  present figure includes Figure  \@ref(fig:known-Gbar-one-b) (but the
-colors     differ)    and     it    should     be    compared     to    Figure
-\@ref(fig:unknown-Gbar-four). Built  based on `iter`  independent realizations
-of each estimator.
+(ref:unknown-Gbar-seven) Kernel density estimators of the law of three estimators of $\psi_{0}$ (recentered with respect to $\psi_{0}$, and renormalized), one of them misconceived (a), one assuming that $\Gbar_{0}$ is known (b) and one that hinges on the estimation of $\Gbar_{0}$ **and an estimator of the asymptotic variance computed across the replications** (c). The present figure includes Figure \@ref(fig:known-Gbar-one-b) (but the colors differ) and it should be compared to Figure \@ref(fig:unknown-Gbar-four). Built based on `iter` independent realizations of each estimator.
 
 
 ```{r unknown-Gbar-seven, fig.cap = '(ref:unknown-Gbar-seven)'}
@@ -2352,15 +2332,7 @@ replications of  $\psi_{n}^{d}$ and $\psi_{n}^{e}$  (`auto_renormalization` is
 
 
 
-(ref:estimating-Qbar-one-bis)  Kernel density  estimators  of the  law of  two
-G-computation estimators of $\psi_{0}$ (recentered with respect to $\psi_{0}$,
-and   renormalized).   The   estimators  respectively   hinge  on   algorithms
-$\Algo_{\Qbar,1}$   (d)  and   $\Algo_{\Qbar,\text{kNN}}$   (e)  to   estimate
-$\Qbar_{0}$.  Two renormalization  schemes are considered, either  based on an
-estimator  of the  asymptotic variance  (left)  or on  the empirical  variance
-computed  across  the  `iter`   independent  replications  of  the  estimators
-(right). We emphasize that the $x$-axis ranges differ starkly between the left
-and right plots.
+(ref:estimating-Qbar-one-bis) Kernel density estimators of the law of two G-computation estimators of $\psi_{0}$ (recentered with respect to $\psi_{0}$, and renormalized).  The estimators respectively hinge on algorithms $\Algo_{\Qbar,1}$ (d) and $\Algo_{\Qbar,\text{kNN}}$ (e) to estimate $\Qbar_{0}$.  Two renormalization schemes are considered, either based on an estimator of the asymptotic variance (left) or on the empirical variance computed across the `iter` independent replications of the estimators (right). We emphasize that the $x$-axis ranges differ starkly between the left and right plots.
 
 
 
@@ -2575,11 +2547,7 @@ include the  realizations of the  estimators derived earlier and  contained in
 `psi_hat_de`   (thus  breaking   the   independence   between  components   of
 `root_n_bias`, a small price to pay in this context).
 
-(ref:estimating-Qbar-four) Evolution of root-$n$ times bias versus sample size
-for two  G-computation estimators  of $\psi_{0}$. The  estimators respectively
-hinge on  algorithms $\Algo_{\Qbar,1}$ (d) and  $\Algo_{\Qbar,\text{kNN}}$ (e)
-to estimate $\Qbar_{0}$.   Big dots represent the average  biases and vertical
-lines represent twice the standard error.
+(ref:estimating-Qbar-four) Evolution of root-$n$ times bias versus sample size for two G-computation estimators of $\psi_{0}$. The estimators respectively hinge on algorithms $\Algo_{\Qbar,1}$ (d) and $\Algo_{\Qbar,\text{kNN}}$ (e) to estimate $\Qbar_{0}$.  Big dots represent the average biases and vertical lines represent twice the standard error.
 
 ```{r estimating-Qbar-four, fig.width = 5, fig.height = 5, fig.cap = '(ref:estimating-Qbar-four)'}
 root_n_bias <- learned_features_fixed_sample_size %>%
@@ -2735,7 +2703,7 @@ The   detailed    general   analysis    of   plug-in    estimators   developed
 variance is consistently estimated with 
 \begin{equation} 
 	P_{n}      D^{*}(\Phat_{n})^{2}      =     \frac{1}{n}      \sum_{i=1}^{n}
-	D^*(\Phat_n)(O_{i}). 
+	D^*(\Phat_n)^{2}(O_{i}). 
 \end{equation}
 Therefore, by the central limit theorem  and Slutsky's lemma (see the argument
 [here](#clt)),
@@ -2745,28 +2713,39 @@ Therefore, by the central limit theorem  and Slutsky's lemma (see the argument
 \end{equation*} 
 is a confidence interval for $\Psi(P_0)$ with asymptotic level $(1-2\alpha)$.
 
-# (PART) Roadwork ahead {-}
+## Empirical investigation {#empirical-inves-one-step}
 
+In light  of \@ref(eq:def-one-step) if the  estimator equals $\Psi(\Phat{n})$,
+then performing a one-step correction  essentially boils down to computing two
+quantities,   $-P_{n}   D^{*}(\Phat_{n})$   (the   bias   term)   and   $P_{n}
+D^{*}(\Phat_{n})^{2}$   (an   estimator   of  the   asymptotic   variance   of
+$\psinos$). The `tlrider` package makes the  operation very easy thanks to the
+function `apply_one_step_correction`.   Let us illustrate its  use by updating
+the G-computation estimator built on  the $n=1000$ first observations in `obs`
+by relying  on $\Algo_{\Qbar,\text{kNN}}$, that  is, on the algorithm  for the
+estimation of  $\Qbar_{0}$ as  it is implemented  in `estimate_Qbar`  with its
+argument   `algorithm`  set   to   the  built-in   `kknn_algo`  (see   Section
+\@ref(Qbar-knn-algo)). The algorithm has been trained earlier on this data set
+and produced the object `Qbar_hat_kknn`.  The following chunk of code computes
+the corresponding G-computation estimator, making use of `QW_hat`, ...
 
+```{r psi-n-de-two-bis}
+psin_kknn <- compute_gcomp(QW_hat, wrapper(Qbar_hat_kknn, FALSE), 1e3))
 
+```
 
+Let us apply the one-step correction to the estimators that we built in
+Section           \@ref(empirical-inves-Gcomp).           The           object
+`learned_features_fixed_sample_size` already  contains the  estimated features
+of  $P_{0}$  that  are  needed  to perform  the  one-step  correction  to  the
+estimators $\psi_{n}^{d}$ and  $\psi_{n}^{e}$, namely, the we  merely call the
+function `apply_one_step_correction`
 
-
-# One-step corrections {#one-step-corr}
-
-In a hurry, let us demonstrate how  the one-step correction unfolds when it is
+In a hurry, let us demonstrate how the one-step correction unfolds when it is
 applied to the estimators $\psi_{n}^{d}$ and $\psi_{n}^{e}$ that we studied in
 Section \@ref(Gcomp-estimator). This is what the next chunk of code does.
 
-(ref:one-step-one)   Kernel   density   estimators   of   the   law   of   two
-one-step-G-computation estimators  of $\psi_{0}$  (recentered with  respect to
-$\psi_{0}$,  and   renormalized).   The   estimators  respectively   hinge  on
-algorithms  $\Algo_{\Qbar,1}$   (d)  and  $\Algo_{\Qbar,\text{kNN}}$   (e)  to
-estimate $\Qbar_{0}$, and on one-step correction.  Two renormalization schemes
-are considered, either based on an estimator of the asymptotic variance (left)
-or  on  the   empirical  variance  computed  across   the  `iter`  independent
-replications of the estimators (right).  We emphasize that the $x$-axis ranges
-differ between the left and right plots.
+(ref:one-step-one) Kernel density estimators of the law of two one-step-G-computation estimators of $\psi_{0}$ (recentered with respect to $\psi_{0}$, and renormalized).  The estimators respectively hinge on algorithms $\Algo_{\Qbar,1}$ (d) and $\Algo_{\Qbar,\text{kNN}}$ (e) to estimate $\Qbar_{0}$, and on one-step correction.  Two renormalization schemes are considered, either based on an estimator of the asymptotic variance (left) or on the empirical variance computed across the `iter` independent replications of the estimators (right).  We emphasize that the $x$-axis ranges differ between the left and right plots.
 
 
 ```{r one-step-one, fig.cap = '(ref:one-step-one)'}
@@ -2852,7 +2831,7 @@ for the mean  square error, it is  diminished by the one-step  update for both
 types `d`  and `e`,  the `e_one_step` estimator  exhibiting the  smallest mean
 square error.
 
- 
+# (PART) Roadwork ahead {-} 
 
 # &#9761; \stixdanger{} Targeted minimum loss-based estimation {#TMLE}
 
