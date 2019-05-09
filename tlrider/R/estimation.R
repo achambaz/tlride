@@ -588,7 +588,7 @@ compute_gcomp <- function(QW, Qbar, nobs) {
 #' psi_hat <- compute_gcomp(QW_hat, Qbar_hat_fun, nrow(obs))
 #'
 #' ## apply the one-step correction
-#' (apply_one_step_correction(obs, Gbar_hat_fun, Qbar_hat_fun, psi_hat))
+#' (apply_one_step_correction(obs, Gbar_hat_fun, Qbar_hat_fun, psi_hat$psi_n))
 #' 
 #' @export 
 apply_one_step_correction <- function(dat, Gbar, Qbar, psi) {
@@ -603,12 +603,12 @@ apply_one_step_correction <- function(dat, Gbar, Qbar, psi) {
     QzeroW <- Qbar(cbind(A = 0, W = obs[, "W"]))
     GW <- Gbar(obs[, "W", drop = FALSE])
     lGAW <- obs[, "A"] * GW + (1 - obs[, "A"]) * (1 - GW)
-    out <- (QoneW - QzeroW - psi$psi_n) + (2 * obs[, "A"] - 1) / lGAW * (obs[, "Y"] - QAW)
+    out <- (QoneW - QzeroW - psi) + (2 * obs[, "A"] - 1) / lGAW * (obs[, "Y"] - QAW)
     out <- as.vector(out)
     return(out)
   }
   eic_dat <- eic(dat)
-  psi_n <- psi$psi_n + mean(eic_dat)
+  psi_n <- psi + mean(eic_dat)
   sig_n <- sd(eic_dat)/sqrt(nrow(dat))
   tibble::tibble(psi_n = psi_n, sig_n = sig_n)
 }
