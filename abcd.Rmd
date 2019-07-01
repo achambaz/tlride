@@ -2873,6 +2873,242 @@ smallest mean square error.
 
 # &#9761; \stixdanger{} Targeted minimum loss-based estimation {#TMLE}
 
+In the previous section, we introduced the one-step corrected estimator of
+$\psi_0$. This estimator added a correction term to the plug-in estimator, 
+which resulted in an estimator that is asymptotically efficient. 
+However, the one-step estimator lacks a desirable feature of a plug-in estimator:
+plug-in estimators will always obey bounds on the parameter space. For example, the law 
+$P_0$ stipulates that $Y$ has a conditional Beta distribution and so $Y \in (0,1)$. 
+Thus, it must also be true that $\psi_0 \in [-1,1]$. It is typically easy to generate an 
+estimate $\Qbar_n$ of $\Qbar_0$ that obeys bounds on the parameter space for $\Qbar_0$. 
+Indeed, many regression techniques are designed to ensure that the do not extrapolate
+beyond a known parameter space. 
+The plug-in estimate based on on such a regression estimate will also obey the bounds on the 
+parameter space for $\psi_0$. That is, our plug-in estimate of $\psi_0$ is guaranteed by
+its very construction be between -1 and 1. However, the one-step estimate adds 
+an additional term to the plug-in and therefore may result in an estimate of $\psi_0$ 
+that is outside its parameter space. Upon closer examination of the efficient influence
+curve $D^*$, we see that this may occur more frequently when $\ell \Gbar_n(A_i,W_i)$ is 
+close to zero for at least some $i$. In words, if there are observations in our 
+data set that we observed under actions $A_i$ that were estimated to be unlikely given the context $W_i$. In such cases, $D^*(\hat{P}_n)(O_i)$, and consequently the one-step 
+correction term, may be large and cause the one-step estimate to fall outside the parameter
+space. 
+
+Another way to understand this behavior is to recognize the one-step estimator as
+a plug-in estimator that is corrected *in the parameter space of $\psi_0$*. On the
+other hand, we might consider performing a correction *in the parameter space of $\Qbar_0$*. 
+In particular, consider a $\hat{P}_n^*$ that is compatible with the estimates $\Qbar_n^*$, $\Gbar_n$, and $Q_{n,W}$, but moreover is such that $P_n D^*(\hat{P}_n^*) = 0$ (or at the very least equals to $o_{P_0}(n^{-1/2})$). If indeed, such estimates can be generated, then the 
+plug-in estimator \[
+  \psi_n^* \equiv \int (\Qbar_n^*(1,w) - \Qbar_n^*(0,w)) dQ_{n,W}(w)
+\]
+is asymptotically linear and efficient. Moreover, by virtue of its plug-in construction it 
+has the additional property that in finite-samples $\psi_n^*$ will always obey
+bounds on the parameter space. 
+
+Our strategy for constructing such a plug-in estimate begins by generating an 
+initial estimate $\Qbar_n$ of $\Qbar_0$ and an estimate $\Gbar_n$ of $\Gbar_0$. These initial estimate should strive to be as close as possible to their respective targets. We use
+the empirical distribution $Q_{n,W}$ as estimate of $Q_{0,W}$. Now, note that for *any*
+estimate $\Qbar_n$ of $\Qbar_0$ and a distribution $\hat{P}_n^*$ that is compatible with 
+$\Qbar_n$ and $Q_{n,W}$, 
+\begin{align*}
+  P_n D_1^*(\hat{P}_n^*) &= \frac{1}{n} \sum_{i=1}^n D_1^(\hat{P}_n^*)(O_i)\\
+  &= \frac{1}{n} \sum_{i=1}^n \left( \Qbar_n(1,W_i) - \Qbar_n(0,W_i) - \int (\Qbar_n(1,w) - \Qbar_n(0,w)) dQ_{n,W}(w) \right) \\
+  &= \frac{1}{n} \sum_{i=1}^n \left( \Qbar_n(1,W_i) - \Qbar_n(0,W_i) - \frac{1}{n}\sum_{j=1}^n (\Qbar_n(1,W_j) - \Qbar_n(0,W_j)) \right)\\
+  &= \frac{1}{n} \sum_{i=1}^n (\Qbar_n(1,W_i) - \Qbar_n(0,W_i)) - \frac{n}{n^2}\sum_{j=1}^n (\Qbar_n(1,W_j) - \Qbar_n(0,W_j)) \\
+  &= 0 .
+\end{align*}
+
+In words, this shows that so long as we use the empirical distribution $Q_{n,W}$ to estimate
+$Q_{0,W}$, by its very construction we will have that $P_n D_1^*(\hat{P}_n^*) = 0$. 
+
+```{r show-first-piece-solved}
+# maybe would be helpful to include a bit of code here
+# for evaluating EIF using empirical dist of W and showing that
+# indeed the second bit is solved? Not sure. The algebra is simple enough.
+# I'm just trying to break up all the writing a bit in this section, because
+# it is quite dense. 
+```
+
+It thus remains to devise a strategy for ensuring that $P_n D_2^*(\hat{P}_n^*) = 0$. To 
+achieve this, we consider an approach for revising our initial estimate of $\Qbar_0$. That is, 
+we propose a method for selecting an estimate of $\Qbar_0$ that is "near to" $\Qbar_n$, but is 
+such that for any law $\hat{P}_n^*$ that is compatible with this revised estimate,
+$P_n D^*(\hat{P}_n^*) = 0$. Because $\Qbar_n$ is our best (initial) estimate of true 
+regression $\Qbar_0$, the new regression that we pick should be *at least as good* of an 
+estimate of $\Qbar_0$ as $\Qbar_n$. So first, we must propose a way to move between 
+regressions in our model, and then we must propose a way to move to a new regression that 
+fits the data at least as well as $\Qbar_n$. 
+
+To move about the model space, we will make use of parametric
+submodels introduced in Section \ref{subsec:being:smooth:one}. In particular, let's consider
+the following parametric submodel \[
+  \calQ(\Gbar_n) = \{ \Qbar_{n,\epsilon}(A,W) = \expit\left(\logit(\Qbar_n(A,w)) + \epsilon \frac{2A - 1}{\ell \Gbar_n(A,W)} \right) : \epsilon \in \bbR \} . 
+\]
+We note that this submodel depends on the estimate of $\Gbar_0$, is 
+indexed by the univariate parameter $\epsilon$, and is *through*
+the initial estimate $\Qbar_n$ of $\Qbar_0$. 
+
+Each value of the indexing parameter $\epsilon$ corresponds to a different regression
+estimate. The code below visualizes regressions for several values of $\epsilon$. 
+
+```{r plot-for-several-epsilon}
+# can include the graph of Qbar_n,eps(a,W) ~ W for eps = -1, 0, 1 \times a = 0,1?
+# would like to drive home the point that each epsilon is simply a different regresion
+# fit.
+
+# could also show for different Gbar_n showing that the submodel depends on Gbar_n, 
+# but I actually think that's far less important. 
+```
+
+Recalling that our goal is to select an estimate of $\Qbar_0$ that is *at least as good* 
+as $\Qbar_n$. This goal is now translated into selecting an $\epsilon$ that corresponds to
+a regression function that fits the data *at least as well* as $\Qbar_n$. To formalize
+this, we require a metric for defining how well a regression function estimates the true
+regression function. For this, we estimate the average negative log-likelihood loss, defined for a candidate regression function $\Qbar$ as \[
+  \bbD_0(\Qbar) \equiv -\Exp_{P_0}( Y \log(\Qbar(A,W)) + (1 - Y)\log(1 - \Qbar(A,W)) ) . 
+\]
+We note that the minimizer of $\bbD_0$ over all functions mapping from $\{0,1\} \times (0,1)$ to $\bbR$ is equal to $\Qbar_0$. Thus, $\bbD_0$ provides a concrete means of evaluating the 
+fit of different candidate regression functions to the true regression function $\Qbar_0$. Because, $\bbD_0$ depends on $P_0$, it is unknown to us in practice. Thus, we may instead compute an empirical estimate of $\bbD_0$, \[
+  \bbD_n(\Qbar) \equiv -\frac{1}{n} \sum_{i = 1}^n \left( Y_i \log(\Qbar(A_i, W_i)) + (1 - Y_i)\log(1 - \Qbar(A_i, W_i)) \right). 
+\]
+The code below computes this estimate of $\bbD_n(\Qbar_{n,\epsilon})$ over a fine grid of epsilon and plots the resulting function. 
+
+```{r compute-negloglik-and-plot}
+# basically just do a grid search over epsilon for minimizer of negative log-likelihood loss
+```
+The above  plot shows the  estimated average negative log-likelihood  loss for
+each regression function in the  parametric submodel $\calQ(\Gbar_n)$. Now, we
+should like  to move  to the  regression with  the smallest  estimated average
+negative log-likelihood, which was achieved at $\epsilon=$ \tcg{fill\_in\_from\_R\_output}.  Because our submodel is  through $\Qbar_n$, that is,  $\Qbar_n$ is
+itself included in  our submodel, and this newly  selected regression estimate
+has a  better estimated average  negative log-likelihood loss, we  should hope
+that  the  new  estimate  is  at   least  *no  further  from  $\Qbar_0$*  than
+$\Qbar_n$.  Let's use  $\Qbar_{n,\epsilon_n}$ to  denote the  new estimate  of
+$\Qbar_0$.
+
+What about repeating this process? Perhaps by iterating this procedure, we could 
+generate regression estimates that provide a better fit of $\Qbar_0$ than even $\Qbar_{n,\epsilon_n}$. Let's then define a submodel through $\Qbar_{n,\epsilon_n}$, \[
+  \calQ_1(\Gbar_n) = \{ \Qbar_{n,\delta}(A,W) = \expit\left(\logit(\Qbar_{n,\epsilon_n}(A,W)) + \delta \frac{2A - 1}{\ell \Gbar_n(A,W)} \right) : \delta \in \bbR \} . 
+\]
+Consider finding $\delta_n$, the value of $\delta$ that minimizes $\bbD_n(\Qbar_{n,\delta})$ 
+over $\delta \in \bbR$. This is trivial since there is a one-to-one correspondence 
+between the parameter $\epsilon$ indexing the submodel $\calQ(\Gbar_n)$ and 
+$\calQ_1(\Gbar_n)$: for any $\epsilon$, there is some $\delta \in \bbR$ such that $\delta = 
+\epsilon - \epsilon_n$. That is to say that the choice of $\delta$ that minimizes 
+$\bbD_n(\Qbar_{nm,\delta})$ is $\delta = 0$. Thus, 
+$\Qbar_{n,\delta = 0} \equiv \Qbar_{n,\epsilon_n}$ is the best fit that we can obtain for 
+$\Qbar_0$ by moving through the model space via submodels of the form $\calQ(\Gbar_n)$.
+
+Now, we hope that we have achieved our goal of finding a new regression fit that is *at least 
+as good* as our initial estimate. However, recall that our true purpose is to generate an 
+estimate of $\Qbar_0$ such that for any $\hat{P}_n^*$ that is compatible with such an estimate $P_n D^*(\hat{P}_n^*) = 0$. Have we achieved this goal as well? Consider the fact that because the minimum value of $\bbD_n(\Qbar_{n,\delta})$ is achieved at $\delta = 0$, it must be true that the derivative of $\bbD_n(\Qbar_{n,\delta})$ with respect to $\delta$ is zero when evaluated at $\delta = 0$. That is, \begin{equation} \label{deriv_equals_zero}
+  \frac{d}{d\delta} \bbD_n(\Qbar_{n,\delta}) |_{\delta = 0} = 0 . 
+\end{equation}
+Indeed, we can produce plot of $\bbD_n(\Qbar_{n,\delta})$ for a fine grid of $\delta$ to 
+confirm. 
+
+```{r show-negloglik-as-function-of-delta}
+# we could also show this earlier and comment about how it
+# should be the same as the plot of neg log lik as a fn of epsilon
+# just shifted over. Maybe that would help drive home the point that
+# the submodels are the same?
+```
+
+Finding the analytical form of this derivative is straightforward, though a bit cumbersome. 
+With some effort, one can show that \begin{align*}
+&\frac{d}{d\delta} \bbD_n(\Qbar_{n,\delta}) |_{\delta = 0} \\
+&\hspace{0.1in} = \frac{d}{d\delta} \frac{1}{n} \sum_{i = 1}^n \left( Y_i \log(\Qbar_{n,\delta}(A_i, W_i)) + (1 - Y_i)\log(1 - \Qbar_{n,\delta}(A_i, W_i)) \right) \bigg|_{\delta = 0} \\
+&\hspace{0.1in} = \frac{1}{n} \sum_{i = 1}^n \frac{2A_i - 1}{\ell \Gbar_n(A_i, W_i)} \left(Y_i - \Qbar_{n,\delta = 0}\right) \\ 
+&\hspace{0.1in} = \frac{1}{n} \sum_{i = 1}^n \frac{2A_i - 1}{\ell \Gbar_n(A_i, W_i)} \left(Y_i - \Qbar_{n,\epsilon_n}\right) 
+\end{align*}
+
+This shows that the analytical form of the left-hand-side of (\ref{deriv_equals_zero}) equals
+$P_n D_{2}^{*}(\hat{P}^*_n)$ for a $\hat{P}_n^*$ that is compatible with $\Qbar_{n,\epsilon_n}$ and $\Gbar_n$. But then equation (\ref{deriv_equals_zero}) also implies that $P_n D_{2}^{*}(\hat{P}^*_n) = 0$! 
+
+How did this happen? Recalling Section \ref{subsec:being:smooth:one} there were many possible submodels that we may choose to move through our model space. 
+It was no mistake that we selected the particular submodel $\calQ(\Gbar_n)$. 
+Furthermore, there are also many
+criterion by which we could judge our fit of $\Qbar_0$. It was no mistake that we selected 
+the particular parameter $\bbD_0$ and estimate $\bbD_n$. We intentionally made these 
+choices to ensure that the derivative of $\bbD_n$ with respect to the indexing parameter of our submodel was equal to $D_2^*$ when the indexing parameter equals to zero. Thus, as soon as our procedure for selecting new regressions in our submodel indicated that the best
+regression fit was achieved at $\delta = 0$, we were assured that the relevant equation 
+would be solved. 
+
+This procedure is called targeted minimum loss-based estimation (TMLE). The nomenclature 
+derives from the logistics of the procedure. We first generated an (un-targeted) initial 
+estimate of relevant nuisance parameters. Then through, possibly iterative, loss-minimization, 
+we arrive a *targeted* estimate of the nuisance parameters. In the present problem, we 
+examined explicitly this loss-minimization in Figures \tcg{X and Y}. The resultant estimate 
+generated by the loss-minimzation procedure should be *no worse* an estimate of its true 
+target than the initial estimate, but has been additionally endowed with the property that it 
+solves the efficient influence curve equation. 
+
+Assuming that the regularity conditions discussed in Section \@ref(analysis-of-plug-in)
+are satisfied for $\Qbar_{n,\epsilon_n}$, then by (\ref{pre_one_step}), \[
+  \psi_n^* = \Psi(\hat{P}_n^*) = \int (\Qbar_{n,\epsilon_n}(1,w) - \Qbar_{n,\epsilon_n}(0,w)) dQ_{n,W} , 
+\]
+is an asymptotically efficient estimator of $\psi_0$. We have thus achieved our goal of generating an efficient plug-in estimator of $\psi_0$ that is guaranteed to obey bounds
+on the parameter space. We may construct asymptotically justified confidence intervals 
+and hypothesis tests exactly as in Section \@ref(analysis-of-plug-in), but replacing
+$\Qbar_n$ by $\Qbar_{n,\epsilon_n}$. 
+
+The next code examines TMLE in a simulation and confirms the theoretical properties of the
+estimator. 
+
+
+(ref:tmle) Kernel density estimators of the law of two targeted estimators of $\psi_{0}$ (recentered with respect to $\psi_{0}$, and renormalized).  The estimators respectively hinge on algorithms $\Algo_{\Qbar,1}$ (d) and $\Algo_{\Qbar,\text{kNN}}$ (e) to estimate $\Qbar_{0}$, and on a targeting step.  Two renormalization schemes are considered, either based on an estimator of the asymptotic variance (left) or on the empirical variance computed across the `iter` independent replications of the estimators (right).  We emphasize that the $x$-axis ranges differ between the left and right plots.
+
+```{r tmle, fig.cap = '(ref:tmle)'}
+psi_tmle <- learned_features_fixed_sample_size %>%
+  mutate(tmle_d =
+           pmap(list(obs, Gbar_hat, Qbar_hat_d),
+                ~ apply_targeting_step(as.matrix(..1),
+                                 wrapper(..2, FALSE),
+                                 wrapper(..3, FALSE))),
+         tmle_e =
+           pmap(list(obs, Gbar_hat, Qbar_hat_e),
+                ~ apply_targeting_step(as.matrix(..1),
+                                 wrapper(..2, FALSE),
+                                 wrapper(..3, FALSE)))) %>%
+  select(tmle_d, tmle_e) %>%
+  gather(`tmle_d`, `tmle_e`, key = "type", value = "estimates") %>%
+  extract(type, "type", "_([de])$") %>%
+  mutate(type = paste0(type, "_targeted")) %>%
+  unnest(estimates) %>%
+  group_by(type) %>%
+  mutate(sig_alt = sd(psi_n)) %>%
+  mutate(clt_ = (psi_n - psi_zero) / sig_n,
+         clt_alt = (psi_n - psi_zero) / sig_alt) %>%
+  gather(`clt_`, `clt_alt`, key = "key", value = "clt") %>%
+  extract(key, "key", "_(.*)$") %>%
+  mutate(key = ifelse(key == "", TRUE, FALSE)) %>%
+  rename("auto_renormalization" = key)
+
+(bias_tmle <- psi_tmle %>%
+   group_by(type, auto_renormalization) %>%
+   summarize(bias = mean(clt)) %>% ungroup)
+
+fig <- ggplot() +
+  geom_line(aes(x = x, y = y), 
+            data = tibble(x = seq(-4, 4, length.out = 1e3),
+                          y = dnorm(x)),
+            linetype = 1, alpha = 0.5) +
+  geom_density(aes(clt, fill = type, colour = type),
+               psi_tmle, alpha = 0.1) +
+  geom_vline(aes(xintercept = bias, colour = type),
+             bias_tmle, size = 1.5, alpha = 0.5) +
+  facet_wrap(~ auto_renormalization,
+             labeller =
+               as_labeller(c(`TRUE` = "auto-renormalization: TRUE",
+                             `FALSE` = "auto-renormalization: FALSE")),
+             scales = "free")
+  
+fig +
+  labs(y = "",
+       x = expression(paste(sqrt(n/v[n]^{"*"})*
+                            (psi[n]^{"*"} - psi[0]))))
+```
+
 
 # (APPENDIX) Appendix {-}
 

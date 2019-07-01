@@ -698,12 +698,12 @@ apply_targeting_step <- function(dat, Gbar, Qbar, threshold = 5e-2) {
   tib <- preliminary(dat)
   fit <- glm(Y ~ HW - 1,
              data = data.frame(Y = dat[, "Y"], HW = tib$HW),
-             offset = tib$QAW, family = binomial())
+             offset = stats::qlogis(tib$QAW), family = binomial())
   epsilon <- stats::coef(fit)
   QoneW_epsilon <- stats::plogis(stats::qlogis(tib$QoneW) + epsilon/tib$GW)
   QzeroW_epsilon <- stats::plogis(stats::qlogis(tib$QzeroW) - epsilon/(1-tib$GW))
   QAW_epsilon <- dat[, "A"] * QoneW_epsilon + (1 - dat[, "A"]) * QzeroW_epsilon
-  psi_n <- mean(QoneW_epsilon - QAW_epsilon)
+  psi_n <- mean(QoneW_epsilon - QzeroW_epsilon)
   eic_dat <- (dat[, "Y"] - QAW_epsilon) * tib$HW +
     QoneW_epsilon - QzeroW_epsilon - psi_n
   sig_n <- sd(eic_dat)/sqrt(nrow(dat))
