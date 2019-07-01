@@ -4,7 +4,7 @@ options(digits = 3)
 knitr::opts_chunk$set(
   comment = "#>",
   collapse = TRUE,
-  cache = FALSE,
+  cache = TRUE,
   out.width = "70%",
   fig.align = 'center',
   fig.width = 6, # used to have: fig.width = 12,
@@ -177,7 +177,8 @@ relevant_features$Gbar
 ```
 
 Note how real numbers of the form $1 + 2W - 4 * \sqrt{|W - 5/12|})$ are mapped
-into the interval $[0,1]$ by the $\expit$ link function.
+into the interval  $[0,1]$ by the $\expit$ link function.  We refer the reader
+to Figure \@ref(fig:estimate-Gbar-three) for a visualization of $\Gbar_{0}$.
 
 #### `qY` {-}
 
@@ -1674,7 +1675,7 @@ However,  if $\Gbar_{0}$  can nevertheless  be *projected*  unambiguously onto
 $\calF_{2}$ (an assumption  that cannot be checked), then  the estimator might
 converge to the projection. 
 
-### Visualization
+### Visualization {#algo-Gbar-one}
 
 To illustrate the use of the algorithm $\Algo_{\Gbar,1}$ obtained by combining
 `estimate_Gbar` and  `working_model_G_one`, let us estimate  $\Gbar_{0}$ based
@@ -1831,7 +1832,7 @@ Qbar_hat_trees %>% dplyr::filter(a == "zero") %>% pull(fit) %>%
  
 We can compare visually the estimators $\Qbar_{n,\text{kNN}}$,
 $\Qbar_{n,\text{trees}}  \triangleq  \Algo_{\Qbar,\text{trees}}(P_{n})$  with  its
-target  $\Qbar0$,  see   Figure  \@ref(fig:estimate-Qbar-five).   In  summary,
+target  $\Qbar_0$,  see   Figure  \@ref(fig:estimate-Qbar-five).   In  summary,
 $\Qbar_{n,\text{kNN}}$ is rather good, though  very versatile at the vincinity
 of the  break points.  As for  $\Qbar_{n,\text{trees}}$, it  does not  seem to
 capture the shape of its target.
@@ -1927,12 +1928,12 @@ observations stored  in `obs`,  using the true  feature $\Gbar_{0}$  stored in
 `psi_hat_ab`. Similarly,
 
 ```{r psi-n-b-recall-two}
-Ghat <- estimate_Gbar(head(obs, 1e3), working_model_G_one)
-compute_iptw(head(obs, 1e3), wrapper(Ghat)) %>% pull(psi_n)
+Gbar_hat <- estimate_Gbar(head(obs, 1e3), working_model_G_one)
+compute_iptw(head(obs, 1e3), wrapper(Gbar_hat)) %>% pull(psi_n)
 ```
 
-implements *(i)*  the estimation of $\Gbar_{0}$  with $\Gbar_{n}$/`Ghat` using
-algorithm  $\Algo_{\Gbar,1}$  (first  line)  then *(ii)*  the  computation  of
+implements  *(i)* the  estimation of  $\Gbar_{0}$ with  $\Gbar_{n}$/`Gbar_hat`
+using algorithm $\Algo_{\Gbar,1}$ (first line)  then *(ii)* the computation of
 $\psi_{n}^{c}$ (second line), both based on the same observations as above.
 
 Note  how we  use function  `wrapper` (simply  run `?wrapper`  to see  its man
@@ -2106,12 +2107,14 @@ fig_bias_ab +
 estimation of the asymptotic variance of $\sqrt{n} (\psi_{n}^{c} - \psi_{0})$.
 We  could for  instance  derive  the influence  function  as  it is  described
 [here](#iptw-est-var)  and  use  the  corresponding  influence  function-based
-estimator of  the variance.   Or one  could rely  on the  bootstrap.^[That is,
-replicate the  construction of  $\psi_{n}^{c}$ many times  based on  data sets
-obtained  by  resampling  from  the  original  data  set,  then  estimate  the
-asymptotic  variance with  the empirical  variance of  $\psi_{n}^{c}$ computed
-across the replications.] This, however, would only make sense if one knew for
-sure that the algorithm for the estimation of $\Gbar_{0}$ is well-specified.
+estimator  of the  variance.  One  could  also rely  on the  cross-validation,
+possibly combined with the previous workaround.  Or one could also rely on the
+bootstrap.^[That is,  replicate the construction of  $\psi_{n}^{c}$ many times
+based on  data sets obtained  by resampling from  the original data  set, then
+estimate the asymptotic variance with the empirical variance of $\psi_{n}^{c}$
+computed across the replications.] This, however, would only make sense if one
+knew  for  sure that  the  algorithm  for  the  estimation of  $\Gbar_{0}$  is
+well-specified.
 
 ## &#9881; \gear Investigating further the IPTW inference strategy {#exo-a-nice-title}
 
@@ -2295,9 +2298,8 @@ $\Algo_{\Qbar,\text{kNN}}$.       Or       $\Algo_{\Qbar}$      could       be
 mis-specified\index{well/mis-specified} and there would be no guarantee at all
 that the resulting estimator $\psi_{n}$ be even consistent.
 
-### Empirical investigation {#empirical-inves-Gcomp}
+### Empirical investigation, fixed sample size {#empirical-inves-Gcomp}
 
-**Fixed sample size**
 
 Let us compute $\psi_{n}^{d}$ and $\psi_{n}^{e}$ on the same `iter = ` 
 `r iter` independent samples of independent observations drawn from $P_{0}$ as in
@@ -2486,7 +2488,9 @@ As for the empirical standard deviation of $\psi_{n}^{e}$, it is approximately
 `r round(mean_sig_n_e/emp_sig_n_e, 3)` times larger than the average *estimated*
 standard deviation. 
 
-**Varying sample size**
+### &#9761; \stixdanger{} Empirical investigation, varying sample size {#empirical-inves-Gcomp-varying}
+
+
  
 ```{r estimating-Qbar-two, eval = TRUE}
 sample_size <- c(5e3, 15e3)
@@ -2715,35 +2719,45 @@ is a confidence interval for $\Psi(P_0)$ with asymptotic level $(1-2\alpha)$.
 
 ## Empirical investigation {#empirical-inves-one-step}
 
-In light  of \@ref(eq:def-one-step) if the  estimator equals $\Psi(\Phat{n})$,
+In light of \@ref(eq:def-one-step)  if the estimator equals $\Psi(\Phat_{n})$,
 then performing a one-step correction  essentially boils down to computing two
 quantities,   $-P_{n}   D^{*}(\Phat_{n})$   (the   bias   term)   and   $P_{n}
 D^{*}(\Phat_{n})^{2}$   (an   estimator   of  the   asymptotic   variance   of
 $\psinos$). The `tlrider` package makes the  operation very easy thanks to the
-function `apply_one_step_correction`.   Let us illustrate its  use by updating
-the G-computation estimator built on  the $n=1000$ first observations in `obs`
-by relying  on $\Algo_{\Qbar,\text{kNN}}$, that  is, on the algorithm  for the
-estimation of  $\Qbar_{0}$ as  it is implemented  in `estimate_Qbar`  with its
-argument   `algorithm`  set   to   the  built-in   `kknn_algo`  (see   Section
-\@ref(Qbar-knn-algo)). The algorithm has been trained earlier on this data set
-and produced the object `Qbar_hat_kknn`.  The following chunk of code computes
-the corresponding G-computation estimator, making use of `QW_hat`, ...
+function `apply_one_step_correction`.  
+
+Let us illustrate its use by updating the G-computation estimator built on the
+$n=1000$ first observations in `obs` by relying on $\Algo_{\Qbar,\text{kNN}}$,
+that  is,  on  the algorithm  for  the  estimation  of  $\Qbar_{0}$ as  it  is
+implemented  in  `estimate_Qbar` with  its  argument  `algorithm` set  to  the
+built-in  `kknn_algo` (see  Section \@ref(Qbar-knn-algo)).  The algorithm  has
+been trained earlier on this data set and produced the object `Qbar_hat_kknn`.
+The  following  chunk  of  code re-computes  the  corresponding  G-computation
+estimator, using again the estimator `QW_hat` of the marginal law of $W$ under
+$P_{0}$ (see Section \@ref(nuisance-QW)), then applied the one-step correction:
 
 ```{r psi-n-de-two-bis}
-psin_kknn <- compute_gcomp(QW_hat, wrapper(Qbar_hat_kknn, FALSE), 1e3))
-
+(psin_kknn <- compute_gcomp(QW_hat, wrapper(Qbar_hat_kknn, FALSE), 1e3))
+(psin_kknn_os <- apply_one_step_correction(head(obs, 1e3),
+                                           wrapper(Gbar_hat, FALSE),
+                                           wrapper(Qbar_hat_kknn, FALSE),
+                                           psin_kknn$psi_n)) 
 ```
 
-Let us apply the one-step correction to the estimators that we built in
-Section           \@ref(empirical-inves-Gcomp).           The           object
-`learned_features_fixed_sample_size` already  contains the  estimated features
-of  $P_{0}$  that  are  needed  to perform  the  one-step  correction  to  the
-estimators $\psi_{n}^{d}$ and  $\psi_{n}^{e}$, namely, the we  merely call the
-function `apply_one_step_correction`
+In the  call to `apply_one_step_correction` we  provide *(i)* the data  set at
+hand  (first line),  *(ii)* the  estimator `Gbar_hat`  of $\Gbar_{0}$  that we
+built earlier by  using algorithm $\Algo_{\Gbar,1}$ (second  line; see Section
+\@ref(algo-Gbar-one)),  *(iii)* the  estimator `Qbar_hat_kknn`  of $\Qbar_{0}$
+and the G-computation  estimator `psin_kknn` that resulted from  it (third and
+fourth lines).
 
-In a hurry, let us demonstrate how the one-step correction unfolds when it is
-applied to the estimators $\psi_{n}^{d}$ and $\psi_{n}^{e}$ that we studied in
-Section \@ref(Gcomp-estimator). This is what the next chunk of code does.
+To assess  what is  the impact of  the one-step correction,  let us  apply the
+one-step   correction   to  the   estimators   that   we  built   in   Section
+\@ref(empirical-inves-Gcomp).  The object `learned_features_fixed_sample_size`
+already contains the estimated features of  $P_{0}$ that are needed to perform
+the one-step  correction to the estimators  $\psi_{n}^{d}$ and $\psi_{n}^{e}$,
+namely, the we merely call the function `apply_one_step_correction`
+
 
 (ref:one-step-one) Kernel density estimators of the law of two one-step-G-computation estimators of $\psi_{0}$ (recentered with respect to $\psi_{0}$, and renormalized).  The estimators respectively hinge on algorithms $\Algo_{\Qbar,1}$ (d) and $\Algo_{\Qbar,\text{kNN}}$ (e) to estimate $\Qbar_{0}$, and on one-step correction.  Two renormalization schemes are considered, either based on an estimator of the asymptotic variance (left) or on the empirical variance computed across the `iter` independent replications of the estimators (right).  We emphasize that the $x$-axis ranges differ between the left and right plots.
 
@@ -2816,20 +2830,44 @@ psi_hat_de %>%
   full_join(psi_hat_de_one_step) %>%
   filter(auto_renormalization) %>% 
   group_by(type) %>%
-  summarize(sd = mean(sig_n) * sqrt(n()), ## * ifelse(str_detect(type, "one_step"), 1, NA)),
+  summarize(sd = mean(sig_n),
             se = sd(psi_n),
             mse = mean((psi_n - psi_zero)^2) * n())
 ```
 
 The  `sd`  (*estimator*  of  the   asymptotic  standard  deviation)  and  `se`
-(*empirical* standard  deviation) entries  for type `d_one_step`  are similar:
-this  indicates  that  the  inference   of  the  asymptotic  variance  of  the
-`d`-variant of the  one-step estimator based on the influence  curve is rather
-accurate.   On  the  contrary,  the influence  curve-based  estimator  of  the
-asymptotic variance  is clearly  anti-conservative for type  `e_one-step`.  As
-for the mean  square error, it is  diminished by the one-step  update for both
-types `d`  and `e`,  the `e_one_step` estimator  exhibiting the  smallest mean
-square error.
+(*empirical* standard deviation) entries are  similar. This indicates that the
+inference of the  asymptotic variance of the one-step estimators  based on the
+influence curve is rather accurate for  both the `d`- and `e`-variants that we
+implemented.  As for  the mean square error, it is  diminished by the one-step
+update for both  types `d` and `e`, the `e_one_step`  estimator exhibiting the
+smallest mean square error.
+
+## &#9881; \gear Investigating further the one-step correction methodology {#exo-one-step}
+
+1. Use `estimate_Gbar` to create  an oracle algorithm $\Algora_{\Gbar,s}$ for
+   the  estimation   of  $\Gbar_{0}$  that,   for  any  $s  >   0$,  estimates
+   $\Gbar_{0}(w)$    with   \begin{equation*}    \Gbar_{n}(w)   \triangleq
+   \Algora_{\Gbar,s}                     (P_{n})(w)                    \triangleq
+   \expit\left(\logit\left(\Gbar_{0}(w)\right) +  s Z\right) \end{equation*}
+   where $Z$  is a standard  normal random variable.^[Note that  the algorithm
+   does not really to be trained.] What would happen if one chose $s=0$ in the
+   above definition? What happens when $s$ converges to 0?  Explain why the algorithm
+   is said to be an *oracle algorithm*. 
+
+2. Use `estimate_Qbar` to create  an oracle algorithm $\Algora_{\Qbar,s}$ for
+   the  estimation   of  $\Qbar_{0}$  that,   for  any  $s  >   0$,  estimates
+   $\Qbar_{0}(a,w)$    with   \begin{equation*}    \Qbar_{n}(a,w)   \triangleq
+   \Algora_{\Gbar,s}                     (P_{n})(a,w)                    \triangleq 
+   \expit\left(\logit\left(\Qbar_{0}(a,w)\right) +  s Z\right) \end{equation*}
+   where $Z$  is a standard  normal random variable. The comments made about
+  $\Algora_{\Gbar,s}$ in the above problem also apply to $\Algora_{\Qbar,s}$. 
+
+3. Reproduce the simulation study developed in Sections \@ref(empirical-inves-Gcomp)
+   and \@ref(empirical-inves-one-step) with the oracle algorithms $\Algora_{\Gbar,s}$
+   and $\Algora_{\Qbar,s'}$ substituted for used in these sections. Change the values
+   of $s,s' > 0$ and compare how well the estimating procedure performs depending on the product $ss'$.
+   What do you observe? We invite you to refer to Section \@ref(app-analysis-of-plug-in-main).
 
 # (PART) Roadwork ahead {-} 
 
@@ -2935,5 +2973,6 @@ npreg_grid <- data.frame(subsample = 100,
                          ckerorder = 4,
                          stringsAsFactors = FALSE)
 ```-->
+
 
 

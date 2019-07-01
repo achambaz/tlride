@@ -30,7 +30,7 @@ conditional    probability   that    A=1    given   W    (as   output    by
 probability that A=A_i given W=W_i.
 }
 \references{
-Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
+Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2019).
 }
 \seealso{
 Other estimating functions: \code{\link{compute_Gbar_hatW}},

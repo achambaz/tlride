@@ -41,7 +41,7 @@ Gbar_hat <- estimate_Gbar(obs, working_model_G_one)
 
 }
 \references{
-Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
+Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2019).
 }
 \seealso{
 \code{\link{estimate_QW}} to estimate the marginal distribution of
