@@ -18,7 +18,7 @@ favicon: "favicon.png"
 ---
 
 
-# Welcome {-} 
+#  Welcome {-} 
 
 This is either the  website or the text called __"A  Ride in Targeted Learning
 Territory"__. In  the former case, the  text can be downloaded  by clicking on

@@ -48,7 +48,7 @@ Gbar <- get_feature(experiment, "Gbar")
 
 }
 \references{
-Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
+Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2019).
 }
 \seealso{
 \code{\link{estimate_Gbar}}   to  estimate   the   conditional

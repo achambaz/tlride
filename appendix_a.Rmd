@@ -52,8 +52,8 @@ the  reward  received  in  response  to action  $A$.  Consider  the  following
 assumptions:
 
 1. **Randomization**:   under   $\bbP_{0}$,  the   counterfactual   rewards
-   $(Y_0,Y_1)$ and action $A$ are conditionally independent given $W$, *i.e.*,
-   $(Y_0,Y_1) \perp A \mid W$.
+   $Y_0$, $Y_1$ and action $A$ are conditionally independent given $W$, *i.e.*,
+   $Y_a \perp A \mid W$ for $a=0,1$.
 
 1. **Consistency**: under $\bbP_{0}$, if action $A$ is undertaken then reward
   $Y_{A}$ is received, *i.e.*, $Y = Y_{A}$ (or $Y=Y_{a}$ given that $A=a$).
@@ -158,24 +158,9 @@ consistently then,  by Slutsky's lemma,  the asymptotic variance  of $\sqrt{n}
 ```
 
 
-## Asymptotic negligibility of the remainder term {#asymp-neglig-remain}
-
-Recall that  $\|f\|_{P}^{2} \equiv  \Exp_{P} \left(  f(O)^{2} \right)$  is the
-$L_2(P)$-norm of  $f$, a measurable  function from $\calO$ to  $\bbR$.  Assume
-that  for $a=  0,1$,  $\ell\Gbar_{n}(a,W) \geq  \delta  > 0$  $Q_{0,W}$-almost
-everywhere.
-
-The   Cauchy-Schwarz  inequality   then   implies  that,   for   $a  =   0,1$,
-\begin{equation*}\Rem_{P_0}(\hat{P}_n)   \le   \frac{2}{\delta}   \max_{a=0,1}
-\left(  \|\Qbar_n   (a,\cdot)  -  \Qbar_0  (a,\cdot)\|_{P_0}   \right)  \times
-\|\Gbar_n  -   \Gbar_0\|_{P_0}.\end{equation*}  Therefore,  if   for  $a=0,1$,
-\begin{equation*}\|\Qbar_n(a,\cdot)      -     \Qbar_0(a,\cdot)\|_{P_0}      =
-o_{P_0}(n^{-1/4})\end{equation*}     *and*    \begin{equation*}\|\Gbar_n     -
-\Gbar_0\|_{P_0}        =         o_{P_0}(n^{-1/4}),\end{equation*}        then
-\begin{equation*}\Rem_{P_0}(\hat{P}_n) = o_{P_0}(n^{-1/2}).\end{equation*}
 
 
 
-`r if (knitr::is_html_output()) '# References'`
+
    
    

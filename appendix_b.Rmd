@@ -21,7 +21,7 @@ options(dplyr.print_min = 6, dplyr.print_max = 6)
 ```
 # More results and their proofs {#more-proofs}
 
-*Written too quickly. Checks needed!*
+*Written quickly. Checks needed!*
 
 ## Estimation of the asymptotic variance of an estimator
 
@@ -64,6 +64,138 @@ then  the influence  curve  of  $\psi_{n}$ equals  $D  -  \Psi(P_{0})$ plus  a
 function of $O$ that is orthogonal to $D - \Psi(P_{0})$. Thus the variance of
 the   influence   curve   is   larger    than   that   of   $D$,   hence   the
 anti-conservativeness.
+
+## &#9761; \stixdanger{} General analysis of plug-in estimators {#app-analysis-of-plug-in}
+
+Recall that  $\Algo_{Q_{W}}$ is  an algorithm designed  for the  estimation of
+$Q_{0,W}$  (see Section  \@ref(nuisance-QW)) and  that we  denote by  $Q_{n,W}
+\triangleq \Algo_{Q_{W}}(P_{n})$ the  output of the algorithm  trained on $P_{n}$.
+Likewise,  $\Algo_{\Gbar}$  and  $\Algo_{\Qbar}$ are  two  generic  algorithms
+designed for  the estimation of  $\Gbar_{0}$ and of $\Qbar_{0}$  (see Sections
+\@ref(nuisance-Gbar)    and     \@ref(nuisance-Qbar)),    $\Gbar_{n}    \triangleq
+\Algo_{\Gbar}(P_{n})$  and $\Qbar_{n}  \triangleq \Algo_{\Qbar}(P_{n})$  are their
+outputs once trained on $P_{n}$.
+
+Let us now introduce $\Phat_n$ a law in $\calM$ such that the $Q_{W}$, $\Gbar$
+and   $\Qbar$  features   of  $\Phat_n$   equal  $Q_{n,W}$,   $\Gbar_{n}$  and
+$\Qbar_{n}$,  respectively.  We  say that  any such  law is  *compatible* with
+$Q_{n,W}$, $\Gbar_n$ and $\Qbar_n$.
+
+### Main analysis {#app-analysis-of-plug-in-main}
+
+Substituting $\Phat_n$ for $P$ in \@ref(eq:taylor-expansion) yields
+\@ref(eq:hard-to-study): 
+\begin{equation} 
+\sqrt{n} (\Psi(\Phat_n) - \Psi(P_0)) =  - \sqrt{n} P_0 D^*(\Phat_n) + \sqrt{n}
+\Rem_{P_0}(\Phat_n), 
+\end{equation}
+
+an equality that we rewrite as
+\begin{align} 
+\sqrt{n} (\Psi(\Phat_n) - \Psi(P_0)) = - & \sqrt{n} P_n D^*(\Phat_n) + \sqrt{n}
+(P_n - P_0) D^*(P_0)\\ & + \sqrt{n}(P_n - P_0) [D^*(\Phat_n) - D^*(P_0)] +
+\sqrt{n}\Rem_{P_0}(\Phat_n). 
+\end{align} 
+
+Let  us know  study  in turn  the  four  terms in  the  above right-hand  side
+sum. Recall that  $X_n = o_{P_0}(1)$ means that $P_0(|X_n|  > t)$ converges to
+zero for all $t>0$ as $n$ goes to infinity.
+
+1. In view of \@ref(eq:rem-two), the fourth term is $o_{P_0}(1)$ provided that
+   $\sqrt{n}\|\Qbar     -     \Qbar_{0}\|_{P_0}      \times     \|(\Gbar     -
+   \Gbar_{0})/\ell\Gbar_{0}\|_{P_0} =  o_{P_0}(1)$.  This is the  case if, for
+   instance,   $\ell\Gbar_{0}$   is  bounded   away   from   zero,  and   both
+   $n^{1/4}\|\Qbar    -     \Qbar_{0}\|_{P_0}$    and     $n^{1/4}\|\Gbar    -
+   \Gbar_{0}\|_{P_0}$ are  $o_{P_0}(1)$. What  really matters,  remarkably, is
+   the  *product* of  the  two norms.   If  each  norm goes  to  zero at  rate
+   $n^{1/4}$, then  their product does at  rate $\sqrt{n}$. Of course,  if one
+   goes to  zero at rate  $n^{1/4 + c}$ for  some $0<c<1/4$, then  it suffices
+   that  the  other go  to  zero  at rate  $n^{1/4  -  c}$. See  also  Section
+   \@ref(asymp-neglig-remain). 
+
+2. A  fundamental result from  empirical processes theory gives  us conditions
+   guaranteeing  that the  third  term  is $o_{P_0}(1)$.   By  Lemma 19.24  in
+   [@vdV98], this is the case indeed if $\|D^*(\Phat_n) - D^*(P_0)\|_{P_{0}} = o_{P_0}
+   (1)$ (that is, if $D^*(\Phat_n)$  estimates consistently $D^*(P_0)$) and if
+   $D^*(\Phat_n)$ falls (with probability tending to one) into a Donsker class
+   (meaning that  the random  $D^*(\Phat_n)$ must belong  eventually to  a set
+   that is  not too  large).  Requesting that  $\|D^*(\Phat_n) -  D^*(P_0)\|_{P_{0}} =
+   o_{P_0}  (1)$  is  not much  if  one  is  already  willing to  assume  that
+   $n^{1/4}\|\Qbar    -     \Qbar_{0}\|_{P_0}$    and     $n^{1/4}\|\Gbar    -
+   \Gbar_{0}\|_{P_0}$ are $o_{P_0}(1)$. Moreover,  the second condition can be
+   interpreted  as a  condition  on the  complexity/versatility of  algorithms
+   $\Algo_{\Gbar}$ and $\Algo_{\Qbar}$. 
+   
+3. By  the central  limit theorem,  the second  term converges  in law  to the
+   centered Gaussian law with variance $P_0 D^*(P_0)^2$.
+   
+4. As  for the first term,  all we can say  is that it is  a potentially large
+   (because of the $\sqrt{n}$ renormalization factor) *bias term*.
+
+### Estimation of the asymptotic variance
+
+Let  us   show  now   that,  under   the  assumptions   we  made   in  Section
+\@ref(app-analysis-of-plug-in-main)  and  additional  assumptions  of  similar
+nature,  $P_{n}  D^{*}  (\Phat_n)^2$  estimates  consistently  the  asymptotic
+variance $P_{0} D^{*}  (P_{0})^2$.  The proof hinges again  on a decomposition
+of  the  difference between  the  two  quantities as  a  sum  of three  terms:
+\begin{align}  P_{n} D^{*}  (\Phat_n)^2 -  P_{0} D^{*}  (P_{0})^2= &  (P_{n} -
+P_{0}) \left(D^{*} (\Phat_n)^2 - D^{*}  (P_{0})^2\right)\\ & + (P_{n} - P_{0})
+D^{*}  (P_{0})^2 +  P_{0}  (D^{*} \left(\Phat_n)^2  - D^{*}  (P_{0})^2\right).
+\end{align}
+
+We study  the three  terms in  turn. Recall  that $X_n  = o_{P_0}(1/\sqrt{n})$
+means that  $P_0(\sqrt{n}|X_n| > t)$  converges to zero  for all $t>0$  as $n$
+goes to infinity. 
+
+1. In    light   of   the   study    of   the   third   term    in   Section
+   \@ref(app-analysis-of-plug-in-main),      if       $\|D^*(\Phat_n)^2      -
+   D^*(P_0)^2\|_{P_{0}} =  o_{P_0} (1)$ and if  $D^*(\Phat_n)^{2}$ falls (with
+   probability tending  to one) into a  Donsker class, then the  first term is
+   $o_{P_0}(1/\sqrt{n})$.   Furthermore,   if  $D^*(\Phat_n)$   falls   (with
+   probability tending  to one) into  a Donsker  class, an assumption  we made
+   earlier,   then    so   does    $D^*(\Phat_n)^{2}$.    In    addition,   if
+   $\|D^*(\Phat_n) - D^*(P_0)\|_{P_{0}} =  o_{P_0} (1)$, another assumption we
+   made   earlier,  and   if  there   exists  a   constant  $c>0$   such  that
+   \begin{equation} \sup_{n \geq 1}  \|D^*(\Phat_n) + D^*(P_0)\|_{\infty} \leq
+   c (\#eq:bounded-sup-norm)  \end{equation}   $P_{0}$-almost   surely,  then   $\|D^*(\Phat_n)^2   -
+   D^*(P_0)^2\|_{P_{0}}   =   o_{P_0}   (1)$  too   because   \begin{equation}
+   \|D^*(\Phat_n)^2   -   D^*(P_0)^2\|_{P_{0}}   \leq   c   \|D^*(\Phat_n)   -
+   D^*(P_0)\|_{P_{0}}.  \end{equation} The existence of such a constant $c$ is
+   granted whenever $\ell\Gbar_{0}$ and  $\ell\Gbar_{n}$ are bounded away from
+   zero. Note  that the  condition on  $\ell\Gbar_{n}$ can  be inforced  by us
+   through the specification of algorithm $\Algo_{\Gbar}$.
+
+2. By the central limit theorem, $\sqrt{n}$ times the second term converges in
+   law  to  the  centered  Gaussian law  with  variance  $\Var_{P_{0}}  (D^{*}
+   (P_{0})(O)^2)$, which  is finite  whenever $\ell\Gbar_{0}$ is  bounded away
+   from zero.  By Theorem 2.4  in [@vdV98], the  second term is  thus $O_{P_0}
+   (1/\sqrt{n})$ hence $o_{P_0} (1)$. 
+   
+3. Finally, under assumption \@ref(eq:bounded-sup-norm), the absolute value of
+   the  third term  is smaller  than \begin{equation}c  P_{0} |D^*(\Phat_n)  -
+   D^*(P_0)|     \leq    c     \|D^*(\Phat_n)    -     D^*(P_0)\|_{P_{0}}    =
+   o_{P_0}(1),\end{equation}   where    the   inequality   follows    from   the
+   Cauchy-Schwarz inequality. 
+
+In conclusion, $P_{n}  D^{*} (\Phat_n)^2 - P_{0} D^{*}  (P_{0})^2 = o_{P_0}(1)$,
+hence the result.
+
+## Asymptotic negligibility of the remainder term {#asymp-neglig-remain}
+
+Recall that  $\|f\|_{P}^{2} \equiv  \Exp_{P} \left(  f(O)^{2} \right)$  is the
+$L_2(P)$-norm of  $f$, a measurable  function from $\calO$ to  $\bbR$.  Assume
+that  for $a=  0,1$,  $\ell\Gbar_{n}(a,W) \geq  \delta  > 0$  $Q_{0,W}$-almost
+everywhere.
+
+The   Cauchy-Schwarz  inequality   then   implies  that,   for   $a  =   0,1$,
+\begin{equation*}\Rem_{P_0}(\Phat_n)   \le   \frac{2}{\delta}   \max_{a=0,1}
+\left(  \|\Qbar_n   (a,\cdot)  -  \Qbar_0  (a,\cdot)\|_{P_0}   \right)  \times
+\|\Gbar_n  -   \Gbar_0\|_{P_0}.\end{equation*}  Therefore,  if   for  $a=0,1$,
+\begin{equation*}\|\Qbar_n(a,\cdot)      -     \Qbar_0(a,\cdot)\|_{P_0}      =
+o_{P_0}(n^{-1/4})\end{equation*}     *and*    \begin{equation*}\|\Gbar_n     -
+\Gbar_0\|_{P_0}        =         o_{P_0}(n^{-1/4}),\end{equation*}        then
+\begin{equation*}\Rem_{P_0}(\Phat_n) = o_{P_0}(n^{-1/2}).\end{equation*}
 
 
 `r if (knitr::is_html_output()) '# References'`

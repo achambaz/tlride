@@ -87,7 +87,7 @@ kknn_algo <- list(
 attr(kknn_algo, "ML") <- TRUE
 attr(kknn_algo, "stratify") <- FALSE
 
-kknn_grid <- expand.grid(kmax = 5, distance = 2, kernel = "gaussian")
+kknn_grid <- expand.grid(kmax = 25, distance = 2, kernel = "gaussian")
 
 kknn_control <- caret::trainControl(method = "none",
                                     predictionBounds = c(0, 1),

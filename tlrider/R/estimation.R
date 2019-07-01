@@ -47,7 +47,7 @@ trim_glm_fit <- caret::getModelInfo("glm")$glm$trim
 #'   W, \code{\link{estimate_Qbar}} to estimate the conditional expectation of
 #'   Y given (A,W).
 #' 
-#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
+#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2019).
 #' 
 #' @return The  result of  the fit  output by  the algorithm  trained on  the
 #'   learning data set.
@@ -99,7 +99,7 @@ estimate_Gbar <- function(dat, algorithm, ...) {
 #'   W,  \code{\link{estimate_Gbar}} to  estimate the  conditional probability
 #'   that A=1 given W.
 #'
-#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
+#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2019).
 #' 
 #' @return The  result of  the fit  output by  the algorithm  trained on  the
 #'   learning data set.
@@ -172,7 +172,7 @@ estimate_Qbar <- function(dat, algorithm, ...) {
 #'   probability that A=1 given W, \code{\link{estimate_Qbar}} to estimate the
 #'   conditional expectation of Y given (A,W).
 #'
-#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
+#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2019).
 #' 
 #' @return A  \code{tibble}  with  columns named  'value'  and 'weight'  that
 #'   describes the empirical law of 'W' in data set 'dat'.
@@ -218,7 +218,7 @@ estimate_QW <- function(dat) {
 #'
 #' @family estimating functions
 #'
-#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
+#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2019).
 #' 
 #' @export
 compute_lGbar_hatAW <- function(A, W, Gbar_hat, threshold = 0.05) {
@@ -251,7 +251,7 @@ compute_lGbar_hatAW <- function(A, W, Gbar_hat, threshold = 0.05) {
 #'
 #' @family estimating functions
 #'
-#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
+#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2019).
 #' 
 #' @export
 compute_Gbar_hatW <- function(W, Gbar_hat, threshold = 0.05) {
@@ -287,7 +287,7 @@ compute_Gbar_hatW <- function(W, Gbar_hat, threshold = 0.05) {
 #'
 #' @family estimating functions
 #'
-#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
+#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2019).
 #' 
 #' @export
 compute_Qbar_hatAW <- function(A, W, Qbar_hat, blip = FALSE) {
@@ -430,7 +430,7 @@ wrapper <- function(fit, unenclose = TRUE) {
 #'   probability that A=1 given  W, \code{\link{compute_gcomp}} to compute the
 #'   G-computation estimator.
 #'
-#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
+#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2019).
 #' 
 #' @return  A  \code{tibble} containing  the  value  of the  IPTW  estimator
 #'   ('psi_n'  column) and  that of  the estimator  of its  standard deviation
@@ -482,11 +482,11 @@ compute_iptw <- function(dat, Gbar, threshold = 0.05) {
 #'   standard deviation of the G-computation  estimator, which is not reliable.
 #'   
 #' @seealso \code{\link{estimate_QW}}  to  estimate the  marginal  law of  W,
-#'   \code{\link{estimate_Qbar}} to estimate  the conditional probability that
-#'   A=1 given  W, \code{\link{compute_iptw}}  to compute the  IPTW estimator,
+#'   \code{\link{estimate_Qbar}} to estimate  the conditional expectation of Y
+#'   given  (A,W), \code{\link{compute_iptw}}  to compute the  IPTW estimator,
 #'   \code{\link{wrapper}}.
 #'
-#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
+#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2019).
 #' 
 #' @return  A  \code{tibble} containing  the  value  of the  G-computation  estimator
 #'   ('psi_n'  column) and  that of  the estimator  of its  standard deviation
@@ -531,3 +531,181 @@ compute_gcomp <- function(QW, Qbar, nobs) {
   tibble::tibble(psi_n = psi_n, sig_n = sig_n)
 }
 
+#' Applies a one-step correction to an initial estimator
+#'
+#' Given an  (initial) substitution  estimator of \eqn{\Psi}  at the  law that
+#' generated    the    data    set    used    to    build    the    estimator,
+#' \code{apply_one_step_correction}  updates  it  in  one  single  step.   The
+#' correction exploits\itemize{\item the so called  'Gbar' feature of the law,
+#' either a  priori known or  estimated \item the  estimator of the  so called
+#' 'Qbar' feature  of the law  that was built and  used to derive  the initial
+#' estimator \item the initial estimator \item  the data set used to infer the
+#' above features and parameter.}
+#'
+#' @param  dat The learning data  set. Must have the  same form as a  data set
+#'   produced by an object of \code{class} \code{LAW} (see '?tlrider').
+#'
+#' @param  Gbar  The actual  'Gbar'  feature  of  the  law, if  it  is  known
+#'   beforehand, or an estimator  thereof, the output of \code{estimate_Gbar},
+#'   derived  by   training  an  algorithm   on  a  learning  data   set  (see
+#'   '?estimate_Gbar').
+#'
+#' @param Qbar  The output  of \code{estimate_Qbar},  derived by  training an
+#'   algorithm on a learning data set (see '?estimate_Qbar').
+#'
+#' @param psi A \code{numeric}, the estimator to be corrected in one step.
+#'
+#' @seealso   \code{\link{estimate_Gbar}}   to  estimate   the   conditional
+#'   probability that A=1 given W, \code{\link{estimate_Qbar}} to estimate the
+#'   conditional expectation of Y  given (A,W), \code{\link{compute_gcomp}} to
+#'   compute             the              G-computation             estimator,
+#'   \code{\link{apply_targeting_step}}  to   apply  a   targeting  step,
+#'   \code{\link{wrapper}}.
+#'
+#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2019).
+#' 
+#' @return A \code{tibble} containing  the value of updated estimator ('psi_n'
+#'   column)  and that  of the  estimator of  its standard  deviation ('sig_n'
+#'   column).
+#'
+#' @details Caution:  the estimator of the standard deviation  of the updated
+#'   estimator can be trusted only in very specific circumstances.
+#' 
+#' @examples
+#'
+#' ## create an experiment and draw a data set from it
+#' example(tlrider, echo = FALSE)
+#' obs <- sample_from(experiment, n = 250)
+#'
+#' ## estimate 'QW', 'Gbar' and 'Qbar'
+#' QW_hat <- estimate_QW(obs)
+#' Gbar_hat <- estimate_Gbar(obs, working_model_G_one)
+#' Qbar_hat <- estimate_Qbar(obs, working_model_Q_one)
+#'
+#' ## wrap 'Gbar_hat' and 'Qbar_hat' (two fits) into two functions
+#' Gbar_hat_fun <- wrapper(Gbar_hat, FALSE)
+#' Qbar_hat_fun <- wrapper(Qbar_hat, FALSE)
+#' 
+#' ## compute the G-computation estimator
+#' psi_hat <- compute_gcomp(QW_hat, Qbar_hat_fun, nrow(obs))
+#'
+#' ## apply the one-step correction
+#' (apply_one_step_correction(obs, Gbar_hat_fun, Qbar_hat_fun, psi_hat$psi_n))
+#' 
+#' @export 
+apply_one_step_correction <- function(dat, Gbar, Qbar, psi) {
+  eic <- function(obs) {
+    if (length(intersect(c("W", "A", "Y"), names(obs))) == 3) {
+      stop(stringr::str_c("Argument 'obs' of ",
+                          deparse(substitute(this)),
+                          " should contain columns named 'W', 'A' and 'Y'.\n"))
+    } 
+    QAW <- Qbar(obs[, c("A", "W")])
+    QoneW <- Qbar(cbind(A = 1, W = obs[, "W"]))
+    QzeroW <- Qbar(cbind(A = 0, W = obs[, "W"]))
+    GW <- Gbar(obs[, "W", drop = FALSE])
+    lGAW <- obs[, "A"] * GW + (1 - obs[, "A"]) * (1 - GW)
+    out <- (QoneW - QzeroW - psi) + (2 * obs[, "A"] - 1) / lGAW * (obs[, "Y"] - QAW)
+    out <- as.vector(out)
+    return(out)
+  }
+  eic_dat <- eic(dat)
+  psi_n <- psi + mean(eic_dat)
+  sig_n <- sd(eic_dat)/sqrt(nrow(dat))
+  tibble::tibble(psi_n = psi_n, sig_n = sig_n)
+}
+
+
+#' Applies a targeting step to an initial G-computation estimator
+#'
+#' Given an  (initial) G-computation  estimator of \eqn{\Psi}  at the  law that
+#' generated    the    data    set    used    to    build    the    estimator, 
+#' \code{apply_targeting_step}  updates  it  in  one  single  step.   The
+#' correction exploits\itemize{\item the so called  'Gbar' feature of the law,
+#' either a  priori known or  estimated \item the  estimator of the  so called
+#' 'Qbar' feature  of the law  that was built and  used to derive  the initial
+#' estimator \item the initial estimator \item  the data set used to infer the
+#' above features and parameter.}
+#'
+#' @param  dat The learning data  set. Must have the  same form as a  data set
+#'   produced by an object of \code{class} \code{LAW} (see '?tlrider').
+#'
+#' @param  Gbar  The actual  'Gbar'  feature  of  the  law, if  it  is  known
+#'   beforehand, or an estimator  thereof, the output of \code{estimate_Gbar},
+#'   derived  by   training  an  algorithm   on  a  learning  data   set  (see
+#'   '?estimate_Gbar').
+#'
+#' @param Qbar  The output  of \code{estimate_Qbar},  derived by  training an
+#'   algorithm on a learning data set (see '?estimate_Qbar').
+#'
+#' @param threshold  A \code{numeric} in [1e-3, 1-1e-3]  (default value 1e-2),
+#'   used to bound the evaluations of 'Gbar' away from 0 and 1.
+#' 
+#' @seealso   \code{\link{estimate_Gbar}}   to  estimate   the   conditional
+#'   probability that A=1 given W, \code{\link{estimate_Qbar}} to estimate the
+#'   conditional expectation of Y  given (A,W), \code{\link{compute_gcomp}} to
+#'   compute             the              G-computation             estimator,
+#'   \code{\link{apply_one_step_correction}} to apply the one-step correction,
+#'   \code{\link{wrapper}}.
+#'
+#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2019).
+#' 
+#' @return A \code{tibble} containing  the value of updated estimator ('psi_n'
+#'   column)  and that  of the  estimator of  its standard  deviation ('sig_n'
+#'   column).
+#'
+#' @details Caution:  the estimator of the standard deviation  of the updated
+#'   estimator can be trusted only in very specific circumstances.
+#' 
+#' @examples
+#'
+#' ## create an experiment and draw a data set from it
+#' example(tlrider, echo = FALSE)
+#' obs <- sample_from(experiment, n = 250)
+#'
+#' ## estimate 'QW', 'Gbar' and 'Qbar'
+#' QW_hat <- estimate_QW(obs)
+#' Gbar_hat <- estimate_Gbar(obs, working_model_G_one)
+#' Qbar_hat <- estimate_Qbar(obs, working_model_Q_one)
+#'
+#' ## wrap 'Gbar_hat' and 'Qbar_hat' (two fits) into two functions
+#' Gbar_hat_fun <- wrapper(Gbar_hat, FALSE)
+#' Qbar_hat_fun <- wrapper(Qbar_hat, FALSE)
+#' 
+#' ## compute the G-computation estimator
+#' psi_hat <- compute_gcomp(QW_hat, Qbar_hat_fun, nrow(obs))
+#'
+#' ## apply the targeting step
+#' (apply_targeting_step(obs, Gbar_hat_fun, Qbar_hat_fun))
+#' 
+#' @export 
+apply_targeting_step <- function(dat, Gbar, Qbar, threshold = 5e-2) {
+  threshold <- R.utils::Arguments$getNumeric(threshold, c(1e-3, 1-1e-3))
+  preliminary <- function(obs) {
+    if (length(intersect(c("W", "A", "Y"), names(obs))) == 3) {
+      stop(stringr::str_c("Argument 'obs' of ",
+                          deparse(substitute(this)),
+                          " should contain columns named 'W', 'A' and 'Y'.\n"))
+    } 
+    QAW <- Qbar(obs[, c("A", "W")])
+    QoneW <- Qbar(cbind(A = 1, W = obs[, "W"]))
+    QzeroW <- Qbar(cbind(A = 0, W = obs[, "W"]))
+    GW <- pmax(threshold, pmin(1 - threshold, Gbar(obs[, "W", drop = FALSE])))
+    HW <- obs[, "A"] / GW - (1 - obs[, "A"]) / (1 - GW)
+    tibble::tibble(QAW = QAW, QoneW = QoneW, QzeroW = QzeroW,
+                   GW = GW, HW = HW)
+  }
+  tib <- preliminary(dat)
+  fit <- glm(Y ~ HW - 1,
+             data = data.frame(Y = dat[, "Y"], HW = tib$HW),
+             offset = stats::qlogis(tib$QAW), family = binomial())
+  epsilon <- stats::coef(fit)
+  QoneW_epsilon <- stats::plogis(stats::qlogis(tib$QoneW) + epsilon/tib$GW)
+  QzeroW_epsilon <- stats::plogis(stats::qlogis(tib$QzeroW) - epsilon/(1-tib$GW))
+  QAW_epsilon <- dat[, "A"] * QoneW_epsilon + (1 - dat[, "A"]) * QzeroW_epsilon
+  psi_n <- mean(QoneW_epsilon - QzeroW_epsilon)
+  eic_dat <- (dat[, "Y"] - QAW_epsilon) * tib$HW +
+    QoneW_epsilon - QzeroW_epsilon - psi_n
+  sig_n <- sd(eic_dat)/sqrt(nrow(dat))
+  tibble::tibble(psi_n = psi_n, sig_n = sig_n)
+}

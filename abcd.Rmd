@@ -1,4 +1,4 @@
-```{r include=FALSE, cache=FALSE}
+```{r include = FALSE, cache = FALSE}
 options(digits = 3)
 
 knitr::opts_chunk$set(
@@ -19,69 +19,9 @@ knitr::opts_chunk$set(
 
 options(dplyr.print_min = 6, dplyr.print_max = 6)
 ```
-```{r include=FALSE, cache=FALSE}
-options(digits = 3)
 
-knitr::opts_chunk$set(
-  comment = "#>",
-  collapse = TRUE,
-  cache = TRUE,
-  out.width = "70%",
-  fig.align = 'center',
-  fig.width = 6, # used to have: fig.width = 12,
-  fig.asp = 0.618, # used to have: fig.height = 4, 
-  fig.show = "hold",
-  fig.path = 'img/',
-  size = "tiny",
-  message = FALSE,
-  warning = FALSE,
-  warnings = FALSE
-)
+# (PART) On the road {-}
 
-options(dplyr.print_min = 6, dplyr.print_max = 6)
-```
-```{r include=FALSE, cache=FALSE}
-options(digits = 3)
-
-knitr::opts_chunk$set(
-  comment = "#>",
-  collapse = TRUE,
-  cache = TRUE,
-  out.width = "70%",
-  fig.align = 'center',
-  fig.width = 6, # used to have: fig.width = 12,
-  fig.asp = 0.618, # used to have: fig.height = 4, 
-  fig.show = "hold",
-  fig.path = 'img/',
-  size = "tiny",
-  message = FALSE,
-  warning = FALSE,
-  warnings = FALSE
-)
-
-options(dplyr.print_min = 6, dplyr.print_max = 6)
-```
-```{r include=FALSE, cache=FALSE}
-options(digits = 3)
-
-knitr::opts_chunk$set(
-  comment = "#>",
-  collapse = TRUE,
-  cache = TRUE,
-  out.width = "70%",
-  fig.align = 'center',
-  fig.width = 6, # used to have: fig.width = 12,
-  fig.asp = 0.618, # used to have: fig.height = 4, 
-  fig.show = "hold",
-  fig.path = 'img/',
-  size = "tiny",
-  message = FALSE,
-  warning = FALSE,
-  warnings = FALSE
-)
-
-options(dplyr.print_min = 6, dplyr.print_max = 6)
-```
 # A ride
 
 
@@ -171,8 +111,8 @@ ls()
 ```
 
 Function `expit` implements the link function  $\expit : \bbR \to ]0,1[$ given
-by  $\expit(x) \equiv  (1 +  e^{-x})^{-1}$.  Function  `logit` implements  its
-inverse function  $\logit : ]0,1[  \to \bbR$  given by $\logit(p)  \equiv \log
+by  $\expit(x) \triangleq  (1 +  e^{-x})^{-1}$.  Function  `logit` implements  its
+inverse function  $\logit : ]0,1[  \to \bbR$  given by $\logit(p)  \triangleq \log
 [p/(1-p)]$. 
 
 Let us take a look at `experiment`:
@@ -182,7 +122,7 @@ experiment
 ```
 
 The law $P_{0}$ of the synthetic experiment `experiment` built by us generates
-a generic observation $O$ that decomposes as \begin{equation*} O \equiv (W, A,
+a generic observation $O$ that decomposes as \begin{equation*} O \triangleq (W, A,
 Y) \in [0,1] \times \{0,1\} \times [0,1].  \end{equation*} We interpret $W$ as
 a real valued summary  measure of a random context where  an action $A$ chosen
 among two is undertaken, leading to a real valued reward $Y$.
@@ -228,8 +168,8 @@ important messages.]
 
 The `Gbar`  feature describes the  conditional probability  of action $A  = 1$
 given  $W$. For  each $a  \in  \{0,1\}$, we  denote \begin{align*}  \Gbar_0(W)
-&\equiv \Pr_{P_0}(A  = 1 |  W), \\\ell\Gbar_0(a,W)  &\equiv \Pr_{P_0}(A =  a |
-W).\end{align*}    Obviously,    \begin{equation*}\ell\Gbar_{0}(A,W)    \equiv
+&\triangleq \Pr_{P_0}(A  = 1 |  W), \\\ell\Gbar_0(a,W)  &\triangleq \Pr_{P_0}(A =  a |
+W).\end{align*}    Obviously,    \begin{equation*}\ell\Gbar_{0}(A,W)    \triangleq
 A\Gbar_{0}(W) + (1-A) (1-\Gbar_{0}(W)).\end{equation*}
 
 ```{r show-Gbar}
@@ -237,7 +177,8 @@ relevant_features$Gbar
 ```
 
 Note how real numbers of the form $1 + 2W - 4 * \sqrt{|W - 5/12|})$ are mapped
-into the interval $[0,1]$ by the $\expit$ link function.
+into the interval  $[0,1]$ by the $\expit$ link function.  We refer the reader
+to Figure \@ref(fig:estimate-Gbar-three) for a visualization of $\Gbar_{0}$.
 
 #### `qY` {-}
 
@@ -374,8 +315,8 @@ alter(my_experiment,   ## characterize its relevant features
 
 ```{r my-own-experiment-c}
 obs <- sample_from(my_experiment, 1e4)
-obs %>% as.tibble %>% group_by(W, A, Y) %>% summarize(how_many = n())
-obs %>% as.tibble %>% group_by(W, A) %>% summarize(prob = mean(Y))
+obs %>% as_tibble %>% group_by(W, A, Y) %>% summarize(how_many = n()) %>% ungroup
+obs %>% as_tibble %>% group_by(W, A) %>% summarize(prob = mean(Y)) %>% ungroup
 ```
 
 5. Now, make your own experiment.
@@ -390,7 +331,7 @@ It happens that we especially care for a finite-dimensional feature of $P_{0}$
 that  we   denote  by  $\psi_{0}$.    Its  definition  involves  two   of  the
 aforementioned infinite-dimensional  features, the  marginal law  $Q_{0,W}$ of
 $W$  and  the  conditional  mean  $\Qbar_{0}$   of  $Y$  given  $A$  and  $W$:
-\begin{align}  \psi_{0}  &\equiv  \int \left(\Qbar_{0}(1,  w)  -  \Qbar_{0}(0,
+\begin{align}  \psi_{0}  &\triangleq  \int \left(\Qbar_{0}(1,  w)  -  \Qbar_{0}(0,
 w)\right)    dQ_{0,W}(w)    (\#eq:psi-zero)\\     \notag    &=    \Exp_{P_{0}}
 \left(\Exp_{P_0}(Y \mid  A =  1, W)  - \Exp_{P_0}(Y  \mid A  = 0,  W) \right).
 \end{align}
@@ -445,7 +386,7 @@ In words, the experiment unfolds like this (see also Section \@ref(npsem)):
 4. the  action yields  a reward  $Y$, which equals  either $Y_{0}$  or $Y_{1}$
    depending on whether action $a=0$ or $a=1$ has been undertaken;
    
-5. summarize  the course  of the experiment  with $O \equiv  (W, A,  Y)$, thus
+5. summarize  the course  of the experiment  with $O \triangleq  (W, A,  Y)$, thus
    concealing $Y_{0}$ and $Y_{1}$.
 
 
@@ -455,7 +396,7 @@ to  `sample_from` for  `experiment`  (see Section  \@ref(causal-computation)).
 Doing so  triggers a modification of  the nature of the  experiment, enforcing
 that the counterfactual rewards $Y_{0}$ and  $Y_{1}$ be part of the summary of
 the   experiment   eventually.    In   light   of   the   above   enumeration,
-\begin{equation*}  \bbO \equiv  (W,  Y_{0}, Y_{1},  A,  Y) \end{equation*}  is
+\begin{equation*}  \bbO \triangleq  (W,  Y_{0}, Y_{1},  A,  Y) \end{equation*}  is
 output,  as  opposed  to  its  summary  measure  $O$.   This  defines  another
 experiment and its law, that we denote $\bbP_{0}$.
 
@@ -513,13 +454,13 @@ Equality    \@ref(eq:psi-zero-bis)     shows    that     parameter    $\psi_0$
 $a = 1$ rather than $a = 0$.  An alternative way to describe the rewards under
 different actions involves *quantiles* as opposed to *averages*.
 
-Let \begin{equation*} Q_{0,Y}(y,  A, W) \equiv \int_{0}^y q_{0,Y}(u,  A, W) du
+Let \begin{equation*} Q_{0,Y}(y,  A, W) \triangleq \int_{0}^y q_{0,Y}(u,  A, W) du
 \end{equation*} be the conditional cumulative distribution of reward $Y$ given
 $A$ and $W$, evaluated  at $y \in ]0,1[$, that is implied  by $P_0$.  For each
 action $a \in \{0,1\}$ and $c \in ]0,1[$, introduce 
 
 \begin{equation}
-\gamma_{0,a,c}  \equiv  \inf  \left\{y  \in  ]0,1[ :  \int  Q_{0,Y}(y,  a,  w)
+\gamma_{0,a,c}  \triangleq  \inf  \left\{y  \in  ]0,1[ :  \int  Q_{0,Y}(y,  a,  w)
 dQ_{0,W}(w) \ge c \right\}. (\#eq:def-quantile)
 \end{equation}
 
@@ -528,7 +469,7 @@ It   is  not   very   difficult  to   check  (see   Problem   1  below)   that
 \leq   y)   \geq   c\right\}.    (\#eq:alter-gamma-zero)\end{equation}   Thus,
 $\gamma_{0,a,c}$ can  be interpreted  as a covariate-adjusted  $c$-th quantile
 reward     when     action     $a$    is     enforced.      The     difference
-\begin{equation}\delta_{0,c}    \equiv    \gamma_{0,1,c}   -    \gamma_{0,0,c}
+\begin{equation}\delta_{0,c}    \triangleq    \gamma_{0,1,c}   -    \gamma_{0,0,c}
 (\#eq:def-delta)\end{equation} is the $c$-th quantile counterpart to parameter
 $\psi_{0}$ \@ref(eq:psi-zero).
 
@@ -565,10 +506,10 @@ $P_{0}     =    P_{\theta_{0}}$,     and     one     wishes    to     estimate
 $\theta_{0}$.\index{identifiability}
 
 For instance,  each $P_{\theta}$ could be  the Gaussian law with  mean $\theta
-\in T  \equiv \bbR$ and variance  1, and one  could wish to estimate  the mean
+\in T  \triangleq \bbR$ and variance  1, and one  could wish to estimate  the mean
 $\theta_{0}$ of $P_{0}$. To do so, one could rely on $n$ observations $X_{1}$,
 \ldots,  $X_{n}$  drawn  independently   from  $P_{0}$.   The  empirical  mean
-\begin{equation*}\theta_{n}       \equiv      \frac{1}{n}       \sum_{i=1}^{n}
+\begin{equation*}\theta_{n}       \triangleq      \frac{1}{n}       \sum_{i=1}^{n}
 X_{i}\end{equation*} estimates $\theta_{0}$.  If  we assume that $\Var_{P_{0}}
 (X_{1})$ is  finite, then  $\theta_{n}$ satisfies  many useful  properties. In
 particular, it can be used [to construct confidence intervals](#clt).
@@ -578,7 +519,7 @@ Of course, the mean of a law is defined beyond the small model $\{P_{\theta} :
 $\Var_{P}(X)$ is finite.  In particular, $P_{0}  \in \calM$.  For every $P \in
 \calM$,  the mean  $E_{P}(X)$ is  well defined.   Thus, we  can introduce  the
 *statistical    mapping*    $\Theta   :    \calM    \to    \bbR$   given    by
-\begin{equation*}\Theta(P) \equiv E_{P}(X).\end{equation*}
+\begin{equation*}\Theta(P) \triangleq E_{P}(X).\end{equation*}
 
 Interestingly, the empirical measure $P_{n}$^[The empirical measure $P_{n}$ is
 the law such that  *(i)* $X$ drawn from $P_{n}$ takes  its values in $\{X_{1},
@@ -598,21 +539,21 @@ substitution-based, some are not.
 ### The parameter as the value of a statistical mapping at the experiment {#parameter-mapping}
 
 We now go back to our main  topic of interest. Suppose we know beforehand that
-$O$ drawn from $P_{0}$ takes its  values in $\calO \equiv [0,1] \times \{0,1\}
-\times [0,1]$ and that $\Gbar_{0}(W) \equiv _Pr_{P_{0}}(A=1|W)$ is bounded away from
+$O$ drawn from $P_{0}$ takes its  values in $\calO \triangleq [0,1] \times \{0,1\}
+\times [0,1]$ and that $\Gbar_{0}(W) \triangleq _Pr_{P_{0}}(A=1|W)$ is bounded away from
 zero and one  $Q_{0,W}$-almost surely (this is the case  indeed).  Then we can
 define  model  $\calM$ as  the  set  of all  laws  $P$  on $\calO$  such  that
-\begin{equation*}\Gbar(W)  \equiv \Pr_{P}(A=1|W)\end{equation*}  is bounded  away
+\begin{equation*}\Gbar(W)  \triangleq \Pr_{P}(A=1|W)\end{equation*}  is bounded  away
 from zero and one $Q_{W}$-almost surely,  where $Q_{W}$ is the marginal law of
 $W$ under $P$.
 
-Let us also define generically  $\Qbar$ as \begin{equation*}\Qbar (A,W) \equiv
+Let us also define generically  $\Qbar$ as \begin{equation*}\Qbar (A,W) \triangleq
 \Exp_{P} (Y|A, W).\end{equation*}  Note how we have  suppressed the dependence
 of $\Gbar$ and $\Qbar$ on $P$ for notational simplicity.
 
 Central to our approach  is viewing $\psi_{0}$ as the value  at $P_{0}$ of the
 statistical  mapping   $\Psi$  from   $\calM$  to  $[0,1]$   characterized  by
-\begin{align}  \Psi(P) &\equiv  \int  \left(\Qbar(1, w)  - \Qbar(0,  w)\right)
+\begin{align}  \Psi(P) &\triangleq  \int  \left(\Qbar(1, w)  - \Qbar(0,  w)\right)
 dQ_{W}(w) (\#eq:psimap)\\ &= \Exp_{P}  \left(\Qbar(1, W) - \Qbar(0, W)\right),
 \notag \end{align} a clear extension of \@ref(eq:psi-zero).
 
@@ -657,7 +598,7 @@ of  a  mapping  $\Gamma_{a,c}$  from   $\calM$  to  $[0,1]$  characterized  by
 dQ_W(w) \ge  c \right\}.   \end{equation*} The  difference in  $c$-th quantile
 rewards, $\delta_{0,c}$  \@ref(eq:def-delta), may  similarly be viewed  as the
 value  at   $P_{0}$  of  a   mapping  $\Delta_c$  from  $\calM$   to  $[0,1]$,
-characterized  by  \begin{equation*}   \Delta_c(P)  \equiv  \Gamma_{1,c}(P)  -
+characterized  by  \begin{equation*}   \Delta_c(P)  \triangleq  \Gamma_{1,c}(P)  -
 \Gamma_{0,c}(P).  \end{equation*}
 
 1. Compute the numerical value of $\Gamma_{a,c}(\Pi_0)$ for $(a,c) \in \{0,1\}
@@ -758,7 +699,7 @@ reveal(another_experiment)$sample_from
 ```
 
 Let us call $\Pi_{h} \in \calM$  the law encoded by `another_experiment` for a
-given  `h`  taken  in   $]-1,1[$.   Note  that  \begin{equation*}\calP  \equiv
+given  `h`  taken  in   $]-1,1[$.   Note  that  \begin{equation*}\calP  \triangleq
 \{\Pi_h : h \in ]-1,1[\}\end{equation*}  defines a collection of laws, *i.e.*,
 a statistical model.  
 
@@ -857,12 +798,12 @@ laws $\Pi_0$ and $\Pi_0'$?
 ### Fluctuations
 
 Let us now formally define what it means for statistical mapping $\Psi$ to be
-smooth at every  $P \in \calM$.  For every $h  \in H \equiv ]-M^{-1},M^{-1}[$,
+smooth at every  $P \in \calM$.  For every $h  \in H \triangleq ]-M^{-1},M^{-1}[$,
 we can  define a  law $P_{h}  \in \calM$  by setting  $P_{h} \ll  P$^[That is,
 $P_{h}$  is dominated  by $P$:  if an  event $A$  satisfies $P(A)  = 0$,  then
 necessarily $P_{h} (A) = 0$ too.]  and 
 \begin{equation}
-\frac{dP_h}{dP} \equiv
+\frac{dP_h}{dP} \triangleq
 1 + h s, (\#eq:fluct)
 \end{equation} 
 where   $s  :  \calO\to  \bbR$  is  a
@@ -894,8 +835,10 @@ function $D^{*}(P)  : \calO \to  \bbR$ such that $\Exp_{P}(D^{*}(P)(O))  = 0$,
 $\Var_{P}(D^{*}(P)(O)) < \infty$, and, for  every fluctuation $\{P_{h} : h \in
 H\}$  with  score  $s$  at  $h  =  0$,  the  real-valued  mapping  $h  \mapsto
 \Psi(P_{h})$  is  differentiable   at  $h=0$,  with  a   derivative  equal  to
-\begin{equation}  \Exp_{P}  \left(D^{*}(P)(O) s(O)\right).   (\#eq:derivative)
-\end{equation}  The  object  $D^*(P)$  in  \@ref(eq:derivative)  is  called  a
+\begin{equation} 
+\Exp_{P} \left( D^{*}(P)(O) s(O) \right).  (\#eq:derivative) 
+\end{equation} 
+The object $D^*(P)$ in \@ref(eq:derivative) is called a
 gradient of $\Psi$  at $P$.^[Interestingly, if a fluctuation $\{P_{h}  : h \in
 H\}$  satisfies \@ref(eq:score)  for  a  direction $s$  such  that $s\neq  0$,
 $\Exp_{P}(s(O))  =  0$  and  $\Var_{P}  (s(O))  <  \infty$,  then  $h  \mapsto
@@ -936,9 +879,9 @@ of $D\mapsto \Var_{P} (D(O))$ over the set of all gradients.
 
 It is not difficult to check that the efficient influence curve of statistical
 mapping  $\Psi$  \@ref(eq:psimap)   at  $P  \in  \calM$  can   be  written  as
-\begin{align}  D^{*}(P)  &  \equiv  D_{1}^{*}   (P)  +  D_{2}^{*}  (P),  \quad
-\text{where} (\#eq:eif)\\  D_{1}^{*}(P) (O) &\equiv \Qbar(1,W)  - \Qbar(0,W) -
-\Psi(P),  \notag\\ D_{2}^{*}(P)  (O)  &\equiv \frac{2A-1}{\ell\Gbar(A,W)}(Y  -
+\begin{align}  D^{*}(P)  &  \triangleq  D_{1}^{*}   (P)  +  D_{2}^{*}  (P),  \quad
+\text{where} (\#eq:eif)\\  D_{1}^{*}(P) (O) &\triangleq \Qbar(1,W)  - \Qbar(0,W) -
+\Psi(P),  \notag\\ D_{2}^{*}(P)  (O)  &\triangleq \frac{2A-1}{\ell\Gbar(A,W)}(Y  -
 \Qbar(A,W)).\notag \end{align}
 
 A `method` from package `tlrider` evaluates the efficient influence curve at a
@@ -990,10 +933,10 @@ $\{\Pi_{h} :  h \in [-1,1]\}$ is  a fluctuation of $\Pi_{0}$  in the direction
 (in the sense of \@ref(eq:fluct)) of
 
 \begin{align}
-\notag\sigma_{0}(O) \equiv - 10 \sqrt{W} A \times \beta_{0} & (A,W)\\
+\notag\sigma_{0}(O)  \triangleq &- 10 \sqrt{W} A \times \beta_{0}  (A,W)\\
 &\times\left(\log(1    -     Y)    +     \sum_{k=0}^{3}    \left(k     +    \beta_{0}
-(A,W)\right)^{-1}\right)     +      \text{constant},\\     \text{where}     \;
-\beta_{0}(A,W)&\equiv                                                  \frac{1
+(A,W)\right)^{-1}\right) + \text{constant}, \quad \text{where}\\
+\beta_{0}(A,W)\triangleq & \frac{1
 -\Qbar_{\Pi_{0}}(A,W)}{\Qbar_{\Pi_{0}}(A,W)}. (\#eq:sigma0)\end{align}
 
 Consequently,    the    slope    of     the    dotted    curve    in    Figure
@@ -1042,8 +985,10 @@ numerical approximation `slope_approx` is not too off!
 Suppose  that  $O_{1},  \ldots,  O_{n}$ are  drawn  independently  from  $P\in
 \calM$. If an estimator $\psi_n$ of $\Psi(P)$ can be written as
 
-\begin{equation*}  \psi_n  =  \Psi(P) +  \frac{1}{n}\sum_{i=1}^n  \IC(O_i)  +
-o_{P}(1/\sqrt{n})\end{equation*}
+\begin{equation} 
+\psi_n  =  \Psi(P) +  \frac{1}{n}\sum_{i=1}^n  \IC(O_i)  +
+o_{P}(1/\sqrt{n}) (\#eq:asymptotic-lin)
+\end{equation}
 
 for some function  $\IC : \calO \to  \bbR$ such that $\Exp_P(\IC(O))  = 0$ and
 $\Var_{P}(\IC(O))  < \infty$,  then we  say that  $\psi_n$ is  *asymptotically
@@ -1163,7 +1108,7 @@ Returning to  the present  problem with this  in mind, we  find that  indeed a
 similar approximation strategy may be applied. 
 
 For clarity,  let us introduce a  new shorthand notation.  For  any measurable
-function $f$ of  the observed data $O$, we  may write from now on  $P f \equiv
+function $f$ of  the observed data $O$, we  may write from now on  $P f \triangleq
 \Exp_P(f(O))$. One may argue that the  notation is valuable beyong the gain of
 space. For instance, \@ref(eq:asymp-lin) 
 
@@ -1206,7 +1151,7 @@ the  canonical   gradient  \@ref(eq:eif),   and  linearization   of  parameter
 \@ref(eq:taylor-expansion) combine to determine the remainder: 
 
 \begin{equation}
-\Rem_{P_0}(P)    \equiv   \Psi(P)    -   \Psi(P_0)    -   (P_0    -   P)D^*(P)
+\Rem_{P_0}(P)    \triangleq   \Psi(P)    -   \Psi(P_0)    -   (P_0    -   P)D^*(P)
 (\#eq:remainder-one)
 \end{equation}
 
@@ -1251,7 +1196,7 @@ observations drawn independently from $P_{0}$.)
 
 Let us  denote by  $\|f\|_{P}^{2}$ the  square of  the $L^{2}(P)$-norm  of any
 function  $f$  from $\bbO$  to  $\bbR$  *i.e.*,  using a  recently  introduced
-notation,  $\|f\|_{P}^{2}  \equiv  Pf^{2}$.    For  instance,  $\|\Qbar_{1}  -
+notation,  $\|f\|_{P}^{2}  \triangleq  Pf^{2}$.    For  instance,  $\|\Qbar_{1}  -
 \Qbar_{0}\|_{P}$ or  $\|\Gbar_{1} - \Gbar_{0}\|_{P}$ is  a distance separating
 the features $\Qbar_{1}$ and $\Qbar_{0}$ or $\Gbar_{1}$ and $\Gbar_{0}$.
 
@@ -1261,11 +1206,11 @@ remarkable property:  it is *double-robust*.   Specifically, for every  $P \in
 
 \begin{equation} 
 \Rem_{P_{0}}   (P)^{2}  \leq   \|\Qbar   -
-\Qbar_{0}\|_{P}^{2}  \times   \|(\Gbar  -  \Gbar_{0})/\ell\Gbar_{0}\|_{P}^{2},
+\Qbar_{0}\|_{P_0}^{2}  \times   \|(\Gbar  -  \Gbar_{0})/\ell\Gbar_{0}\|_{P_0}^{2},
 (\#eq:rem-two)
 \end{equation}
 
-where $\Qbar$ and  $\Gbar$ are the counterparts under $P$  to $\Qbar$_{0}$ and
+where $\Qbar$ and  $\Gbar$ are the counterparts under $P$  to $\Qbar_{0}$ and
 $\Gbar_{0}$.   The proof  consists  in a  straightforward  application of  the
 Cauchy-Schwarz   inequality    to   the   right-hand   side    expression   in
 \@ref(eq:remainder-one).
@@ -1373,14 +1318,14 @@ Let us introduce first the following estimator:
 
 \begin{align}
 \notag \psi_{n}^{a}
-&\equiv \frac{\Exp_{P_{n}} (AY)}{\Exp_{P_{n}} (A)} - \frac{\Exp_{P_{n}}
+&\triangleq \frac{\Exp_{P_{n}} (AY)}{\Exp_{P_{n}} (A)} - \frac{\Exp_{P_{n}}
 ((1-A)Y)}{\Exp_{P_{n}}(1-A)} \\ 
 &=          \frac{\sum_{i=1}^{n}         \one\{A_{i}=Y_{i}=1\}}{\sum_{i=1}^{n}
 \one\{A_{i}=1\}}                     -                    \frac{\sum_{i=1}^{n}
 \one\{A_{i}=0,Y_{i}=1\}}{\sum_{i=1}^{n}\one\{A_{i}=0\}}. (\#eq:cautionary) 
 \end{align} 
 
-It    estimates     \begin{align*}\Phi(P_{0})    &\equiv    \frac{\Exp_{P_{0}}
+It    estimates     \begin{align*}\Phi(P_{0})    &\triangleq    \frac{\Exp_{P_{0}}
 (AY)}{\Exp_{P_{0}} (A)} - \frac{\Exp_{P_{0}} ((1-A)Y)}{\Exp_{P_{0}} (1-A)}\\&=
 \Exp_{P_{0}} (Y | A=1) - \Exp_{P_{0}} (Y | A=0).\end{align*}
 
@@ -1420,12 +1365,12 @@ compute_irrelevant_estimator <- function(obs) {
 Function `compute_irrelevant_estimator` computes  the estimator $\psi_{n}^{a}$
 \@ref(eq:cautionary) based on the data set in `obs`. 
 
-Introduce   $X_{n}   \equiv  n^{-1}\sum_{i=1}^{n}   \left(A_{i}Y_{i},   A_{i},
-(1-A_{i})Y_{i},  1-A_{i}\right)^{\top}$ and  $X  \equiv  \left(AY, A,  (1-A)Y,
+Introduce   $X_{n}   \triangleq  n^{-1}\sum_{i=1}^{n}   \left(A_{i}Y_{i},   A_{i},
+(1-A_{i})Y_{i},  1-A_{i}\right)^{\top}$ and  $X  \triangleq  \left(AY, A,  (1-A)Y,
 1-A\right)^{\top}$.  It  happens that  $X_{n}$ is asymptotically  Gaussian: as
 $n$  goes  to  infinity,\begin{equation*}\sqrt{n} \left(X_{n}  -  \Exp_{P_{0}}
 (X)\right)\end{equation*} converges in  law to the centered  Gaussian law with
-covariance matrix \begin{equation*}V_{0} \equiv \Exp_{P_{0}} \left((X
+covariance matrix \begin{equation*}V_{0} \triangleq \Exp_{P_{0}} \left((X
 - \Exp_{P_{0}} (X)) \times (X- \Exp_{P_{0}} (X))^{\top}\right).\end{equation*} 
 
 Let $f:\bbR\times \bbR^{*} \times \bbR\times \bbR^{*}$ be given by $f(r,s,t,u)
@@ -1439,11 +1384,11 @@ Let $f:\bbR\times \bbR^{*} \times \bbR\times \bbR^{*}$ be given by $f(r,s,t,u)
 2. &#9761; \stixdanger{}  Argue  how the  [delta-method](#prop-delta-method)
    yields that $\sqrt{n}(\psi_{n}^{a} - \Phi(P_{0}))$  converges in law to the
    centered  Gaussian  law  with  a   variance  that  can  be  estimated  with
-   \begin{equation}  v_{n}^{a}  \equiv  \nabla f(X_{n})  \times  V_{n}  \times
+   \begin{equation}  v_{n}^{a}  \triangleq  \nabla f(X_{n})  \times  V_{n}  \times
    \nabla f(X_{n})^{\top}. (\#eq:v-n-a) \end{equation}
 
 3. Check  that the  gradient $\nabla f$  of $f$ is  given by  $\nabla f(r,s,t,u)
-   \equiv (1/s,  -r/s^{2}, -1/u, t/u^{2})$.  Point out  to the line  where the
+   \triangleq (1/s,  -r/s^{2}, -1/u, t/u^{2})$.  Point out  to the line  where the
    asymptotic variance of $\psi_{n}^{a}$ is estimated.
 
 ## IPTW estimator assuming the mechanism of action known {#known-gbar-first-pass}
@@ -1462,7 +1407,7 @@ The   alternative  expression   \@ref(eq:psi-zero-b)   suggests  to   estimate
 $\Psi(P_{0})$ with 
 
 \begin{align}
-\psi_{n}^{b}  &\equiv \Exp_{P_{n}}  \left( \frac{2A-1}{\ell  \Gbar_{0}(A,W)} Y
+\psi_{n}^{b}  &\triangleq \Exp_{P_{n}}  \left( \frac{2A-1}{\ell  \Gbar_{0}(A,W)} Y
 \right) \\ 
 &       =        \frac{1}{n}       \sum_{i=1}^{n}       \left(\frac{2A_{i}-1}{
 \ell\Gbar_{0}(A_{i},W_{i})}Y_{i} \right). (\#eq:psi-n-b)
@@ -1486,12 +1431,12 @@ It is easy to check  that $\psi_{n}^{b}$ estimates $\Psi(P_{0})$ consistently,
 but this  is too little to  request from an estimator  of $\psi_{0}$.  Better,
 $\psi_{n}^{b}$   also   satisfies   a   central   limit   theorem:   $\sqrt{n}
 (\psi_{n}^{b} -  \psi_{0})$ converges in law  to a centered Gaussian  law with
-asymptotic     variance     \begin{equation*}v^{b}     \equiv     \Var_{P_{0}}
+asymptotic     variance     \begin{equation*}v^{b}     \triangleq     \Var_{P_{0}}
 \left(\frac{2A-1}{\ell\Gbar_{0}(A,W)}Y\right),\end{equation*}   where  $v^{b}$
 can be consistently estimated by its empirical counterpart
 
 \begin{align}
-(\#eq:v-n-b)      v_{n}^{b}       &\equiv      \Var_{P_{n}}
+(\#eq:v-n-b)      v_{n}^{b}       &\triangleq      \Var_{P_{n}}
 \left(\frac{2A-1}{\ell\Gbar_{0}(A,W)}Y\right) \\ 
 &=        \frac{1}{n}        \sum_{i=1}^{n}\left(\frac{2A_{i}-1}{\ell\Gbar_{0}
 (A_{i},W_{i})} Y_{i} - \psi_{n}^{b}\right)^{2}.
@@ -1521,10 +1466,7 @@ $\sqrt{n}/\sqrt{v_{n}^{b}}  (\psi_{n}^{b}  -   \psi_{0})$,  where  $v_{n}^{a}$
 variances  of   $\psi_{n}^{a}$  and  $\psi_{n}^{b}$,   respectively.  Finally,
 `bias_ab` reports amounts of bias (at the renormalized scale).
 
-(ref:known-Gbar-one-b) Kernel density estimators of the law of two estimators
-of $\psi_{0}$ (recentered  with respect to $\psi_{0}$,  and renormalized), one
-of  them  misconceived (a),  the  other  assuming  that $\Gbar_{0}$  is  known
-(b). Built based on `iter` independent realizations of each estimator.
+(ref:known-Gbar-one-b) Kernel density estimators of the law of two estimators of $\psi_{0}$ (recentered with respect to $\psi_{0}$, and renormalized), one of them misconceived (a), the other assuming that $\Gbar_{0}$ is known (b). Built based on `iter` independent realizations of each estimator.
 
 ```{r known-Gbar-one-b, fig.cap = '(ref:known-Gbar-one-b)'}
 psi_hat_ab <- obs %>% as_tibble() %>%
@@ -1608,11 +1550,11 @@ influence curve $D^{*}(P_{0})$.
 In general, we can view an estimator of any feature $f_0$ of $P_{0}$ as the
 output of an algorithm $\Algo$ that maps any element of
 
-\begin{equation*}    \calM^{\text{empirical}}     \equiv    \left\{\frac{1}{m}
+\begin{equation*}    \calM^{\text{empirical}}     \triangleq    \left\{\frac{1}{m}
 \sum_{i=1}^{m} \Dirac(o_{i}) : m \geq 1, o_{1}, \ldots, o_{m} \in [0,1] \times
 \{0,1\} \times [0,1]\right\} \end{equation*}
 
-to   the    set   $\calF$   where    $f_{0}$   is   know   to    live.   Here,
+to   the    set   $\calF$   where    $f_{0}$   is   known   to    live.   Here,
 $\calM^{\text{empirical}}$  can be  interpreted  as the  set  of all  possible
 empirical measures summarizing  the outcomes of any number  of replications of
 the experiment $P_{0}$. In particular, $P_{n}$ belongs to this set.
@@ -1647,7 +1589,7 @@ alter(empirical_experiment, sample_from = function(n) {
   W <- sample(pull(QW, "value"), n, prob = pull(QW, "weight"))
   cbind(W = W, A = NA, Y = NA)
 })
-W <- sample_from(empirical_experiment, 1e3) %>% as.tibble
+W <- sample_from(empirical_experiment, 1e3) %>% as_tibble
 W %>% ggplot() +
   geom_histogram(aes(x = W, y = stat(density)), bins = 40) +
   stat_function(fun = get_feature(experiment, "QW"), col = "red")
@@ -1699,14 +1641,14 @@ In words,  by using `working_model_G_one`  we implicitly choose  the so-called
 logistic   (or   negative   binomial)   loss   function   $L_{a}$   given   by
 
 \begin{equation} 
-(\#eq:logis-loss) -L_{a}(f)(A,W) \equiv A \log f(W) + (1 - A)
+(\#eq:logis-loss) -L_{a}(f)(A,W) \triangleq A \log f(W) + (1 - A)
 \log (1 - f(W)) 
 \end{equation} 
 
 for  any  function  $f :  [0,1]  \to  [0,1]$  paired  with the  working  model
-\begin{equation*}   \calF_{1}   \equiv    \left\{f_{\theta}   :   \theta   \in
+\begin{equation*}   \calF_{1}   \triangleq    \left\{f_{\theta}   :   \theta   \in
 \bbR^{5}\right\}  \end{equation*}  where,  for   any  $\theta  \in  \bbR^{5}$,
-\begin{equation*}\logit  f_{\theta}  (W)  \equiv \theta_{0}  +  \sum_{j=1}^{4}
+\begin{equation*}\logit  f_{\theta}  (W)  \triangleq \theta_{0}  +  \sum_{j=1}^{4}
 \theta_{j} W^{j/2}.\end{equation*}
 
 We  acted   as  oracles   when  we   specified  the   working  model:   it  is
@@ -1733,7 +1675,7 @@ However,  if $\Gbar_{0}$  can nevertheless  be *projected*  unambiguously onto
 $\calF_{2}$ (an assumption  that cannot be checked), then  the estimator might
 converge to the projection. 
 
-### Visualization
+### Visualization {#algo-Gbar-one}
 
 To illustrate the use of the algorithm $\Algo_{\Gbar,1}$ obtained by combining
 `estimate_Gbar` and  `working_model_G_one`, let us estimate  $\Gbar_{0}$ based
@@ -1746,10 +1688,10 @@ Gbar_hat <- estimate_Gbar(head(obs, 1e3), algorithm = working_model_G_one)
 Using     `compute_Gbar_hat_W`^[See     also    the     companion     function
 `compute_lGbar_hat_AW`  (run `?compute_lGbar_hat_AW`  to  see  its man  page.]
 (simply run  `?compute_Gbar_hat_W` to see  its man page)  makes it is  easy to
-compare visually the estimator  $\Gbar_{n} \equiv \Algo_{\Gbar,1}(P_{n})$ with
-its target $\Gbar0$:
+compare visually the estimator  $\Gbar_{n} \triangleq \Algo_{\Gbar,1}(P_{n})$ with
+its target $\Gbar_0$:
 
-(ref:estimate-Gbar-three) Comparing $\Gbar_{n}\equiv \Algo_{\Gbar,1}(P_{n})$ and $\Gbar_{0}$. The estimator is consistent because the algorithm relies on a working model that is correctly specified.
+(ref:estimate-Gbar-three) Comparing $\Gbar_{n}\triangleq \Algo_{\Gbar,1}(P_{n})$ and $\Gbar_{0}$. The estimator is consistent because the algorithm relies on a working model that is correctly specified.
 
 ```{r estimate-Gbar-three, fig.cap = '(ref:estimate-Gbar-three)'}
 tibble(w = seq(0, 1, length.out = 1e3)) %>%
@@ -1842,7 +1784,7 @@ Qbar_hat_kknn <- estimate_Qbar(head(obs, 1e3),
 
 Using `compute_Qbar_hat_AW` (simply run  `?compute_Qbar_hat_AW` to see its man
 page) makes it is easy to compare visually the estimator $\Qbar_{n,\text{kNN}}
-\equiv \Algo_{\Qbar,\text{kNN}}(P_{n})$  with its target $\Qbar0$,  see Figure
+\triangleq \Algo_{\Qbar,\text{kNN}}(P_{n})$  with its target $\Qbar0$,  see Figure
 \@ref(fig:estimate-Qbar-five).
 
 ```{r estimate-Qbar-three}
@@ -1889,8 +1831,8 @@ Qbar_hat_trees %>% dplyr::filter(a == "zero") %>% pull(fit) %>%
 ```
  
 We can compare visually the estimators $\Qbar_{n,\text{kNN}}$,
-$\Qbar_{n,\text{trees}}  \equiv  \Algo_{\Qbar,\text{trees}}(P_{n})$  with  its
-target  $\Qbar0$,  see   Figure  \@ref(fig:estimate-Qbar-five).   In  summary,
+$\Qbar_{n,\text{trees}}  \triangleq  \Algo_{\Qbar,\text{trees}}(P_{n})$  with  its
+target  $\Qbar_0$,  see   Figure  \@ref(fig:estimate-Qbar-five).   In  summary,
 $\Qbar_{n,\text{kNN}}$ is rather good, though  very versatile at the vincinity
 of the  break points.  As for  $\Qbar_{n,\text{trees}}$, it  does not  seem to
 capture the shape of its target.
@@ -1929,7 +1871,7 @@ fig %>%
 
 \index{algorithm|)}
 
-# Two "naive" plug-in inference strategies 
+# Two "naive" plug-in inference strategies {#naive-estimators}
 
 ## Why "naive"?
 
@@ -1958,18 +1900,18 @@ substitute   the  estimator   of   $\ell\Gbar_{0}$   for  $\ell\Gbar_{0}$   in
 \@ref(eq:psi-n-b). 
 
 Let $\Algo_{\Gbar}$ be an algorithm designed for the estimation of $\Gbar_{0}$
-(see   Section  \@ref(nuisance-Gbar)).    We  denote   by  $\Gbar_{n}   \equiv
+(see   Section  \@ref(nuisance-Gbar)).    We  denote   by  $\Gbar_{n}   \triangleq
 \Algo_{\Gbar}(P_{n})$ the output  of the algorithm trained on  $P_{n}$, and by
 $\ell\Gbar_{n}$ the resulting (empirical) function given by
 
 \begin{equation*}
-\ell\Gbar_{n}(A,W) \equiv A \Gbar_{n}(W) + (1-A) (1 - \Gbar_{n}(W)).
+\ell\Gbar_{n}(A,W) \triangleq A \Gbar_{n}(W) + (1-A) (1 - \Gbar_{n}(W)).
 \end{equation*}
 
 In light of \@ref(eq:psi-n-b), introduce 
 
 \begin{equation*}
-\psi_{n}^{c}   \equiv   \frac{1}{n}    \sum_{i=1}^{n}   \left(\frac{2A_{i}   -
+\psi_{n}^{c}   \triangleq   \frac{1}{n}    \sum_{i=1}^{n}   \left(\frac{2A_{i}   -
 1}{\ell\Gbar_{n}(A_{i}, W_{i})} Y_{i}\right).
 \end{equation*} 
 
@@ -1986,12 +1928,12 @@ observations stored  in `obs`,  using the true  feature $\Gbar_{0}$  stored in
 `psi_hat_ab`. Similarly,
 
 ```{r psi-n-b-recall-two}
-Ghat <- estimate_Gbar(head(obs, 1e3), working_model_G_one)
-compute_iptw(head(obs, 1e3), wrapper(Ghat)) %>% pull(psi_n)
+Gbar_hat <- estimate_Gbar(head(obs, 1e3), working_model_G_one)
+compute_iptw(head(obs, 1e3), wrapper(Gbar_hat)) %>% pull(psi_n)
 ```
 
-implements *(i)*  the estimation of $\Gbar_{0}$  with $\Gbar_{n}$/`Ghat` using
-algorithm  $\Algo_{\Gbar,1}$  (first  line)  then *(ii)*  the  computation  of
+implements  *(i)* the  estimation of  $\Gbar_{0}$ with  $\Gbar_{n}$/`Gbar_hat`
+using algorithm $\Algo_{\Gbar,1}$ (first line)  then *(ii)* the computation of
 $\psi_{n}^{c}$ (second line), both based on the same observations as above.
 
 Note  how we  use function  `wrapper` (simply  run `?wrapper`  to see  its man
@@ -2008,7 +1950,7 @@ Moreover, the asymptotic  variance of $\sqrt{n} (\psi_{n}^{c}  - \psi_{0})$ is
 true        asymptotic         variance.]\index{conservative}        estimated
 with\index{well/mis-specified}
 
-\begin{align*}            v_{n}^{c}            &\equiv            \Var_{P_{n}}
+\begin{align*}            v_{n}^{c}            &\triangleq            \Var_{P_{n}}
 \left(\frac{2A-1}{\ell\Gbar_{n}(A,W)}Y\right)      \\      &=      \frac{1}{n}
 \sum_{i=1}^{n}\left(\frac{2A_{i}-1}{\ell\Gbar_{n}   (A_{i},W_{i})}   Y_{i}   -
 \psi_{n}^{c}\right)^{2}.  \end{align*}
@@ -2092,12 +2034,7 @@ and renormalized $\psi_{n}^{a}$, $\psi_{n}^{b}$  and $\psi_{n}^{c}$ in Figures
 \@ref(fig:unknown-Gbar-three)     (kernel      density     estimators)     and
 \@ref(fig:unknown-Gbar-four) (quantile-quantile plots).
  
-(ref:unknown-Gbar-three)  Kernel  density  estimators  of  the  law  of  three
-estimators  of   $\psi_{0}$  (recentered  with  respect   to  $\psi_{0}$,  and
-renormalized), one of them misconceived  (a), one assuming that $\Gbar_{0}$ is
-known  (b) and  one that  hinges  on the  estimation of  $\Gbar_{0}$ (c).  The
-present  figure includes  Figure \@ref(fig:known-Gbar-one-b)  (but the  colors
-differ). Built based on `iter` independent realizations of each estimator.
+(ref:unknown-Gbar-three) Kernel density estimators of the law of three estimators of $\psi_{0}$ (recentered with respect to $\psi_{0}$, and renormalized), one of them misconceived (a), one assuming that $\Gbar_{0}$ is known (b) and one that hinges on the estimation of $\Gbar_{0}$ (c).  The present figure includes Figure \@ref(fig:known-Gbar-one-b) (but the colors differ). Built based on `iter` independent realizations of each estimator.
  
 ```{r unknown-Gbar-three, fig.cap = '(ref:unknown-Gbar-three)'}
 fig_bias_ab +
@@ -2110,11 +2047,7 @@ fig_bias_ab +
                             (psi[n]^{list(a, b, c)} - psi[0]))))
 ```
 
-(ref:unknown-Gbar-four)  Quantile-quantile plot  of  the  standard normal  law
-against the  empirical laws  of three  estimators of  $\psi_{0}$, one  of them
-misconceived (a),  one assuming  that $\Gbar_{0}$  is known  (b) and  one that
-hinges  on  the  estimation  of   $\Gbar_{0}$  (c).   Built  based  on  `iter`
-independent realizations of each estimator. 
+(ref:unknown-Gbar-four) Quantile-quantile plot of the standard normal law against the empirical laws of three estimators of $\psi_{0}$, one of them misconceived (a), one assuming that $\Gbar_{0}$ is known (b) and one that hinges on the estimation of $\Gbar_{0}$ (c).  Built based on `iter` independent realizations of each estimator.
 
 ```{r unknown-Gbar-four, fig.cap = '(ref:unknown-Gbar-four)'}
 ggplot(psi_hat_abc, aes(sample = clt, fill = type, colour = type)) +
@@ -2153,15 +2086,7 @@ Furthermore, note  the better fit with  the density of the  standard normal
 density    of  the  kernel  density estimator  of  the  law  of  $\sqrt{n}
 (\psi_{n}^{c} - \psi_{0})$ **renormalized with** `emp_sig_n`.
 
-(ref:unknown-Gbar-seven)  Kernel  density  estimators  of  the  law  of  three
-estimators  of   $\psi_{0}$  (recentered  with  respect   to  $\psi_{0}$,  and
-renormalized), one of them misconceived  (a), one assuming that $\Gbar_{0}$ is
-known  (b) and  one that  hinges  on the  estimation of  $\Gbar_{0}$ **and  an
-estimator  of  the  asymptotic  variance computed  across  the  replications**
-(c). The  present figure includes Figure  \@ref(fig:known-Gbar-one-b) (but the
-colors     differ)    and     it    should     be    compared     to    Figure
-\@ref(fig:unknown-Gbar-four). Built  based on `iter`  independent realizations
-of each estimator.
+(ref:unknown-Gbar-seven) Kernel density estimators of the law of three estimators of $\psi_{0}$ (recentered with respect to $\psi_{0}$, and renormalized), one of them misconceived (a), one assuming that $\Gbar_{0}$ is known (b) and one that hinges on the estimation of $\Gbar_{0}$ **and an estimator of the asymptotic variance computed across the replications** (c). The present figure includes Figure \@ref(fig:known-Gbar-one-b) (but the colors differ) and it should be compared to Figure \@ref(fig:unknown-Gbar-four). Built based on `iter` independent realizations of each estimator.
 
 
 ```{r unknown-Gbar-seven, fig.cap = '(ref:unknown-Gbar-seven)'}
@@ -2182,12 +2107,14 @@ fig_bias_ab +
 estimation of the asymptotic variance of $\sqrt{n} (\psi_{n}^{c} - \psi_{0})$.
 We  could for  instance  derive  the influence  function  as  it is  described
 [here](#iptw-est-var)  and  use  the  corresponding  influence  function-based
-estimator of  the variance.   Or one  could rely  on the  bootstrap.^[That is,
-replicate the  construction of  $\psi_{n}^{c}$ many times  based on  data sets
-obtained  by  resampling  from  the  original  data  set,  then  estimate  the
-asymptotic  variance with  the empirical  variance of  $\psi_{n}^{c}$ computed
-across the replications.] This, however, would only make sense if one knew for
-sure that the algorithm for the estimation of $\Gbar_{0}$ is well-specified.
+estimator  of the  variance.  One  could  also rely  on the  cross-validation,
+possibly combined with the previous workaround.  Or one could also rely on the
+bootstrap.^[That is,  replicate the construction of  $\psi_{n}^{c}$ many times
+based on  data sets obtained  by resampling from  the original data  set, then
+estimate the asymptotic variance with the empirical variance of $\psi_{n}^{c}$
+computed across the replications.] This, however, would only make sense if one
+knew  for  sure that  the  algorithm  for  the  estimation of  $\Gbar_{0}$  is
+well-specified.
 
 ## &#9881; \gear Investigating further the IPTW inference strategy {#exo-a-nice-title}
 
@@ -2247,22 +2174,22 @@ data-adaptive/versatile algorithm to estimate $\Gbar_{0}$?
 
 ## G-computation estimator {#Gcomp-estimator}
 
-### Construction and computation
+### Construction and computation {#Gcomp-construction}
 
 Let $\Algo_{Q_{W}}$ be  an algorithm designed for the  estimation of $Q_{0,W}$
-(see   Section   \@ref(nuisance-QW)).    We    denote   by   $Q_{n,W}   \equiv
+(see   Section   \@ref(nuisance-QW)).    We    denote   by   $Q_{n,W}   \triangleq
 \Algo_{Q_{W}}(P_{n})$ the output of the algorithm trained on $P_{n}$.
 
 
 Let $\Algo_{\Qbar}$ be an algorithm designed for the estimation of $\Qbar_{0}$
-(see   Section  \@ref(nuisance-Qbar)).    We  denote   by  $\Qbar_{n}   \equiv
+(see   Section  \@ref(nuisance-Qbar)).    We  denote   by  $\Qbar_{n}   \triangleq
 \Algo_{\Qbar}(P_{n})$ the output of the algorithm trained on $P_{n}$. 
 
 Equation \@ref(eq:psi-zero) suggests the following, simple estimator of
 $\Psi(P_0)$:
 
 \begin{equation} 
-\psi_{n}   \equiv   \int   \left(\Qbar_{n}(1,   w)   -   \Qbar_{n}(0,w)\right)
+\psi_{n}   \triangleq   \int   \left(\Qbar_{n}(1,   w)   -   \Qbar_{n}(0,w)\right)
 dQ_{n,W}(w). (\#eq:Gcomp-estimator)
 \end{equation} 
 
@@ -2340,7 +2267,7 @@ variance  of $\sqrt{n}  (\psi_{n}^{\bullet} -  \psi_{0})$ would  be estimated
 the true asymptotic variance.]\index{conservative} with\index{well/mis-specified}
 
 \begin{align} 
-v_{n}^{d}            &\equiv            \Var_{P_{n}}
+v_{n}^{d}            &\triangleq            \Var_{P_{n}}
 \left(\Qbar_{n,1}(1,\cdot) - \Qbar_{n,1}(0,\cdot)\right) \\ &= \frac{1}{n}
 \sum_{i=1}^{n}\left(\Qbar_{n,1}(1,W_{i})         -        \Qbar_{n,1}(0,W_{i})
 -\psi_{n}^{d}\right)^{2}.  (\#eq:var-Gcomp-n) 
@@ -2371,9 +2298,8 @@ $\Algo_{\Qbar,\text{kNN}}$.       Or       $\Algo_{\Qbar}$      could       be
 mis-specified\index{well/mis-specified} and there would be no guarantee at all
 that the resulting estimator $\psi_{n}$ be even consistent.
 
-### Empirical investigation {#empirical-inves-Gcomp}
+### Empirical investigation, fixed sample size {#empirical-inves-Gcomp}
 
-**Fixed sample size**
 
 Let us compute $\psi_{n}^{d}$ and $\psi_{n}^{e}$ on the same `iter = ` 
 `r iter` independent samples of independent observations drawn from $P_{0}$ as in
@@ -2408,15 +2334,7 @@ replications of  $\psi_{n}^{d}$ and $\psi_{n}^{e}$  (`auto_renormalization` is
 
 
 
-(ref:estimating-Qbar-one-bis)  Kernel density  estimators  of the  law of  two
-estimators  of   $\psi_{0}$  (recentered  with  respect   to  $\psi_{0}$,  and
-renormalized).     The   estimators    respectively   hinge    on   algorithms
-$\Algo_{\Qbar,1}$   (d)  and   $\Algo_{\Qbar,\text{kNN}}$   (e)  to   estimate
-$\Qbar_{0}$.    Two   renormalization    schemes   are    considered,   either
-based on  an estimator of the  asymptotic variance (left) or  on the empirical
-variance  computed   across  the   `iter`  independent  replications   of  the
-estimators  (right). We  emphasize  that the  $x$-axis  ranges differ  starkly
-between the left and right plots.
+(ref:estimating-Qbar-one-bis) Kernel density estimators of the law of two G-computation estimators of $\psi_{0}$ (recentered with respect to $\psi_{0}$, and renormalized).  The estimators respectively hinge on algorithms $\Algo_{\Qbar,1}$ (d) and $\Algo_{\Qbar,\text{kNN}}$ (e) to estimate $\Qbar_{0}$.  Two renormalization schemes are considered, either based on an estimator of the asymptotic variance (left) or on the empirical variance computed across the `iter` independent replications of the estimators (right). We emphasize that the $x$-axis ranges differ starkly between the left and right plots.
 
 
 
@@ -2456,7 +2374,7 @@ psi_hat_de <- learned_features_fixed_sample_size %>%
 
 (bias_de <- psi_hat_de %>%
    group_by(type, auto_renormalization) %>%
-   summarize(bias = mean(clt)))
+   summarize(bias = mean(clt)) %>% ungroup)
 
 fig <- ggplot() +
   geom_line(aes(x = x, y = y), 
@@ -2570,25 +2488,23 @@ As for the empirical standard deviation of $\psi_{n}^{e}$, it is approximately
 `r round(mean_sig_n_e/emp_sig_n_e, 3)` times larger than the average *estimated*
 standard deviation. 
 
-**Varying sample size**
+### &#9761; \stixdanger{} Empirical investigation, varying sample size {#empirical-inves-Gcomp-varying}
 
+
+ 
 ```{r estimating-Qbar-two, eval = TRUE}
-##
-## not updated yet
-##
-
-sample_size <- c(2e3, 3e3)
+sample_size <- c(5e3, 15e3)
 block_size <- sum(sample_size)
 
 
-learned_features_varying_sample_size <- obs %>% as.tibble %>% 
+learned_features_varying_sample_size <- obs %>% as_tibble %>% 
   head(n = (nrow(.) %/% block_size) * block_size) %>% 
   mutate(block = label(1:nrow(.), sample_size)) %>%
   nest(-block, .key = "obs")
 ```
 
 First, we cut the  data set into independent sub-data sets  of sample size $n$
-in $\{$ `r sample_size` $\}$.  Second, we infer $\psi_{0}$ as shown two chunks
+in $\{$`r sample_size`$\}$.  Second, we infer $\psi_{0}$ as shown two chunks
 earlier.  We thus obtain `r nrow(obs) %/% block_size` independent realizations
 of each estimator derived on  data sets of `r length(sample_size)`, increasing
 sample sizes.
@@ -2635,7 +2551,7 @@ include the  realizations of the  estimators derived earlier and  contained in
 `psi_hat_de`   (thus  breaking   the   independence   between  components   of
 `root_n_bias`, a small price to pay in this context).
 
-(ref:estimating-Qbar-four) Evolution of root-$n$ times bias versus sample size for two inference methodology of $\psi_{0}$ based on the estimation of $\Qbar_{0}$.  Big dots represent the average biases and vertical lines represent twice the standard error.
+(ref:estimating-Qbar-four) Evolution of root-$n$ times bias versus sample size for two G-computation estimators of $\psi_{0}$. The estimators respectively hinge on algorithms $\Algo_{\Qbar,1}$ (d) and $\Algo_{\Qbar,\text{kNN}}$ (e) to estimate $\Qbar_{0}$.  Big dots represent the average biases and vertical lines represent twice the standard error.
 
 ```{r estimating-Qbar-four, fig.width = 5, fig.height = 5, fig.cap = '(ref:estimating-Qbar-four)'}
 root_n_bias <- learned_features_fixed_sample_size %>%
@@ -2655,40 +2571,644 @@ root_n_bias <- learned_features_fixed_sample_size %>%
    rename("auto_renormalization" = key) %>%
    full_join(root_n_bias)
  
-root_n_bias %>%
+root_n_bias %>% filter(auto_renormalization) %>%
+  mutate(rnb = sqrt(sample_size) * (psi_n - psi_zero)) %>%
+  group_by(sample_size, type) %>%
   ggplot() +
-  stat_summary(aes(x = sample_size, y = clt,
+  stat_summary(aes(x = sample_size, y = rnb,
                    group = interaction(sample_size, type),
                    color = type),
-               fun.data = mean_se, fun.args = list(mult = 2),
+               fun.data = mean_se, fun.args = list(mult = 1),
                position = position_dodge(width = 250), cex = 1) +
-  stat_summary(aes(x = sample_size, y = clt,
+  stat_summary(aes(x = sample_size, y = rnb,
                    group = interaction(sample_size, type),
                    color = type),
-               fun.data = mean_se, fun.args = list(mult = 2),
+               fun.data = mean_se, fun.args = list(mult = 1),
                position = position_dodge(width = 250), cex = 1,
                geom = "errorbar", width = 750) +
-  stat_summary(aes(x = sample_size, y = clt,
+  stat_summary(aes(x = sample_size, y = rnb,
                    color = type),
                fun.y = mean,
                position = position_dodge(width = 250),
                geom = "polygon", fill = NA) +
-  geom_point(aes(x = sample_size, y = clt,
+  geom_point(aes(x = sample_size, y = rnb,
                  group = interaction(sample_size, type),
                  color = type),
              position = position_dodge(width = 250),
              alpha = 0.1) +
   scale_x_continuous(breaks = unique(c(B / iter, sample_size))) +
   labs(x = "sample size n",
-       y = expression(paste(sqrt(n) * (psi[n]^{list(d, e)} - psi[0])))) +
+       y = expression(paste(sqrt(n) * (psi[n]^{list(d, e)} - psi[0]))))
+```	
+
+Root-$n$ bias for $\psi_{n}^{d}$ (red lines  and points) is positive and tends
+to increase from sample size `r B/iter` to `r sample_size[1]` and from 
+`r sample_size[1]` to `r sample_size[2]`.  Moreover, root-$n$ bias tends to be
+larger for $\psi_{n}^{d}$ than for  $\psi_{n}^{e}$. In addition, root-$n$ bias
+for $\psi_{n}^{e}$ tends to increase from sample size `r B/iter` to 
+`r sample_size[2]`, where it tends to be positive too.^[We use the expression
+``tend to''  because controlling for  multiple testing makes it  impossible to
+make a firm statement.]  
+
+In essence, we observe that the bias does not vanish faster than root-$n$. For
+$\psi_{n}^{d}$,  this is  because  $\Algo_{\Qbar,1}$ is  mis-specified and  we
+expect that the  bias increases at rate root-$n$. For  $\psi_{n}^{e}$, this is
+because  the estimator  produced by  the versatile  $\Algo_{\Qbar,\text{kNN}}$
+converges slowly  to its limit. Can  anything be done to  amend $\psi_{n}^{d}$
+and $\psi_{n}^{e}$?
+
+
+## &#9881; \gear Investigating further the G-computation estimation strategy {#exo-plug-in-estimate}
+
+1. Implement the  G-computation estimator  based on  well-specified working
+   model.   To   do  so,   *(i)*  create   a  copy   `working_model_Q_two`  of
+   `working_model_Q_one`, *(ii)* replace its `family` entry in such a way that
+   $\Qbar_{0}$ falls in the corresponding working model, and *(iii)* adapt the
+   chunk    of   code    where   we    computed   `Qbar_hat_d`    in   Section
+   \@ref(Gcomp-construction). 
+
+2. Evaluate the empirical properties of the estimator of problem 1.
+
+3. Create a function to estimate the  marginal law $Q_{0,W}$ of $W$ by maximum
+   likelihood estimation based on a mis-specified model that assumes (wrongly)
+   that $W$ is drawn from a Gaussian law with unknown mean and variance.
+
+4. &#9761; \stixdanger{} Implement the G-computation estimator using either
+   `working_model_Q_one`  or   `working_model_Q_two`  and  the   estimator  of
+   $Q_{0,W}$ of problem 3.
+
+# One-step correction {#one-step}
+
+## &#9761; \stixdanger{} General analysis of plug-in estimators {#analysis-of-plug-in}
+
+
+Recall that  $\Algo_{Q_{W}}$ is  an algorithm designed  for the  estimation of
+$Q_{0,W}$  (see Section  \@ref(nuisance-QW)) and  that we  denote by  $Q_{n,W}
+\triangleq \Algo_{Q_{W}}(P_{n})$ the  output of the algorithm  trained on $P_{n}$.
+Likewise,  $\Algo_{\Gbar}$  and  $\Algo_{\Qbar}$ are  two  generic  algorithms
+designed for  the estimation of  $\Gbar_{0}$ and of $\Qbar_{0}$  (see Sections
+\@ref(nuisance-Gbar)    and     \@ref(nuisance-Qbar)),    $\Gbar_{n}    \triangleq
+\Algo_{\Gbar}(P_{n})$  and $\Qbar_{n}  \triangleq \Algo_{\Qbar}(P_{n})$  are their
+outputs once trained on $P_{n}$.
+
+Let us now introduce $\Phat_n$ a law in $\calM$ such that the $Q_{W}$, $\Gbar$
+and   $\Qbar$  features   of  $\Phat_n$   equal  $Q_{n,W}$,   $\Gbar_{n}$  and
+$\Qbar_{n}$,  respectively.  We  say that  any such  law is  *compatible* with
+$Q_{n,W}$, $\Gbar_n$ and $\Qbar_n$.
+
+Now, let us substitute $\Phat_n$ for $P$ in \@ref(eq:taylor-expansion):
+
+\begin{equation} 
+(\#eq:hard-to-study)  \Psi(\Phat_n)  -  \Psi(P_0)   =  -  P_0  D^*(\Phat_n)  +
+\Rem_{P_0}(\Phat_n) . 
+\end{equation} 
+
+We  show  [here](#app-analysis-of-plug-in)  that,   under  conditions  on  the
+complexity/versatility  of  algorithms   $\Algo_{\Gbar}$  and  $\Algo_{\Qbar}$
+(often referred to as *regularity conditions*) and assuming that their outputs
+$\Gbar_{n}$  and   $\Qbar_{n}$  both   consistently  estimate   their  targets
+$\Gbar_{0}$ and $\Qbar_{0}$, it holds that
+
+\begin{align} 
+\Psi(\Phat_n) - \Psi(P_0) &= - P_{n} D^*(\Phat_n) +
+ P_{n} D^*(P_0) + 
+o_{P_0}(1/\sqrt{n}) (\#eq:pre-one-step) \\ 
+\notag &= - P_{n} D^*(\Phat_n)+ \frac{1}{n} \sum_{i=1}^n D^*(P_0)(O_i)  + o_{P_0}(1/\sqrt{n}). 
+\end{align}
+
+In   light    of   \@ref(eq:asymptotic-lin),   $\Psi(\Phat_{n})$    would   be
+asymptotically linear  with influence curve  $\IC=D^{*}(P_{0})$ in the  absence of
+the random term  $-P_{n} D^*(\Phat_n)$. Unfortunately, it turns  out that this
+term  can  degrade   dramatically  the  behavior  of   the  plug-in  estimator
+$\Psi(\Phat_{n})$.
+
+
+## One-step correction {#huber-one-step}
+
+Luckily, *a very simple workaround* allows to circumvent the problem. Proposed
+in  [@LeCam69] (see  also [@Pfanzagl82]  and [@vdV98]),  the workaround  merely
+consists in subtracting the random term  to the initial estimator, that is, in
+estimating $\Psi(P_0)$ not with $\Psi(\Phat_n)$ but instead with
+\begin{equation}
+\psinos  \triangleq  \Psi(\Phat_n)  +  P_{n} D^*(\Phat_n)  =  \Psi(\Phat_n)  +
+\frac{1}{n} \sum_{i=1}^{n} D^*(\Phat_n)(O_{i}). (\#eq:def-one-step)
+\end{equation}
+
+Obviously,  in light  of \@ref(eq:pre-one-step),  $\psinos$ is  asymptotically
+linear with influence curve $\IC=D^{*}(P_{0})$. Thus, by the central limit
+theorem,  $\sqrt{n} (\psinos  - \Psi(P_0))$  converges  in law  to a  centered
+Gaussian distribution with variance 
+\begin{equation}
+  \Var_{P_0}(D^{*}(P_{0})(O)) = \Exp_{P_0}(D^{*}(P_{0})(O)).
+\end{equation}
+
+The   detailed    general   analysis    of   plug-in    estimators   developed
+[here](#app-analysis-of-plug-in)  also  revealed  that  the  above  asymptotic
+variance is consistently estimated with 
+\begin{equation} 
+	P_{n}      D^{*}(\Phat_{n})^{2}      =     \frac{1}{n}      \sum_{i=1}^{n}
+	D^*(\Phat_n)^{2}(O_{i}). 
+\end{equation}
+Therefore, by the central limit theorem  and Slutsky's lemma (see the argument
+[here](#clt)),
+\begin{equation*} 
+\left[\psinos   \pm
+\Phi^{-1}(1-\alpha)     \frac{P_{n}     D^{*}(\Phat_{n})^{2}}{\sqrt{n}}\right]
+\end{equation*} 
+is a confidence interval for $\Psi(P_0)$ with asymptotic level $(1-2\alpha)$.
+
+## Empirical investigation {#empirical-inves-one-step}
+
+In light of \@ref(eq:def-one-step)  if the estimator equals $\Psi(\Phat_{n})$,
+then performing a one-step correction  essentially boils down to computing two
+quantities,   $-P_{n}   D^{*}(\Phat_{n})$   (the   bias   term)   and   $P_{n}
+D^{*}(\Phat_{n})^{2}$   (an   estimator   of  the   asymptotic   variance   of
+$\psinos$). The `tlrider` package makes the  operation very easy thanks to the
+function `apply_one_step_correction`.  
+
+Let us illustrate its use by updating the G-computation estimator built on the
+$n=1000$ first observations in `obs` by relying on $\Algo_{\Qbar,\text{kNN}}$,
+that  is,  on  the algorithm  for  the  estimation  of  $\Qbar_{0}$ as  it  is
+implemented  in  `estimate_Qbar` with  its  argument  `algorithm` set  to  the
+built-in  `kknn_algo` (see  Section \@ref(Qbar-knn-algo)).  The algorithm  has
+been trained earlier on this data set and produced the object `Qbar_hat_kknn`.
+The  following  chunk  of  code re-computes  the  corresponding  G-computation
+estimator, using again the estimator `QW_hat` of the marginal law of $W$ under
+$P_{0}$ (see Section \@ref(nuisance-QW)), then applied the one-step correction:
+
+```{r psi-n-de-two-bis}
+(psin_kknn <- compute_gcomp(QW_hat, wrapper(Qbar_hat_kknn, FALSE), 1e3))
+(psin_kknn_os <- apply_one_step_correction(head(obs, 1e3),
+                                           wrapper(Gbar_hat, FALSE),
+                                           wrapper(Qbar_hat_kknn, FALSE),
+                                           psin_kknn$psi_n)) 
+```
+
+In the  call to `apply_one_step_correction` we  provide *(i)* the data  set at
+hand  (first line),  *(ii)* the  estimator `Gbar_hat`  of $\Gbar_{0}$  that we
+built earlier by  using algorithm $\Algo_{\Gbar,1}$ (second  line; see Section
+\@ref(algo-Gbar-one)),  *(iii)* the  estimator `Qbar_hat_kknn`  of $\Qbar_{0}$
+and the G-computation  estimator `psin_kknn` that resulted from  it (third and
+fourth lines).
+
+To assess  what is  the impact of  the one-step correction,  let us  apply the
+one-step   correction   to  the   estimators   that   we  built   in   Section
+\@ref(empirical-inves-Gcomp).  The object `learned_features_fixed_sample_size`
+already contains the estimated features of  $P_{0}$ that are needed to perform
+the one-step  correction to the estimators  $\psi_{n}^{d}$ and $\psi_{n}^{e}$,
+namely, the we merely call the function `apply_one_step_correction`
+
+
+(ref:one-step-one) Kernel density estimators of the law of two one-step-G-computation estimators of $\psi_{0}$ (recentered with respect to $\psi_{0}$, and renormalized).  The estimators respectively hinge on algorithms $\Algo_{\Qbar,1}$ (d) and $\Algo_{\Qbar,\text{kNN}}$ (e) to estimate $\Qbar_{0}$, and on one-step correction.  Two renormalization schemes are considered, either based on an estimator of the asymptotic variance (left) or on the empirical variance computed across the `iter` independent replications of the estimators (right).  We emphasize that the $x$-axis ranges differ between the left and right plots.
+
+
+```{r one-step-one, fig.cap = '(ref:one-step-one)'}
+psi_hat_de_one_step <- learned_features_fixed_sample_size %>%
+  mutate(os_est_d =
+           pmap(list(obs, Gbar_hat, Qbar_hat_d, est_d),
+                ~ apply_one_step_correction(as.matrix(..1),
+                                 wrapper(..2, FALSE),
+                                 wrapper(..3, FALSE),
+                                 ..4$psi_n)),
+         os_est_e =
+           pmap(list(obs, Gbar_hat, Qbar_hat_e, est_e),
+                ~ apply_one_step_correction(as.matrix(..1),
+                                 wrapper(..2, FALSE),
+                                 wrapper(..3, FALSE),
+                                 ..4$psi_n))) %>%
+  select(os_est_d, os_est_e) %>%
+  gather(`os_est_d`, `os_est_e`, key = "type", value = "estimates") %>%
+  extract(type, "type", "_([de])$") %>%
+  mutate(type = paste0(type, "_one_step")) %>%
+  unnest(estimates) %>%
+  group_by(type) %>%
+  mutate(sig_alt = sd(psi_n)) %>%
+  mutate(clt_ = (psi_n - psi_zero) / sig_n,
+         clt_alt = (psi_n - psi_zero) / sig_alt) %>%
+  gather(`clt_`, `clt_alt`, key = "key", value = "clt") %>%
+  extract(key, "key", "_(.*)$") %>%
+  mutate(key = ifelse(key == "", TRUE, FALSE)) %>%
+  rename("auto_renormalization" = key)
+  
+(bias_de_one_step <- psi_hat_de_one_step %>%
+   group_by(type, auto_renormalization) %>%
+   summarize(bias = mean(clt)) %>% ungroup)
+
+fig <- ggplot() +
+  geom_line(aes(x = x, y = y), 
+            data = tibble(x = seq(-4, 4, length.out = 1e3),
+                          y = dnorm(x)),
+            linetype = 1, alpha = 0.5) +
+  geom_density(aes(clt, fill = type, colour = type),
+               psi_hat_de_one_step, alpha = 0.1) +
+  geom_vline(aes(xintercept = bias, colour = type),
+             bias_de_one_step, size = 1.5, alpha = 0.5) +
   facet_wrap(~ auto_renormalization,
              labeller =
                as_labeller(c(`TRUE` = "auto-renormalization: TRUE",
                              `FALSE` = "auto-renormalization: FALSE")),
              scales = "free")
-```	
+  
+fig +
+  labs(y = "",
+       x = expression(paste(sqrt(n/v[n]^{list(d, e, os)})*
+                            (psi[n]^{list(d, e, os)} - psi[0]))))
+```
+ 
+It  seems that  the  one-step  correction performs  qui  well (in  particular,
+compare `bias_de` with `bias_de_one_step`):
+
+```{r one-step-two}
+bind_rows(bias_de, bias_de_one_step) %>% filter(!auto_renormalization)
+```
+
+What about the  estimation of the asymptotic variance, and  of the mean-square
+errors of the estimators?
+
+```{r one-step-three}
+psi_hat_de %>%
+  full_join(psi_hat_de_one_step) %>%
+  filter(auto_renormalization) %>% 
+  group_by(type) %>%
+  summarize(sd = mean(sig_n),
+            se = sd(psi_n),
+            mse = mean((psi_n - psi_zero)^2) * n())
+```
+
+The  `sd`  (*estimator*  of  the   asymptotic  standard  deviation)  and  `se`
+(*empirical* standard deviation) entries are  similar. This indicates that the
+inference of the  asymptotic variance of the one-step estimators  based on the
+influence curve is rather accurate for  both the `d`- and `e`-variants that we
+implemented.  As for  the mean square error, it is  diminished by the one-step
+update for both  types `d` and `e`, the `e_one_step`  estimator exhibiting the
+smallest mean square error.
+
+## &#9881; \gear Investigating further the one-step correction methodology {#exo-one-step}
+
+1. Use `estimate_Gbar` to create  an oracle algorithm $\Algora_{\Gbar,s}$ for
+   the  estimation   of  $\Gbar_{0}$  that,   for  any  $s  >   0$,  estimates
+   $\Gbar_{0}(w)$    with   \begin{equation*}    \Gbar_{n}(w)   \triangleq
+   \Algora_{\Gbar,s}                     (P_{n})(w)                    \triangleq
+   \expit\left(\logit\left(\Gbar_{0}(w)\right) +  s Z\right) \end{equation*}
+   where $Z$  is a standard  normal random variable.^[Note that  the algorithm
+   does not really to be trained.] What would happen if one chose $s=0$ in the
+   above definition? What happens when $s$ converges to 0?  Explain why the algorithm
+   is said to be an *oracle algorithm*. 
+
+2. Use `estimate_Qbar` to create  an oracle algorithm $\Algora_{\Qbar,s}$ for
+   the  estimation   of  $\Qbar_{0}$  that,   for  any  $s  >   0$,  estimates
+   $\Qbar_{0}(a,w)$    with   \begin{equation*}    \Qbar_{n}(a,w)   \triangleq
+   \Algora_{\Gbar,s}                     (P_{n})(a,w)                    \triangleq 
+   \expit\left(\logit\left(\Qbar_{0}(a,w)\right) +  s Z\right) \end{equation*}
+   where $Z$  is a standard  normal random variable. The comments made about
+  $\Algora_{\Gbar,s}$ in the above problem also apply to $\Algora_{\Qbar,s}$. 
+
+3. Reproduce the simulation study developed in Sections \@ref(empirical-inves-Gcomp)
+   and \@ref(empirical-inves-one-step) with the oracle algorithms $\Algora_{\Gbar,s}$
+   and $\Algora_{\Qbar,s'}$ substituted for used in these sections. Change the values
+   of $s,s' > 0$ and compare how well the estimating procedure performs depending on the product $ss'$.
+   What do you observe? We invite you to refer to Section \@ref(app-analysis-of-plug-in-main).
+
+# (PART) Roadwork ahead {-} 
+
+# &#9761; \stixdanger{} Targeted minimum loss-based estimation {#TMLE}
+
+In the previous section, we introduced the one-step corrected estimator of
+$\psi_0$. This estimator added a correction term to the plug-in estimator, 
+which resulted in an estimator that is asymptotically efficient. 
+However, the one-step estimator lacks a desirable feature of a plug-in estimator:
+plug-in estimators will always obey bounds on the parameter space. For example, the law 
+$P_0$ stipulates that $Y$ has a conditional Beta distribution and so $Y \in (0,1)$. 
+Thus, it must also be true that $\psi_0 \in [-1,1]$. It is typically easy to generate an 
+estimate $\Qbar_n$ of $\Qbar_0$ that obeys bounds on the parameter space for $\Qbar_0$. 
+Indeed, many regression techniques are designed to ensure that the do not extrapolate
+beyond a known parameter space. 
+The plug-in estimate based on on such a regression estimate will also obey the bounds on the 
+parameter space for $\psi_0$. That is, our plug-in estimate of $\psi_0$ is guaranteed by
+its very construction be between -1 and 1. However, the one-step estimate adds 
+an additional term to the plug-in and therefore may result in an estimate of $\psi_0$ 
+that is outside its parameter space. Upon closer examination of the efficient influence
+curve $D^*$, we see that this may occur more frequently when $\ell \Gbar_n(A_i,W_i)$ is 
+close to zero for at least some $i$. In words, if there are observations in our 
+data set that we observed under actions $A_i$ that were estimated to be unlikely given the context $W_i$. In such cases, $D^*(\hat{P}_n)(O_i)$, and consequently the one-step 
+correction term, may be large and cause the one-step estimate to fall outside the parameter
+space. 
+
+Another way to understand this behavior is to recognize the one-step estimator as
+a plug-in estimator that is corrected *in the parameter space of $\psi_0$*. On the
+other hand, we might consider performing a correction *in the parameter space of $\Qbar_0$*. 
+In particular, consider a $\hat{P}_n^*$ that is compatible with the estimates $\Qbar_n^*$, $\Gbar_n$, and $Q_{n,W}$, but moreover is such that $P_n D^*(\hat{P}_n^*) = 0$ (or at the very least equals to $o_{P_0}(n^{-1/2})$). If indeed, such estimates can be generated, then the 
+plug-in estimator \[
+  \psi_n^* \equiv \int (\Qbar_n^*(1,w) - \Qbar_n^*(0,w)) dQ_{n,W}(w)
+\]
+is asymptotically linear and efficient. Moreover, by virtue of its plug-in construction it 
+has the additional property that in finite-samples $\psi_n^*$ will always obey
+bounds on the parameter space. 
+
+Our strategy for constructing such a plug-in estimate begins by generating an 
+initial estimate $\Qbar_n$ of $\Qbar_0$ and an estimate $\Gbar_n$ of $\Gbar_0$. These initial estimate should strive to be as close as possible to their respective targets. We use
+the empirical distribution $Q_{n,W}$ as estimate of $Q_{0,W}$. Now, note that for *any*
+estimate $\Qbar_n$ of $\Qbar_0$ and a distribution $\hat{P}_n^*$ that is compatible with 
+$\Qbar_n$ and $Q_{n,W}$, 
+\begin{align*}
+  P_n D_1^*(\hat{P}_n^*) &= \frac{1}{n} \sum_{i=1}^n D_1^(\hat{P}_n^*)(O_i)\\
+  &= \frac{1}{n} \sum_{i=1}^n \left( \Qbar_n(1,W_i) - \Qbar_n(0,W_i) - \int (\Qbar_n(1,w) - \Qbar_n(0,w)) dQ_{n,W}(w) \right) \\
+  &= \frac{1}{n} \sum_{i=1}^n \left( \Qbar_n(1,W_i) - \Qbar_n(0,W_i) - \frac{1}{n}\sum_{j=1}^n (\Qbar_n(1,W_j) - \Qbar_n(0,W_j)) \right)\\
+  &= \frac{1}{n} \sum_{i=1}^n (\Qbar_n(1,W_i) - \Qbar_n(0,W_i)) - \frac{n}{n^2}\sum_{j=1}^n (\Qbar_n(1,W_j) - \Qbar_n(0,W_j)) \\
+  &= 0 .
+\end{align*}
+
+In words, this shows that so long as we use the empirical distribution $Q_{n,W}$ to estimate
+$Q_{0,W}$, by its very construction we will have that $P_n D_1^*(\hat{P}_n^*) = 0$. 
+
+```{r show-first-piece-solved}
+# maybe would be helpful to include a bit of code here
+# for evaluating EIF using empirical dist of W and showing that
+# indeed the second bit is solved? Not sure. The algebra is simple enough.
+# I'm just trying to break up all the writing a bit in this section, because
+# it is quite dense. 
+```
+
+It thus remains to devise a strategy for ensuring that $P_n D_2^*(\hat{P}_n^*) = 0$. To 
+achieve this, we consider an approach for revising our initial estimate of $\Qbar_0$. That is, 
+we propose a method for selecting an estimate of $\Qbar_0$ that is "near to" $\Qbar_n$, but is 
+such that for any law $\hat{P}_n^*$ that is compatible with this revised estimate,
+$P_n D^*(\hat{P}_n^*) = 0$. Because $\Qbar_n$ is our best (initial) estimate of true 
+regression $\Qbar_0$, the new regression that we pick should be *at least as good* of an 
+estimate of $\Qbar_0$ as $\Qbar_n$. So first, we must propose a way to move between 
+regressions in our model, and then we must propose a way to move to a new regression that 
+fits the data at least as well as $\Qbar_n$. 
+
+To move about the model space, we will make use of parametric
+submodels introduced in Section \ref{subsec:being:smooth:one}. In particular, let's consider
+the following parametric submodel \[
+  \calQ(\Gbar_n) = \{ \Qbar_{n,\epsilon}(A,W) = \expit\left(\logit(\Qbar_n(A,w)) + \epsilon \frac{2A - 1}{\ell \Gbar_n(A,W)} \right) : \epsilon \in \bbR \} . 
+\]
+We note that this submodel depends on the estimate of $\Gbar_0$, is 
+indexed by the univariate parameter $\epsilon$, and is *through*
+the initial estimate $\Qbar_n$ of $\Qbar_0$. 
+
+Each value of the indexing parameter $\epsilon$ corresponds to a different regression
+estimate. The code below visualizes regressions for several values of $\epsilon$. 
+
+```{r plot-for-several-epsilon}
+# can include the graph of Qbar_n,eps(a,W) ~ W for eps = -1, 0, 1 \times a = 0,1?
+# would like to drive home the point that each epsilon is simply a different regresion
+# fit.
+
+# could also show for different Gbar_n showing that the submodel depends on Gbar_n, 
+# but I actually think that's far less important. 
+```
+
+Recalling that our goal is to select an estimate of $\Qbar_0$ that is *at least as good* 
+as $\Qbar_n$. This goal is now translated into selecting an $\epsilon$ that corresponds to
+a regression function that fits the data *at least as well* as $\Qbar_n$. To formalize
+this, we require a metric for defining how well a regression function estimates the true
+regression function. For this, we estimate the average negative log-likelihood loss, defined for a candidate regression function $\Qbar$ as \[
+  \bbD_0(\Qbar) \equiv -\Exp_{P_0}( Y \log(\Qbar(A,W)) + (1 - Y)\log(1 - \Qbar(A,W)) ) . 
+\]
+We note that the minimizer of $\bbD_0$ over all functions mapping from $\{0,1\} \times (0,1)$ to $\bbR$ is equal to $\Qbar_0$. Thus, $\bbD_0$ provides a concrete means of evaluating the 
+fit of different candidate regression functions to the true regression function $\Qbar_0$. Because, $\bbD_0$ depends on $P_0$, it is unknown to us in practice. Thus, we may instead compute an empirical estimate of $\bbD_0$, \[
+  \bbD_n(\Qbar) \equiv -\frac{1}{n} \sum_{i = 1}^n \left( Y_i \log(\Qbar(A_i, W_i)) + (1 - Y_i)\log(1 - \Qbar(A_i, W_i)) \right). 
+\]
+The code below computes this estimate of $\bbD_n(\Qbar_{n,\epsilon})$ over a fine grid of epsilon and plots the resulting function. 
+
+```{r compute-negloglik-and-plot}
+# basically just do a grid search over epsilon for minimizer of negative log-likelihood loss
+```
+The above  plot shows the  estimated average negative log-likelihood  loss for
+each regression function in the  parametric submodel $\calQ(\Gbar_n)$. Now, we
+should like  to move  to the  regression with  the smallest  estimated average
+negative log-likelihood, which was achieved at $\epsilon=$ \tcg{fill\_in\_from\_R\_output}.  Because our submodel is  through $\Qbar_n$, that is,  $\Qbar_n$ is
+itself included in  our submodel, and this newly  selected regression estimate
+has a  better estimated average  negative log-likelihood loss, we  should hope
+that  the  new  estimate  is  at   least  *no  further  from  $\Qbar_0$*  than
+$\Qbar_n$.  Let's use  $\Qbar_{n,\epsilon_n}$ to  denote the  new estimate  of
+$\Qbar_0$.
+
+What about repeating this process? Perhaps by iterating this procedure, we could 
+generate regression estimates that provide a better fit of $\Qbar_0$ than even $\Qbar_{n,\epsilon_n}$. Let's then define a submodel through $\Qbar_{n,\epsilon_n}$, \[
+  \calQ_1(\Gbar_n) = \{ \Qbar_{n,\delta}(A,W) = \expit\left(\logit(\Qbar_{n,\epsilon_n}(A,W)) + \delta \frac{2A - 1}{\ell \Gbar_n(A,W)} \right) : \delta \in \bbR \} . 
+\]
+Consider finding $\delta_n$, the value of $\delta$ that minimizes $\bbD_n(\Qbar_{n,\delta})$ 
+over $\delta \in \bbR$. This is trivial since there is a one-to-one correspondence 
+between the parameter $\epsilon$ indexing the submodel $\calQ(\Gbar_n)$ and 
+$\calQ_1(\Gbar_n)$: for any $\epsilon$, there is some $\delta \in \bbR$ such that $\delta = 
+\epsilon - \epsilon_n$. That is to say that the choice of $\delta$ that minimizes 
+$\bbD_n(\Qbar_{nm,\delta})$ is $\delta = 0$. Thus, 
+$\Qbar_{n,\delta = 0} \equiv \Qbar_{n,\epsilon_n}$ is the best fit that we can obtain for 
+$\Qbar_0$ by moving through the model space via submodels of the form $\calQ(\Gbar_n)$.
+
+Now, we hope that we have achieved our goal of finding a new regression fit that is *at least 
+as good* as our initial estimate. However, recall that our true purpose is to generate an 
+estimate of $\Qbar_0$ such that for any $\hat{P}_n^*$ that is compatible with such an estimate $P_n D^*(\hat{P}_n^*) = 0$. Have we achieved this goal as well? Consider the fact that because the minimum value of $\bbD_n(\Qbar_{n,\delta})$ is achieved at $\delta = 0$, it must be true that the derivative of $\bbD_n(\Qbar_{n,\delta})$ with respect to $\delta$ is zero when evaluated at $\delta = 0$. That is, \begin{equation} \label{deriv_equals_zero}
+  \frac{d}{d\delta} \bbD_n(\Qbar_{n,\delta}) |_{\delta = 0} = 0 . 
+\end{equation}
+Indeed, we can produce plot of $\bbD_n(\Qbar_{n,\delta})$ for a fine grid of $\delta$ to 
+confirm. 
+
+```{r show-negloglik-as-function-of-delta}
+# we could also show this earlier and comment about how it
+# should be the same as the plot of neg log lik as a fn of epsilon
+# just shifted over. Maybe that would help drive home the point that
+# the submodels are the same?
+```
+
+Finding the analytical form of this derivative is straightforward, though a bit cumbersome. 
+With some effort, one can show that \begin{align*}
+&\frac{d}{d\delta} \bbD_n(\Qbar_{n,\delta}) |_{\delta = 0} \\
+&\hspace{0.1in} = \frac{d}{d\delta} \frac{1}{n} \sum_{i = 1}^n \left( Y_i \log(\Qbar_{n,\delta}(A_i, W_i)) + (1 - Y_i)\log(1 - \Qbar_{n,\delta}(A_i, W_i)) \right) \bigg|_{\delta = 0} \\
+&\hspace{0.1in} = \frac{1}{n} \sum_{i = 1}^n \frac{2A_i - 1}{\ell \Gbar_n(A_i, W_i)} \left(Y_i - \Qbar_{n,\delta = 0}\right) \\ 
+&\hspace{0.1in} = \frac{1}{n} \sum_{i = 1}^n \frac{2A_i - 1}{\ell \Gbar_n(A_i, W_i)} \left(Y_i - \Qbar_{n,\epsilon_n}\right) 
+\end{align*}
+
+This shows that the analytical form of the left-hand-side of (\ref{deriv_equals_zero}) equals
+$P_n D_{2}^{*}(\hat{P}^*_n)$ for a $\hat{P}_n^*$ that is compatible with $\Qbar_{n,\epsilon_n}$ and $\Gbar_n$. But then equation (\ref{deriv_equals_zero}) also implies that $P_n D_{2}^{*}(\hat{P}^*_n) = 0$! 
+
+How did this happen? Recalling Section \ref{subsec:being:smooth:one} there were many possible submodels that we may choose to move through our model space. 
+It was no mistake that we selected the particular submodel $\calQ(\Gbar_n)$. 
+Furthermore, there are also many
+criterion by which we could judge our fit of $\Qbar_0$. It was no mistake that we selected 
+the particular parameter $\bbD_0$ and estimate $\bbD_n$. We intentionally made these 
+choices to ensure that the derivative of $\bbD_n$ with respect to the indexing parameter of our submodel was equal to $D_2^*$ when the indexing parameter equals to zero. Thus, as soon as our procedure for selecting new regressions in our submodel indicated that the best
+regression fit was achieved at $\delta = 0$, we were assured that the relevant equation 
+would be solved. 
+
+This procedure is called targeted minimum loss-based estimation (TMLE). The nomenclature 
+derives from the logistics of the procedure. We first generated an (un-targeted) initial 
+estimate of relevant nuisance parameters. Then through, possibly iterative, loss-minimization, 
+we arrive a *targeted* estimate of the nuisance parameters. In the present problem, we 
+examined explicitly this loss-minimization in Figures \tcg{X and Y}. The resultant estimate 
+generated by the loss-minimzation procedure should be *no worse* an estimate of its true 
+target than the initial estimate, but has been additionally endowed with the property that it 
+solves the efficient influence curve equation. 
+
+Assuming that the regularity conditions discussed in Section \@ref(analysis-of-plug-in)
+are satisfied for $\Qbar_{n,\epsilon_n}$, then by (\ref{pre_one_step}), \[
+  \psi_n^* = \Psi(\hat{P}_n^*) = \int (\Qbar_{n,\epsilon_n}(1,w) - \Qbar_{n,\epsilon_n}(0,w)) dQ_{n,W} , 
+\]
+is an asymptotically efficient estimator of $\psi_0$. We have thus achieved our goal of generating an efficient plug-in estimator of $\psi_0$ that is guaranteed to obey bounds
+on the parameter space. We may construct asymptotically justified confidence intervals 
+and hypothesis tests exactly as in Section \@ref(analysis-of-plug-in), but replacing
+$\Qbar_n$ by $\Qbar_{n,\epsilon_n}$. 
+
+The next code examines TMLE in a simulation and confirms the theoretical properties of the
+estimator. 
 
 
-# Work in progress
+(ref:tmle) Kernel density estimators of the law of two targeted estimators of $\psi_{0}$ (recentered with respect to $\psi_{0}$, and renormalized).  The estimators respectively hinge on algorithms $\Algo_{\Qbar,1}$ (d) and $\Algo_{\Qbar,\text{kNN}}$ (e) to estimate $\Qbar_{0}$, and on a targeting step.  Two renormalization schemes are considered, either based on an estimator of the asymptotic variance (left) or on the empirical variance computed across the `iter` independent replications of the estimators (right).  We emphasize that the $x$-axis ranges differ between the left and right plots.
 
-(...)
+```{r tmle, fig.cap = '(ref:tmle)'}
+psi_tmle <- learned_features_fixed_sample_size %>%
+  mutate(tmle_d =
+           pmap(list(obs, Gbar_hat, Qbar_hat_d),
+                ~ apply_targeting_step(as.matrix(..1),
+                                 wrapper(..2, FALSE),
+                                 wrapper(..3, FALSE))),
+         tmle_e =
+           pmap(list(obs, Gbar_hat, Qbar_hat_e),
+                ~ apply_targeting_step(as.matrix(..1),
+                                 wrapper(..2, FALSE),
+                                 wrapper(..3, FALSE)))) %>%
+  select(tmle_d, tmle_e) %>%
+  gather(`tmle_d`, `tmle_e`, key = "type", value = "estimates") %>%
+  extract(type, "type", "_([de])$") %>%
+  mutate(type = paste0(type, "_targeted")) %>%
+  unnest(estimates) %>%
+  group_by(type) %>%
+  mutate(sig_alt = sd(psi_n)) %>%
+  mutate(clt_ = (psi_n - psi_zero) / sig_n,
+         clt_alt = (psi_n - psi_zero) / sig_alt) %>%
+  gather(`clt_`, `clt_alt`, key = "key", value = "clt") %>%
+  extract(key, "key", "_(.*)$") %>%
+  mutate(key = ifelse(key == "", TRUE, FALSE)) %>%
+  rename("auto_renormalization" = key)
+
+(bias_tmle <- psi_tmle %>%
+   group_by(type, auto_renormalization) %>%
+   summarize(bias = mean(clt)) %>% ungroup)
+
+fig <- ggplot() +
+  geom_line(aes(x = x, y = y), 
+            data = tibble(x = seq(-4, 4, length.out = 1e3),
+                          y = dnorm(x)),
+            linetype = 1, alpha = 0.5) +
+  geom_density(aes(clt, fill = type, colour = type),
+               psi_tmle, alpha = 0.1) +
+  geom_vline(aes(xintercept = bias, colour = type),
+             bias_tmle, size = 1.5, alpha = 0.5) +
+  facet_wrap(~ auto_renormalization,
+             labeller =
+               as_labeller(c(`TRUE` = "auto-renormalization: TRUE",
+                             `FALSE` = "auto-renormalization: FALSE")),
+             scales = "free")
+  
+fig +
+  labs(y = "",
+       x = expression(paste(sqrt(n/v[n]^{"*"})*
+                            (psi[n]^{"*"} - psi[0]))))
+```
+
+
+# (APPENDIX) Appendix {-}
+
+
+
+To insert in appendix.
+
+<!--```{r estimating-Qbar-appendix, eval = FALSE}
+## xgboost based on trees
+xgb_tree_algo <- list(
+  algo = function(dat, ...) {
+    caret::train(Y ~ I(10*A) + W,
+                 data = dat,
+                 method = "xgbTree",
+                 trControl = control,
+                 tuneGrid = grid,
+                 verbose = FALSE)  
+  },
+  type_of_preds = "response"
+)
+attr(xgb_tree_algo, "ML") <- TRUE
+xgb_tree_grid <- expand.grid(nrounds = 350,
+                             max_depth = c(4, 6),
+                             eta = c(0.05, 0.1),
+                             gamma = 0.01,
+                             colsample_bytree = 0.75,
+                             subsample = 0.5,
+                             min_child_weight = 0)
+
+## nonparametric kernel smoothing regression
+npreg <- list(
+  label = "Kernel regression",
+  type = "Regression",
+  library = "np",
+  parameters = data.frame(parameter =
+                            c("subsample", "regtype",
+                              "ckertype", "ckerorder"), 
+                          class = c("integer", "character",
+                                    "character", "integer"), 
+                          label = c("#subsample", "regtype",
+                                    "ckertype", "ckerorder")),
+  grid = function(x, y, len = NULL, search = "grid") {
+    if (!identical(search, "grid")) {
+      stop("No random search implemented.\n")
+    } else {
+      out <- expand.grid(subsample = c(50, 100),
+                         regtype = c("lc", "ll"),
+                         ckertype =
+                           c("gaussian",
+                             "epanechnikov",
+                             "uniform"),
+                         ckerorder = seq(2, 8, 2))
+    } 
+    return(out)
+  },
+  fit = function(x, y, wts, param, lev, last, classProbs, ...) {
+    ny <- length(y)
+    if (ny > param$subsample) {
+      ## otherwise far too slow for what we intend to do here...
+      keep <- sample.int(ny, param$subsample)
+      x <- x[keep, ]
+      y <- y[keep]
+    }
+    bw <- np::npregbw(xdat = as.data.frame(x), ydat = y,
+                      regtype = param$regtype,
+                      ckertype = param$ckertype,
+                      ckerorder = param$ckerorder,
+                      remin = FALSE, ftol = 0.01, tol = 0.01,
+                      ...)
+    np::npreg(bw)
+  },
+  predict = function (modelFit, newdata, preProc = NULL, submodels = NULL) {
+    if (!is.data.frame(newdata)) {
+      newdata <- as.data.frame(newdata)
+    }
+    np:::predict.npregression(modelFit, se.fit = FALSE, newdata)
+  },
+  sort = function(x) {
+    x[order(x$regtype, x$ckerorder), ]
+  },
+  loop = NULL, prob = NULL, levels = NULL
+)
+
+npreg_algo <- list(
+  algo = function(dat, ...) {
+    caret::train(working_model_Q_one$formula,
+                 data = dat,
+                 method = npreg, # no quotes!
+                 verbose = FALSE,
+                 ...)
+  },
+  type_of_preds = "response"
+)
+attr(npreg_algo, "ML") <- TRUE
+npreg_grid <- data.frame(subsample = 100,
+                         regtype = "lc",
+                         ckertype = "gaussian",
+                         ckerorder = 4,
+                         stringsAsFactors = FALSE)
+```-->
+
+
+
