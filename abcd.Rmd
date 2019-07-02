@@ -795,7 +795,7 @@ laws $\Pi_0$ and $\Pi_0'$?
 
 ## &#9761; \stixdanger{} More on fluctuations and smoothness {#smooth-second-pass}
 
-### Fluctuations
+### Fluctuations {#smooth-second-pass-fluctuations}
 
 Let us now formally define what it means for statistical mapping $\Psi$ to be
 smooth at every  $P \in \calM$.  For every $h  \in H \triangleq ]-M^{-1},M^{-1}[$,
@@ -2871,73 +2871,138 @@ smallest mean square error.
 
 # (PART) Roadwork ahead {-} 
 
-# &#9761; \stixdanger{} Targeted minimum loss-based estimation {#TMLE}
+# Targeted minimum loss-based estimation {#TMLE}
 
-In the previous section, we introduced the one-step corrected estimator of
-$\psi_0$. This estimator added a correction term to the plug-in estimator, 
-which resulted in an estimator that is asymptotically efficient. 
-However, the one-step estimator lacks a desirable feature of a plug-in estimator:
-plug-in estimators will always obey bounds on the parameter space. For example, the law 
-$P_0$ stipulates that $Y$ has a conditional Beta distribution and so $Y \in (0,1)$. 
-Thus, it must also be true that $\psi_0 \in [-1,1]$. It is typically easy to generate an 
-estimate $\Qbar_n$ of $\Qbar_0$ that obeys bounds on the parameter space for $\Qbar_0$. 
-Indeed, many regression techniques are designed to ensure that the do not extrapolate
-beyond a known parameter space. 
-The plug-in estimate based on on such a regression estimate will also obey the bounds on the 
-parameter space for $\psi_0$. That is, our plug-in estimate of $\psi_0$ is guaranteed by
-its very construction be between -1 and 1. However, the one-step estimate adds 
-an additional term to the plug-in and therefore may result in an estimate of $\psi_0$ 
-that is outside its parameter space. Upon closer examination of the efficient influence
-curve $D^*$, we see that this may occur more frequently when $\ell \Gbar_n(A_i,W_i)$ is 
-close to zero for at least some $i$. In words, if there are observations in our 
-data set that we observed under actions $A_i$ that were estimated to be unlikely given the context $W_i$. In such cases, $D^*(\hat{P}_n)(O_i)$, and consequently the one-step 
-correction term, may be large and cause the one-step estimate to fall outside the parameter
-space. 
+## Motivations {#TMLE-motivations}
 
-Another way to understand this behavior is to recognize the one-step estimator as
-a plug-in estimator that is corrected *in the parameter space of $\psi_0$*. On the
-other hand, we might consider performing a correction *in the parameter space of $\Qbar_0$*. 
-In particular, consider a $\hat{P}_n^*$ that is compatible with the estimates $\Qbar_n^*$, $\Gbar_n$, and $Q_{n,W}$, but moreover is such that $P_n D^*(\hat{P}_n^*) = 0$ (or at the very least equals to $o_{P_0}(n^{-1/2})$). If indeed, such estimates can be generated, then the 
-plug-in estimator \[
-  \psi_n^* \equiv \int (\Qbar_n^*(1,w) - \Qbar_n^*(0,w)) dQ_{n,W}(w)
-\]
-is asymptotically linear and efficient. Moreover, by virtue of its plug-in construction it 
-has the additional property that in finite-samples $\psi_n^*$ will always obey
-bounds on the parameter space. 
+### Falling outside the parameter space
 
-Our strategy for constructing such a plug-in estimate begins by generating an 
-initial estimate $\Qbar_n$ of $\Qbar_0$ and an estimate $\Gbar_n$ of $\Gbar_0$. These initial estimate should strive to be as close as possible to their respective targets. We use
-the empirical distribution $Q_{n,W}$ as estimate of $Q_{0,W}$. Now, note that for *any*
-estimate $\Qbar_n$ of $\Qbar_0$ and a distribution $\hat{P}_n^*$ that is compatible with 
-$\Qbar_n$ and $Q_{n,W}$, 
-\begin{align*}
-  P_n D_1^*(\hat{P}_n^*) &= \frac{1}{n} \sum_{i=1}^n D_1^(\hat{P}_n^*)(O_i)\\
-  &= \frac{1}{n} \sum_{i=1}^n \left( \Qbar_n(1,W_i) - \Qbar_n(0,W_i) - \int (\Qbar_n(1,w) - \Qbar_n(0,w)) dQ_{n,W}(w) \right) \\
-  &= \frac{1}{n} \sum_{i=1}^n \left( \Qbar_n(1,W_i) - \Qbar_n(0,W_i) - \frac{1}{n}\sum_{j=1}^n (\Qbar_n(1,W_j) - \Qbar_n(0,W_j)) \right)\\
-  &= \frac{1}{n} \sum_{i=1}^n (\Qbar_n(1,W_i) - \Qbar_n(0,W_i)) - \frac{n}{n^2}\sum_{j=1}^n (\Qbar_n(1,W_j) - \Qbar_n(0,W_j)) \\
-  &= 0 .
-\end{align*}
+Section \@ref(one-step) introduced the one-step corrected estimator $\psinos$
+of $\psi_0$.  It is obtained by adding a correction term to an initial plug-in
+estimator $\Psi(\Phat_{n})$, resulting in  an estimator that is asymptotically
+linear with  influence curve $\IC  = D^{*}(P_{0})$ under mild  conditions (see
+Section      \@ref(huber-one-step)      and       the      detailed      proof
+[here](#app-analysis-of-plug-in)). 
 
-In words, this shows that so long as we use the empirical distribution $Q_{n,W}$ to estimate
-$Q_{0,W}$, by its very construction we will have that $P_n D_1^*(\hat{P}_n^*) = 0$. 
+Unfortunately, the one-step  estimator lacks a desirable feature  of a plug-in
+estimator:  plug-in estimators  always lie  in the  parameter space  whereas a
+one-step estimator  does not necessarily do  so. For example, it  must also be
+true  that $\psi_0  = \Psi(P_{0})  \in [-1,1]$  yet it  may be  the case  that
+$\psinos \not\in[-1,1]$.
 
-```{r show-first-piece-solved}
-# maybe would be helpful to include a bit of code here
-# for evaluating EIF using empirical dist of W and showing that
-# indeed the second bit is solved? Not sure. The algebra is simple enough.
-# I'm just trying to break up all the writing a bit in this section, because
-# it is quite dense. 
-```
+It is typically easy to shape  an algorithm $\Algo_{\Qbar}$ for the estimation
+of $\Qbar_0$ to output estimators $\Qbar_n$ that, like $\Qbar_{0}$, take their
+values in $[0,1]$.  The plug-in estimator $\psi_{n}$ \@ref(eq:Gcomp-estimator)
+based  on such  a  $\Qbar_{n}$ necessarily  satisfies  $\psi_{n} \in  [-1,1]$.
+However, the  one-step estimator derived  from $\psi_{n}$ may fall  outside of
+the interval if the correction term $P_{n} D^{*} (\Phat_{n})$ is large. 
 
-It thus remains to devise a strategy for ensuring that $P_n D_2^*(\hat{P}_n^*) = 0$. To 
-achieve this, we consider an approach for revising our initial estimate of $\Qbar_0$. That is, 
-we propose a method for selecting an estimate of $\Qbar_0$ that is "near to" $\Qbar_n$, but is 
-such that for any law $\hat{P}_n^*$ that is compatible with this revised estimate,
-$P_n D^*(\hat{P}_n^*) = 0$. Because $\Qbar_n$ is our best (initial) estimate of true 
-regression $\Qbar_0$, the new regression that we pick should be *at least as good* of an 
-estimate of $\Qbar_0$ as $\Qbar_n$. So first, we must propose a way to move between 
-regressions in our model, and then we must propose a way to move to a new regression that 
-fits the data at least as well as $\Qbar_n$. 
+### The influence curve equation
+
+Upon closer examination of the influence curve $D^*(\Phat_{n})$, we see that
+this may occur  more frequently when $\ell \Gbar_n(A_i,W_i)$ is  close to zero
+for at least  some $1 \leq i\leq n$.   In words, this may happen  if there are
+observations in  our data set that  we observed under actions  $A_i$ that were
+estimated  to be  unlikely given  their  respective contexts  $W_i$.  In  such
+cases, $D^*(\Phat_n)(O_i)$, and consequently the one-step correction term, may
+be large and cause the one-step estimate to fall outside $[-1,1]$.
+
+Another way to understand this behavior is to recognize the one-step estimator
+as a initial  plug-in estimator that is corrected *in  the parameter space of*
+$\psi_0$. One  of the pillars of  targeted learning is to  perform, instead, a
+correction *in the parameter space of* $\Qbar_0$.
+
+In  particular,  consider  a  law   $P_{n}^{*}$  estimating  $P_{0}$  that  is
+compatible  with the  estimators  $\Qbar_n^*$, $\Gbar_n$,  and $Q_{n,W}$,  but
+moreover is such that 
+\begin{equation} 
+P_n  D^*(P_{n}^*)  = 0 (\#eq:solve)
+\end{equation} 
+or, at the very least, 
+\begin{equation} 
+P_n D^*(P_{n}^*) = o_{P_0}(1/\sqrt{n}). (\#eq:solve-approx) 
+\end{equation} 
+Achieving   \@ref(eq:solve)   is   called   *solving   the   influence   curve
+equation*.  Likewise,  achieving  \@ref(eq:solve-approx)  is  called  *solving
+approximately the influence curve equation*.
+
+If  such  estimators can  be  generated  indeed,  then the  plug-in  estimator
+\begin{equation*}     \psi_n^*    \triangleq     \Psi(P_{n}^{*})    =     \int
+\left(\Qbar_n^*(1,w)  - \Qbar_n^*(0,w)\right)  dQ_{n,W}(w) \end{equation*}  is
+asymptotically linear  with influence curve  $\IC = D^{*}(P_{0})$,  under mild
+conditions.   Moreover, by  virtue of  its  plug-in construction,  it has  the
+additional property that in finite-samples  $\psi_n^*$ will always obey bounds
+on the parameter space.
+
+
+### A basic fact on the influence curve equation
+
+Our strategy for constructing such a  plug-in estimate begins by generating an
+initial estimator $\Qbar_n$ of $\Qbar_0$ based on an algorithm $\Algo_{\Qbar}$
+and an estimator $\Gbar_n$ of $\Gbar_0$ based on an algorithm $\Algo_{\Gbar}$.
+These initial  estimators should strive  to be as  close as possible  to their
+respective  targets.   We  use  the empirical  distribution  $Q_{n,W}$  as  an
+estimator of $Q_{0,W}$.  
+
+Now,  recall the  definition of  $D_{1}^{*}$ \@ref(eq:eif)  and note  that for
+*any*  estimator  $\Qbar_n^*$  of  $\Qbar_0$  and  a  law  $P_n^{*}$  that  is
+compatible  with  $\Qbar_n^*$  and $Q_{n,W}$,  \begin{equation*}  P_{n}  D_{1}
+(P_{n}^{*}) = 0.
+\end{equation*}
+The proof can be found [here](#basic-eic-eq). 
+
+In  words, this  shows  that so  long  as we  use  the empirical  distribution
+$Q_{n,W}$  to   estimate  $Q_{0,W}$,   by  its  very   construction  achieving
+\@ref(eq:solve) or \@ref(eq:solve-approx) is equivalent to solving
+\begin{equation} 
+P_n  D_{1}^*(P_{n}^*)  = 0 (\#eq:solve-alt)
+\end{equation} 
+or
+\begin{equation} 
+P_n D_{2}^*(P_{n}^*) = o_{P_0}(1/\sqrt{n}). (\#eq:solve-approx-alt) 
+\end{equation} 
+
+It thus  remains to devise  a strategy for  ensuring that $P_n  D_2^*(P_n^*) =
+0$ or $o_{P_0}(1/\sqrt{n})$. 
+
+## Targeted fluctuation {#targeted-fluctuation-TMLE}
+
+Our  approach to  solving \@ref(eq:solve-alt)^[or  \@ref(eq:solve-approx-alt).]
+hinges on revising our initial estimator  $\Qbar_n$ of $\Qbar_0$. We propose a
+method for  selecting an estimator of  $\Qbar_0$ that is "near  to" $\Qbar_n$,
+but is  such that  for any law  $P_n^*$ that is  compatible with  this revised
+estimator, $P_n D^*(P_n^*) =  0$.^[or $P_n D^*(P_n^*) = o_{P_0}(1/\sqrt{n})$.]
+Because  $\Qbar_n$ is  our  best  (initial) estimator  of  $\Qbar_0$, the  new
+estimator that  we shall  build should be  *at least as  good* an  estimate of
+$\Qbar_0$  as $\Qbar_n$.   So first,  we must  propose a  way to  move between
+regression  functions, and  then  we must  propose  a  way to  move  to a  new
+regression function that fits the data at least as well as $\Qbar_n$.
+
+Instead of writing "propos[ing] a way to move between regression functions" we
+may also have written "proposing a  way to *fluctuate* a regression function",
+thus suggesting very  opportunely that the notion of  fluctuation as discussed
+in  Section \@ref(smooth-second-pass)  may prove  instrumental to  achieve the
+former objective.
+
+### &#9761; \stixdanger{} Fluctuating indirectly
+
+Let  us  resume  the discussion  where  we  left  it  at the  end  of  Section
+\@ref(smooth-second-pass-fluctuations).   It   is  easy   to  show   that  the
+fluctuation  $\{P_{h} :  h \in  H\}$ of  $P$ in  direction of  $s$ in  $\calM$
+induces   a   fluctuation   $\{\Qbar_{h}   :   h  \in   H\}$   of   $\Qbar   =
+\left.Q_{h}\right|_{h=0}$  in the  space  $\calQ \triangleq  \{\Qbar  : P  \in
+\calM\}$ of  regression functions induced  by model $\calM$.   Specifically we
+show [here]() that, for every $h \in H$, the conditional mean $\Qbar_{h}(A,W)$
+of     $Y$     given     $(A,W)$     under     $P_{h}$     is     given     by
+\begin{equation*}\frac{\Qbar(A,W)   +  h   \Exp_{P}(Ys(O)   |   A,W)}{1  +   h
+\Exp_{P}(s(O)|A,W)}.\end{equation*}
+
+However, we  find it easier  in the  present context to  fluctuate $\Qbar_{n}$
+*directly*  in  $\calQ$, as  opposed  to  *indirectly* through  a  fluctuation
+defined in  $\calM$ of a  law compatible  with $\Qbar_{n}$.  The  next section
+introduces such a fluctuation.
+
+### Fluctuating directly
 
 To move about the model space, we will make use of parametric
 submodels introduced in Section \ref{subsec:being:smooth:one}. In particular, let's consider

@@ -56,6 +56,9 @@ $P_{0}$,  respectively).  For  each  $a \in  \{0,1\}$, $\ell\Gbar(a,W)  \equiv
 conditional  means  of  $Y$  given  $A$   and  $W$  (under  $P$  and  $P_{0}$,
 respectively).
 
+- $\calQ  \triangleq \{\Qbar  :  P  \in  \calM\}$,  the space  of  regression
+  functions induced   by model $\calM$.
+
 - $q_{Y}$, $q_{0,Y}$, conditional densities of $Y$ given $A$ and $W$ (under
 $P$ and $P_{0}$, respectively).
 
@@ -68,4 +71,7 @@ $P$ and $P_{0}$, respectively).
   $P_{n}$, *i.e.*,  mappings from $\calM^{\text{empirical}}$ to  the set where
   lives   the feature targeted by the algorithm.
 
-
+- $\Algora_{\Gbar,s}$,  $\Algora_{\Qbar,s}$, $s$-specific  oracle algorithms
+  ($s>0$) that can use the  true targeted features $\Gbar_{0}$ and $\Qbar_{0}$
+  to produce  predictions that are almost  exact, up to a  $N(0,s^{2})$ random
+  error term.
