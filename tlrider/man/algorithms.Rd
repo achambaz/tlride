@@ -59,6 +59,6 @@ k-nearest  neighbors  non-parametric  procedure as  implement  in  'method'
 \code{TRUE}).
 }
 \references{
-Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
+Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2019).
 }
 \keyword{datasets}

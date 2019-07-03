@@ -2994,24 +2994,80 @@ induces   a   fluctuation   $\{\Qbar_{h}   :   h  \in   H\}$   of   $\Qbar   =
 \calM\}$ of  regression functions induced  by model $\calM$.   Specifically we
 show [here]() that, for every $h \in H$, the conditional mean $\Qbar_{h}(A,W)$
 of     $Y$     given     $(A,W)$     under     $P_{h}$     is     given     by
-\begin{equation*}\frac{\Qbar(A,W)   +  h   \Exp_{P}(Ys(O)   |   A,W)}{1  +   h
-\Exp_{P}(s(O)|A,W)}.\end{equation*}
+\begin{equation*}\Qbar_{h}(A,W) \triangleq \frac{\Qbar(A,W) + h \Exp_{P}(Ys(O)
+| A,W)}{1 + h \Exp_{P}(s(O)|A,W)}.\end{equation*}
 
-However, we  find it easier  in the  present context to  fluctuate $\Qbar_{n}$
-*directly*  in  $\calQ$, as  opposed  to  *indirectly* through  a  fluctuation
-defined in  $\calM$ of a  law compatible  with $\Qbar_{n}$.  The  next section
-introduces such a fluctuation.
+We  note that  if $s(O)$  depends on  $O$ only  through $(A,W)$  then, abusing
+notation  and  writing  $s(A,W)$ for  $s(O)$,  \begin{align}\Qbar_{h}(A,W)  &=
+\frac{\Qbar(A,W)     +     h     \Exp_{P}(Ys(A,W)    |     A,W)}{1     +     h
+\Exp_{P}(s(A,W)|A,W)}\notag\\&=\frac{\Qbar(A,W)  + h  s(A,W)\Qbar(A,W)}{1 +  h
+s(A,W)}\notag\\&=\Qbar(A,W).(\#eq:Qbarh)\end{align} In  words, $\Qbar$  is not
+fluctuated  at  all, that  is,  the  laws $P_{h}$  that  are  elements of  the
+fluctuation share  the same conditional  mean of $Y$ given  $(A,W)$.^[In fact,
+more  generally,   the  conditional  *law*   of  $Y$  given  $(A,W)$   is  not
+fluctuated. See the corresponding problem in Section \@ref(exo-fluct).]
+
+However we find it easier in the present context, notably from a computational
+perspective, to  fluctuate $\Qbar_{n}$  *directly* in  $\calQ$, as  opposed to
+*indirectly* through a fluctuation defined in $\calM$ of a law compatible with
+$\Qbar_{n}$.  The next section introduces such a direct fluctuation.
 
 ### Fluctuating directly
 
-To move about the model space, we will make use of parametric
-submodels introduced in Section \ref{subsec:being:smooth:one}. In particular, let's consider
-the following parametric submodel \[
-  \calQ(\Gbar_n) = \{ \Qbar_{n,\epsilon}(A,W) = \expit\left(\logit(\Qbar_n(A,w)) + \epsilon \frac{2A - 1}{\ell \Gbar_n(A,W)} \right) : \epsilon \in \bbR \} . 
-\]
-We note that this submodel depends on the estimate of $\Gbar_0$, is 
-indexed by the univariate parameter $\epsilon$, and is *through*
-the initial estimate $\Qbar_n$ of $\Qbar_0$. 
+Set arbitrarily $\Qbar \in \calQ$. The (direct) fluctuation of $\Qbar$ that we
+propose to consider depends on a  user-supplied $\Gbar$.  For any $\Gbar$ such
+that  $0  < \ell\Gbar(A,W)  <1$  $P_{0}$-almost  surely, the  $\Gbar$-specific
+fluctuation model for $\Qbar$ is \begin{equation}\calQ(\Qbar,\Gbar) \triangleq
+\left\{(a,w)            \mapsto           \Qbar_{h}(a,w)            \triangleq
+\expit\left(\logit\left(\Qbar(a,w)\right) +  h \frac{2A -  1}{\ell \Gbar(a,w)}
+\right) : t \in \bbR\right\} \subset \calQ. (\#eq:Q-fluct)\end{equation}
+
+Fluctuation  $\calQ(\Qbar,\Gbar)$   is  a  one-dimensional   parametric  model
+(indexed  by the  real-valued parameter  $h$)  that goes  through $\Qbar$  (at
+$h=0$). For each  $h \in \bbR$, $\Qbar_{h} \in \calQ$  is the conditional mean
+of $Y$ given $(A,W)$ under infinitely many laws $P \in \calM$. 
+
+```{r fluctuation}
+Qbar_trees <- wrapper(Qbar_hat_trees, FALSE)
+Qbar_hminus <- fluctuate(Qbar, Gbar, h = -1)
+Qbar_hplus <- fluctuate(Qbar, Gbar, h = +1)
+
+Qbar_trees_hminus <- fluctuate(Qbar_trees, Gbar, h = -1)
+Qbar_trees_hplus <- fluctuate(Qbar_trees, Gbar, h = +1)
+
+fig <- tibble(w = seq(0, 1, length.out = 1e3)) %>%
+  mutate(truth_0_1 = Qbar(cbind(A = 1, W = w)),
+         truth_0_0 = Qbar(cbind(A = 0, W = w)),
+         trees_0_1 = Qbar_trees(cbind(A = 1, W = w)),
+         trees_0_0 = Qbar_trees(cbind(A = 0, W = w)),
+         truth_hminus_1 = Qbar_hminus(cbind(A = 1, W = w)),
+         truth_hminus_0 = Qbar_hminus(cbind(A = 0, W = w)),
+         trees_hminus_1 = Qbar_trees_hminus(cbind(A = 1, W = w)),
+         trees_hminus_0 = Qbar_trees_hminus(cbind(A = 0, W = w)),
+         truth_hplus_1 = Qbar_hplus(cbind(A = 1, W = w)),
+         truth_hplus_0 = Qbar_hplus(cbind(A = 0, W = w)),
+         trees_hplus_1 = Qbar_trees_hplus(cbind(A = 1, W = w)),
+         trees_hplus_0 = Qbar_trees_hplus(cbind(A = 0, W = w))) %>%
+  gather("f", "value", -w) %>%
+  extract(f, c("f", "h", "a"), "([^_]+)_([^_]+)_([01]+)") %>%
+  mutate(a = paste0("a=", a)) %>%
+  ggplot +
+  geom_line(aes(x = w, y = value, color = f), size = 1) +
+  labs(y = "f(w)",
+       title = bquote("Visualizing...")) +
+  ylim(NA, 1) +
+  facet_wrap(~ a)
+```
+
+
+### &#9881; \gear More on fluctuations {#exo-fluct}
+
+1. Justify the series of equalities in \@ref(eq:Qbarh).
+
+2. Justify that, in  fact, if $s(O)$ depends on $O$  only through $(A,W)$ then
+   the conditional  law of $Y$ given  $(A,W)$ under $P_{h}$ equals  that under
+   $P$.
+
 
 Each value of the indexing parameter $\epsilon$ corresponds to a different regression
 estimate. The code below visualizes regressions for several values of $\epsilon$. 

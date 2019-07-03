@@ -45,7 +45,7 @@ reveal(experiment)
 
 }
 \references{
-Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
+Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2019).
 }
 \seealso{
 \code{\link{sample_from}}  to sample from the law (if  it is fully

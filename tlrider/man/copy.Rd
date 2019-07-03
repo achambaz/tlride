@@ -30,7 +30,7 @@ identical(experiment, experiment_ter)
 
 }
 \references{
-Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
+Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2019).
 }
 \seealso{
 Other methods and functions for LAW objects: \code{\link{LAW}},

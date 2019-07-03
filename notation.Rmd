@@ -59,6 +59,9 @@ respectively).
 - $\calQ  \triangleq \{\Qbar  :  P  \in  \calM\}$,  the space  of  regression
   functions induced   by model $\calM$.
 
+- $\calQ(\Qbar,\Gbar)  \subset \calQ$,  $\Gbar$-specific fluctuation  model of
+  $\Qbar$, see \@ref(eq:Q-fluct).
+
 - $q_{Y}$, $q_{0,Y}$, conditional densities of $Y$ given $A$ and $W$ (under
 $P$ and $P_{0}$, respectively).
 
@@ -75,3 +78,11 @@ $P$ and $P_{0}$, respectively).
   ($s>0$) that can use the  true targeted features $\Gbar_{0}$ and $\Qbar_{0}$
   to produce  predictions that are almost  exact, up to a  $N(0,s^{2})$ random
   error term.
+
+- $L_{a}$, the contex-specific logistic  (or negative binomial) loss function,
+  given by $-L_{a}(f)(A,W)  \triangleq A \log f(W) + (1-A)  \log (1-f(W))$ for
+  any function $f:[0,1]\to[0,1]$.
+
+- $L_{y}$, the reward-specific logistic  (or negative binomial) loss function,
+  given by $-L_{y}(f)(O) \triangleq Y \log f(A,W) + (1-Y) \log (1-f(A,W))$ for 
+  any function $f:\{0,1\} \times [0,1] \to[0,1]$. 

@@ -391,6 +391,7 @@ wrapper <- function(fit, unenclose = TRUE) {
                                            newdata = obs[!idx_one, ],
                                            type = type_of_preds)
         }
+        return(pred)
       }
     }
   } else {
@@ -611,7 +612,7 @@ apply_one_step_correction <- function(dat, Gbar, Qbar, psi) {
   }
   eic_dat <- eic(dat)
   psi_n <- psi + mean(eic_dat)
-  sig_n <- sd(eic_dat)/sqrt(nrow(dat))
+  sig_n <- stats::sd(eic_dat)/sqrt(nrow(dat))
   tibble::tibble(psi_n = psi_n, sig_n = sig_n)
 }
 
@@ -696,9 +697,9 @@ apply_targeting_step <- function(dat, Gbar, Qbar, threshold = 5e-2) {
                    GW = GW, HW = HW)
   }
   tib <- preliminary(dat)
-  fit <- glm(Y ~ HW - 1,
-             data = data.frame(Y = dat[, "Y"], HW = tib$HW),
-             offset = stats::qlogis(tib$QAW), family = binomial())
+  fit <- stats::glm(Y ~ HW - 1,
+                    data = data.frame(Y = dat[, "Y"], HW = tib$HW),
+                    offset = stats::qlogis(tib$QAW), family = stats::binomial())
   epsilon <- stats::coef(fit)
   QoneW_epsilon <- stats::plogis(stats::qlogis(tib$QoneW) + epsilon/tib$GW)
   QzeroW_epsilon <- stats::plogis(stats::qlogis(tib$QzeroW) - epsilon/(1-tib$GW))
@@ -706,6 +707,6 @@ apply_targeting_step <- function(dat, Gbar, Qbar, threshold = 5e-2) {
   psi_n <- mean(QoneW_epsilon - QzeroW_epsilon)
   eic_dat <- (dat[, "Y"] - QAW_epsilon) * tib$HW +
     QoneW_epsilon - QzeroW_epsilon - psi_n
-  sig_n <- sd(eic_dat)/sqrt(nrow(dat))
+  sig_n <- stats::sd(eic_dat)/sqrt(nrow(dat))
   tibble::tibble(psi_n = psi_n, sig_n = sig_n)
 }

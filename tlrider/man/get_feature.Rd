@@ -38,7 +38,7 @@ get_feature(experiment, "Gbar")
 
 }
 \references{
-Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
+Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2019).
 }
 \seealso{
 \code{\link{reveal}} to reveal  some relevant features of the law.

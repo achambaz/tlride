@@ -26,5 +26,5 @@ Let 'L'  be the length of 'sample_size' and  'Q'be the quotient in
   function is used to make easily sub-data sets of a data set.
 }
 \references{
-Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
+Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2019).
 }
