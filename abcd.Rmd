@@ -1621,7 +1621,7 @@ There are two  sorts of specifications, of  which we say that  they are either
 in  the   next  subsection.    The  latter  sort   is  discussed   in  Section
 \@ref(nuisance-Qbar).
 
-### Working model-based algorithms
+### Working model-based algorithms {#logis-loss}
 
 \index{algorithm!working~model|(}
 
@@ -1795,7 +1795,7 @@ fig <- tibble(w = seq(0, 1, length.out = 1e3),
               kNN_0 = compute_Qbar_hatAW(0, w, Qbar_hat_kknn))
 ```
 
-### `Qbar`, boosted trees algorithm
+### `Qbar`, boosted trees algorithm {#boosted-trees}
 
 Algorithm    $\Algo_{\Qbar,\text{trees}}$    is    obtained    by    combining
 `estimate_Qbar`      and      `bstTree_algo`.        The      training      of
@@ -2756,7 +2756,7 @@ one-step   correction   to  the   estimators   that   we  built   in   Section
 \@ref(empirical-inves-Gcomp).  The object `learned_features_fixed_sample_size`
 already contains the estimated features of  $P_{0}$ that are needed to perform
 the one-step  correction to the estimators  $\psi_{n}^{d}$ and $\psi_{n}^{e}$,
-namely, the we merely call the function `apply_one_step_correction`
+namely, thus we merely have to call the function `apply_one_step_correction`.
 
 
 (ref:one-step-one) Kernel density estimators of the law of two one-step-G-computation estimators of $\psi_{0}$ (recentered with respect to $\psi_{0}$, and renormalized).  The estimators respectively hinge on algorithms $\Algo_{\Qbar,1}$ (d) and $\Algo_{\Qbar,\text{kNN}}$ (e) to estimate $\Qbar_{0}$, and on one-step correction.  Two renormalization schemes are considered, either based on an estimator of the asymptotic variance (left) or on the empirical variance computed across the `iter` independent replications of the estimators (right).  We emphasize that the $x$-axis ranges differ between the left and right plots.
@@ -2967,13 +2967,13 @@ It thus  remains to devise  a strategy for  ensuring that $P_n  D_2^*(P_n^*) =
 
 ## Targeted fluctuation {#targeted-fluctuation-TMLE}
 
-Our  approach to  solving \@ref(eq:solve-alt)^[or  \@ref(eq:solve-approx-alt).]
+Our approach  to solving  \@ref(eq:solve-alt)^[or \@ref(eq:solve-approx-alt).]
 hinges on revising our initial estimator  $\Qbar_n$ of $\Qbar_0$. We propose a
-method for  selecting an estimator of  $\Qbar_0$ that is "near  to" $\Qbar_n$,
-but is  such that  for any law  $P_n^*$ that is  compatible with  this revised
+method for building an estimator of $\Qbar_0$ that is "near to" $\Qbar_n$, but
+is  such  that for  any  law  $P_n^*$ that  is  compatible  with this  revised
 estimator, $P_n D^*(P_n^*) =  0$.^[or $P_n D^*(P_n^*) = o_{P_0}(1/\sqrt{n})$.]
 Because  $\Qbar_n$ is  our  best  (initial) estimator  of  $\Qbar_0$, the  new
-estimator that  we shall  build should be  *at least as  good* an  estimate of
+estimator that  we shall build  should be *at least  as good* an  estimator of
 $\Qbar_0$  as $\Qbar_n$.   So first,  we must  propose a  way to  move between
 regression  functions, and  then  we must  propose  a  way to  move  to a  new
 regression function that fits the data at least as well as $\Qbar_n$.
@@ -3027,7 +3027,14 @@ Fluctuation  $\calQ(\Qbar,\Gbar)$   is  a  one-dimensional   parametric  model
 $h=0$). For each  $h \in \bbR$, $\Qbar_{h} \in \calQ$  is the conditional mean
 of $Y$ given $(A,W)$ under infinitely many laws $P \in \calM$. 
 
-```{r fluctuation}
+The  following chunk  of code  represents three  elements of  the fluctuations
+$\calQ(\Qbar_{0}, \Gbar_{0})$  and $\calQ(\Qbar_{n,\text{trees}}, \Gbar_{0})$,
+where $\Qbar_{n,\text{trees}}$ is  an estimator of $\Qbar_{0}$  derived by the
+boosted trees algorithm (see Section \@ref(boosted-trees)). 
+
+(ref:fluctuation) Representing three elements $\Qbar_{h}$ of the fluctuations $\calQ(\Qbar_{0}, \Gbar_{0})$ and $\calQ(\Qbar_{n,\text{trees}}, \Gbar_{0})$, respectively, where $\Qbar_{n,\text{trees}}$ is an estimator of $\Qbar_{0}$ derived by the boosted trees algorithm (see Section \@ref(boosted-trees)). The three elements correspond to $h=-1,0,1$. When $h=0$, $\Qbar_{h}$ equals either $\Qbar_{0}$ or $\Qbar_{n,\text{trees}}$, depending on which fluctuation is roamed.
+ 
+```{r fluctuation, fig.cap = '(ref:fluctuation)'}
 Qbar_trees <- wrapper(Qbar_hat_trees, FALSE)
 Qbar_hminus <- fluctuate(Qbar, Gbar, h = -1)
 Qbar_hplus <- fluctuate(Qbar, Gbar, h = +1)
@@ -3035,7 +3042,7 @@ Qbar_hplus <- fluctuate(Qbar, Gbar, h = +1)
 Qbar_trees_hminus <- fluctuate(Qbar_trees, Gbar, h = -1)
 Qbar_trees_hplus <- fluctuate(Qbar_trees, Gbar, h = +1)
 
-fig <- tibble(w = seq(0, 1, length.out = 1e3)) %>%
+tibble(w = seq(0, 1, length.out = 1e3)) %>%
   mutate(truth_0_1 = Qbar(cbind(A = 1, W = w)),
          truth_0_0 = Qbar(cbind(A = 0, W = w)),
          trees_0_1 = Qbar_trees(cbind(A = 1, W = w)),
@@ -3050,11 +3057,16 @@ fig <- tibble(w = seq(0, 1, length.out = 1e3)) %>%
          trees_hplus_0 = Qbar_trees_hplus(cbind(A = 0, W = w))) %>%
   gather("f", "value", -w) %>%
   extract(f, c("f", "h", "a"), "([^_]+)_([^_]+)_([01]+)") %>%
-  mutate(a = paste0("a=", a)) %>%
+  mutate(f = ifelse(f == "truth", "Q_0", "Q_n"),
+         h = factor(ifelse(h == "0", 0, ifelse(h == "hplus", 1, -1)))) %>%
+  mutate(a = paste0("a=", a),
+         fh = paste0("(", f, ",", h, ")")) %>%
   ggplot +
-  geom_line(aes(x = w, y = value, color = f), size = 1) +
-  labs(y = "f(w)",
-       title = bquote("Visualizing...")) +
+  geom_line(aes(x = w, y = value, color = h, linetype = f, group = fh),
+            size = 1) +
+  labs(y = expression(paste(f[h](a,w))),
+       title = bquote("Visualizing three elements of two fluctuations of"
+                      ~ bar(Q)[0] ~ "and" ~ bar(Q)[n])) +
   ylim(NA, 1) +
   facet_wrap(~ a)
 ```
@@ -3067,32 +3079,40 @@ fig <- tibble(w = seq(0, 1, length.out = 1e3)) %>%
 2. Justify that, in  fact, if $s(O)$ depends on $O$  only through $(A,W)$ then
    the conditional  law of $Y$ given  $(A,W)$ under $P_{h}$ equals  that under
    $P$.
+   
+### Targeted roaming of a fluctuation {#roaming}
 
 
-Each value of the indexing parameter $\epsilon$ corresponds to a different regression
-estimate. The code below visualizes regressions for several values of $\epsilon$. 
 
-```{r plot-for-several-epsilon}
-# can include the graph of Qbar_n,eps(a,W) ~ W for eps = -1, 0, 1 \times a = 0,1?
-# would like to drive home the point that each epsilon is simply a different regresion
-# fit.
+Recall that our goal  is to build an estimator of $\Qbar_0$  that is *at least
+as  good* as  $\Qbar_n$.  We  will  look for  this enhanced  estimator in  the
+fluctuation $\calQ(\Qbar_{n}, \Gbar_{n})$ where $\Gbar_{n}$ is an estimator of
+$\Gbar_{0}$.  Thus,  the  estimator   writes  as  $\Qbar_{n,h_{n}}$  for  some
+data-driven $h_{n} \in \bbR$. We will clarify why we do so at a later time.
 
-# could also show for different Gbar_n showing that the submodel depends on Gbar_n, 
-# but I actually think that's far less important. 
-```
+To assess the  performance of all the candidates included  in the fluctuation,
+we  formally rely  on  the  empirical risk  function  $h \mapsto  \Exp_{P_{n}}
+\left(L_{y} (\Qbar_{n,h})(O)\right)$ where the logistic (or negative binomial)
+loss function $L_{y}$ is given  by \begin{equation*} -L_{y}(f)(O) \triangleq Y
+\log f(A,W)  + (1 -  Y) \log \left(1  - f(A,W)\right) \end{equation*}  for any
+function $f:[0,1] \times \{0,1\} \times [0,1] \to \bbR$. This loss function is
+the counterpart of the loss  function $L_{a}$ defined in \@ref(eq:logis-loss).
+The justification that  we gave in Section \@ref(logis-loss)  of the relevance
+of $L_{a}$ also applies here, *mutatis mutandis*. 
 
-Recalling that our goal is to select an estimate of $\Qbar_0$ that is *at least as good* 
-as $\Qbar_n$. This goal is now translated into selecting an $\epsilon$ that corresponds to
-a regression function that fits the data *at least as well* as $\Qbar_n$. To formalize
-this, we require a metric for defining how well a regression function estimates the true
-regression function. For this, we estimate the average negative log-likelihood loss, defined for a candidate regression function $\Qbar$ as \[
-  \bbD_0(\Qbar) \equiv -\Exp_{P_0}( Y \log(\Qbar(A,W)) + (1 - Y)\log(1 - \Qbar(A,W)) ) . 
-\]
-We note that the minimizer of $\bbD_0$ over all functions mapping from $\{0,1\} \times (0,1)$ to $\bbR$ is equal to $\Qbar_0$. Thus, $\bbD_0$ provides a concrete means of evaluating the 
-fit of different candidate regression functions to the true regression function $\Qbar_0$. Because, $\bbD_0$ depends on $P_0$, it is unknown to us in practice. Thus, we may instead compute an empirical estimate of $\bbD_0$, \[
-  \bbD_n(\Qbar) \equiv -\frac{1}{n} \sum_{i = 1}^n \left( Y_i \log(\Qbar(A_i, W_i)) + (1 - Y_i)\log(1 - \Qbar(A_i, W_i)) \right). 
-\]
-The code below computes this estimate of $\bbD_n(\Qbar_{n,\epsilon})$ over a fine grid of epsilon and plots the resulting function. 
+
+  For  this, we  estimate the  average negative  log-likelihood loss,
+defined for a candidate regression function $\Qbar$ as \[ \bbD_0(\Qbar) \equiv
+-\Exp_{P_0}( Y \log(\Qbar(A,W)) + (1 - Y)\log(1  - \Qbar(A,W)) ) .  \] We note
+that the minimizer of $\bbD_0$ over all functions mapping from $\{0,1\} \times
+(0,1)$ to  $\bbR$ is equal to  $\Qbar_0$.  Thus, $\bbD_0$ provides  a concrete
+means of evaluating the fit of different candidate regression functions to the
+true regression function $\Qbar_0$.  Because, $\bbD_0$ depends on $P_0$, it is
+unknown to us in practice. Thus,  we may instead compute an empirical estimate
+of $\bbD_0$,  \[ \bbD_n(\Qbar) \equiv  -\frac{1}{n} \sum_{i = 1}^n  \left( Y_i
+\log(\Qbar(A_i, W_i))  + (1 - Y_i)\log(1  - \Qbar(A_i, W_i)) \right).   \] The
+code below computes this estimate  of $\bbD_n(\Qbar_{n,\epsilon})$ over a fine
+grid of epsilon and plots the resulting function.
 
 ```{r compute-negloglik-and-plot}
 # basically just do a grid search over epsilon for minimizer of negative log-likelihood loss
@@ -3173,8 +3193,47 @@ on the parameter space. We may construct asymptotically justified confidence int
 and hypothesis tests exactly as in Section \@ref(analysis-of-plug-in), but replacing
 $\Qbar_n$ by $\Qbar_{n,\epsilon_n}$. 
 
-The next code examines TMLE in a simulation and confirms the theoretical properties of the
-estimator. 
+## Empirical investigation {#empirical-inves-tmle}
+
+
+Let  us  illustrate the  principle  of  targeted  minimum loss  estimation  by
+updating the G-computation estimator built  on the $n=1000$ first observations
+in `obs` by  relying on $\Algo_{\Qbar,\text{kNN}}$, that is,  on the algorithm
+for the estimation of $\Qbar_{0}$ as it is implemented in `estimate_Qbar` with
+its  argument  `algorithm`  set  to  the  built-in  `kknn_algo`  (see  Section
+\@ref(Qbar-knn-algo)).    In   Section   \@ref(empirical-inves-one-step),   we
+performed a one-step correction of the same initial estimator.
+
+The  algorithm has  been trained  earlier on  this data  set and  produced the
+object  `Qbar_hat_kknn`.   The following  chunk  of  code prints  the  initial
+estimator `psin_kknn`,  its one-step  update `psin_kknn_os`, then  applies the
+targeting step and presents the resulting estimator:
+
+```{r psi-n-de-two-bis-tmle}
+(psin_kknn)
+(psin_kknn_os)
+(psin_kknn_tmle <- apply_targeting_step(head(obs, 1e3),
+                                        wrapper(Gbar_hat, FALSE),
+                                        wrapper(Qbar_hat_kknn, FALSE)))
+```
+
+In the  call to `apply_targeting_step` we  provide *(i)* the data  set at hand
+(first line),  *(ii)* the  estimator `Gbar_hat` of  $\Gbar_{0}$ that  we built
+earlier  by  using  algorithm  $\Algo_{\Gbar,1}$  (second  line;  see  Section
+\@ref(algo-Gbar-one)),  *(iii)* the  estimator `Qbar_hat_kknn`  of $\Qbar_{0}$
+(third line). Apparently, in this  particular example, the one-step correction
+and targeted correction updater similarly the initial estimator.
+
+
+To assess more broadly what is the  impact of the targeting step, let us apply
+it to the estimators that we built in Section \@ref(empirical-inves-Gcomp). In
+Section \@ref(empirical-inves-one-step), we applied the one-step correction to
+the same estimators.
+
+The object `learned_features_fixed_sample_size` already contains the estimated
+features  of $P_{0}$  that are  needed to  perform the  targeting step  to the
+estimators $\psi_{n}^{d}$ and  $\psi_{n}^{e}$, namely, thus we  merely have to
+call the function `apply_targeting_step`.
 
 
 (ref:tmle) Kernel density estimators of the law of two targeted estimators of $\psi_{0}$ (recentered with respect to $\psi_{0}$, and renormalized).  The estimators respectively hinge on algorithms $\Algo_{\Qbar,1}$ (d) and $\Algo_{\Qbar,\text{kNN}}$ (e) to estimate $\Qbar_{0}$, and on a targeting step.  Two renormalization schemes are considered, either based on an estimator of the asymptotic variance (left) or on the empirical variance computed across the `iter` independent replications of the estimators (right).  We emphasize that the $x$-axis ranges differ between the left and right plots.
@@ -3230,6 +3289,11 @@ fig +
                             (psi[n]^{"*"} - psi[0]))))
 ```
 
+Comment. Compare to one-step.
+
+# Closing words
+
+Conclude.
 
 # (APPENDIX) Appendix {-}
 
