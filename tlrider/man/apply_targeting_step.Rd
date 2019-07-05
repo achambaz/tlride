@@ -4,7 +4,7 @@
 \alias{apply_targeting_step}
 \title{Applies a targeting step to an initial G-computation estimator}
 \usage{
-apply_targeting_step(dat, Gbar, Qbar, threshold = 0.05)
+apply_targeting_step(dat, Gbar, Qbar, threshold = 0.05, epsilon = NULL)
 }
 \arguments{
 \item{dat}{The learning data  set. Must have the  same form as a  data set
@@ -20,11 +20,17 @@ algorithm on a learning data set (see '?estimate_Qbar').}
 
 \item{threshold}{A \code{numeric} in [1e-3, 1-1e-3]  (default value 1e-2),
 used to bound the evaluations of 'Gbar' away from 0 and 1.}
+
+\item{epsilon}{Either 'NULL'  (default  value) or  a \code{numeric}.   If
+'epsilon' is not  'NULL', then the search for the  optimal fluctuation is
+skipped and the provided value is used.}
 }
 \value{
 A \code{tibble} containing  the value of updated estimator ('psi_n'
-  column)  and that  of the  estimator of  its standard  deviation ('sig_n'
-  column).
+  column),  that  of  the  estimator of  its  standard  deviation  ('sig_n'
+  column), and  the value of  the criterion \eqn{P_n  D^* (P_{n,\epsilon})}
+  ('crit_n'  column). The  latter equals  approximately 0  if 'epsilon'  is
+  'NULL'.
 }
 \description{
 Given an  (initial) G-computation  estimator of \eqn{\Psi}  at the  law that

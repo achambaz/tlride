@@ -1469,7 +1469,7 @@ variances  of   $\psi_{n}^{a}$  and  $\psi_{n}^{b}$,   respectively.  Finally,
 (ref:known-Gbar-one-b) Kernel density estimators of the law of two estimators of $\psi_{0}$ (recentered with respect to $\psi_{0}$, and renormalized), one of them misconceived (a), the other assuming that $\Gbar_{0}$ is known (b). Built based on `iter` independent realizations of each estimator.
 
 ```{r known-Gbar-one-b, fig.cap = '(ref:known-Gbar-one-b)'}
-psi_hat_ab <- obs %>% as_tibble() %>%
+psi_hat_ab <- obs %>% as_tibble  %>%
   mutate(id = (seq_len(n()) - 1) %% iter) %>%
   nest(-id, .key = "obs") %>%
   mutate(est_a = map(obs, ~ compute_irrelevant_estimator(.)),
@@ -1589,8 +1589,8 @@ alter(empirical_experiment, sample_from = function(n) {
   W <- sample(pull(QW, "value"), n, prob = pull(QW, "weight"))
   cbind(W = W, A = NA, Y = NA)
 })
-W <- sample_from(empirical_experiment, 1e3) %>% as_tibble
-W %>% ggplot() +
+W <- sample_from(empirical_experiment, 1e3) %>% as_tibble %>%
+ggplot() +
   geom_histogram(aes(x = W, y = stat(density)), bins = 40) +
   stat_function(fun = get_feature(experiment, "QW"), col = "red")
 ```
@@ -1891,7 +1891,7 @@ Section \@ref(analysis-of-plug-in).
 
 ## IPTW estimator {#known-gbar-second-pass}
 
-### Construction and computation
+### Construction and computation {#unknown-gbar-constr}
 
 In Section \@ref(known-gbar-first-pass), we developed an IPTW substitution
 estimator,    $\psi_{n}^{b}$,   *assuming    that*    we   knew    $\Gbar_{0}$
@@ -2001,7 +2001,7 @@ renormalized $\sqrt{n}/\sqrt{v_{n}^{c}}  (\psi_{n}^{c} -  \psi_{0})$. Finally,
 
 ```{r unknown-Gbar-two-bis}
 learned_features_fixed_sample_size <-
-  obs %>% as_tibble() %>%
+  obs %>% as_tibble %>%
   mutate(id = (seq_len(n()) - 1) %% iter) %>%
   nest(-id, .key = "obs") %>%
   mutate(Gbar_hat =
@@ -2992,8 +2992,8 @@ fluctuation  $\{P_{h} :  h \in  H\}$ of  $P$ in  direction of  $s$ in  $\calM$
 induces   a   fluctuation   $\{\Qbar_{h}   :   h  \in   H\}$   of   $\Qbar   =
 \left.Q_{h}\right|_{h=0}$  in the  space  $\calQ \triangleq  \{\Qbar  : P  \in
 \calM\}$ of  regression functions induced  by model $\calM$.   Specifically we
-show [here]() that, for every $h \in H$, the conditional mean $\Qbar_{h}(A,W)$
-of     $Y$     given     $(A,W)$     under     $P_{h}$     is     given     by
+show  [here](#fluct-reg) that,  for  every  $h \in  H$,  the conditional  mean
+$\Qbar_{h}(A,W)$   of  $Y$   given   $(A,W)$  under   $P_{h}$   is  given   by
 \begin{equation*}\Qbar_{h}(A,W) \triangleq \frac{\Qbar(A,W) + h \Exp_{P}(Ys(O)
 | A,W)}{1 + h \Exp_{P}(s(O)|A,W)}.\end{equation*}
 
@@ -3035,10 +3035,10 @@ boosted trees algorithm (see Section \@ref(boosted-trees)).
 (ref:fluctuation) Representing three elements $\Qbar_{h}$ of the fluctuations $\calQ(\Qbar_{0}, \Gbar_{0})$ and $\calQ(\Qbar_{n,\text{trees}}, \Gbar_{0})$, respectively, where $\Qbar_{n,\text{trees}}$ is an estimator of $\Qbar_{0}$ derived by the boosted trees algorithm (see Section \@ref(boosted-trees)). The three elements correspond to $h=-1,0,1$. When $h=0$, $\Qbar_{h}$ equals either $\Qbar_{0}$ or $\Qbar_{n,\text{trees}}$, depending on which fluctuation is roamed.
  
 ```{r fluctuation, fig.cap = '(ref:fluctuation)'}
-Qbar_trees <- wrapper(Qbar_hat_trees, FALSE)
 Qbar_hminus <- fluctuate(Qbar, Gbar, h = -1)
 Qbar_hplus <- fluctuate(Qbar, Gbar, h = +1)
 
+Qbar_trees <- wrapper(Qbar_hat_trees, FALSE)
 Qbar_trees_hminus <- fluctuate(Qbar_trees, Gbar, h = -1)
 Qbar_trees_hplus <- fluctuate(Qbar_trees, Gbar, h = +1)
 
@@ -3092,30 +3092,56 @@ data-driven $h_{n} \in \bbR$. We will clarify why we do so at a later time.
 
 To assess the  performance of all the candidates included  in the fluctuation,
 we  formally rely  on  the  empirical risk  function  $h \mapsto  \Exp_{P_{n}}
-\left(L_{y} (\Qbar_{n,h})(O)\right)$ where the logistic (or negative binomial)
+\left(L_{y}   (\Qbar_{n,h})(O)\right)$   where   \begin{equation*}\Exp_{P_{n}}
+\left(L_{y}   (\Qbar_{n,h})(O)\right)  =   \frac{1}{n}  \sum_{i=1}^{n}   L_{y}
+(\Qbar_{n,h})(O_{i})\end{equation*}  and the  logistic (or  negative binomial)
 loss function $L_{y}$ is given  by \begin{equation*} -L_{y}(f)(O) \triangleq Y
 \log f(A,W)  + (1 -  Y) \log \left(1  - f(A,W)\right) \end{equation*}  for any
-function $f:[0,1] \times \{0,1\} \times [0,1] \to \bbR$. This loss function is
-the counterpart of the loss  function $L_{a}$ defined in \@ref(eq:logis-loss).
-The justification that  we gave in Section \@ref(logis-loss)  of the relevance
-of $L_{a}$ also applies here, *mutatis mutandis*. 
+function $f:[0,1] \times \{0,1\} \times  [0,1] \to [0,1]$.  This loss function
+is   the   counterpart    of   the   loss   function    $L_{a}$   defined   in
+\@ref(eq:logis-loss).    The   justification   that   we   gave   in   Section
+\@ref(logis-loss)  of the  relevance of  $L_{a}$ also  applies here,  *mutatis
+mutandis*.    In   summary,   the  oracle   risk   $\Exp_{P_{0}}   \left(L_{y}
+(f)(O)\right)$  of  $f$  is  a  real-valued  measure  of  discrepancy  between
+$\Qbar_{0}$ and $f$, $\Qbar_{0}$ minimizes $f \mapsto \Exp_{P_{0}} \left(L_{y}
+(f)(O)\right)$  over the  set of  all (measurable)  functions $f:[0,1]  \times
+\{0,1\}  \times [0,1]  \to [0,1]$,  and  a minimizer  $h_{0} \in  \bbR$ of  $h
+\mapsto  \Exp_{P_{0}}  \left(L_{y}   (\Qbar_{n,h})(O)\right)$  identifies  the
+element  of  fluctuation  $\calQ(\Qbar_{n},  \Gbar_{n})$ that  is  closest  to
+$\Qbar_{0}$ (some details are given [here](#oracle-logistic-risk)). 
 
+It should not come as a surprise after this discussion that the aforementioned
+data-driven  $h_{n}$ is  chosen  to be  the minimizer  of  the empirical  risk
+function, *i.e.*,  \begin{equation*}h_{n} \triangleq  \mathop{\arg\min}_{h \in
+\bbR}  \Exp_{P_{n}}  \left(L_{y}  (\Qbar_{n,h})(O)\right).\end{equation*}  The
+criterion is convex so the optimization program is well-posed.
 
-  For  this, we  estimate the  average negative  log-likelihood loss,
-defined for a candidate regression function $\Qbar$ as \[ \bbD_0(\Qbar) \equiv
--\Exp_{P_0}( Y \log(\Qbar(A,W)) + (1 - Y)\log(1  - \Qbar(A,W)) ) .  \] We note
-that the minimizer of $\bbD_0$ over all functions mapping from $\{0,1\} \times
-(0,1)$ to  $\bbR$ is equal to  $\Qbar_0$.  Thus, $\bbD_0$ provides  a concrete
-means of evaluating the fit of different candidate regression functions to the
-true regression function $\Qbar_0$.  Because, $\bbD_0$ depends on $P_0$, it is
-unknown to us in practice. Thus,  we may instead compute an empirical estimate
-of $\bbD_0$,  \[ \bbD_n(\Qbar) \equiv  -\frac{1}{n} \sum_{i = 1}^n  \left( Y_i
-\log(\Qbar(A_i, W_i))  + (1 - Y_i)\log(1  - \Qbar(A_i, W_i)) \right).   \] The
-code below computes this estimate  of $\bbD_n(\Qbar_{n,\epsilon})$ over a fine
-grid of epsilon and plots the resulting function.
+The next chunk  of code illustrates the search of  an approximation of $h_{n}$
+over a grid of candidate values.
 
-```{r compute-negloglik-and-plot}
-# basically just do a grid search over epsilon for minimizer of negative log-likelihood loss
+(ref:grid-search) Legend.
+
+```{r grid-search, fig.cap = '(ref:grid-search)'}
+candidates <- seq(-1e-1, 1e-1, length.out = 1e2)
+W <- obs[1:1e3, "W"]
+A <- obs[1:1e3, "A"]
+Y <- obs[1:1e3, "Y"]
+lGAW <- compute_lGbar_hatAW(A, W, Gbar_hat)
+QAW <- compute_Qbar_hatAW(A, W, Qbar_hat_trees)
+risk <- sapply(candidates,
+               function(h) {
+                 QAW_h <- expit(logit(QAW)  + h * (2 * A - 1) / lGAW)
+                 -mean(Y * log(QAW_h) + (1 - Y) * log(1 - QAW_h))
+               })
+idx_min <- which.min(risk)
+risk %>% enframe %>%
+  mutate(h = candidates) %>%
+  ggplot() +
+  geom_point(aes(x = h, y = value), color = "#CC6666") +
+  geom_vline(xintercept = candidates[idx_min]) +
+  geom_hline(yintercept = risk[idx_min]) +
+  labs(y = "empirical logistic risk")
+  
 ```
 The above  plot shows the  estimated average negative log-likelihood  loss for
 each regression function in the  parametric submodel $\calQ(\Gbar_n)$. Now, we
@@ -3195,8 +3221,9 @@ $\Qbar_n$ by $\Qbar_{n,\epsilon_n}$.
 
 ## Empirical investigation {#empirical-inves-tmle}
 
+### A first numerical application {#empirical-inves-tmle-first}
 
-Let  us  illustrate the  principle  of  targeted  minimum loss  estimation  by
+Let us illustrate the principle of targeted minimum loss estimation by
 updating the G-computation estimator built  on the $n=1000$ first observations
 in `obs` by  relying on $\Algo_{\Qbar,\text{kNN}}$, that is,  on the algorithm
 for the estimation of $\Qbar_{0}$ as it is implemented in `estimate_Qbar` with
@@ -3224,8 +3251,55 @@ earlier  by  using  algorithm  $\Algo_{\Gbar,1}$  (second  line;  see  Section
 (third line). Apparently, in this  particular example, the one-step correction
 and targeted correction updater similarly the initial estimator.
 
+### &#9881; \gear Exercice {#exo-tmle}
 
-To assess more broadly what is the  impact of the targeting step, let us apply
+1. Consult   the   man   page  of   function   `apply_targeting_step`   (run
+   `?apply_targeting_step`)  and  explain  what  is   the  role  of  its  input
+   `epsilon`.
+   
+2. Run the chunk of code below. What does it do? Hint: check out the chunks of
+   code  of  Sections   \@ref(Qbar-knn-algo),  \@ref(unknown-gbar-constr)  and
+   \@ref(empirical-inves-tmle-first).
+
+
+(ref:exo-tmle) Figure produced when running the chunk of code from problem 2 in Section \@ref(exo-tmle).
+
+```{r exo-tmle, fig.cap = '(ref:exo-tmle)'}
+epsilon <- seq(-1e-2, 1e-2, length.out = 1e2)
+Gbar_hat_w <- wrapper(Gbar_hat, FALSE)
+Qbar_kknn <- wrapper(Qbar_hat_kknn, FALSE)
+
+psi_trees_epsilon <- sapply(epsilon, function(h) {
+  apply_targeting_step(head(obs, 1e3), Gbar_hat_w,  Qbar_trees, epsilon = h) %>%
+    select(psi_n, crit_n) %>% as.matrix
+})
+idx_trees <- which.min(abs(psi_trees_epsilon[2, ]))
+
+psi_kknn_epsilon <- sapply(epsilon, function(h) {
+  apply_targeting_step(head(obs, 1e3), Gbar_hat_w, Qbar_kknn, epsilon = h) %>%
+    select(psi_n, crit_n) %>% as.matrix
+})
+idx_kknn <- which.min(abs(psi_kknn_epsilon[2, ]))
+
+rbind(t(psi_trees_epsilon), t(psi_kknn_epsilon)) %>% as_tibble %>%
+  rename("psi_n" = V1, "crit_n" = V2) %>%
+  mutate(type = rep(c("trees", "kknn"), each = length(epsilon))) %>% 
+  ggplot() +
+  geom_point(aes(x = crit_n, y = psi_n, color = type)) +
+  geom_vline(xintercept = 0) +
+  geom_hline(yintercept = c(psi_trees_epsilon[1,idx_trees],
+                            psi_kknn_epsilon[1,idx_kknn])) +
+  labs(x = expression(paste(P[n]~D^"*", (P[list(n,h)]^o))),
+       y = expression(Psi(P[list(n,h)]^o)))
+```	
+
+3. Discuss the fact that  the colored curves in Figure \@ref(fig:exo-tmle)
+   look like segments.
+
+
+### Empirical investigation
+
+To assess more broadly what is the impact of the targeting step, let us apply
 it to the estimators that we built in Section \@ref(empirical-inves-Gcomp). In
 Section \@ref(empirical-inves-one-step), we applied the one-step correction to
 the same estimators.
@@ -3293,7 +3367,7 @@ Comment. Compare to one-step.
 
 # Closing words
 
-Conclude.
+Conclude. Refer to `tlverse`. 
 
 # (APPENDIX) Appendix {-}
 

@@ -158,7 +158,30 @@ consistently then,  by Slutsky's lemma,  the asymptotic variance  of $\sqrt{n}
 ```
 
 
+## The oracle logistic risk {#oracle-logistic-risk}
 
+First, let us recall the definition of the Kullback-Leibler divergence between
+Bernoulli laws of parameters $p,q\in]0,1[$:
+\begin{equation*}\text{KL}(p,q)  \triangleq  p \log\left(\frac{p}{q}\right)  +
+(1-p) \log \left(\frac{1-p}{1-q}\right).\end{equation*}
+It satisfies $\text{KL}(p,q)  \geq 0$ where the equality holds  if and only if
+$p=q$. 
+
+Let  $f:[0,1]  \times  \{0,1\}  \times  [0,1] \to  [0,1]$  be  a  (measurable)
+function.   Applying  the tower  rule  shows  that  the oracle  logistic  risk
+satisfies  \begin{align}\Exp_{P_{0}}  \left(L_{y}  (f)(O)\right)&=\Exp_{P_{0}}
+\left(-\Qbar_{0}(A,W)  \log f(A,W)  -  \left(1 -  \Qbar_{0} (A,W)\right)  \log
+\left(1              -              f(A,W)\right)\right)\notag\\&=\Exp_{P_{0}}
+\left(\text{KL}\left(\Qbar_{0}(A,W),  f(A,W)\right)\right) +  \text{constant},
+(\#eq:KL)\end{align}  where   the  above  constant   equals  \begin{equation*}
+-\Exp_{P_{0}}\left(\Qbar_{0}(A,W)  \log \Qbar_{0}(A,W)  - \left(1  - \Qbar_{0}
+(A,W)\right) \log \left(1 - \Qbar_{0,W}(A,W)\right)\right).  \end{equation*}
+
+In  light  of  \@ref(eq:KL),  $\Qbar_{0}$ minimizes  $f  \mapsto  \Exp_{P_{0}}
+\left(L_{y}  (f)(O)\right)$ over  the  set of  (measurable) functions  mapping
+$[0,1] \times  \{0,1\} \times [0,1]$ to  $[0,1]$.  Moreover, as an  average of
+measures of  discrepancy, $\Exp_{P_{0}}  \left(L_{y} (f)(O)\right)$ is  also a
+measure of discrepancy. 
 
 
 

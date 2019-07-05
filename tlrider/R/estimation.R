@@ -566,8 +566,8 @@ compute_gcomp <- function(QW, Qbar, nobs) {
 #' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2019).
 #' 
 #' @return A \code{tibble} containing  the value of updated estimator ('psi_n'
-#'   column)  and that  of the  estimator of  its standard  deviation ('sig_n'
-#'   column).
+#'   column),  that  of  the  estimator of  its  standard  deviation  ('sig_n'
+#'   column), and the correcting term itself ('crit_n' column).
 #'
 #' @details Caution:  the estimator of the standard deviation  of the updated
 #'   estimator can be trusted only in very specific circumstances.
@@ -613,7 +613,7 @@ apply_one_step_correction <- function(dat, Gbar, Qbar, psi) {
   eic_dat <- eic(dat)
   psi_n <- psi + mean(eic_dat)
   sig_n <- stats::sd(eic_dat)/sqrt(nrow(dat))
-  tibble::tibble(psi_n = psi_n, sig_n = sig_n)
+  tibble::tibble(psi_n = psi_n, sig_n = sig_n, crit_n = mean(eic_dat))
 }
 
 
@@ -641,6 +641,10 @@ apply_one_step_correction <- function(dat, Gbar, Qbar, psi) {
 #'
 #' @param threshold  A \code{numeric} in [1e-3, 1-1e-3]  (default value 1e-2),
 #'   used to bound the evaluations of 'Gbar' away from 0 and 1.
+#'
+#' @param epsilon  Either 'NULL'  (default  value) or  a \code{numeric}.   If
+#'   'epsilon' is not  'NULL', then the search for the  optimal fluctuation is
+#'   skipped and the provided value is used.
 #' 
 #' @seealso   \code{\link{estimate_Gbar}}   to  estimate   the   conditional
 #'   probability that A=1 given W, \code{\link{estimate_Qbar}} to estimate the
@@ -652,8 +656,10 @@ apply_one_step_correction <- function(dat, Gbar, Qbar, psi) {
 #' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2019).
 #' 
 #' @return A \code{tibble} containing  the value of updated estimator ('psi_n'
-#'   column)  and that  of the  estimator of  its standard  deviation ('sig_n'
-#'   column).
+#'   column),  that  of  the  estimator of  its  standard  deviation  ('sig_n'
+#'   column), and  the value of  the criterion \eqn{P_n  D^* (P_{n,\epsilon})}
+#'   ('crit_n'  column). The  latter equals  approximately 0  if 'epsilon'  is
+#'   'NULL'.
 #'
 #' @details Caution:  the estimator of the standard deviation  of the updated
 #'   estimator can be trusted only in very specific circumstances.
@@ -680,8 +686,11 @@ apply_one_step_correction <- function(dat, Gbar, Qbar, psi) {
 #' (apply_targeting_step(obs, Gbar_hat_fun, Qbar_hat_fun))
 #' 
 #' @export 
-apply_targeting_step <- function(dat, Gbar, Qbar, threshold = 5e-2) {
+apply_targeting_step <- function(dat, Gbar, Qbar, threshold = 5e-2, epsilon = NULL) {
   threshold <- R.utils::Arguments$getNumeric(threshold, c(1e-3, 1-1e-3))
+  if (!is.null(epsilon)) {
+    epsilon <- R.utils::Arguments$getNumeric(epsilon)
+  }
   preliminary <- function(obs) {
     if (length(intersect(c("W", "A", "Y"), names(obs))) == 3) {
       stop(stringr::str_c("Argument 'obs' of ",
@@ -697,10 +706,12 @@ apply_targeting_step <- function(dat, Gbar, Qbar, threshold = 5e-2) {
                    GW = GW, HW = HW)
   }
   tib <- preliminary(dat)
-  fit <- stats::glm(Y ~ HW - 1,
-                    data = data.frame(Y = dat[, "Y"], HW = tib$HW),
-                    offset = stats::qlogis(tib$QAW), family = stats::binomial())
-  epsilon <- stats::coef(fit)
+  if (is.null(epsilon)) {
+    fit <- stats::glm(Y ~ HW - 1,
+                      data = data.frame(Y = dat[, "Y"], HW = tib$HW),
+                      offset = stats::qlogis(tib$QAW), family = stats::binomial())
+    epsilon <- stats::coef(fit)
+  } 
   QoneW_epsilon <- stats::plogis(stats::qlogis(tib$QoneW) + epsilon/tib$GW)
   QzeroW_epsilon <- stats::plogis(stats::qlogis(tib$QzeroW) - epsilon/(1-tib$GW))
   QAW_epsilon <- dat[, "A"] * QoneW_epsilon + (1 - dat[, "A"]) * QzeroW_epsilon
@@ -708,5 +719,5 @@ apply_targeting_step <- function(dat, Gbar, Qbar, threshold = 5e-2) {
   eic_dat <- (dat[, "Y"] - QAW_epsilon) * tib$HW +
     QoneW_epsilon - QzeroW_epsilon - psi_n
   sig_n <- stats::sd(eic_dat)/sqrt(nrow(dat))
-  tibble::tibble(psi_n = psi_n, sig_n = sig_n)
+  tibble::tibble(psi_n = psi_n, sig_n = sig_n, crit_n = mean(eic_dat))
 }
