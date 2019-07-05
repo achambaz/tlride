@@ -3119,10 +3119,9 @@ criterion is convex so the optimization program is well-posed.
 The next chunk  of code illustrates the search of  an approximation of $h_{n}$
 over a grid of candidate values.
 
-(ref:grid-search) Legend.
 
 ```{r grid-search, fig.cap = '(ref:grid-search)'}
-candidates <- seq(-1e-1, 1e-1, length.out = 1e2)
+candidates <- seq(-1e-2, 1e-2, length.out = 1e2)
 W <- obs[1:1e3, "W"]
 A <- obs[1:1e3, "A"]
 Y <- obs[1:1e3, "Y"]
@@ -3134,16 +3133,27 @@ risk <- sapply(candidates,
                  -mean(Y * log(QAW_h) + (1 - Y) * log(1 - QAW_h))
                })
 idx_min <- which.min(risk)
+idx_zero <- which.min(abs(candidates))[1]
+labels <- c(bquote(R[n](bar(Q)[list(n,hn)]^list(o))),
+            bquote(R[n](bar(Q)[list(n,0)]^list(o))))
 risk %>% enframe %>%
   mutate(h = candidates) %>%
   ggplot() +
   geom_point(aes(x = h, y = value), color = "#CC6666") +
-  geom_vline(xintercept = candidates[idx_min]) +
-  geom_hline(yintercept = risk[idx_min]) +
-  labs(y = "empirical logistic risk")
-  
+  geom_vline(xintercept = c(0, candidates[idx_min])) +
+  geom_hline(yintercept = c(risk[idx_min], risk[idx_zero])) +
+  scale_y_continuous(
+    bquote("empirical logistic risk, " ~ R[n](bar(Q)[list(n,h)]^list(o))),
+    trans = "exp", labels = NULL, 
+    sec.axis = sec_axis(~.,
+                        breaks = c(risk[idx_min], risk[idx_zero]),
+                        labels = labels))
 ```
-The above  plot shows the  estimated average negative log-likelihood  loss for
+
+(ref:grid-search) Representing the evolution of the empirical risk function as $h$ ranges over a grid of values. One sees that the risk at $h=0$ (*i.e.*, the risk of $\Qbar_{n}$) is larger that the minimal risk, achieved at $h \approx$ `r candidates[idx_min]` (which must be close to that of the optimal $\Qbar_{n,h_{n}}$).
+
+
+The above plot shows the estimated average negative log-likelihood loss for
 each regression function in the  parametric submodel $\calQ(\Gbar_n)$. Now, we
 should like  to move  to the  regression with  the smallest  estimated average
 negative log-likelihood, which was achieved at $\epsilon=$ \tcg{fill\_in\_from\_R\_output}.  Because our submodel is  through $\Qbar_n$, that is,  $\Qbar_n$ is
