@@ -3093,7 +3093,8 @@ Recall that our goal  is to build an estimator of $\Qbar_0$  that is *at least
 as  good* as  $\Qbar_n$.  We  will  look for  this enhanced  estimator in  the
 fluctuation $\calQ(\Qbar_{n}, \Gbar_{n})$ where $\Gbar_{n}$ is an estimator of
 $\Gbar_{0}$.  Thus,  the  estimator   writes  as  $\Qbar_{n,h_{n}}$  for  some
-data-driven $h_{n} \in \bbR$. We will clarify why we do so at a later time.
+data-driven  $h_{n} \in  \bbR$. We  will  clarify why  we  do so  [at a  later
+time](#fluct-justification) 
 
 To assess the  performance of all the candidates included  in the fluctuation,
 we  formally rely  on  the  empirical risk  function  $h \mapsto  \Exp_{P_{n}}
@@ -3108,12 +3109,12 @@ is   the   counterpart    of   the   loss   function    $L_{a}$   defined   in
 \@ref(logis-loss)  of the  relevance of  $L_{a}$ also  applies here,  *mutatis
 mutandis*.    In   summary,   the  oracle   risk   $\Exp_{P_{0}}   \left(L_{y}
 (f)(O)\right)$  of  $f$  is  a  real-valued  measure  of  discrepancy  between
-$\Qbar_{0}$ and $f$, $\Qbar_{0}$ minimizes $f \mapsto \Exp_{P_{0}} \left(L_{y}
+$\Qbar_{0}$ and $f$; $\Qbar_{0}$ minimizes $f \mapsto \Exp_{P_{0}} \left(L_{y}
 (f)(O)\right)$  over the  set of  all (measurable)  functions $f:[0,1]  \times
-\{0,1\}  \times [0,1]  \to [0,1]$,  and  a minimizer  $h_{0} \in  \bbR$ of  $h
+\{0,1\}  \times [0,1]  \to [0,1]$;  and  a minimizer  $h_{0} \in  \bbR$ of  $h
 \mapsto  \Exp_{P_{0}}  \left(L_{y}   (\Qbar_{n,h})(O)\right)$  identifies  the
 element  of  fluctuation  $\calQ(\Qbar_{n},  \Gbar_{n})$ that  is  closest  to
-$\Qbar_{0}$ (some details are given [here](#oracle-logistic-risk)). 
+$\Qbar_{0}$ (some details are given [here](#oracle-logistic-risk)).
 
 It should not come as a surprise after this discussion that the aforementioned
 data-driven  $h_{n}$ is  chosen  to be  the minimizer  of  the empirical  risk
@@ -3161,30 +3162,48 @@ Figure \@ref(fig:grid-search) reveals  how moving away slightly  from $h=0$ to
 the  left (*i.e.*,  to  $h_{n}$ equal  to  `r round(candidates[idx_min],  3)`,
 rounded to three decimal places) entails a decrease of the empirical risk. The
 gain is modest at  the scale of the empirical risk,  but considerable in terms
-of inference.
+of inference, as we explain below.
 
-The above plot shows the estimated average negative log-likelihood loss for
-each regression function in the  parametric submodel $\calQ(\Gbar_n)$. Now, we
-should like  to move  to the  regression with  the smallest  estimated average
-negative log-likelihood, which was achieved at $\epsilon=$ \tcg{fill\_in\_from\_R\_output}.  Because our submodel is  through $\Qbar_n$, that is,  $\Qbar_n$ is
-itself included in  our submodel, and this newly  selected regression estimate
-has a  better estimated average  negative log-likelihood loss, we  should hope
-that  the  new  estimate  is  at   least  *no  further  from  $\Qbar_0$*  than
-$\Qbar_n$.  Let's use  $\Qbar_{n,\epsilon_n}$ to  denote the  new estimate  of
-$\Qbar_0$.
+### Justifying the form of the fluctutation {#fluct-justification}
 
-What about repeating this process? Perhaps by iterating this procedure, we could 
-generate regression estimates that provide a better fit of $\Qbar_0$ than even $\Qbar_{n,\epsilon_n}$. Let's then define a submodel through $\Qbar_{n,\epsilon_n}$, \[
-  \calQ_1(\Gbar_n) = \{ \Qbar_{n,\delta}(A,W) = \expit\left(\logit(\Qbar_{n,\epsilon_n}(A,W)) + \delta \frac{2A - 1}{\ell \Gbar_n(A,W)} \right) : \delta \in \bbR \} . 
-\]
-Consider finding $\delta_n$, the value of $\delta$ that minimizes $\bbD_n(\Qbar_{n,\delta})$ 
-over $\delta \in \bbR$. This is trivial since there is a one-to-one correspondence 
-between the parameter $\epsilon$ indexing the submodel $\calQ(\Gbar_n)$ and 
-$\calQ_1(\Gbar_n)$: for any $\epsilon$, there is some $\delta \in \bbR$ such that $\delta = 
-\epsilon - \epsilon_n$. That is to say that the choice of $\delta$ that minimizes 
-$\bbD_n(\Qbar_{nm,\delta})$ is $\delta = 0$. Thus, 
-$\Qbar_{n,\delta = 0} \equiv \Qbar_{n,\epsilon_n}$ is the best fit that we can obtain for 
-$\Qbar_0$ by moving through the model space via submodels of the form $\calQ(\Gbar_n)$.
+Let us define  $\Qbar_{n}^{*} \triangleq \Qbar_{n, h_{n}}$. We  justify in two
+steps  our   assertion  that   moving  from   $\left.\Qbar_{n}\right|_{h=0}  =
+\Qbar_{n}$ to $\Qbar_{n}^{*}$  along fluctuation $\calQ(\Qbar_{n}, \Gbar_{n})$
+has a considerable impact for the inference of $\psi_{0}$.  
+
+First,  we note  that there  is  no need  to iterate  the updating  procedure.
+Specifically,  even  if  we  tried  to  fluctuate  $\Qbar_{n}^{*}$  along  the
+fluctuation  $\calQ(\Qbar_{n}^{*}, \Gbar_{n})  = \{\Qbar_{n,h'}^{*}  : h'  \in
+\bbR\}$  defined  like  $\calQ(\Qbar_{n}, \Gbar_{n})$  \@ref(eq:Q-fluct)  with
+$\Qbar_{n,h_{n}}$ substituted for $\Qbar_{n}$, then  we would not move at all.
+This is  obvious because there  is a one-to-one smooth  correspondence between
+the  parameter   $h'$  indexing  $\calQ(\Qbar_{n}^{*},  \Gbar_{n})$   and  the
+parameter  $h$  indexing $\calQ(\Qbar_{n},  \Gbar_{n})$  (namely,  $h' =  h  +
+h_{n}$). Therefore, the  derivative of (the real-valued  function over $\bbR$)
+$h \mapsto  \Exp_{P_n} \left(L_{y}  (\Qbar_{n,h})(O)\right)$ evaluated  at its
+minimizer  $h_{n}$  equals   0,  that  is  (see   [here](#fluct-score)  for  a
+justification of the last but one equality below),
+
+\begin{align*}      \frac{d}{d       h}      &       \left.       \Exp_{P_{n}}
+\left(L_{y}(\Qbar_{n,h}^{*})(O)\right)\right|_{h=0}            \\           &=
+-\frac{1}{n}\left.\frac{d}{d     h}     \sum_{i=1}^{n}    \left(Y_{i}     \log
+\Qbar_{n,h}^{*}(A_{i},    W_{i})    +    (1    -    Y_{i})    \log\left(1    -
+\Qbar_{n,h}^{*}(A_{i},          W_{i})\right)\right)\right|_{h=0}\\         &=
+-\frac{1}{n}\sum_{i=1}^{n}  \left(\frac{Y_{i}}{\Qbar_{n}^{*}(A_{i}, W_{i})}  -
+\frac{1    -   Y_{i}}{1    -   \Qbar_{n}^{*}(A_{i},    W_{i})}\right)   \times
+\left.\frac{d}{d   h}   \Qbar_{n,h}^{*}(A_{i},   W_{i})\right|_{h=0}   \\   &=
+-\frac{1}{n}\sum_{i=1}^{n}       \frac{Y_{i}      -       \Qbar_{n}^{*}(A_{i},
+W_{i})}{\Qbar_{n}^{*}(A_{i},  W_{i})  \times  \left(1  -  \Qbar_{n}^{*}(A_{i},
+W_{i})\right)} \left.\frac{d}{d  h} \Qbar_{n,h}^{*}(A_{i}, W_{i})\right|_{h=0}
+\\  &=   -\frac{1}{n}\sum_{i=1}^{n}  \frac{2A_{i}   -  1}{\ell\Gbar_{n}(A_{i},
+W_{i})} \left(Y_{i} - \Qbar_{n}^{*}(A_{i}, W_{i})\right) = 0.\end{align*}
+
+ 
+
+2. that the derivative of (the real-valued function over $\bbR$) $h \mapsto
+\Exp_{P_n} \left(L_{y} (\Qbar_{n,h})(O)\right)$ equals 0 when evaluated at its
+minimizer $h_{n}$, and to compute the said gradient.
+
 
 Now, we hope that we have achieved our goal of finding a new regression fit that is *at least 
 as good* as our initial estimate. However, recall that our true purpose is to generate an 

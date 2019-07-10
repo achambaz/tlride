@@ -240,6 +240,8 @@ from it  that the  conditional mean  of $Y$ given  $(A,W)$ under  $P_h$ equals
 \begin{equation*}\frac{\Qbar(A,W)   +  h   \Exp_{P}(Ys(O)   |   A,W)}{1  +   h
 \Exp_{P}(s(O)|A,W)}.\end{equation*}
 
+### Computing the score of a fluctuation of the regression function {#fluct-score}
+
 `r if (knitr::is_html_output()) '# References'`
    
    
