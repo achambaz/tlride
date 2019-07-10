@@ -2998,14 +2998,16 @@ $\Qbar_{h}(A,W)$   of  $Y$   given   $(A,W)$  under   $P_{h}$   is  given   by
 | A,W)}{1 + h \Exp_{P}(s(O)|A,W)}.\end{equation*}
 
 We  note that  if $s(O)$  depends on  $O$ only  through $(A,W)$  then, abusing
-notation  and  writing  $s(A,W)$ for  $s(O)$,  \begin{align}\Qbar_{h}(A,W)  &=
-\frac{\Qbar(A,W)     +     h     \Exp_{P}(Ys(A,W)    |     A,W)}{1     +     h
+notation and writing $s(A,W)$ for $s(O)$, 
+\begin{align}
+\Qbar_{h}(A,W)  &=  \frac{\Qbar(A,W)  +  h  \Exp_{P}(Ys(A,W)  |  A,W)}{1  +  h
 \Exp_{P}(s(A,W)|A,W)}\notag\\&=\frac{\Qbar(A,W)  + h  s(A,W)\Qbar(A,W)}{1 +  h
-s(A,W)}\notag\\&=\Qbar(A,W).(\#eq:Qbarh)\end{align} In  words, $\Qbar$  is not
-fluctuated  at  all, that  is,  the  laws $P_{h}$  that  are  elements of  the
-fluctuation share  the same conditional  mean of $Y$ given  $(A,W)$.^[In fact,
-more  generally,   the  conditional  *law*   of  $Y$  given  $(A,W)$   is  not
-fluctuated. See the corresponding problem in Section \@ref(exo-fluct).]
+s(A,W)}\notag\\&=\Qbar(A,W).(\#eq:Qbarh)
+\end{align}
+In words, $\Qbar$ is not fluctuated at all, that is, the laws $P_{h}$ that are
+elements  of the  fluctuation share  the same  conditional mean  of $Y$  given
+$(A,W)$.^[In fact, more generally, the  conditional *law* of $Y$ given $(A,W)$
+is not fluctuated. See the corresponding problem in Section \@ref(exo-fluct).]
 
 However we find it easier in the present context, notably from a computational
 perspective, to  fluctuate $\Qbar_{n}$  *directly* in  $\calQ$, as  opposed to
@@ -3017,10 +3019,13 @@ $\Qbar_{n}$.  The next section introduces such a direct fluctuation.
 Set arbitrarily $\Qbar \in \calQ$. The (direct) fluctuation of $\Qbar$ that we
 propose to consider depends on a  user-supplied $\Gbar$.  For any $\Gbar$ such
 that  $0  < \ell\Gbar(A,W)  <1$  $P_{0}$-almost  surely, the  $\Gbar$-specific
-fluctuation model for $\Qbar$ is \begin{equation}\calQ(\Qbar,\Gbar) \triangleq
-\left\{(a,w)            \mapsto           \Qbar_{h}(a,w)            \triangleq
-\expit\left(\logit\left(\Qbar(a,w)\right) +  h \frac{2A -  1}{\ell \Gbar(a,w)}
-\right) : t \in \bbR\right\} \subset \calQ. (\#eq:Q-fluct)\end{equation}
+fluctuation model for $\Qbar$ is 
+\begin{equation}
+\calQ(\Qbar,\Gbar)     \triangleq     \left\{(a,w)     \mapsto
+\Qbar_{h}(a,w)   \triangleq   \expit\left(\logit\left(\Qbar(a,w)\right)  +   h
+\frac{2A  -  1}{\ell   \Gbar(a,w)}  \right)  :  t   \in  \bbR\right\}  \subset
+\calQ. (\#eq:Q-fluct)
+\end{equation}
 
 Fluctuation  $\calQ(\Qbar,\Gbar)$   is  a  one-dimensional   parametric  model
 (indexed  by the  real-valued parameter  $h$)  that goes  through $\Qbar$  (at
@@ -3119,7 +3124,7 @@ criterion is convex so the optimization program is well-posed.
 The next chunk  of code illustrates the search of  an approximation of $h_{n}$
 over a grid of candidate values.
 
-
+ 
 ```{r grid-search, fig.cap = '(ref:grid-search)'}
 candidates <- seq(-1e-2, 1e-2, length.out = 1e2)
 W <- obs[1:1e3, "W"]
@@ -3152,6 +3157,11 @@ risk %>% enframe %>%
 
 (ref:grid-search) Representing the evolution of the empirical risk function as $h$ ranges over a grid of values. One sees that the risk at $h=0$ (*i.e.*, the risk of $\Qbar_{n}$) is larger that the minimal risk, achieved at $h \approx$ `r candidates[idx_min]` (which must be close to that of the optimal $\Qbar_{n,h_{n}}$).
 
+Figure \@ref(fig:grid-search) reveals  how moving away slightly  from $h=0$ to
+the  left (*i.e.*,  to  $h_{n}$ equal  to  `r round(candidates[idx_min],  3)`,
+rounded to three decimal places) entails a decrease of the empirical risk. The
+gain is modest at  the scale of the empirical risk,  but considerable in terms
+of inference.
 
 The above plot shows the estimated average negative log-likelihood loss for
 each regression function in the  parametric submodel $\calQ(\Gbar_n)$. Now, we
