@@ -1,7 +1,7 @@
 ---
 knit: "bookdown::render_book"
 title: "A Ride in Targeted Learning Territory"
-author: ["David Benkeser (Emory University)", "Antoine Chambaz (Université Paris Descartes)"]
+author: ["David Benkeser (Emory University)", "Antoine Chambaz (Université de Paris)"]
 date: "`r Sys.Date()`"
 description: "To do..."
 encoding: "UTF-8"
@@ -21,9 +21,12 @@ favicon: "favicon.png"
 #  Welcome {-} 
 
 This is either the  website or the text called __"A  Ride in Targeted Learning
-Territory"__. In  the former case, the  text can be downloaded  by clicking on
-the dedicated button in  the top part of the webpage. In  the latter case, the
-website can be browsed [here](http://achambaz.github.io/tlride "TLRIDE").
+Territory"__. In the former case, the text can be dowloaded by clicking on the
+dedicated button  in the  top part  of the  webpage. In  the latter  case, the
+website              can               be              browsed              at
+[https://achambaz.github.io/tlride/](https://achambaz.github.io/tlride/
+"TLRIDE"). 
+
 
 
 ```{r cover, fig.width = 7, echo = FALSE}
@@ -63,6 +66,13 @@ The  text  might  be  of  interest  to  students  in  statistics  and  machine
 learning. It might also serve as a gentle introduction to targeted learning in
 both its theoretical and computational  aspects before delving deeper into the
 literature [@TMLEbook11], [@TMLEbook18].
+
+The   text   was  presented   at   the   [Journées  d'Étude   en   Statistique
+2018](https://www.sfds.asso.fr/fr/group/activites_et_parrainages/608-journees_detude_en_statistique/)
+held in  Fréjus (France) in  October 2018 and at  the [First Summer  School in
+Statistics  and  Data  Science  for  Young  Researchers  from  French-speaking
+Africa](https://ehermellin.github.io/conf_sfds/index.html)   held   at   [AIMS
+Senegal](https://aims-senegal.org/) (M'bour, Senegal) in July 2019.
 
 __Technical details__
 

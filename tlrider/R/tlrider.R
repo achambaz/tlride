@@ -38,8 +38,8 @@
 #' 
 #' @examples
 #'
-#' expit <- plogis
-#' logit <- qlogis
+#' expit <- stats::plogis
+#' logit <- stats::qlogis
 #' 
 #' ## 
 #' ## First example

@@ -27,5 +27,5 @@ Samples  from the  mixture of  uniform laws  characterized by  the provided
 weights and corresponding intervals.
 }
 \references{
-Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
+Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2019).
 }

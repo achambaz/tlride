@@ -22,8 +22,8 @@ algorithm on a learning data set (see '?estimate_Qbar').}
 }
 \value{
 A \code{tibble} containing  the value of updated estimator ('psi_n'
-  column)  and that  of the  estimator of  its standard  deviation ('sig_n'
-  column).
+  column),  that  of  the  estimator of  its  standard  deviation  ('sig_n'
+  column), and the correcting term itself ('crit_n' column).
 }
 \description{
 Given an  (initial) substitution  estimator of \eqn{\Psi}  at the  law that

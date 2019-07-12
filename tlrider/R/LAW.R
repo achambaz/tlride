@@ -63,7 +63,7 @@ setConstructorS3("LAW", function(QW = NA, Gbar = NA, Qbar = NA,
 #' identical(experiment, experiment_bis)
 #' identical(experiment, experiment_ter)
 #' 
-#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
+#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2019).
 #'
 #' @aliases copy
 #' 
@@ -94,7 +94,7 @@ setMethodS3(
 #' @return  A character string  recalling what can be  done with an  object of
 #'   \code{class} \code{LAW}.
 #' 
-#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
+#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2019).
 #'
 #' @family methods and functions for LAW objects
 #'
@@ -152,7 +152,7 @@ setMethodS3(
 #'   sampled, a \code{tibble} or \code{data.frame} with columns named 'W', 'A'
 #'   and 'Y'.
 #'
-#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
+#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2019).
 #'
 #' @examples
 #'
@@ -199,7 +199,7 @@ setMethodS3(
 #'
 #' @family methods and functions for LAW objects
 #' 
-#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
+#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2019).
 #'
 #' @seealso \code{\link{sample_from}}  to sample from the law (if  it is fully
 #'   characterized), \code{\link{alter}}  to modify some relevant  features of
@@ -254,7 +254,7 @@ setMethodS3(
 #'
 #' @family methods and functions for LAW objects
 #' 
-#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
+#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2019).
 #'
 #' @seealso \code{\link{reveal}} to reveal  some relevant features of the law.
 #'
@@ -343,7 +343,7 @@ setMethodS3(
 #' @param \dots  Additional parameters possibly needed to  fully characterize the
 #'   law.
 #'
-#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
+#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2019).
 #' 
 #' @seealso \code{\link{sample_from}}  to sample from the law (if  it is fully
 #'   characterized), \code{\link{reveal}} to reveal  some relevant features of
@@ -425,7 +425,7 @@ setMethodS3(
 #' @param \dots  Additional parameters possibly needed to  fully characterize the
 #'   law.
 #' 
-#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
+#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2019).
 #' 
 #' @seealso \code{\link{sample_from}}  to sample from the law (if  it is fully
 #'   characterized), \code{\link{reveal}} to reveal  some relevant features of
@@ -514,7 +514,7 @@ setMethodS3(
 #'
 #' @param \dots ...
 #'
-#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
+#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2019).
 #' 
 #' @seealso \code{\link{sample_from}}  to sample from the law (if  it is fully
 #'   characterized), \code{\link{reveal}} to reveal  some relevant features of
@@ -592,7 +592,7 @@ setMethodS3(
 #'   of  two  \code{list}s,  each specifying  additional  parameters  possibly
 #'   needed to fully characterize the corresponding law.
 #'
-#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2018).
+#' @references Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2019).
 #' 
 #' @seealso  \code{\link{evaluate_psi}} to  evaluate \eqn{Psi}  at a  law and
 #'   \code{\link{evaluate_eic}} to  evaluate the efficient influence  curve of

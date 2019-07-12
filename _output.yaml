@@ -7,7 +7,7 @@ bookdown::gitbook:
       collapse: section
       scroll_hightlight: yes
       before: |
-        <li><strong><a href="./">TLRIDE</a></strong></li>
+        <li><strong><a href="https://achambaz.github.io/tlride/">TLRIDE</a></strong></li>
       toolbar:
         position: static
       edit : null
