@@ -21,7 +21,7 @@ options(dplyr.print_min = 6, dplyr.print_max = 6)
 ```
 # More results and their proofs {#more-proofs}
 
-*Written quickly. Checks needed!*
+*Checks needed*
 
 ## Estimation of the asymptotic variance of an estimator
 
@@ -218,7 +218,7 @@ P_n D_1^*(P_n^*)
 Let  us  resume  the discussion  where  we  left  it  at the  end  of  Section
 \@ref(smooth-second-pass-fluctuations).  Let  $\Qbar$ be the  conditional mean
 of $Y$ given $(A,W)$ under $P$. Set  arbitrarily $h \in H \setminus \{0\}$ and
-a   measurable   function   $(a,w)   \mapsto   f(a,w)$   taking   non-negative
+a   measurable   function   $(w,a)   \mapsto   f(a,w)$   taking   non-negative
 values. Applying  repeatedly the tower  rule yields the  following equalities:
 \begin{align*} \Exp_{P_{h}}  \left(f(A,W) Y\right) &= \Exp_{P}  \left(f(A,W) Y
 (1 + h  s(O))\right) \\ &= \Exp_{P} \left(f(A,W) \Exp_{P}\left(Y  (1 + h s(O))
@@ -235,12 +235,36 @@ Y\right)  = \Exp_{P_{h}}  \left(f(A,W) \frac{\Qbar(A,W)  + h  \Exp_{P}(Ys(O) |
 A,W)}{1 + h \Exp_{P}(s(O)|A,W)}\right).
 \end{equation*} 
 Since this  equality is valid
-for an arbitary $(a,w) \mapsto f(a,w)$ with non-negative values, we can deduce
+for an arbitary $(w,a) \mapsto f(a,w)$ with non-negative values, we can deduce
 from it  that the  conditional mean  of $Y$ given  $(A,W)$ under  $P_h$ equals
 \begin{equation*}\frac{\Qbar(A,W)   +  h   \Exp_{P}(Ys(O)   |   A,W)}{1  +   h
 \Exp_{P}(s(O)|A,W)}.\end{equation*}
 
 ### Computing the score of a fluctuation of the regression function {#fluct-score}
+
+Let us  resume the  discussion where we  left it at  the beginning  of Section
+\@ref(fluct-direct).   Set $\alpha,  \beta \in  \bbR$.  The  derivative of  $h
+\mapsto   \expit(\alpha   +   \beta   h)$   evaluated   at   $h=0$   satisfies
+\begin{equation*}\frac{d}{dh}  \left.\expit(\alpha +  \beta h)\right|_{h=0}  =
+\beta \expit(\alpha)  (1 - \expit(\alpha)).\end{equation*} Therefore,  for any
+$(w,a) \in [0,1] \times \{0,1\}$, 
+\begin{align*}\frac{d}{dh} \left.\Qbar_{h} (a, w)\right|_{h=0} &= \frac{2a - 1}{\ell\Gbar(a,w)} \expit\left(\logit\left(\Qbar(a,w)\right)\right) \left[1 - \expit\left(\logit\left(\Qbar(a,w)\right)\right)\right]\\&= \frac{2a - 1}{\ell\Gbar(a,w)} \Qbar(a,w) \left(1 - \Qbar(a,w)\right).\end{align*}
+This justifies the last but one equality in \@ref(eq:fluct-score).
+
+Furthermore the same derivations that led to \@ref(eq:fluct-score) also imply,
+*mutatis mutandis*, that
+
+\begin{equation*}  \frac{d}{d  h} \left.   L_{y}(\Qbar_{h})(O)\right|_{h=0}  =
+\frac{2A      -      1}{\ell\Gbar(A,      W)}     \left(Y      -      \Qbar(A,
+W)\right). (\#eq:fluct-score-bis)\end{equation*}
+
+In this light,  and in view of \@ref(eq:score), we  can think of $\calQ(\Qbar,
+\Gbar)$ as  a fluctuation  of $\Qbar$ in  the direction  of \begin{equation*}(w,a,y)     \mapsto    \frac{2a-1}{\ell\Gbar(a,w)}     (y     -
+\Qbar(a,w)).\end{equation*}   Thus   if   $P   \in   \calM$   is   such   that
+$\Exp_{P}(Y|A,W) =  \Qbar(A,W)$ and  $P(A=1|W) = \Gbar(W)$,  then we  can also
+think of $\calQ(\Qbar, \Gbar)$ as a fluctuation of $\Qbar$ in the direction of
+the  second   component  $D_{2}^{*}(P)$  of  the   efficient  influence  curve
+$D^{*}(P)$ of $\Psi$ at $P$ \@ref(eq:eif).
 
 `r if (knitr::is_html_output()) '# References'`
    
