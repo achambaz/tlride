@@ -70,7 +70,23 @@ library(tlrider)
 
 ### What we will discuss {#discuss}
 
-...
+To  begin with,  we discuss  the  nature of  the parameter  of main  interest,
+viewing it as the  value of a statistical mapping evaluated at  the law of the
+data  (Section  \@ref(parameter)), with  an  emphasis  on the  smoothmess  and
+double-robustness  properties inherited  from  this insightful  representation
+(Sections  \@ref(smooth) and  \@ref(double-robustness)). We  then turn  to the
+inference of the  parameter of main interest.  We first  introduce and comment
+upon  a  simple inference  strategy  assuming  provisionally that  a  relevant
+feature   of   the    law   of   the   data   is   known    to   us   (Section
+\@ref(simple-strategy)). Second, we present  the notion of nuisance parameters
+and   adopt    an   algorithmic   stance   on    their   estimation   (Section
+\@ref(nuisance)). Third, we  introduce and comment upon  two "naive" so-called
+plug-in inference  strategies (Section \@ref(naive-estimators)),  the one-step
+correction  procedure (Section  \@ref(one-step))  and,  finally, the  targeted
+minimum loss estimation  procedure tailored to the inference  of the parameter
+of   main  interest.    In  appendix,   we  collect   our  notation   (Section
+\@ref(notation)), and present two series of results used or stated in the main
+text and their proofs (Sections \@ref(proofs) and \@ref(more-proofs)). 
  
 ## A simulation study {#simulation-study}
 
@@ -110,8 +126,8 @@ A few objects have been defined:
 ls()
 ```
 
-Function `expit` implements the link function  $\expit : \bbR \to ]0,1[$ given
-by  $\expit(x) \triangleq  (1 +  e^{-x})^{-1}$.  Function  `logit` implements  its
+The function `expit` implements the link function $\expit : \bbR \to ]0,1[$ given
+by $\expit(x) \triangleq (1 + e^{-x})^{-1}$.  The function `logit` implements its
 inverse function  $\logit : ]0,1[  \to \bbR$  given by $\logit(p)  \triangleq \log
 [p/(1-p)]$. 
 
@@ -315,8 +331,10 @@ alter(my_experiment,   ## characterize its relevant features
 
 ```{r my-own-experiment-c}
 obs <- sample_from(my_experiment, 1e4)
-obs %>% as_tibble %>% group_by(W, A, Y) %>% summarize(how_many = n()) %>% ungroup
-obs %>% as_tibble %>% group_by(W, A) %>% summarize(prob = mean(Y)) %>% ungroup
+obs %>% as_tibble %>% group_by(W, A, Y) %>%
+  summarize(how_many = n()) %>% ungroup
+obs %>% as_tibble %>% group_by(W, A) %>%
+  summarize(prob = mean(Y)) %>% ungroup
 ```
 
 5. Now, make your own experiment.
@@ -350,7 +368,7 @@ $\psi_{0}$.   The  `evaluate_psi`  method  makes  it  very  easy  (simply  run
 Our interest in $\psi_{0}$  is of causal nature.  Taking a  closer look at the
 `sample_from` feature of `experiment` reveals indeed that the random making of
 an  observation $O$  drawn from  $P_{0}$ can  be summarized  by the  following
-causal graph:
+directed acyclic graph:
 
 (ref:DAG) Causal graph summarizing the inner causal mechanism at play in `experiment`. 
 
@@ -463,6 +481,8 @@ action $a \in \{0,1\}$ and $c \in ]0,1[$, introduce
 \gamma_{0,a,c}  \triangleq  \inf  \left\{y  \in  ]0,1[ :  \int  Q_{0,Y}(y,  a,  w)
 dQ_{0,W}(w) \ge c \right\}. (\#eq:def-quantile)
 \end{equation}
+(Note:  $\inf$ merely  generalizes $\min$,  accounting for  the fact  that the
+minimum may fail to be achieved.)
 
 It   is  not   very   difficult  to   check  (see   Problem   1  below)   that
 \begin{equation}\gamma_{0,a,c} =  \inf\left\{y \in ]0,1[  : \Pr_{\bbP_{0}}(Y_a
@@ -529,7 +549,9 @@ evaluated   at    $P_{n}$:   \begin{equation*}\Theta(P_{n})    =   \frac{1}{n}
 \sum_{i=1}^{n} X_{i}  = \theta_{n}.\end{equation*} We *recover*  the empirical
 mean, and  understand that it  is a *substitution*  estimator of the  mean: in
 order to estimate $\Theta(P_{0})$, we  *substitute* $P_{n}$ for $P_{0}$ within
-$\Theta$.
+$\Theta$.^[There   are  many   interesting  parameters   $\Theta$  for   which
+$\Theta(P_n)$ is not defined, see for instance \@ref(eq:psimap), our parameter
+of main interest.]
 
 Substitution-based estimators are particularly  valuable notably because they,
 by construction, satisfy  all the constraints to which  the targeted parameter
@@ -553,9 +575,11 @@ of $\Gbar$ and $\Qbar$ on $P$ for notational simplicity.
 
 Central to our approach  is viewing $\psi_{0}$ as the value  at $P_{0}$ of the
 statistical  mapping   $\Psi$  from   $\calM$  to  $[0,1]$   characterized  by
-\begin{align}  \Psi(P) &\triangleq  \int  \left(\Qbar(1, w)  - \Qbar(0,  w)\right)
-dQ_{W}(w) (\#eq:psimap)\\ &= \Exp_{P}  \left(\Qbar(1, W) - \Qbar(0, W)\right),
-\notag \end{align} a clear extension of \@ref(eq:psi-zero).
+\begin{align}  \Psi(P)  &\triangleq  \int  \left(\Qbar_P(1,  w)  -  \Qbar_P(0,
+w)\right)  dQ_{W}(w)   (\#eq:psimap)\\  &=  \Exp_{P}  \left(\Qbar_P(1,   W)  -
+\Qbar_P(0,   W)\right),    \notag   \end{align}    a   clear    extension   of
+\@ref(eq:psi-zero) where, for  once, we make the dependence of  $\Qbar$ on $P$
+explicit to emphasize how $\Psi(P)$ truly depends on $P$.
 
 ### The value of the statistical mapping at another experiment {#value-another-experiment}
 
@@ -577,13 +601,14 @@ confirms the equality.
 
 ```{r approx-psi-one}
 (psi_Pi_zero <- evaluate_psi(another_experiment, h = 0))
+round(59/300, 3)
 ```
 
 
 
 ## &#9881; \gear Alternative statistical mapping {#exo-alternative-parameter-second-pass}
 
-We        now        resume        the       exercize        of        Section
+We        now        resume        the       exercise        of        Section
 \@ref(exo-alternative-parameter-first-pass).    Like   we   did   in   Section
 \@ref(parameter-second-pass), we  introduce a generic version  of the relevant
 features $q_{0,Y}$  and $Q_{0,Y}$.  Specifically, we  define $q_{Y}(y,A,W)$ to
@@ -1266,7 +1291,7 @@ consistent   estimators   of  $\Psi(P)$,   as   we   shall  see   in   Section
    thus  characterized.   Can  you  guess the  values  of  $\Rem_{P_{0}}(P')$,
    $\Psi(P')$ and $P_{0} D^{*}(P')$? Support your argument.
 
-3. Add more exercizes?
+3. Add more exercises?
 
 
 
@@ -1755,7 +1780,7 @@ Here, we merely  illustrate the concept with two  specifications built-in into
 `tlrider`.   Based on  the *$k$-nearest  neighbors* non-parametric  estimating
 methodology, the  first one  is discussed  in the  next subsection.   Based on
 *boosted trees*, another non-parametric estimating methodology, the second one
-is used in the exercize that follows the next subsection.
+is used in the exercise that follows the next subsection.
 
 ### `Qbar`, kNN algorithm {#Qbar-knn-algo}
 
@@ -3021,10 +3046,12 @@ $\Qbar_{n}$.  The next section introduces such a direct fluctuation.
 Set arbitrarily $\Qbar \in \calQ$. The (direct) fluctuation of $\Qbar$ that we
 propose to consider depends on a  user-supplied $\Gbar$.  For any $\Gbar$ such
 that $0  < \ell\Gbar(A,W)  < 1$,  $P_{0}$-almost surely,  the $\Gbar$-specific
-fluctuation   model  for   $\Qbar$   is  \begin{equation}   \calQ(\Qbar,\Gbar)
-\triangleq      \left\{(w,a)       \mapsto      \Qbar_{h}(a,w)      \triangleq
+fluctuation model for $\Qbar$ is 
+\begin{equation} 
+\calQ(\Qbar,\Gbar)\triangleq      \left\{(w,a)       \mapsto      \Qbar_{h}(a,w)      \triangleq
 \expit\left(\logit\left(\Qbar(a,w)\right) +  h \frac{2a -  1}{\ell \Gbar(a,w)}
-\right) : t \in \bbR\right\} \subset \calQ. (\#eq:Q-fluct) \end{equation}
+\right) : t \in \bbR\right\} \subset \calQ. (\#eq:Q-fluct) 
+\end{equation}
 
 Fluctuation  $\calQ(\Qbar,\Gbar)$   is  a  one-dimensional   parametric  model
 (indexed  by the  real-valued parameter  $h$)  that goes  through $\Qbar$  (at
@@ -3258,7 +3285,7 @@ earlier  by  using  algorithm  $\Algo_{\Gbar,1}$  (second  line;  see  Section
 (third line). Apparently, in this  particular example, the one-step correction
 and targeted correction updater similarly the initial estimator.
 
-### &#9881; \gear Exercice {#exo-tmle}
+### &#9881; \gear Exercise {#exo-tmle}
 
 1. Consult   the   man   page  of   function   `apply_targeting_step`   (run
    `?apply_targeting_step`)  and  explain  what  is   the  role  of  its  input
@@ -3277,13 +3304,15 @@ Gbar_hat_w <- wrapper(Gbar_hat, FALSE)
 Qbar_kknn <- wrapper(Qbar_hat_kknn, FALSE)
 
 psi_trees_epsilon <- sapply(epsilon, function(h) {
-  apply_targeting_step(head(obs, 1e3), Gbar_hat_w,  Qbar_trees, epsilon = h) %>%
+  apply_targeting_step(head(obs, 1e3), Gbar_hat_w,
+                       Qbar_trees, epsilon = h) %>%
     select(psi_n, crit_n) %>% as.matrix
 })
 idx_trees <- which.min(abs(psi_trees_epsilon[2, ]))
 
 psi_kknn_epsilon <- sapply(epsilon, function(h) {
-  apply_targeting_step(head(obs, 1e3), Gbar_hat_w, Qbar_kknn, epsilon = h) %>%
+  apply_targeting_step(head(obs, 1e3), Gbar_hat_w,
+                       Qbar_kknn, epsilon = h) %>%
     select(psi_n, crit_n) %>% as.matrix
 })
 idx_kknn <- which.min(abs(psi_kknn_epsilon[2, ]))
