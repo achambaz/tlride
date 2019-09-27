@@ -23,7 +23,7 @@ options(dplyr.print_min = 6, dplyr.print_max = 6)
 # (PART) On the road {-}
 
 # A ride
-
+ 
 
 ## Introduction {#introduction}
 
@@ -1310,7 +1310,7 @@ and  the  observations  are  stored  in  `obs`  that  we  created  in  Section
 \@ref(exo-cramer-rao). 
 
 ```{r iter}
-iter <- 1e2
+iter <- 5e2
 ```
 
 Equal to `r B/1e6` million, the sample size `B` is very large. We will in fact
@@ -3153,7 +3153,7 @@ over a grid of candidate values.
 
  
 ```{r grid-search, fig.cap = '(ref:grid-search)'}
-candidates <- seq(-1e-2, 1e-2, length.out = 1e2)
+candidates <- seq(-1e-2, 1e-2, length.out = 1e3)
 W <- obs[1:1e3, "W"]
 A <- obs[1:1e3, "A"]
 Y <- obs[1:1e3, "Y"]
