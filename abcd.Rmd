@@ -27,18 +27,24 @@ options(dplyr.print_min = 6, dplyr.print_max = 6)
 
 ## Introduction {#introduction}
 
-Our ambition is to present a gentle  introduction to the inference of a causal
-quantity whose statistical analysis is typical  and thus paves the way to more
-involved analyses.   The introduction  weaves together  two main  threads, one
-theoretical and the other computational.
+Our ambition is to present a gentle  introduction to the field of targeted 
+learning. As an example, we consider statistical inference on a simple causal
+quantity that is ubiquitous in the causal literature. We use this exemplar 
+parameter to introduce key concepts that can be 
+applied to more complicated problems. The introduction  weaves together  two 
+main  threads, one theoretical and the other computational.
 
 ### A causal story  {#causal-story}
 
 We focus on a causal story where a  random reward (a real number between 0 and
-1) depends  on the action  undertaken (one among  two) and the  random context
+1) is given based on an action undertaken (one among two) and the random context
 where the action is  performed (summarized by a real number  between 0 and 1).
 The  causal  quantity  of  interest  is the  average  difference  of  the  two
-counterfactual rewards.
+counterfactual rewards. This is a story as old as time. Should we take the red 
+pill or the blue pill? Should we show our customers advertisement A or 
+advertisement B? Should we require individuals to undergo cancer screening? At
+their core, each of these questions is asking what action should be taken to 
+maximize a "reward."
 
 We  will  build  several  estimators  and  discuss  their  respective  merits,
 theoretically  and  computationally. The  construction  of  the most  involved
@@ -49,14 +55,14 @@ based on semiparametric models.
 ### The `tlrider` package {#tlrider-package}
 
 The  computational illustrations  will  be developed  based  on the  companion
-package `tlrider`. Make  sure you have installed it,  for instance by
-running the following chunk of code:
+package `tlrider`. The package can be installed by
+running the following code:
 
 ```{r install-package, eval = FALSE}
 devtools::install_github("achambaz/tlride/tlrider")
 ```
 
-Note that additional  packages are required, among  which `tidyverse` [@r4ds],
+Additional  packages are also required, including `tidyverse` [@r4ds],
 `caret` and  `ggdag`. Assuming that  these are installed  too, we can  run the
 next chunk of code:
 
@@ -70,12 +76,12 @@ library(tlrider)
 
 ### What we will discuss {#discuss}
 
-To  begin with,  we discuss  the  nature of  the parameter  of main  interest,
+To  begin,  we discuss  the  nature of  the parameter  of  interest,
 viewing it as the  value of a statistical mapping evaluated at  the law of the
-data  (Section  \@ref(parameter)), with  an  emphasis  on the  smoothmess  and
+data  (Section  \@ref(parameter)), with  an  emphasis  on the  smoothness  and
 double-robustness  properties inherited  from  this insightful  representation
 (Sections  \@ref(smooth) and  \@ref(double-robustness)). We  then turn  to the
-inference of the  parameter of main interest.  We first  introduce and comment
+inference of the  parameter of interest.  We first  introduce and comment
 upon  a  simple inference  strategy  assuming  provisionally that  a  relevant
 feature   of   the    law   of   the   data   is   known    to   us   (Section
 \@ref(simple-strategy)). Second, we present  the notion of nuisance parameters
@@ -84,12 +90,11 @@ and   adopt    an   algorithmic   stance   on    their   estimation   (Section
 plug-in inference  strategies (Section \@ref(naive-estimators)),  the one-step
 correction  procedure (Section  \@ref(one-step))  and,  finally, the  targeted
 minimum loss estimation  procedure tailored to the inference  of the parameter
-of   main  interest.    In  appendix,   we  collect   our  notation   (Section
-\@ref(notation)), and present two series of results used or stated in the main
+of   main  interest.    In  the appendix, we  collect   our  notation   (Section
+\@ref(notation)), and present some results that are used in the main
 text and their proofs (Sections \@ref(proofs) and \@ref(more-proofs)). 
  
 ## A simulation study {#simulation-study}
-
 
 
 ### Reproducible experiment as a law {#reproducible-experiment}
@@ -3399,15 +3404,28 @@ fig +
                             (psi[n]^{"*"} - psi[0]))))
 ```
 
-Comment. Compare to one-step.
+We see that the step of targeting is as promised: the bias of the resulting
+estimators is minimized relative to the naive plug-in estimators. Comparing 
+these results to those obtain using one-step estimators (Section 
+\@ref(empirical-inves-one-step)), we find quite similar performance between 
+one-step and TMLE estimators. 
 
 # Closing words
 
-Conclude. Refer to `tlverse`. 
+The velocity of advances in machine learning make it an exciting time to work as
+a statistician. Clearly, statistical inference is more challenging when one 
+considers the sort of infinite-dimensional statistical models that underlie 
+these developments. Even defining some fundamental statistical notions, like
+efficiency, in these settings is a challenge. Constructing estimators that 
+obtain these properties is more challenging still. We hope that this short guide
+has provided an approachable introduction to this exciting area of research. 
+
+Targeted learning is a vibrant and active field of research, with new 
+developments happening along theoretical, applied, and computational axes. The 
+[`tlverse`](https://tlverse.org/) software environment is actively being 
+developed to provide researchers new tools for utilizing these methods. 
 
 # (APPENDIX) Appendix {-}
-
-
 
 To insert in appendix.
 
