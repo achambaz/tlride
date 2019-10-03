@@ -3311,6 +3311,7 @@ the calculation in equation \@ref(eq:fluct-score) above using this loss and fluc
 
 ### Summary and perspectives
 
+
 The  procedure laid  out in  Section \@ref(TMLE)  is called  *targeted minimum
 loss-based estimation*  (TMLE).  The nomenclature derives  from its logistics.
 We  first  generated an  (un-targeted)  initial  estimator of  $\Psi(P_0)$  by
