@@ -3152,10 +3152,13 @@ we  formally rely  on  the  empirical risk  function  $h \mapsto  \Exp_{P_{n}}
 \left(L_{y}   (\Qbar_{n,h})(O)\right)$   where   \begin{equation*}\Exp_{P_{n}}
 \left(L_{y}   (\Qbar_{n,h})(O)\right)  =   \frac{1}{n}  \sum_{i=1}^{n}   L_{y}
 (\Qbar_{n,h})(O_{i})\end{equation*}  and the  logistic (or  negative binomial)
-loss function $L_{y}$ is given  by \begin{equation*} -L_{y}(f)(O) \triangleq Y
-\log f(A,W)  + (1 -  Y) \log \left(1  - f(A,W)\right) \end{equation*}  for any
-function $f:[0,1] \times \{0,1\} \times  [0,1] \to [0,1]$.  This loss function
-is   the   counterpart    of   the   loss   function    $L_{a}$   defined   in
+loss function $L_{y}$ is given by 
+\begin{equation*} 
+-L_{y}(f)(O) \triangleq Y
+\log f(A,W) + (1 - Y) \log \left(1 - f(A,W)\right) (\#eq:logis-loss-y)
+\end{equation*} 
+for any function  $f:\{0,1\} \times [0,1] \to  [0,1]$.  This loss
+function  is  the  counterpart  of   the  loss  function  $L_{a}$  defined  in
 \@ref(eq:logis-loss).    The   justification   that   we   gave   in   Section
 \@ref(logis-loss)  of the  relevance of  $L_{a}$ also  applies here,  *mutatis
 mutandis*.    In   summary,   the  oracle   risk   $\Exp_{P_{0}}   \left(L_{y}
@@ -3165,8 +3168,8 @@ $\Qbar_{0}$ and $f$; $\Qbar_{0}$ minimizes $f \mapsto \Exp_{P_{0}} \left(L_{y}
 \{0,1\}  \times [0,1]  \to [0,1]$;  and  a minimizer  $h_{0} \in  \bbR$ of  $h
 \mapsto  \Exp_{P_{0}}  \left(L_{y}   (\Qbar_{n,h})(O)\right)$  identifies  the
 element  of  fluctuation  $\calQ(\Qbar_{n},  \Gbar_{n})$ that  is  closest  to
-$\Qbar_{0}$ (some details are  given [there](#oracle-logistic-risk) in Appendix
-\@ref(oracle-logistic-risk)). 
+$\Qbar_{0}$ (some details are given [there](#oracle-logistic-risk) in Appendix
+\@ref(oracle-logistic-risk)).
 
 It should not come as a surprise after this discussion that the aforementioned
 data-driven  $h_{n}$ is  chosen  to be  the minimizer  of  the empirical  risk
@@ -3266,50 +3269,68 @@ additional property that in finite-samples  $\psi_n^*$ will always obey bounds
 on the parameter space.
 
 
-### &#9881; \gear Exercice {#exo-tmle-flucs}
+### &#9881; \gear Alternative fluctuation {#exo-tmle-flucs}
 
 The following exercises will have you consider an alternative means of 
 performing a fluctuation. For $a = 0, 1$, consider the following
-fluctuation   model  for   $\Qbar^a \triangleq \Qbar(a,\cdot)$,   \begin{equation}   \calQ^a(\Qbar^a)
-\triangleq      \left\{w       \mapsto      \Qbar_{t_a}^a(w)      \triangleq
-\expit\left(\logit\left(\Qbar(a,w)\right) +  t_a 
-\right) : t_a \in \bbR\right\} \subset \calQ. (\#eq:Q-fluct-alt) \end{equation}
-Let $\calQ(\Qbar) = \calQ^1(\Qbar^1) \times \calQ^0(\Qbar^0)$ be the fluctuation model 
-for $\Qbar$ that is implied by the two submodels for $\Qbar^1$ and $\Qbar^0$. 
+fluctuation model for $\Qbar^a \triangleq \Qbar(a,\cdot)$:
+\begin{equation} 
+\calQ^a(\Qbar^a)
+\triangleq      \left\{w       \mapsto      \Qbar_{h}^a(w)      \triangleq
+\expit\left(\logit\left(\Qbar(a,w)\right) +  h
+\right) : h \in \bbR\right\} \subset \calQ. (\#eq:Q-fluct-alt) 
+\end{equation}
+Let 
+\begin{equation*}
+  \calQ^{\text{alt}}(\Qbar)   \triangleq   \left\{(a,w)  \mapsto   \Qbar_{h_0,
+  h_1}(a,w) \triangleq a \times
+  \Qbar_{h_{1}}^1(w) + (1-a) \Qbar_{h_{0}}^0(w) : h_{0}, h_{1} \in \bbR\right\}
+\end{equation*}
+be the fluctuation model for $\Qbar$ that  is implied by the two submodels for
+$\Qbar^1$ and $\Qbar^0$. 
 
-Also for a given $\bar{G}$ satisfying that $0  < \ell\Gbar(A,W)  < 1$, 
-$P_{0}$-almost surely, consider the empirical risk function $(t_0, t_1) \mapsto  \sum_{a = 0}^1 \Exp_{P_{n}}
-\left(L^a_{y, \bar{G}}   (\Qbar^a_{n,t_a})(O)\right)$   where   \begin{equation*}\Exp_{P_{n}}
-\left(L_{y, \bar{G}}^a   (\Qbar_{n,t_a})(O)\right)  =   \frac{1}{n}  \sum_{i=1}^{n} 
-\frac{\one\{A_i = a\}}{\ell\Gbar(A_i, W_i)}  L_{y}
-(\Qbar_{n,t_a}^a)(O_{i}) \ , \end{equation*}
-where $L_{y}$ is defined in \@ref(eq:logis-loss-y) above. 
+Also for a given $\Gbar$ satisfying that $0  < \ell\Gbar(A,W)  < 1$, 
+$P_{0}$-almost surely, and both $a=0,1$, consider the loss function 
+$L_{y,\Gbar}^{a}$ given by
+\begin{equation*}
+   L_{y,\Gbar}^{a} (f) (A,W) \triangleq \frac{\one\{A = a\}}{\ell\Gbar(A, W)} L_{y}
+   (f)(O)
+\end{equation*}
+for any function $f:\{0,1\} \times [0,1]  \to [0,1]$, where $L_{y}$ is defined
+in \@ref(eq:logis-loss-y) above. It yields the 
+empirical risk function 
+\begin{equation*}
+(h_{0}, h_{1}) \mapsto \sum_{a = 0,1}  \Exp_{P_{n}}
+\left(L^a_{y, \Gbar} (\Qbar^a_{n,h_a})(O)\right).
+\end{equation*}
 
-1. Comment on the differences between this fluctuation model and loss function
-compared to those discussed above. 
 
-2. Visualize three elements of $\calQ(\Qbar_0)$ and $\calQ(\Qbar_n)$: choose three values for $(t_0, t_1)$ and reproduce
-Figure \@ref(fig:fluctuation). 
+1. Comment on the differences between these fluctuation model and loss
+function compared to those discussed above.
 
-3. Argue that in order to minimize the empirical risk over all $(t_0, t_1) \in \bbR^2$, 
-we may minimize over $t_0 \in \bbR$ and $t_1 \in \bbR$ separately. 
+2. Visualize    three   elements   of    $\calQ^{\text{alt}}(\Qbar_0)$   and
+$\calQ^{\text{alt}}(\Qbar_n)$:  choose  three  values  for  $(h_0,  h_1)$  and
+reproduce Figure \@ref(fig:fluctuation). 
 
-4. Visualize how the empirical risk (with $\Gbar = \Gbar_n$) varies for different elements 
-$\Qbar_{n, t_0, t_1}$ of $\calQ(\Qbar_n)$. For simplicity (and with the justification of problem 3), 
+3. Argue that in order to minimize the empirical risk over all $(h_0, h_1) \in
+\bbR^2$, we may minimize over $h_0 \in \bbR$ and $h_1 \in \bbR$ separately. 
+
+4. Visualize how the empirical risk with $\Gbar = \Gbar_n$ varies for different elements 
+$\Qbar_{n, h_0, h_1}$ of $\calQ(\Qbar_n)$. For simplicity (and with the justification of problem 3), 
 you may wish to make a separate figure (like Figure \@ref(fig:grid-search)) for $a = 0, 1$ 
-that illustrates how the empirical risk varies as a function of $t_a$ while setting $t_{1 - a} = 0$. 
+that illustrates how the empirical risk varies as a function of $h_a$ while setting $h_{1 - a} = 0$. 
 
-5. &#9761; \stixdanger{} Justify the validity of $L^a_{y, \bar{G}}$ as a loss function for $\Qbar^a_0$:
+5. &#9761; \stixdanger{} Justify the validity of $L^a_{y, \Gbar}$ as a loss function for $\Qbar^a_0$:
 show that amongst all functions that map $w$ to $(0,1)$, the true risk
-$\Exp_{P_0}\left(L^a_{y, \bar{G}}(f)(O)\right)$ is minimized when $f = \Qbar^a_0$. 
+$\Exp_{P_0}\left(L^a_{y, \Gbar}(f)(O)\right)$ is minimized when $f = \Qbar^a_0$. 
 
-6. &#9761; \stixdanger{} Argue that your answer to 2. also implies that the summed loss function $\sum_{a=0}^1 L^a_{y, \bar{G}}$
+6. &#9761; \stixdanger{} Argue that your answer to problem 2 also implies that the summed loss function $\sum_{a=0,1} L^a_{y, \Gbar}$
 is valid for $\Qbar$. 
 
-7. &#9761; \stixdanger{} Justify the combination of this loss function and fluctuation by repeating 
-the calculation in equation \@ref(eq:fluct-score) above using this loss and fluctuation. 
+7. &#9761; \stixdanger{} Justify the combination of these loss function and fluctuation by repeating 
+the calculation in equation \@ref(eq:fluct-score) above, *mutatis mutandis*.
 
-### Summary and perspectives
+## Summary and perspectives
 
 
 The  procedure laid  out in  Section \@ref(TMLE)  is called  *targeted minimum
@@ -3326,8 +3347,41 @@ The TMLE  procedure was  coined in  2006 by Mark  van der  Laan and  Dan Rubin
 contexts. We refer  to the monographies [@TMLEbook11] and  [@TMLEbook18] for a
 rich overview. 
 
+In  summary, targeted  learning bridges  the gap  between formal  inference of
+finite-dimensional parameters  $\Psi(P_{0})$ of the  law $P_{0}$ of  the data,
+via bootstrapping or influence  curves, and data-adaptive, loss-based, machine
+learning estimation  of $\Psi$-specific infinite-dimensional  features thereof
+(the so-called  nuisance parameters).   A typical  example concerns  the super
+learning-based,   targeted  estimation   of  effect   parameters  defined   as
+identifiable  versions of  causal quantities.   The TMLE  algorithm integrates
+completely  the  estimation  of  the relevant  nuisance  parameters  by  super
+learning [@SL07]. Under mild assumptions,  the targeting step removes the bias
+of the initial estimators of the  targeted effects.  The resulting TMLEs enjoy
+many  desirable statistical  properties: among  others, by  being substitution
+estimators, they  lie in  the parameter space;  they are  often double-robust;
+they lend themselves to the construction of confidence regions.
 
+The scientific community is always  engaged in devising and promoting enhanced
+principles for sounder research through  the better design of experimental and
+nonexperimental  studies  and the  development  of  more reliable  and  honest
+statistical  analyses.   By  focusing   on  prespecified  analytic  plans  and
+algorithms that make  realistic assumptions in more  flexible nonparametric or
+semiparametric statistical models,  targeted learning has been at  the fore of
+this concerted effort. Under this light, targeted learning notably consists in
+translating knowledge about the  data and underlying data-generating mechanism
+into a realistic model; in expressing  the research question under the form of
+a  statistical estimation  problem;  in analyzing  the statistical  estimation
+problem  within the  frame of  the model;  in developing  *ad hoc*  algorithms
+grounded in theory and tailored to the  question at stake to map knowledge and
+data into an answer coupled to an assessment of its trustworthiness.
 
+Quoting [@TMLEbook18]:
+
+> Over the last decade, targeted learning has been established as a reliable framework for constructing effect estimators and prediction functions. The continued development of targeted learning has led to new solutions for existing problems in many data structures in addition to discoveries in varied applied areas.  This has included work in randomized controlled trials, parameters defined by a marginal structural model, case-control studies, collaborative TMLE, missing and censored data, longitudinal data, effect modification, comparative effectiveness research, aging, cancer, occupational exposures, plan payment risk adjustment, and HIV, as well as others. In many cases, these studies compared targeted learning techniques to standard approaches, demonstrating improved performance in simulations and realworld applications.
+
+It  is now  time  to resume  our  introduction to  TMLE and  to  carry out  an
+empirical investigation  of its statistical  properties in the context  of the
+estimation of $\psi_{0}$.
 
 ## Empirical investigation {#empirical-inves-tmle}
 
@@ -3494,13 +3548,16 @@ has provided an approachable introduction to this exciting area of research.
 Targeted learning is a vibrant and active field of research, with new 
 developments happening along theoretical, applied, and computational axes. The 
 [`tlverse`](https://tlverse.org/) software environment is actively being 
-developed to provide researchers new tools for utilizing these methods. 
+developed to provide researchers with new tools for utilizing these methods. 
+
 
 # (APPENDIX) Appendix {-}
 
+
 To insert in appendix.
 
-<!--```{r estimating-Qbar-appendix, eval = FALSE}
+<!--
+```{r estimating-Qbar-appendix, eval = FALSE}
 ## xgboost based on trees
 xgb_tree_algo <- list(
   algo = function(dat, ...) {
