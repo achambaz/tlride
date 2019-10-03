@@ -3265,7 +3265,52 @@ conditions.   Moreover, by  virtue of  its  plug-in construction,  it has  the
 additional property that in finite-samples  $\psi_n^*$ will always obey bounds
 on the parameter space.
 
-## Summary and perspectives
+
+### &#9881; \gear Exercice {#exo-tmle-flucs}
+
+The following exercises will have you consider an alternative means of 
+performing a fluctuation. For $a = 0, 1$, consider the following
+fluctuation   model  for   $\Qbar^a \triangleq \Qbar(a,\cdot)$,   \begin{equation}   \calQ^a(\Qbar^a)
+\triangleq      \left\{w       \mapsto      \Qbar_{t_a}^a(w)      \triangleq
+\expit\left(\logit\left(\Qbar(a,w)\right) +  t_a 
+\right) : t_a \in \bbR\right\} \subset \calQ. (\#eq:Q-fluct-alt) \end{equation}
+Let $\calQ(\Qbar) = \calQ^1(\Qbar^1) \times \calQ^0(\Qbar^0)$ be the fluctuation model 
+for $\Qbar$ that is implied by the two submodels for $\Qbar^1$ and $\Qbar^0$. 
+
+Also for a given $\bar{G}$ satisfying that $0  < \ell\Gbar(A,W)  < 1$, 
+$P_{0}$-almost surely, consider the empirical risk function $(t_0, t_1) \mapsto  \sum_{a = 0}^1 \Exp_{P_{n}}
+\left(L^a_{y, \bar{G}}   (\Qbar^a_{n,t_a})(O)\right)$   where   \begin{equation*}\Exp_{P_{n}}
+\left(L_{y, \bar{G}}^a   (\Qbar_{n,t_a})(O)\right)  =   \frac{1}{n}  \sum_{i=1}^{n} 
+\frac{\one\{A_i = a\}}{\ell\Gbar(A_i, W_i)}  L_{y}
+(\Qbar_{n,t_a}^a)(O_{i}) \ , \end{equation*}
+where $L_{y}$ is defined in \@ref(eq:logis-loss-y) above. 
+
+1. Comment on the differences between this fluctuation model and loss function
+compared to those discussed above. 
+
+2. Visualize three elements of $\calQ(\Qbar_0)$ and $\calQ(\Qbar_n)$: choose three values for $(t_0, t_1)$ and reproduce
+Figure \@ref(fig:fluctuation). 
+
+3. Argue that in order to minimize the empirical risk over all $(t_0, t_1) \in \bbR^2$, 
+we may minimize over $t_0 \in \bbR$ and $t_1 \in \bbR$ separately. 
+
+4. Visualize how the empirical risk (with $\Gbar = \Gbar_n$) varies for different elements 
+$\Qbar_{n, t_0, t_1}$ of $\calQ(\Qbar_n)$. For simplicity (and with the justification of problem 3), 
+you may wish to make a separate figure (like Figure \@ref(fig:grid-search)) for $a = 0, 1$ 
+that illustrates how the empirical risk varies as a function of $t_a$ while setting $t_{1 - a} = 0$. 
+
+5. &#9761; \stixdanger{} Justify the validity of $L^a_{y, \bar{G}}$ as a loss function for $\Qbar^a_0$:
+show that amongst all functions that map $w$ to $(0,1)$, the true risk
+$\Exp_{P_0}\left(L^a_{y, \bar{G}}(f)(O)\right)$ is minimized when $f = \Qbar^a_0$. 
+
+6. &#9761; \stixdanger{} Argue that your answer to 2. also implies that the summed loss function $\sum_{a=0}^1 L^a_{y, \bar{G}}$
+is valid for $\Qbar$. 
+
+7. &#9761; \stixdanger{} Justify the combination of this loss function and fluctuation by repeating 
+the calculation in equation \@ref(eq:fluct-score) above using this loss and fluctuation. 
+
+### Summary and perspectives
+
 
 The  procedure laid  out in  Section \@ref(TMLE)  is called  *targeted minimum
 loss-based estimation*  (TMLE).  The nomenclature derives  from its logistics.
