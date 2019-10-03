@@ -3554,7 +3554,7 @@ developed to provide researchers with new tools for utilizing these methods.
 # (APPENDIX) Appendix {-}
 
 
-To insert in appendix.
+
 
 <!--
 ```{r estimating-Qbar-appendix, eval = FALSE}
