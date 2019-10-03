@@ -1,5 +1,8 @@
 # Notation {#notation}
 
+- $\one\{S\}$, the indicator  of statement $S$, which equals 1  if $S$ is true
+  and 0 otherwise.
+
 - $O = (W,A,Y)$, the generic summary of how one realization of the experiments
 of interest unfold,  our generic observation; $W \in [0,1]$  is the context of
 action, $A  \in \{0,1\}$  is the  action undertaken, and  $Y\in [0,1]$  is the

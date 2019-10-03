@@ -3265,7 +3265,7 @@ conditions.   Moreover, by  virtue of  its  plug-in construction,  it has  the
 additional property that in finite-samples  $\psi_n^*$ will always obey bounds
 on the parameter space.
 
-### Summary and perspectives
+## Summary and perspectives
 
 The  procedure laid  out in  Section \@ref(TMLE)  is called  *targeted minimum
 loss-based estimation*  (TMLE).  The nomenclature derives  from its logistics.
