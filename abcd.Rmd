@@ -1,3 +1,24 @@
+```{r include=FALSE, cache=FALSE}
+options(digits = 3)
+
+knitr::opts_chunk$set(
+  comment = "#>",
+  collapse = TRUE,
+  cache = TRUE,
+  out.width = "70%",
+  fig.align = 'center',
+  fig.width = 6, # used to have: fig.width = 12,
+  fig.asp = 0.618, # used to have: fig.height = 4, 
+  fig.show = "hold",
+  fig.path = 'img/',
+  size = "tiny",
+  message = FALSE,
+  warning = FALSE,
+  warnings = FALSE
+)
+
+options(dplyr.print_min = 6, dplyr.print_max = 6)
+```
 ```{r include = FALSE, cache = FALSE}
 options(digits = 3)
 
@@ -23,22 +44,28 @@ options(dplyr.print_min = 6, dplyr.print_max = 6)
 # (PART) On the road {-}
 
 # A ride
-
+ 
 
 ## Introduction {#introduction}
 
-Our ambition is to present a gentle  introduction to the inference of a causal
-quantity whose statistical analysis is typical  and thus paves the way to more
-involved analyses.   The introduction  weaves together  two main  threads, one
-theoretical and the other computational.
+Our ambition is to present a gentle  introduction to the field of targeted 
+learning. As an example, we consider statistical inference on a simple causal
+quantity that is ubiquitous in the causal literature. We use this exemplar 
+parameter to introduce key concepts that can be 
+applied to more complicated problems. The introduction  weaves together  two 
+main  threads, one theoretical and the other computational.
 
 ### A causal story  {#causal-story}
 
 We focus on a causal story where a  random reward (a real number between 0 and
-1) depends  on the action  undertaken (one among  two) and the  random context
+1) is given based on an action undertaken (one among two) and the random context
 where the action is  performed (summarized by a real number  between 0 and 1).
 The  causal  quantity  of  interest  is the  average  difference  of  the  two
-counterfactual rewards.
+counterfactual rewards. This is a story as old as time. Should we take the red 
+pill or the blue pill? Should we show our customers advertisement A or 
+advertisement B? Should we require individuals to undergo cancer screening? At
+their core, each of these questions is asking what action should be taken to 
+maximize a "reward."
 
 We  will  build  several  estimators  and  discuss  their  respective  merits,
 theoretically  and  computationally. The  construction  of  the most  involved
@@ -49,14 +76,14 @@ based on semiparametric models.
 ### The `tlrider` package {#tlrider-package}
 
 The  computational illustrations  will  be developed  based  on the  companion
-package `tlrider`. Make  sure you have installed it,  for instance by
-running the following chunk of code:
+package `tlrider`. The package can be installed by
+running the following code:
 
 ```{r install-package, eval = FALSE}
 devtools::install_github("achambaz/tlride/tlrider")
 ```
 
-Note that additional  packages are required, among  which `tidyverse` [@r4ds],
+Additional  packages are also required, including `tidyverse` [@r4ds],
 `caret` and  `ggdag`. Assuming that  these are installed  too, we can  run the
 next chunk of code:
 
@@ -70,10 +97,25 @@ library(tlrider)
 
 ### What we will discuss {#discuss}
 
-...
+To  begin,  we discuss  the  nature of  the parameter  of  interest,
+viewing it as the  value of a statistical mapping evaluated at  the law of the
+data  (Section  \@ref(parameter)), with  an  emphasis  on the  smoothness  and
+double-robustness  properties inherited  from  this insightful  representation
+(Sections  \@ref(smooth) and  \@ref(double-robustness)). We  then turn  to the
+inference of the  parameter of interest.  We first  introduce and comment
+upon  a  simple inference  strategy  assuming  provisionally that  a  relevant
+feature   of   the    law   of   the   data   is   known    to   us   (Section
+\@ref(simple-strategy)). Second, we present  the notion of nuisance parameters
+and   adopt    an   algorithmic   stance   on    their   estimation   (Section
+\@ref(nuisance)). Third, we  introduce and comment upon  two "naive" so-called
+plug-in inference  strategies (Section \@ref(naive-estimators)),  the one-step
+correction  procedure (Section  \@ref(one-step))  and,  finally, the  targeted
+minimum loss estimation  procedure tailored to the inference  of the parameter
+of   main  interest.    In  the appendix, we  collect   our  notation   (Section
+\@ref(notation)), and present some results that are used in the main
+text and their proofs (Sections \@ref(proofs) and \@ref(more-proofs)). 
  
 ## A simulation study {#simulation-study}
-
 
 
 ### Reproducible experiment as a law {#reproducible-experiment}
@@ -110,8 +152,8 @@ A few objects have been defined:
 ls()
 ```
 
-Function `expit` implements the link function  $\expit : \bbR \to ]0,1[$ given
-by  $\expit(x) \triangleq  (1 +  e^{-x})^{-1}$.  Function  `logit` implements  its
+The function `expit` implements the link function $\expit : \bbR \to ]0,1[$ given
+by $\expit(x) \triangleq (1 + e^{-x})^{-1}$.  The function `logit` implements its
 inverse function  $\logit : ]0,1[  \to \bbR$  given by $\logit(p)  \triangleq \log
 [p/(1-p)]$. 
 
@@ -153,7 +195,7 @@ features of $P_{0}$ revealed in `relevant_features`.
 
 The `QW` feature describes the marginal law of $W$, that we call $Q_{0,W}$.^[A
 summary   of   the   notation   used  throughout   the   text   is   presented
-[here](#notation).]
+[there](#notation), in Appendix \@ref(notation).]
 
 ```{r show-QW}
 relevant_features$QW
@@ -315,8 +357,10 @@ alter(my_experiment,   ## characterize its relevant features
 
 ```{r my-own-experiment-c}
 obs <- sample_from(my_experiment, 1e4)
-obs %>% as_tibble %>% group_by(W, A, Y) %>% summarize(how_many = n()) %>% ungroup
-obs %>% as_tibble %>% group_by(W, A) %>% summarize(prob = mean(Y)) %>% ungroup
+obs %>% as_tibble %>% group_by(W, A, Y) %>%
+  summarize(how_many = n()) %>% ungroup
+obs %>% as_tibble %>% group_by(W, A) %>%
+  summarize(prob = mean(Y)) %>% ungroup
 ```
 
 5. Now, make your own experiment.
@@ -350,7 +394,7 @@ $\psi_{0}$.   The  `evaluate_psi`  method  makes  it  very  easy  (simply  run
 Our interest in $\psi_{0}$  is of causal nature.  Taking a  closer look at the
 `sample_from` feature of `experiment` reveals indeed that the random making of
 an  observation $O$  drawn from  $P_{0}$ can  be summarized  by the  following
-causal graph:
+directed acyclic graph:
 
 (ref:DAG) Causal graph summarizing the inner causal mechanism at play in `experiment`. 
 
@@ -463,6 +507,8 @@ action $a \in \{0,1\}$ and $c \in ]0,1[$, introduce
 \gamma_{0,a,c}  \triangleq  \inf  \left\{y  \in  ]0,1[ :  \int  Q_{0,Y}(y,  a,  w)
 dQ_{0,W}(w) \ge c \right\}. (\#eq:def-quantile)
 \end{equation}
+(Note:  $\inf$ merely  generalizes $\min$,  accounting for  the fact  that the
+minimum may fail to be achieved.)
 
 It   is  not   very   difficult  to   check  (see   Problem   1  below)   that
 \begin{equation}\gamma_{0,a,c} =  \inf\left\{y \in ]0,1[  : \Pr_{\bbP_{0}}(Y_a
@@ -529,7 +575,9 @@ evaluated   at    $P_{n}$:   \begin{equation*}\Theta(P_{n})    =   \frac{1}{n}
 \sum_{i=1}^{n} X_{i}  = \theta_{n}.\end{equation*} We *recover*  the empirical
 mean, and  understand that it  is a *substitution*  estimator of the  mean: in
 order to estimate $\Theta(P_{0})$, we  *substitute* $P_{n}$ for $P_{0}$ within
-$\Theta$.
+$\Theta$.^[There   are  many   interesting  parameters   $\Theta$  for   which
+$\Theta(P_n)$ is not defined, see for instance \@ref(eq:psimap), our parameter
+of main interest.]
 
 Substitution-based estimators are particularly  valuable notably because they,
 by construction, satisfy  all the constraints to which  the targeted parameter
@@ -553,9 +601,11 @@ of $\Gbar$ and $\Qbar$ on $P$ for notational simplicity.
 
 Central to our approach  is viewing $\psi_{0}$ as the value  at $P_{0}$ of the
 statistical  mapping   $\Psi$  from   $\calM$  to  $[0,1]$   characterized  by
-\begin{align}  \Psi(P) &\triangleq  \int  \left(\Qbar(1, w)  - \Qbar(0,  w)\right)
-dQ_{W}(w) (\#eq:psimap)\\ &= \Exp_{P}  \left(\Qbar(1, W) - \Qbar(0, W)\right),
-\notag \end{align} a clear extension of \@ref(eq:psi-zero).
+\begin{align}  \Psi(P)  &\triangleq  \int  \left(\Qbar_P(1,  w)  -  \Qbar_P(0,
+w)\right)  dQ_{W}(w)   (\#eq:psimap)\\  &=  \Exp_{P}  \left(\Qbar_P(1,   W)  -
+\Qbar_P(0,   W)\right),    \notag   \end{align}    a   clear    extension   of
+\@ref(eq:psi-zero) where, for  once, we make the dependence of  $\Qbar$ on $P$
+explicit to emphasize how $\Psi(P)$ truly depends on $P$.
 
 ### The value of the statistical mapping at another experiment {#value-another-experiment}
 
@@ -577,13 +627,14 @@ confirms the equality.
 
 ```{r approx-psi-one}
 (psi_Pi_zero <- evaluate_psi(another_experiment, h = 0))
+round(59/300, 3)
 ```
 
 
 
 ## &#9881; \gear Alternative statistical mapping {#exo-alternative-parameter-second-pass}
 
-We        now        resume        the       exercize        of        Section
+We        now        resume        the       exercise        of        Section
 \@ref(exo-alternative-parameter-first-pass).    Like   we   did   in   Section
 \@ref(parameter-second-pass), we  introduce a generic version  of the relevant
 features $q_{0,Y}$  and $Q_{0,Y}$.  Specifically, we  define $q_{Y}(y,A,W)$ to
@@ -1266,7 +1317,7 @@ consistent   estimators   of  $\Psi(P)$,   as   we   shall  see   in   Section
    thus  characterized.   Can  you  guess the  values  of  $\Rem_{P_{0}}(P')$,
    $\Psi(P')$ and $P_{0} D^{*}(P')$? Support your argument.
 
-3. Add more exercizes?
+3. Add more exercises?
 
 
 
@@ -1285,7 +1336,7 @@ and  the  observations  are  stored  in  `obs`  that  we  created  in  Section
 \@ref(exo-cramer-rao). 
 
 ```{r iter}
-iter <- 1e2
+iter <- 5e2
 ```
 
 Equal to `r B/1e6` million, the sample size `B` is very large. We will in fact
@@ -1755,7 +1806,7 @@ Here, we merely  illustrate the concept with two  specifications built-in into
 `tlrider`.   Based on  the *$k$-nearest  neighbors* non-parametric  estimating
 methodology, the  first one  is discussed  in the  next subsection.   Based on
 *boosted trees*, another non-parametric estimating methodology, the second one
-is used in the exercize that follows the next subsection.
+is used in the exercise that follows the next subsection.
 
 ### `Qbar`, kNN algorithm {#Qbar-knn-algo}
 
@@ -1960,7 +2011,8 @@ with\index{well/mis-specified}
 We  investigate *empirically*  the statistical  behavior of  $\psi_{n}^{c}$ in
 Section  \@ref(empirical-inves-IPTW-bis). For  an analysis  of the  reason why
 $v_{n}^{c}$  is  a  conservative  estimator  of  the  asymptotic  variance  of
-$\sqrt{n} (\psi_{n}^{c} - \psi_{0})$, see [here](#iptw-est-var).
+$\sqrt{n}  (\psi_{n}^{c} -  \psi_{0})$, see  [there](#iptw-est-var) in  Appendix
+\@ref(iptw-est-var). 
 
 Before proceeding, let us touch upon what would have happened if we had used a
 less amenable  algorithm $\Algo_{\Gbar}$. For instance,  $\Algo_{\Gbar}$ could
@@ -2107,16 +2159,16 @@ fig_bias_ab +
 
 **Workaround.**  In  a  real  world   data-analysis,  one  could  correct  the
 estimation of the asymptotic variance of $\sqrt{n} (\psi_{n}^{c} - \psi_{0})$.
-We  could for  instance  derive  the influence  function  as  it is  described
-[here](#iptw-est-var)  and  use  the  corresponding  influence  function-based
-estimator  of the  variance.  One  could  also rely  on the  cross-validation,
-possibly combined with the previous workaround.  Or one could also rely on the
-bootstrap.^[That is,  replicate the construction of  $\psi_{n}^{c}$ many times
-based on  data sets obtained  by resampling from  the original data  set, then
-estimate the asymptotic variance with the empirical variance of $\psi_{n}^{c}$
-computed across the replications.] This, however, would only make sense if one
-knew  for  sure that  the  algorithm  for  the  estimation of  $\Gbar_{0}$  is
-well-specified.
+We   could   for  instance   derive   the   influence   function  as   it   is
+described [there](#iptw-est-var)  in Appendix  \@ref(iptw-est-var) and  use the
+corresponding influence  function-based estimator of the  variance.  One could
+also  rely  on  the  cross-validation, possibly  combined  with  the  previous
+workaround.  Or one could also rely  on the bootstrap.^[That is, replicate the
+construction  of $\psi_{n}^{c}$  many times  based  on data  sets obtained  by
+resampling from the  original data set, then estimate  the asymptotic variance
+with   the  empirical   variance   of  $\psi_{n}^{c}$   computed  across   the
+replications.] This, however, would only make  sense if one knew for sure that
+the algorithm for the estimation of $\Gbar_{0}$ is well-specified.
 
 ## &#9881; \gear Investigating further the IPTW inference strategy {#exo-a-nice-title}
 
@@ -2280,14 +2332,14 @@ $\Algo_{\Qbar,\text{kNN}}$  is  not  based  on  a  finite-dimensional  working
 model.  Nevertheless, function  `compute_gcomp`  estimates  (in general,  very
 poorly) the asymptotic variance with \@ref(eq:var-Gcomp-n).
 
-We investigate *empirically* the statistical behavior of $\psi_{n}^{d}$ in
+We  investigate *empirically*  the statistical  behavior of  $\psi_{n}^{d}$ in
 Section  \@ref(empirical-inves-Gcomp).   For an  analysis  of  the reason  why
 $v_{n}^{d}$ is  an anti-conservative estimator  of the asymptotic  variance of
-$\sqrt{n} (\psi_{n}^{d} - \psi_{0})$,  see [here](#gcomp-est-var).  We wish to
-emphasize   that  anti-conservativeness   is  even   more  embarrassing   that
-conservativeness (both  being contingent on  the fact that the  algorithms are
-well-specified, fact  that cannot be  true in the  present case in  real world
-situations).
+$\sqrt{n} (\psi_{n}^{d}  - \psi_{0})$, see [there](#gcomp-est-var)  in Appendix
+\@ref(gcomp-est-var).  We wish to emphasize that anti-conservativeness is even
+more embarrassing  that conservativeness  (both being  contingent on  the fact
+that  the algorithms  are  well-specified, fact  that cannot  be  true in  the
+present case in real world situations).
 
 What would happen  if we used a less amenable  algorithm $\Algo_{\Qbar}$.  For
 instance,   $\Algo_{\Qbar}$    could   still   be   well-specified    but   so
@@ -2665,7 +2717,8 @@ Now, let us substitute $\Phat_n$ for $P$ in \@ref(eq:taylor-expansion):
 \Rem_{P_0}(\Phat_n) . 
 \end{equation} 
 
-We  show  [here](#app-analysis-of-plug-in)  that,   under  conditions  on  the
+We        show       [there](#app-analysis-of-plug-in)        in       Appendix
+\@ref(app-analysis-of-plug-in)     that,    under     conditions    on     the
 complexity/versatility  of  algorithms   $\Algo_{\Gbar}$  and  $\Algo_{\Qbar}$
 (often referred to as *regularity conditions*) and assuming that their outputs
 $\Gbar_{n}$  and   $\Qbar_{n}$  both   consistently  estimate   their  targets
@@ -2704,20 +2757,16 @@ Gaussian distribution with variance
   \Var_{P_0}(D^{*}(P_{0})(O)) = \Exp_{P_0}(D^{*}(P_{0})(O)).
 \end{equation}
 
-The   detailed    general   analysis    of   plug-in    estimators   developed
-[here](#app-analysis-of-plug-in)  also  revealed  that  the  above  asymptotic
-variance is consistently estimated with 
-\begin{equation} 
-	P_{n}      D^{*}(\Phat_{n})^{2}      =     \frac{1}{n}      \sum_{i=1}^{n}
-	D^*(\Phat_n)^{2}(O_{i}). 
-\end{equation}
-Therefore, by the central limit theorem  and Slutsky's lemma (see the argument
-[here](#clt)),
-\begin{equation*} 
-\left[\psinos   \pm
-\Phi^{-1}(1-\alpha)     \frac{P_{n}     D^{*}(\Phat_{n})^{2}}{\sqrt{n}}\right]
-\end{equation*} 
-is a confidence interval for $\Psi(P_0)$ with asymptotic level $(1-2\alpha)$.
+The      detailed     general      analysis     of      plug-in     estimators
+developed         [there](#app-analysis-of-plug-in)         in         Appendix
+\@ref(app-analysis-of-plug-in)  also   revealed  that  the   above  asymptotic
+variance    is   consistently    estimated    with   \begin{equation}    P_{n}
+D^{*}(\Phat_{n})^{2}  =  \frac{1}{n}  \sum_{i=1}^{n}  D^*(\Phat_n)^{2}(O_{i}).
+\end{equation} Therefore,  by the  central limit  theorem and  Slutsky's lemma
+(see  the argument  [there](#clt)  in  Appendix \@ref(clt)),  \begin{equation*}
+\left[\psinos           \pm          \Phi^{-1}(1-\alpha)           \frac{P_{n}
+D^{*}(\Phat_{n})^{2}}{\sqrt{n}}\right]   \end{equation*}   is   a   confidence
+interval for $\Psi(P_0)$ with asymptotic level $(1-2\alpha)$.
 
 ## Empirical investigation {#empirical-inves-one-step}
 
@@ -2879,12 +2928,13 @@ smallest mean square error.
 
 ### Falling outside the parameter space
 
-Section \@ref(one-step) introduced the one-step corrected estimator $\psinos$
+Section \@ref(one-step) introduced the  one-step corrected estimator $\psinos$
 of $\psi_0$.  It is obtained by adding a correction term to an initial plug-in
 estimator $\Psi(\Phat_{n})$, resulting in  an estimator that is asymptotically
 linear with  influence curve $\IC  = D^{*}(P_{0})$ under mild  conditions (see
-Section      \@ref(huber-one-step)      and       the      detailed      proof
-[here](#app-analysis-of-plug-in)). 
+Section         \@ref(huber-one-step)         and         the         detailed
+proof          [there](#app-analysis-of-plug-in)           in          Appendix
+\@ref(app-analysis-of-plug-in)).
 
 Unfortunately, the one-step  estimator lacks a desirable feature  of a plug-in
 estimator:  plug-in estimators  always lie  in the  parameter space  whereas a
@@ -2951,7 +3001,7 @@ Now,  recall the  definition of  $D_{1}^{*}$ \@ref(eq:eif)  and note  that for
 compatible  with  $\Qbar_n^*$  and $Q_{n,W}$,  \begin{equation*}  P_{n}  D_{1}
 (P_{n}^{*}) = 0.
 \end{equation*}
-The proof can be found [here](#basic-eic-eq). 
+The proof can be found [there](#basic-eic-eq) in Appendix \@ref(basic-eic-eq). 
 
 In  words, this  shows  that so  long  as we  use  the empirical  distribution
 $Q_{n,W}$  to   estimate  $Q_{0,W}$,   by  its  very   construction  achieving
@@ -2994,10 +3044,10 @@ fluctuation  $\{P_{h} :  h \in  H\}$ of  $P$ in  direction of  $s$ in  $\calM$
 induces   a   fluctuation   $\{\Qbar_{h}   :   h  \in   H\}$   of   $\Qbar   =
 \left.Q_{h}\right|_{h=0}$  in the  space  $\calQ \triangleq  \{\Qbar  : P  \in
 \calM\}$ of  regression functions induced  by model $\calM$.   Specifically we
-show  [here](#fluct-reg) that,  for  every  $h \in  H$,  the conditional  mean
-$\Qbar_{h}(A,W)$   of  $Y$   given   $(A,W)$  under   $P_{h}$   is  given   by
-\begin{equation*}\Qbar_{h}(A,W) \triangleq \frac{\Qbar(A,W) + h \Exp_{P}(Ys(O)
-| A,W)}{1 + h \Exp_{P}(s(O)|A,W)}.\end{equation*}
+show [there](#fluct-reg)  in Appendix \@ref(fluct-reg)  that, for every  $h \in
+H$, the conditional  mean $\Qbar_{h}(A,W)$ of $Y$ given  $(A,W)$ under $P_{h}$
+is given  by \begin{equation*}\Qbar_{h}(A,W)  \triangleq \frac{\Qbar(A,W)  + h
+\Exp_{P}(Ys(O) | A,W)}{1 + h \Exp_{P}(s(O)|A,W)}.\end{equation*}
 
 We  note that  if $s(O)$  depends on  $O$ only  through $(A,W)$  then, abusing
 notation and writing $s(A,W)$ for $s(O)$, 
@@ -3021,10 +3071,12 @@ $\Qbar_{n}$.  The next section introduces such a direct fluctuation.
 Set arbitrarily $\Qbar \in \calQ$. The (direct) fluctuation of $\Qbar$ that we
 propose to consider depends on a  user-supplied $\Gbar$.  For any $\Gbar$ such
 that $0  < \ell\Gbar(A,W)  < 1$,  $P_{0}$-almost surely,  the $\Gbar$-specific
-fluctuation   model  for   $\Qbar$   is  \begin{equation}   \calQ(\Qbar,\Gbar)
-\triangleq      \left\{(w,a)       \mapsto      \Qbar_{h}(a,w)      \triangleq
+fluctuation model for $\Qbar$ is 
+\begin{equation} 
+\calQ(\Qbar,\Gbar)\triangleq      \left\{(w,a)       \mapsto      \Qbar_{h}(a,w)      \triangleq
 \expit\left(\logit\left(\Qbar(a,w)\right) +  h \frac{2a -  1}{\ell \Gbar(a,w)}
-\right) : t \in \bbR\right\} \subset \calQ. (\#eq:Q-fluct) \end{equation}
+\right) : t \in \bbR\right\} \subset \calQ. (\#eq:Q-fluct) 
+\end{equation}
 
 Fluctuation  $\calQ(\Qbar,\Gbar)$   is  a  one-dimensional   parametric  model
 (indexed  by the  real-valued parameter  $h$)  that goes  through $\Qbar$  (at
@@ -3100,10 +3152,13 @@ we  formally rely  on  the  empirical risk  function  $h \mapsto  \Exp_{P_{n}}
 \left(L_{y}   (\Qbar_{n,h})(O)\right)$   where   \begin{equation*}\Exp_{P_{n}}
 \left(L_{y}   (\Qbar_{n,h})(O)\right)  =   \frac{1}{n}  \sum_{i=1}^{n}   L_{y}
 (\Qbar_{n,h})(O_{i})\end{equation*}  and the  logistic (or  negative binomial)
-loss function $L_{y}$ is given  by \begin{equation*} -L_{y}(f)(O) \triangleq Y
-\log f(A,W)  + (1 -  Y) \log \left(1  - f(A,W)\right) \end{equation*}  for any
-function $f:[0,1] \times \{0,1\} \times  [0,1] \to [0,1]$.  This loss function
-is   the   counterpart    of   the   loss   function    $L_{a}$   defined   in
+loss function $L_{y}$ is given by 
+\begin{equation*} 
+-L_{y}(f)(O) \triangleq Y
+\log f(A,W) + (1 - Y) \log \left(1 - f(A,W)\right) (\#eq:logis-loss-y)
+\end{equation*} 
+for any function  $f:\{0,1\} \times [0,1] \to  [0,1]$.  This loss
+function  is  the  counterpart  of   the  loss  function  $L_{a}$  defined  in
 \@ref(eq:logis-loss).    The   justification   that   we   gave   in   Section
 \@ref(logis-loss)  of the  relevance of  $L_{a}$ also  applies here,  *mutatis
 mutandis*.    In   summary,   the  oracle   risk   $\Exp_{P_{0}}   \left(L_{y}
@@ -3113,7 +3168,8 @@ $\Qbar_{0}$ and $f$; $\Qbar_{0}$ minimizes $f \mapsto \Exp_{P_{0}} \left(L_{y}
 \{0,1\}  \times [0,1]  \to [0,1]$;  and  a minimizer  $h_{0} \in  \bbR$ of  $h
 \mapsto  \Exp_{P_{0}}  \left(L_{y}   (\Qbar_{n,h})(O)\right)$  identifies  the
 element  of  fluctuation  $\calQ(\Qbar_{n},  \Gbar_{n})$ that  is  closest  to
-$\Qbar_{0}$ (some details are given [here](#oracle-logistic-risk)).
+$\Qbar_{0}$ (some details are given [there](#oracle-logistic-risk) in Appendix
+\@ref(oracle-logistic-risk)).
 
 It should not come as a surprise after this discussion that the aforementioned
 data-driven  $h_{n}$ is  chosen  to be  the minimizer  of  the empirical  risk
@@ -3126,7 +3182,7 @@ over a grid of candidate values.
 
  
 ```{r grid-search, fig.cap = '(ref:grid-search)'}
-candidates <- seq(-1e-2, 1e-2, length.out = 1e2)
+candidates <- seq(-1e-3, 1e-3, length.out = 1e3)
 W <- obs[1:1e3, "W"]
 A <- obs[1:1e3, "A"]
 Y <- obs[1:1e3, "Y"]
@@ -3180,8 +3236,9 @@ the  parameter   $h'$  indexing  $\calQ(\Qbar_{n}^{*},  \Gbar_{n})$   and  the
 parameter  $h$  indexing $\calQ(\Qbar_{n},  \Gbar_{n})$  (namely,  $h' =  h  +
 h_{n}$). Therefore, the  derivative of (the real-valued  function over $\bbR$)
 $h \mapsto  \Exp_{P_n} \left(L_{y}  (\Qbar_{n,h})(O)\right)$ evaluated  at its
-minimizer  $h_{n}$  equals 0.  Equivalently  (see  [here](#fluct-score) for  a
-justification of the last but one equality below),
+minimizer  $h_{n}$  equals  0.   Equivalently  (see  [there](#fluct-score)  in
+Appendix \@ref(fluct-score) for  a justification of the last  but one equality
+below),
 
 \begin{align}\notag     \frac{d}{d      h}     &      \left.      \Exp_{P_{n}}
 \left(L_{y}(\Qbar_{n,h}^{*})(O)\right)\right|_{h=0}      \\     \notag      &=
@@ -3211,20 +3268,120 @@ conditions.   Moreover, by  virtue of  its  plug-in construction,  it has  the
 additional property that in finite-samples  $\psi_n^*$ will always obey bounds
 on the parameter space.
 
-### Summary and perspectives
+
+### &#9881; \gear Alternative fluctuation {#exo-tmle-flucs}
+
+The following exercises will have you consider an alternative means of 
+performing a fluctuation. For $a = 0, 1$, consider the following
+fluctuation model for $\Qbar^a \triangleq \Qbar(a,\cdot)$:
+\begin{equation} 
+\calQ^a(\Qbar^a)
+\triangleq      \left\{w       \mapsto      \Qbar_{h}^a(w)      \triangleq
+\expit\left(\logit\left(\Qbar(a,w)\right) +  h
+\right) : h \in \bbR\right\} \subset \calQ. (\#eq:Q-fluct-alt) 
+\end{equation}
+Let 
+\begin{equation*}
+  \calQ^{\text{alt}}(\Qbar)   \triangleq   \left\{(a,w)  \mapsto   \Qbar_{h_0,
+  h_1}(a,w) \triangleq a \times
+  \Qbar_{h_{1}}^1(w) + (1-a) \Qbar_{h_{0}}^0(w) : h_{0}, h_{1} \in \bbR\right\}
+\end{equation*}
+be the fluctuation model for $\Qbar$ that  is implied by the two submodels for
+$\Qbar^1$ and $\Qbar^0$. 
+
+Also for a given $\Gbar$ satisfying that $0  < \ell\Gbar(A,W)  < 1$, 
+$P_{0}$-almost surely, and both $a=0,1$, consider the loss function 
+$L_{y,\Gbar}^{a}$ given by
+\begin{equation*}
+   L_{y,\Gbar}^{a} (f) (A,W) \triangleq \frac{\one\{A = a\}}{\ell\Gbar(A, W)} L_{y}
+   (f)(O)
+\end{equation*}
+for any function $f:\{0,1\} \times [0,1]  \to [0,1]$, where $L_{y}$ is defined
+in \@ref(eq:logis-loss-y) above. It yields the 
+empirical risk function 
+\begin{equation*}
+(h_{0}, h_{1}) \mapsto \sum_{a = 0,1}  \Exp_{P_{n}}
+\left(L^a_{y, \Gbar} (\Qbar^a_{n,h_a})(O)\right).
+\end{equation*}
+
+
+1. Comment on the differences between these fluctuation model and loss
+function compared to those discussed above.
+
+2. Visualize    three   elements   of    $\calQ^{\text{alt}}(\Qbar_0)$   and
+$\calQ^{\text{alt}}(\Qbar_n)$:  choose  three  values  for  $(h_0,  h_1)$  and
+reproduce Figure \@ref(fig:fluctuation). 
+
+3. Argue that in order to minimize the empirical risk over all $(h_0, h_1) \in
+\bbR^2$, we may minimize over $h_0 \in \bbR$ and $h_1 \in \bbR$ separately. 
+
+4. Visualize how the empirical risk with $\Gbar = \Gbar_n$ varies for different elements 
+$\Qbar_{n, h_0, h_1}$ of $\calQ(\Qbar_n)$. For simplicity (and with the justification of problem 3), 
+you may wish to make a separate figure (like Figure \@ref(fig:grid-search)) for $a = 0, 1$ 
+that illustrates how the empirical risk varies as a function of $h_a$ while setting $h_{1 - a} = 0$. 
+
+5. &#9761; \stixdanger{} Justify the validity of $L^a_{y, \Gbar}$ as a loss function for $\Qbar^a_0$:
+show that amongst all functions that map $w$ to $(0,1)$, the true risk
+$\Exp_{P_0}\left(L^a_{y, \Gbar}(f)(O)\right)$ is minimized when $f = \Qbar^a_0$. 
+
+6. &#9761; \stixdanger{} Argue that your answer to problem 2 also implies that the summed loss function $\sum_{a=0,1} L^a_{y, \Gbar}$
+is valid for $\Qbar$. 
+
+7. &#9761; \stixdanger{} Justify the combination of these loss function and fluctuation by repeating 
+the calculation in equation \@ref(eq:fluct-score) above, *mutatis mutandis*.
+
+## Summary and perspectives
+
 
 The  procedure laid  out in  Section \@ref(TMLE)  is called  *targeted minimum
-loss-based estimation* (TMLE).  The nomenclature derives from its logistics.
+loss-based estimation*  (TMLE).  The nomenclature derives  from its logistics.
+We  first  generated an  (un-targeted)  initial  estimator of  $\Psi(P_0)$  by
+substituting for $P_{0}$ a law  $\Phat_{n}$ compatible with initial estimators
+of   some  $\Psi$-specific   relevant  nuisance   parameters.   Then   through
+loss-minimization,  we  built  a  *targeted*  estimator  by  substituting  for
+$\Phat_{n}$ a law $P_{n}^{*}$ compatible  with the nuisance parameters that we
+updated in a targeted fashion.
 
-We first  generated an  (un-targeted) initial  estimator of  relevant nuisance
-parameters.  Then  through, possibly iterative, loss-minimization,  we built a
-*targeted* estimator of  the nuisance parameters.  In the  present problem, we
-examined  explicitly this  loss-minimization in  Figures \tcg{X  and Y}.   The
-resultant estimate generated  by the loss-minimzation procedure  should be *no
-worse* an estimate of its true target  than the initial estimate, but has been
-additionally endowed with the property  that it solves the efficient influence
-curve equation.
+The TMLE  procedure was  coined in  2006 by Mark  van der  Laan and  Dan Rubin
+[@TMLE06]. It has since then been developed  and applied in a great variety of
+contexts. We refer  to the monographies [@TMLEbook11] and  [@TMLEbook18] for a
+rich overview. 
 
+In  summary, targeted  learning bridges  the gap  between formal  inference of
+finite-dimensional parameters  $\Psi(P_{0})$ of the  law $P_{0}$ of  the data,
+via bootstrapping or influence  curves, and data-adaptive, loss-based, machine
+learning estimation  of $\Psi$-specific infinite-dimensional  features thereof
+(the so-called  nuisance parameters).   A typical  example concerns  the super
+learning-based,   targeted  estimation   of  effect   parameters  defined   as
+identifiable  versions of  causal quantities.   The TMLE  algorithm integrates
+completely  the  estimation  of  the relevant  nuisance  parameters  by  super
+learning [@SL07]. Under mild assumptions,  the targeting step removes the bias
+of the initial estimators of the  targeted effects.  The resulting TMLEs enjoy
+many  desirable statistical  properties: among  others, by  being substitution
+estimators, they  lie in  the parameter space;  they are  often double-robust;
+they lend themselves to the construction of confidence regions.
+
+The scientific community is always  engaged in devising and promoting enhanced
+principles for sounder research through  the better design of experimental and
+nonexperimental  studies  and the  development  of  more reliable  and  honest
+statistical  analyses.   By  focusing   on  prespecified  analytic  plans  and
+algorithms that make  realistic assumptions in more  flexible nonparametric or
+semiparametric statistical models,  targeted learning has been at  the fore of
+this concerted effort. Under this light, targeted learning notably consists in
+translating knowledge about the  data and underlying data-generating mechanism
+into a realistic model; in expressing  the research question under the form of
+a  statistical estimation  problem;  in analyzing  the statistical  estimation
+problem  within the  frame of  the model;  in developing  *ad hoc*  algorithms
+grounded in theory and tailored to the  question at stake to map knowledge and
+data into an answer coupled to an assessment of its trustworthiness.
+
+Quoting [@TMLEbook18]:
+
+> Over the last decade, targeted learning has been established as a reliable framework for constructing effect estimators and prediction functions. The continued development of targeted learning has led to new solutions for existing problems in many data structures in addition to discoveries in varied applied areas.  This has included work in randomized controlled trials, parameters defined by a marginal structural model, case-control studies, collaborative TMLE, missing and censored data, longitudinal data, effect modification, comparative effectiveness research, aging, cancer, occupational exposures, plan payment risk adjustment, and HIV, as well as others. In many cases, these studies compared targeted learning techniques to standard approaches, demonstrating improved performance in simulations and realworld applications.
+
+It  is now  time  to resume  our  introduction to  TMLE and  to  carry out  an
+empirical investigation  of its statistical  properties in the context  of the
+estimation of $\psi_{0}$.
 
 ## Empirical investigation {#empirical-inves-tmle}
 
@@ -3258,7 +3415,7 @@ earlier  by  using  algorithm  $\Algo_{\Gbar,1}$  (second  line;  see  Section
 (third line). Apparently, in this  particular example, the one-step correction
 and targeted correction updater similarly the initial estimator.
 
-### &#9881; \gear Exercice {#exo-tmle}
+### &#9881; \gear A computational exploration {#exo-tmle}
 
 1. Consult   the   man   page  of   function   `apply_targeting_step`   (run
    `?apply_targeting_step`)  and  explain  what  is   the  role  of  its  input
@@ -3277,13 +3434,15 @@ Gbar_hat_w <- wrapper(Gbar_hat, FALSE)
 Qbar_kknn <- wrapper(Qbar_hat_kknn, FALSE)
 
 psi_trees_epsilon <- sapply(epsilon, function(h) {
-  apply_targeting_step(head(obs, 1e3), Gbar_hat_w,  Qbar_trees, epsilon = h) %>%
+  apply_targeting_step(head(obs, 1e3), Gbar_hat_w,
+                       Qbar_trees, epsilon = h) %>%
     select(psi_n, crit_n) %>% as.matrix
 })
 idx_trees <- which.min(abs(psi_trees_epsilon[2, ]))
 
 psi_kknn_epsilon <- sapply(epsilon, function(h) {
-  apply_targeting_step(head(obs, 1e3), Gbar_hat_w, Qbar_kknn, epsilon = h) %>%
+  apply_targeting_step(head(obs, 1e3), Gbar_hat_w,
+                       Qbar_kknn, epsilon = h) %>%
     select(psi_n, crit_n) %>% as.matrix
 })
 idx_kknn <- which.min(abs(psi_kknn_epsilon[2, ]))
@@ -3312,9 +3471,9 @@ Section \@ref(empirical-inves-one-step), we applied the one-step correction to
 the same estimators.
 
 The object `learned_features_fixed_sample_size` already contains the estimated
-features  of $P_{0}$  that are  needed to  perform the  targeting step  to the
-estimators $\psi_{n}^{d}$ and  $\psi_{n}^{e}$, namely, thus we  merely have to
-call the function `apply_targeting_step`.
+features  of $P_{0}$  that are  needed to  perform the  targeting step  on the
+estimators $\psi_{n}^{d}$ and $\psi_{n}^{e}$, thus  we merely have to call the
+function `apply_targeting_step`.
 
 
 (ref:tmle) Kernel density estimators of the law of two targeted estimators of $\psi_{0}$ (recentered with respect to $\psi_{0}$, and renormalized).  The estimators respectively hinge on algorithms $\Algo_{\Qbar,1}$ (d) and $\Algo_{\Qbar,\text{kNN}}$ (e) to estimate $\Qbar_{0}$, and on a targeting step.  Two renormalization schemes are considered, either based on an estimator of the asymptotic variance (left) or on the empirical variance computed across the `iter` independent replications of the estimators (right).  We emphasize that the $x$-axis ranges differ between the left and right plots.
@@ -3370,19 +3529,35 @@ fig +
                             (psi[n]^{"*"} - psi[0]))))
 ```
 
-Comment. Compare to one-step.
+We see that the step of targeting is as promised: the bias of the resulting
+estimators is minimized relative to the naive plug-in estimators. Comparing 
+these results to those obtain using one-step estimators (Section 
+\@ref(empirical-inves-one-step)), we find quite similar performance between 
+one-step and TMLE estimators. 
 
 # Closing words
 
-Conclude. Refer to `tlverse`. 
+The velocity of advances in machine learning make it an exciting time to work as
+a statistician. Clearly, statistical inference is more challenging when one 
+considers the sort of infinite-dimensional statistical models that underlie 
+these developments. Even defining some fundamental statistical notions, like
+efficiency, in these settings is a challenge. Constructing estimators that 
+obtain these properties is more challenging still. We hope that this short guide
+has provided an approachable introduction to this exciting area of research. 
+
+Targeted learning is a vibrant and active field of research, with new 
+developments happening along theoretical, applied, and computational axes. The 
+[`tlverse`](https://tlverse.org/) software environment is actively being 
+developed to provide researchers with new tools for utilizing these methods. 
+
 
 # (APPENDIX) Appendix {-}
 
 
 
-To insert in appendix.
 
-<!--```{r estimating-Qbar-appendix, eval = FALSE}
+<!--
+```{r estimating-Qbar-appendix, eval = FALSE}
 ## xgboost based on trees
 xgb_tree_algo <- list(
   algo = function(dat, ...) {

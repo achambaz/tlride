@@ -45,7 +45,7 @@ programming  language [`R`](https://www.r-project.org).   `R`  is widely  used
 among statisticians  and data scientists  to develop statistical  software and
 data analysis.
 
-Regularly, a section  is inserted that proposes exercizes.   Each such section
+Regularly, a section  is inserted that proposes exercises.   Each such section
 is indicated by the  <span style="color:red">&#9881;</span> \gear symbol.  The
 symbol  <span  style="color:red">&#9761;</span> \stixdanger{}  also  indicates
 those sections whose content is more involved.
