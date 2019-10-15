@@ -1,24 +1,3 @@
-```{r include=FALSE, cache=FALSE}
-options(digits = 3)
-
-knitr::opts_chunk$set(
-  comment = "#>",
-  collapse = TRUE,
-  cache = TRUE,
-  out.width = "70%",
-  fig.align = 'center',
-  fig.width = 6, # used to have: fig.width = 12,
-  fig.asp = 0.618, # used to have: fig.height = 4, 
-  fig.show = "hold",
-  fig.path = 'img/',
-  size = "tiny",
-  message = FALSE,
-  warning = FALSE,
-  warnings = FALSE
-)
-
-options(dplyr.print_min = 6, dplyr.print_max = 6)
-```
 ```{r include = FALSE, cache = FALSE}
 options(digits = 3)
 
@@ -97,23 +76,22 @@ library(tlrider)
 
 ### What we will discuss {#discuss}
 
-To  begin,  we discuss  the  nature of  the parameter  of  interest,
-viewing it as the  value of a statistical mapping evaluated at  the law of the
-data  (Section  \@ref(parameter)), with  an  emphasis  on the  smoothness  and
-double-robustness  properties inherited  from  this insightful  representation
-(Sections  \@ref(smooth) and  \@ref(double-robustness)). We  then turn  to the
-inference of the  parameter of interest.  We first  introduce and comment
-upon  a  simple inference  strategy  assuming  provisionally that  a  relevant
-feature   of   the    law   of   the   data   is   known    to   us   (Section
-\@ref(simple-strategy)). Second, we present  the notion of nuisance parameters
-and   adopt    an   algorithmic   stance   on    their   estimation   (Section
-\@ref(nuisance)). Third, we  introduce and comment upon  two "naive" so-called
-plug-in inference  strategies (Section \@ref(naive-estimators)),  the one-step
-correction  procedure (Section  \@ref(one-step))  and,  finally, the  targeted
-minimum loss estimation  procedure tailored to the inference  of the parameter
-of   main  interest.    In  the appendix, we  collect   our  notation   (Section
-\@ref(notation)), and present some results that are used in the main
-text and their proofs (Sections \@ref(proofs) and \@ref(more-proofs)). 
+To begin, we  discuss the nature of  the parameter of interest,  viewing it as
+the value of a  statistical mapping evaluated at the law  of the data (Section
+\@ref(parameter)), with  an emphasis  on the smoothness  and double-robustness
+properties   inherited   from   this   insightful   representation   (Sections
+\@ref(smooth) and \@ref(double-robustness)). We then  turn to the inference of
+the  parameter of  interest.  We  first introduce  and comment  upon a  simple
+inference strategy assuming  provisionally that a relevant feature  of the law
+of  the data  is  known  to us  (Section  \@ref(simple-strategy)). Second,  we
+present the notion  of nuisance parameters and adopt an  algorithmic stance on
+their estimation  (Section \@ref(nuisance)).  Third, we introduce  and comment
+upon two  "naive" inference strategies (Section  \@ref(naive-estimators)), the
+one-step  correction procedure  (Section  \@ref(one-step))  and, finally,  the
+targeted minimum  loss estimation procedure  tailored to the inference  of the
+parameter of main interest.  In the appendix, we collect our notation (Section
+\@ref(notation)), and present some results that  are used in the main text and
+their proofs (Sections \@ref(proofs) and \@ref(more-proofs)).
  
 ## A simulation study {#simulation-study}
 
@@ -468,7 +446,7 @@ large  numbers,  the  following  code approximates  $\psi_{0}$  and  shows  it
 approximate value.
 
 ```{r approx-psi-zero-a-two}
-B <- 5e5
+B <- 1e6
 ideal_obs <- sample_from(experiment, B, ideal = TRUE)
 (psi_approx <- mean(ideal_obs[, "Yone"] - ideal_obs[, "Yzero"]))
 ```
@@ -1336,7 +1314,7 @@ and  the  observations  are  stored  in  `obs`  that  we  created  in  Section
 \@ref(exo-cramer-rao). 
 
 ```{r iter}
-iter <- 5e2
+iter <- 1e3
 ```
 
 Equal to `r B/1e6` million, the sample size `B` is very large. We will in fact
@@ -1444,7 +1422,7 @@ Let $f:\bbR\times \bbR^{*} \times \bbR\times \bbR^{*}$ be given by $f(r,s,t,u)
 
 ## IPTW estimator assuming the mechanism of action known {#known-gbar-first-pass}
 
-### A simple substitution estimator
+### A simple  estimator
 
 Let us assume for a moment that we know $\Gbar_{0}$.  This would have been the
 case  indeed if  $P_{0}$  were a  controlled experiment.   Note  that, on  the
@@ -1465,13 +1443,12 @@ $\Psi(P_{0})$ with
 \end{align}
 
 Note how $P_{n}$  is substituted for $P_{0}$ in  \@ref(eq:psi-n-b) relative to
-\@ref(eq:psi-zero-b).    This  justifies   that  we   call  $\psi_{n}^{b}$   a
-*substitution   estimator*  (for   the  same   reason,  $\psi_{n}^{a}$   is  a
-substitution estimator of  $\Phi(P_{0})$).  It is also dubbed  an IPTW (inverse
-probability  of  treatment weighted)  estimator  because  of the  denominators
-$\ell\Gbar_{0}(A_{i},W_{i})$  in  its  definition.^[We  could  have  used  the
-alternative expression IPAW, where A (like  action) is substituted for T (like
-treatment).]
+\@ref(eq:psi-zero-b).  However, we cannot  call $\psi_{n}^{b}$ a *substitution
+estimator* because  it does  not write  as $\Psi$ evaluated  at an  element of
+$\calM$.  This  said, it is  dubbed an  IPTW (inverse probability  of treatment
+weighted) estimator  because of the  denominators $\ell\Gbar_{0}(A_{i},W_{i})$
+in its definition.^[We could have  used the alternative expression IPAW, where
+A (like action) is substituted for T (like treatment).]
 
 In Section  \@ref(known-gbar-second-pass), we  develop another  IPTW estimator
 that does not assume that $\Gbar_{0}$ is known beforehand.
@@ -1924,18 +1901,17 @@ fig %>%
 
 \index{algorithm|)}
 
-# Two "naive" plug-in inference strategies {#naive-estimators}
+# Two "naive"  inference strategies {#naive-estimators}
 
 ## Why "naive"?
 
-In  this section,  we  present  and discuss  two  plug-in  strategies for  the
-inference of $\Psi(P_{0})$. In light of Section \@ref(anatomy), both unfold in
-*two*  stages.   During  the  first  stage,  some  features  among  $Q_{0,W}$,
-$\Gbar_{0}$  and $\Qbar_{0}$  (the  $\Psi$-specific  nuisance parameters,  see
-Section \@ref(nuisance))\index{nuisance~parameters} are  estimated. During the
-second   stage,  the   estimators  are   substituted  for   their  theoretical
-counterparts  in the  definition  of $\Psi(P_{0})$,  thus yielding  estimators
-of $\Psi(P_{0})$.
+In this  section, we present and  discuss two strategies for  the inference of
+$\Psi(P_{0})$.  In  light of  Section  \@ref(anatomy),  both unfold  in  *two*
+stages.  During  the first stage,  some features among  $Q_{0,W}$, $\Gbar_{0}$
+and  $\Qbar_{0}$   (the  $\Psi$-specific  nuisance  parameters,   see  Section
+\@ref(nuisance))\index{nuisance~parameters} are  estimated. During  the second
+stage, the  estimators are substituted  for their theoretical  counterparts in
+the definition of $\Psi(P_{0})$, thus yielding estimators of $\Psi(P_{0})$.
 
 Although the strategies  sound well conceived, a  theoretical analysis reveals
 that they lack a third stage trying to correct an inherent flaw. They are thus
@@ -1946,11 +1922,10 @@ Section \@ref(analysis-of-plug-in).
 
 ### Construction and computation {#unknown-gbar-constr}
 
-In Section \@ref(known-gbar-first-pass), we developed an IPTW substitution
-estimator,    $\psi_{n}^{b}$,   *assuming    that*    we   knew    $\Gbar_{0}$
-beforehand.  What  if  we  did  not?  Obviously,  we  could  estimate  it  and
-substitute   the  estimator   of   $\ell\Gbar_{0}$   for  $\ell\Gbar_{0}$   in
-\@ref(eq:psi-n-b). 
+In  Section  \@ref(known-gbar-first-pass),  we developed  an  IPTW  estimator,
+$\psi_{n}^{b}$, *assuming  that* we knew  $\Gbar_{0}$ beforehand.  What  if we
+did not?   Obviously, we  could estimate  it and  substitute the  estimator of
+$\ell\Gbar_{0}$ for $\ell\Gbar_{0}$ in \@ref(eq:psi-n-b).
 
 Let $\Algo_{\Gbar}$ be an algorithm designed for the estimation of $\Gbar_{0}$
 (see   Section  \@ref(nuisance-Gbar)).    We  denote   by  $\Gbar_{n}   \triangleq
@@ -2960,7 +2935,7 @@ cases, $D^*(\Phat_n)(O_i)$, and consequently the one-step correction term, may
 be large and cause the one-step estimate to fall outside $[-1,1]$.
 
 Another way to understand this behavior is to recognize the one-step estimator
-as a initial  plug-in estimator that is corrected *in  the parameter space of*
+as an initial  plug-in estimator that is corrected *in  the parameter space of*
 $\psi_0$. One  of the pillars of  targeted learning is to  perform, instead, a
 correction *in the parameter space of* $\Qbar_0$.
 
@@ -3530,7 +3505,7 @@ fig +
 ```
 
 We see that the step of targeting is as promised: the bias of the resulting
-estimators is minimized relative to the naive plug-in estimators. Comparing 
+estimators is minimized relative to the naive  estimators. Comparing 
 these results to those obtain using one-step estimators (Section 
 \@ref(empirical-inves-one-step)), we find quite similar performance between 
 one-step and TMLE estimators. 
