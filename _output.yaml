@@ -24,6 +24,7 @@ bookdown::gitbook:
 
 
 bookdown::pdf_book:
+  keep_tex: true
   toc: true
   toc_depth: 2
   number_sections: true
@@ -33,6 +34,7 @@ bookdown::pdf_book:
     after_body: tlride_after_body.tex
   latex_engine: xelatex
   citation_package: natbib
+
 
 bookdown::pdf_document2:
   toc: true
