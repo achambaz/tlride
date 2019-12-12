@@ -225,6 +225,9 @@ compute_lGbar_hatAW <- function(A, W, Gbar_hat, threshold = 0.05) {
   threshold <- R.utils::Arguments$getNumeric(threshold, c(0, 1/2))
   dat <- data.frame(A = A, W = W)
   GW <- stats::predict(Gbar_hat, newdata = dat, type = attr(Gbar_hat, "type_of_preds"))
+  if (ncol(GW) == 2) {
+    GW <- GW[, 2]
+  }
   lGAW <- A * GW + (1 - A) * (1 - GW)
   pred <- pmin(1 - threshold, pmax(lGAW, threshold))
   return(pred)
@@ -258,6 +261,9 @@ compute_Gbar_hatW <- function(W, Gbar_hat, threshold = 0.05) {
   threshold <- R.utils::Arguments$getNumeric(threshold, c(0, 1/2))
   dat <- data.frame(W = W)
   GW <- stats::predict(Gbar_hat, newdata = dat, type = attr(Gbar_hat, "type_of_preds"))
+    if (ncol(GW) == 2) {
+    GW <- GW[, 2]
+  }
   pred <- pmin(1 - threshold, pmax(GW, threshold))
   return(pred)
 }
