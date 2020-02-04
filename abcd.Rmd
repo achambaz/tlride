@@ -62,9 +62,9 @@ running the following code:
 devtools::install_github("achambaz/tlride/tlrider")
 ```
 
-Additional  packages are also required, including `tidyverse` [@r4ds],
-`caret` and  `ggdag`. Assuming that  these are installed  too, we can  run the
-next chunk of code:
+Additional packages are also  required, including `tidyverse` [@r4ds], `caret`
+[@caret] and `ggdag`  [@ggdag]. Assuming that these are installed  too, we can
+run the next chunk of code:
 
 ```{r visible-setup, results = FALSE}
 set.seed(54321) ## because reproducibility matters...
@@ -566,7 +566,7 @@ substitution-based, some are not.
 
 We now go back to our main  topic of interest. Suppose we know beforehand that
 $O$ drawn from $P_{0}$ takes its  values in $\calO \triangleq [0,1] \times \{0,1\}
-\times [0,1]$ and that $\Gbar_{0}(W) \triangleq _Pr_{P_{0}}(A=1|W)$ is bounded away from
+\times [0,1]$ and that $\Gbar_{0}(W) \triangleq \Pr_{P_{0}}(A=1|W)$ is bounded away from
 zero and one  $Q_{0,W}$-almost surely (this is the case  indeed).  Then we can
 define  model  $\calM$ as  the  set  of all  laws  $P$  on $\calO$  such  that
 \begin{equation*}\Gbar(W)  \triangleq \Pr_{P}(A=1|W)\end{equation*}  is bounded  away
@@ -2363,7 +2363,7 @@ replications of  $\psi_{n}^{d}$ and $\psi_{n}^{e}$  (`auto_renormalization` is
 
 
 
-(ref:estimating-Qbar-one-bis) Kernel density estimators of the law of two G-computation estimators of $\psi_{0}$ (recentered with respect to $\psi_{0}$, and renormalized).  The estimators respectively hinge on algorithms $\Algo_{\Qbar,1}$ (d) and $\Algo_{\Qbar,\text{kNN}}$ (e) to estimate $\Qbar_{0}$.  Two renormalization schemes are considered, either based on an estimator of the asymptotic variance (left) or on the empirical variance computed across the `iter` independent replications of the estimators (right). We emphasize that the $x$-axis ranges differ starkly between the left and right plots.
+(ref:estimating-Qbar-one-bis) Kernel density estimators of the law of two G-computation estimators of $\psi_{0}$ (recentered with respect to $\psi_{0}$, and renormalized).  The estimators respectively hinge on algorithms $\Algo_{\Qbar,1}$ (d) and $\Algo_{\Qbar,\text{kNN}}$ (e) to estimate $\Qbar_{0}$.  Two renormalization schemes are considered, either based on an estimator of the asymptotic variance (right) or on the empirical variance computed across the `iter` independent replications of the estimators (left). We emphasize that the $x$-axis ranges differ starkly between the left and right plots.
 
 
 
