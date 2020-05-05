@@ -30,7 +30,9 @@ given W=W_i.
 Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2019).
 }
 \seealso{
-Other estimating functions: \code{\link{compute_Qbar_hatAW}},
-  \code{\link{compute_lGbar_hatAW}}, \code{\link{wrapper}}
+Other estimating functions: 
+\code{\link{compute_Qbar_hatAW}()},
+\code{\link{compute_lGbar_hatAW}()},
+\code{\link{wrapper}()}
 }
 \concept{estimating functions}

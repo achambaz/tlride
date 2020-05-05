@@ -189,7 +189,7 @@ estimate_Qbar <- function(dat, algorithm, ...) {
 #' 
 #' @export 
 estimate_QW <- function(dat) {
-  dat %>% tibble::as.tibble() %>%
+  dat %>% tibble::as_tibble() %>%
     dplyr::select(value = "W") %>%
     dplyr::mutate(weight = 1/dplyr::n())
 }

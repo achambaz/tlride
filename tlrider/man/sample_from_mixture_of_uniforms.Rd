@@ -4,8 +4,11 @@
 \name{sample_from_mixture_of_uniforms}
 \alias{sample_from_mixture_of_uniforms}
 \title{Samples from a mixture of uniform laws}
+\format{
+An object of class \code{function} of length 1.
+}
 \usage{
-sample_from_mixture_of_uniforms(n, mixture_weights, mins, maxs)
+sample_from_mixture_of_uniforms
 }
 \arguments{
 \item{n}{An \code{integer}, the sample size.}
@@ -29,3 +32,4 @@ weights and corresponding intervals.
 \references{
 Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2019).
 }
+\keyword{datasets}

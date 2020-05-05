@@ -24,8 +24,7 @@ This is either the  website or the text called __"A  Ride in Targeted Learning
 Territory"__. In the former case, the text can be dowloaded by clicking on the
 dedicated button  in the  top part  of the  webpage. In  the latter  case, the
 website              can               be              browsed              at
-[https://achambaz.github.io/tlride/](https://achambaz.github.io/tlride/
-"TLRIDE"). 
+[https://achambaz.github.io/tlride/](https://achambaz.github.io/tlride/). 
 
 
 ```{r cover, fig.width = 7, echo = FALSE}
@@ -47,7 +46,7 @@ and data analysis.
 Regularly, a section  is inserted that proposes exercises.   Each such section
 is indicated by the  <span style="color:red">&#9881;</span> \gear symbol.  The
 symbol  <span  style="color:red">&#9761;</span> \stixdanger{}  also  indicates
-those sections whose content is more involved.
+those sections of which the content is more involved.
 
 __Overview__
 
@@ -71,7 +70,7 @@ The   text   was  presented   at   the   [Journées  d'Étude   en   Statistique
 held in  Fréjus (France) in  October 2018 and at  the [First Summer  School in
 Statistics  and  Data  Science  for  Young  Researchers  from  French-speaking
 Africa](https://ehermellin.github.io/conf_sfds/index.html)   held   at   [AIMS
-Senegal](https://aims-senegal.org/) (M'bour, Senegal) in July 2019.
+Senegal](https://aims-senegal.org/) (MBour, Senegal) in July 2019.
 
 __Technical details__
 

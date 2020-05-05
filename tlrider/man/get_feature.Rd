@@ -43,11 +43,15 @@ Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2019).
 \seealso{
 \code{\link{reveal}} to reveal  some relevant features of the law.
 
-Other methods and functions for LAW objects: \code{\link{LAW}},
-  \code{\link{alter}}, \code{\link{as.character}},
-  \code{\link{copy}}, \code{\link{evaluate_eic}},
-  \code{\link{evaluate_psi}},
-  \code{\link{evaluate_remainder}}, \code{\link{reveal}},
-  \code{\link{sample_from}}
+Other methods and functions for LAW objects: 
+\code{\link{LAW}()},
+\code{\link{alter}()},
+\code{\link{as.character}()},
+\code{\link{copy}()},
+\code{\link{evaluate_eic}()},
+\code{\link{evaluate_psi}()},
+\code{\link{evaluate_remainder}()},
+\code{\link{reveal}()},
+\code{\link{sample_from}()}
 }
 \concept{methods and functions for LAW objects}
