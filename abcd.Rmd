@@ -1356,7 +1356,8 @@ $\psi_{0}$ or, rather (though equivalently), $\Psi(P_{0})$.
   combined to estimate $\psi_{0}$.  The section thus presents an instantiation
   of the general *targeted minimum  loss estimation* procedure tailored to the
   estimation  of $\psi_{0}$.   It  is the  main destination  of  this ride  in
-  targeted learning territory.
+  targeted  learning territory,  far  from  its outposts  yet  well into  this
+  exciting territory.
 
 # A simple inference strategy {#simple-strategy}
 
@@ -1536,7 +1537,13 @@ $\sqrt{n}/\sqrt{v_{n}^{b}}  (\psi_{n}^{b}  -   \psi_{0})$,  where  $v_{n}^{a}$
 variances  of   $\psi_{n}^{a}$  and  $\psi_{n}^{b}$,   respectively.  Finally,
 `bias_ab` reports amounts of bias (at the renormalized scale).
 
-RESUME HERE...
+We will  refer to  the recentering  (always with  respect to  $\psi_{0}$) then
+renormalizing procedure as  a *renormalization scheme*, because  what may vary
+between  two such  procedures is  the  renormalization factor.  We will  judge
+whether  or  not  the  renormalization  scheme is  adequate  for  instance  by
+comparing kernel  density estimators of the  law of estimators gone  through a
+renormalization  procedure with  the  standard normal  density,  as in  Figure
+\@ref(fig:known-Gbar-one-b) below. 
 
 (ref:known-Gbar-one-b) Kernel density estimators of the law of two estimators of $\psi_{0}$ (recentered with respect to $\psi_{0}$, and renormalized), one of them misconceived (a), the other assuming that $\Gbar_{0}$ is known (b). Built based on `iter` independent realizations of each estimator.
 
@@ -1955,8 +1962,7 @@ $\Psi(P_{0})$.  In  light of  Section  \@ref(anatomy),  both unfold  in  *two*
 stages.  During  the first stage,  some features among  $Q_{0,W}$, $\Gbar_{0}$
 and  $\Qbar_{0}$   (the  $\Psi$-specific  nuisance  parameters,   see  Section
 \@ref(nuisance))\index{nuisance~parameters} are  estimated. During  the second
-stage, the  estimators are substituted  for their theoretical  counterparts in
-the definition of $\Psi(P_{0})$, thus yielding estimators of $\Psi(P_{0})$.
+stage, these estimators are used to build estimators of $\Psi(P_{0})$.
 
 Although the strategies  sound well conceived, a  theoretical analysis reveals
 that they lack a third stage trying to correct an inherent flaw. They are thus
@@ -3202,7 +3208,7 @@ over a grid of candidate values.
 
  
 ```{r grid-search, fig.cap = '(ref:grid-search)'}
-candidates <- seq(-1e-3, 1e-3, length.out = 1e3)
+candidates <- seq(-0.01, 0.01, length.out = 1e4)
 W <- obs[1:1e3, "W"]
 A <- obs[1:1e3, "A"]
 Y <- obs[1:1e3, "Y"]
@@ -3215,10 +3221,11 @@ risk <- sapply(candidates,
                })
 idx_min <- which.min(risk)
 idx_zero <- which.min(abs(candidates))[1]
-labels <- c(bquote(R[n](bar(Q)[list(n,hn)]^list(o))),
-            bquote(R[n](bar(Q)[list(n,0)]^list(o))))
+labels <- c(expression(R[n](bar(Q)[list(n,hn)]^list(o))),
+            expression(R[n](bar(Q)[list(n,0)]^list(o))))
 risk %>% enframe %>%
   mutate(h = candidates) %>%
+  dplyr::filter(abs(h - h[idx_min]) <= abs(h[idx_min])) %>%
   ggplot() +
   geom_point(aes(x = h, y = value), color = "#CC6666") +
   geom_vline(xintercept = c(0, candidates[idx_min])) +
@@ -3226,7 +3233,7 @@ risk %>% enframe %>%
   scale_y_continuous(
     bquote("empirical logistic risk, " ~ R[n](bar(Q)[list(n,h)]^list(o))),
     trans = "exp", labels = NULL, 
-    sec.axis = sec_axis(~.,
+    sec.axis = sec_axis(~ .,
                         breaks = c(risk[idx_min], risk[idx_zero]),
                         labels = labels))
 ```
