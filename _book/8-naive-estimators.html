@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Section 8 Two “naive” inference strategies | A Ride in Targeted Learning Territory</title>
+  <meta name="description" content="To do…" />
+  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Section 8 Two “naive” inference strategies | A Ride in Targeted Learning Territory" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:image" content="cover.jpg" />
+  <meta property="og:description" content="To do…" />
+  <meta name="github-repo" content="achambaz/tlride" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Section 8 Two “naive” inference strategies | A Ride in Targeted Learning Territory" />
+  
+  <meta name="twitter:description" content="To do…" />
+  <meta name="twitter:image" content="cover.jpg" />
+
+<meta name="author" content="David Benkeser (Emory University)" />
+<meta name="author" content="Antoine Chambaz (Université de Paris)" />
+
+
+<meta name="date" content="2020-05-06" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  <link rel="shortcut icon" href="favicon.png" type="image/x-icon" />
+<link rel="prev" href="7-nuisance.html"/>
+<link rel="next" href="9-one-step.html"/>
+<script src="assets/jquery-2.2.3/jquery.min.js"></script>
+<link href="assets/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+  CommonHTML: {
+    scale: 90,
+    linebreaks: {
+      automatic: true
+    }
+  },
+  SVG: {
+    linebreaks: {
+      automatic: true
+    }
+  }, 
+  displayAlign: "left"
+  });
+</script>
+<script type="text/javascript"
+	src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async>
+</script><!-- see also '_output.yaml'
+src="https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"
+src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML" 
+src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"
+-->
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="tlride.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><strong><a href="https://achambaz.github.io/tlride/">TLRIDE</a></strong></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a></li>
+<li class="part"><span><b>I On the road</b></span></li>
+<li class="chapter" data-level="1" data-path="1-a-ride.html"><a href="1-a-ride.html"><i class="fa fa-check"></i><b>1</b> A ride</a><ul>
+<li class="chapter" data-level="1.1" data-path="1-a-ride.html"><a href="1-a-ride.html#introduction"><i class="fa fa-check"></i><b>1.1</b> Introduction</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="1-a-ride.html"><a href="1-a-ride.html#causal-story"><i class="fa fa-check"></i><b>1.1.1</b> A causal story</a></li>
+<li class="chapter" data-level="1.1.2" data-path="1-a-ride.html"><a href="1-a-ride.html#tlrider-package"><i class="fa fa-check"></i><b>1.1.2</b> The <code>tlrider</code> package</a></li>
+<li class="chapter" data-level="1.1.3" data-path="1-a-ride.html"><a href="1-a-ride.html#discuss"><i class="fa fa-check"></i><b>1.1.3</b> What we will discuss</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="1-a-ride.html"><a href="1-a-ride.html#simulation-study"><i class="fa fa-check"></i><b>1.2</b> A simulation study</a><ul>
+<li class="chapter" data-level="1.2.1" data-path="1-a-ride.html"><a href="1-a-ride.html#reproducible-experiment"><i class="fa fa-check"></i><b>1.2.1</b> Reproducible experiment as a law</a></li>
+<li class="chapter" data-level="1.2.2" data-path="1-a-ride.html"><a href="1-a-ride.html#synthetic-experiment"><i class="fa fa-check"></i><b>1.2.2</b> A synthetic reproducible experiment</a></li>
+<li class="chapter" data-level="1.2.3" data-path="1-a-ride.html"><a href="1-a-ride.html#revealing-experiment"><i class="fa fa-check"></i><b>1.2.3</b> Revealing <code>experiment</code></a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="1-a-ride.html"><a href="1-a-ride.html#exo-visualization"><i class="fa fa-check"></i><b>1.3</b> ⚙ Visualization</a></li>
+<li class="chapter" data-level="1.4" data-path="1-a-ride.html"><a href="1-a-ride.html#exo-make-own-experiment"><i class="fa fa-check"></i><b>1.4</b> ⚙ Make your own experiment</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="2-parameter.html"><a href="2-parameter.html"><i class="fa fa-check"></i><b>2</b> The parameter of interest</a><ul>
+<li class="chapter" data-level="2.1" data-path="2-parameter.html"><a href="2-parameter.html#parameter-first-pass"><i class="fa fa-check"></i><b>2.1</b> The parameter of interest</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="2-parameter.html"><a href="2-parameter.html#definition"><i class="fa fa-check"></i><b>2.1.1</b> Definition</a></li>
+<li class="chapter" data-level="2.1.2" data-path="2-parameter.html"><a href="2-parameter.html#causal-interpretation"><i class="fa fa-check"></i><b>2.1.2</b> A causal interpretation</a></li>
+<li class="chapter" data-level="2.1.3" data-path="2-parameter.html"><a href="2-parameter.html#causal-computation"><i class="fa fa-check"></i><b>2.1.3</b> A causal computation</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="2-parameter.html"><a href="2-parameter.html#exo-alternative-parameter-first-pass"><i class="fa fa-check"></i><b>2.2</b> ⚙ An alternative parameter of interest</a></li>
+<li class="chapter" data-level="2.3" data-path="2-parameter.html"><a href="2-parameter.html#parameter-second-pass"><i class="fa fa-check"></i><b>2.3</b> The statistical mapping of interest</a><ul>
+<li class="chapter" data-level="2.3.1" data-path="2-parameter.html"><a href="2-parameter.html#opening"><i class="fa fa-check"></i><b>2.3.1</b> Opening discussion</a></li>
+<li class="chapter" data-level="2.3.2" data-path="2-parameter.html"><a href="2-parameter.html#parameter-mapping"><i class="fa fa-check"></i><b>2.3.2</b> The parameter as the value of a statistical mapping at the experiment</a></li>
+<li class="chapter" data-level="2.3.3" data-path="2-parameter.html"><a href="2-parameter.html#value-another-experiment"><i class="fa fa-check"></i><b>2.3.3</b> The value of the statistical mapping at another experiment</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="2-parameter.html"><a href="2-parameter.html#exo-alternative-parameter-second-pass"><i class="fa fa-check"></i><b>2.4</b> ⚙ Alternative statistical mapping</a></li>
+<li class="chapter" data-level="2.5" data-path="2-parameter.html"><a href="2-parameter.html#parameter-third-pass"><i class="fa fa-check"></i><b>2.5</b> Representations</a><ul>
+<li class="chapter" data-level="2.5.1" data-path="2-parameter.html"><a href="2-parameter.html#yet-another"><i class="fa fa-check"></i><b>2.5.1</b> Yet another representation</a></li>
+<li class="chapter" data-level="2.5.2" data-path="2-parameter.html"><a href="2-parameter.html#rep-to-est"><i class="fa fa-check"></i><b>2.5.2</b> From representations to estimation strategies</a></li>
+</ul></li>
+<li class="chapter" data-level="2.6" data-path="2-parameter.html"><a href="2-parameter.html#exo-alternative-parameter-third-pass"><i class="fa fa-check"></i><b>2.6</b> ⚙ Alternative representation</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="3-smooth.html"><a href="3-smooth.html"><i class="fa fa-check"></i><b>3</b> Smoothness</a><ul>
+<li class="chapter" data-level="3.1" data-path="3-smooth.html"><a href="3-smooth.html#smooth-first-pass"><i class="fa fa-check"></i><b>3.1</b> Fluctuating smoothly</a><ul>
+<li class="chapter" data-level="3.1.1" data-path="3-smooth.html"><a href="3-smooth.html#fluctuations"><i class="fa fa-check"></i><b>3.1.1</b> The <code>another_experiment</code> fluctuation</a></li>
+<li class="chapter" data-level="3.1.2" data-path="3-smooth.html"><a href="3-smooth.html#numerical-illus"><i class="fa fa-check"></i><b>3.1.2</b> Numerical illustration</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="3-smooth.html"><a href="3-smooth.html#exo-yet-another-experiment"><i class="fa fa-check"></i><b>3.2</b> ⚙ Yet another experiment</a></li>
+<li class="chapter" data-level="3.3" data-path="3-smooth.html"><a href="3-smooth.html#smooth-second-pass"><i class="fa fa-check"></i><b>3.3</b> ☡  More on fluctuations and smoothness</a><ul>
+<li class="chapter" data-level="3.3.1" data-path="3-smooth.html"><a href="3-smooth.html#smooth-second-pass-fluctuations"><i class="fa fa-check"></i><b>3.3.1</b> Fluctuations</a></li>
+<li class="chapter" data-level="3.3.2" data-path="3-smooth.html"><a href="3-smooth.html#smoothness-and-gradients"><i class="fa fa-check"></i><b>3.3.2</b> Smoothness and gradients</a></li>
+<li class="chapter" data-level="3.3.3" data-path="3-smooth.html"><a href="3-smooth.html#Euclidean-perspective"><i class="fa fa-check"></i><b>3.3.3</b> A Euclidean perspective</a></li>
+<li class="chapter" data-level="3.3.4" data-path="3-smooth.html"><a href="3-smooth.html#canonical-gradient"><i class="fa fa-check"></i><b>3.3.4</b> The canonical gradient</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="3-smooth.html"><a href="3-smooth.html#revisiting"><i class="fa fa-check"></i><b>3.4</b> A fresh look at <code>another_experiment</code></a><ul>
+<li class="chapter" data-level="3.4.1" data-path="3-smooth.html"><a href="3-smooth.html#deriving-the-efficient-influence-curve"><i class="fa fa-check"></i><b>3.4.1</b> Deriving the efficient influence curve</a></li>
+<li class="chapter" data-level="3.4.2" data-path="3-smooth.html"><a href="3-smooth.html#numerical-validation"><i class="fa fa-check"></i><b>3.4.2</b> Numerical validation</a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="3-smooth.html"><a href="3-smooth.html#influence-curves"><i class="fa fa-check"></i><b>3.5</b> ☡  Asymptotic linearity and statistical efficiency</a><ul>
+<li class="chapter" data-level="3.5.1" data-path="3-smooth.html"><a href="3-smooth.html#asymptotic-linearity"><i class="fa fa-check"></i><b>3.5.1</b> Asymptotic linearity</a></li>
+<li class="chapter" data-level="3.5.2" data-path="3-smooth.html"><a href="3-smooth.html#influence-curves-and-gradients"><i class="fa fa-check"></i><b>3.5.2</b> Influence curves and gradients</a></li>
+<li class="chapter" data-level="3.5.3" data-path="3-smooth.html"><a href="3-smooth.html#asymptotic-efficiency"><i class="fa fa-check"></i><b>3.5.3</b> Asymptotic efficiency</a></li>
+</ul></li>
+<li class="chapter" data-level="3.6" data-path="3-smooth.html"><a href="3-smooth.html#exo-cramer-rao"><i class="fa fa-check"></i><b>3.6</b> ⚙ Cramér-Rao bounds</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="4-double-robustness.html"><a href="4-double-robustness.html"><i class="fa fa-check"></i><b>4</b> Double-robustness</a><ul>
+<li class="chapter" data-level="4.1" data-path="4-double-robustness.html"><a href="4-double-robustness.html#linear-approximation"><i class="fa fa-check"></i><b>4.1</b> Linear approximations of parameters</a><ul>
+<li class="chapter" data-level="4.1.1" data-path="4-double-robustness.html"><a href="4-double-robustness.html#from-gradients-to-estimators"><i class="fa fa-check"></i><b>4.1.1</b> From gradients to estimators</a></li>
+<li class="chapter" data-level="4.1.2" data-path="4-double-robustness.html"><a href="4-double-robustness.html#another-Euclidean-perspective"><i class="fa fa-check"></i><b>4.1.2</b> A Euclidean perspective</a></li>
+<li class="chapter" data-level="4.1.3" data-path="4-double-robustness.html"><a href="4-double-robustness.html#the-remainder-term"><i class="fa fa-check"></i><b>4.1.3</b> The remainder term</a></li>
+<li class="chapter" data-level="4.1.4" data-path="4-double-robustness.html"><a href="4-double-robustness.html#expressing-the-remainder-term-as-a-function-of-the-relevant-features"><i class="fa fa-check"></i><b>4.1.4</b> Expressing the remainder term as a function of the relevant features</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="4-double-robustness.html"><a href="4-double-robustness.html#exo-remainder-term"><i class="fa fa-check"></i><b>4.2</b> ⚙ The remainder term</a></li>
+<li class="chapter" data-level="4.3" data-path="4-double-robustness.html"><a href="4-double-robustness.html#def-double-robustness"><i class="fa fa-check"></i><b>4.3</b> ☡  Double-robustness</a><ul>
+<li class="chapter" data-level="4.3.1" data-path="4-double-robustness.html"><a href="4-double-robustness.html#the-key-property"><i class="fa fa-check"></i><b>4.3.1</b> The key property</a></li>
+<li class="chapter" data-level="4.3.2" data-path="4-double-robustness.html"><a href="4-double-robustness.html#direct-consequence"><i class="fa fa-check"></i><b>4.3.2</b> Its direct consequence</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="4-double-robustness.html"><a href="4-double-robustness.html#exo-double-robustness"><i class="fa fa-check"></i><b>4.4</b> ⚙ Double-robustness</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="5-inference.html"><a href="5-inference.html"><i class="fa fa-check"></i><b>5</b> Inference</a><ul>
+<li class="chapter" data-level="5.1" data-path="5-inference.html"><a href="5-inference.html#where-we-stand"><i class="fa fa-check"></i><b>5.1</b> Where we stand</a></li>
+<li class="chapter" data-level="5.2" data-path="5-inference.html"><a href="5-inference.html#where-we-go"><i class="fa fa-check"></i><b>5.2</b> Where we go</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html"><i class="fa fa-check"></i><b>6</b> A simple inference strategy</a><ul>
+<li class="chapter" data-level="6.1" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#a-cautionary-detour"><i class="fa fa-check"></i><b>6.1</b> A cautionary detour</a></li>
+<li class="chapter" data-level="6.2" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#delta-method"><i class="fa fa-check"></i><b>6.2</b> ⚙ Delta-method</a></li>
+<li class="chapter" data-level="6.3" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#known-gbar-first-pass"><i class="fa fa-check"></i><b>6.3</b> IPTW estimator assuming the mechanism of action known</a><ul>
+<li class="chapter" data-level="6.3.1" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#a-simple-estimator"><i class="fa fa-check"></i><b>6.3.1</b> A simple estimator</a></li>
+<li class="chapter" data-level="6.3.2" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#elementary-statistical-properties"><i class="fa fa-check"></i><b>6.3.2</b> Elementary statistical properties</a></li>
+<li class="chapter" data-level="6.3.3" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#empirical-inves-IPTW"><i class="fa fa-check"></i><b>6.3.3</b> Empirical investigation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="7-nuisance.html"><a href="7-nuisance.html"><i class="fa fa-check"></i><b>7</b> Nuisance parameters</a><ul>
+<li class="chapter" data-level="7.1" data-path="7-nuisance.html"><a href="7-nuisance.html#anatomy"><i class="fa fa-check"></i><b>7.1</b> Anatomy of an expression</a></li>
+<li class="chapter" data-level="7.2" data-path="7-nuisance.html"><a href="7-nuisance.html#an-algorithmic-stance"><i class="fa fa-check"></i><b>7.2</b> An algorithmic stance</a></li>
+<li class="chapter" data-level="7.3" data-path="7-nuisance.html"><a href="7-nuisance.html#nuisance-QW"><i class="fa fa-check"></i><b>7.3</b> <code>QW</code></a></li>
+<li class="chapter" data-level="7.4" data-path="7-nuisance.html"><a href="7-nuisance.html#nuisance-Gbar"><i class="fa fa-check"></i><b>7.4</b> <code>Gbar</code></a><ul>
+<li class="chapter" data-level="7.4.1" data-path="7-nuisance.html"><a href="7-nuisance.html#logis-loss"><i class="fa fa-check"></i><b>7.4.1</b> Working model-based algorithms</a></li>
+<li class="chapter" data-level="7.4.2" data-path="7-nuisance.html"><a href="7-nuisance.html#algo-Gbar-one"><i class="fa fa-check"></i><b>7.4.2</b> Visualization</a></li>
+</ul></li>
+<li class="chapter" data-level="7.5" data-path="7-nuisance.html"><a href="7-nuisance.html#nuisance-Qbar-wm"><i class="fa fa-check"></i><b>7.5</b> ⚙ <code>Qbar</code>, working model-based algorithms</a></li>
+<li class="chapter" data-level="7.6" data-path="7-nuisance.html"><a href="7-nuisance.html#nuisance-Qbar"><i class="fa fa-check"></i><b>7.6</b> <code>Qbar</code></a><ul>
+<li class="chapter" data-level="7.6.1" data-path="7-nuisance.html"><a href="7-nuisance.html#qbar-machine-learning-based-algorithms"><i class="fa fa-check"></i><b>7.6.1</b> <code>Qbar</code>, machine learning-based algorithms</a></li>
+<li class="chapter" data-level="7.6.2" data-path="7-nuisance.html"><a href="7-nuisance.html#Qbar-knn-algo"><i class="fa fa-check"></i><b>7.6.2</b> <code>Qbar</code>, kNN algorithm</a></li>
+<li class="chapter" data-level="7.6.3" data-path="7-nuisance.html"><a href="7-nuisance.html#boosted-trees"><i class="fa fa-check"></i><b>7.6.3</b> <code>Qbar</code>, boosted trees algorithm</a></li>
+</ul></li>
+<li class="chapter" data-level="7.7" data-path="7-nuisance.html"><a href="7-nuisance.html#nuisance-Qbar-ml-exo"><i class="fa fa-check"></i><b>7.7</b> ⚙ ☡  <code>Qbar</code>, machine learning-based algorithms</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html"><i class="fa fa-check"></i><b>8</b> Two “naive” inference strategies</a><ul>
+<li class="chapter" data-level="8.1" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#why-naive"><i class="fa fa-check"></i><b>8.1</b> Why “naive”?</a></li>
+<li class="chapter" data-level="8.2" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#known-gbar-second-pass"><i class="fa fa-check"></i><b>8.2</b> IPTW estimator</a><ul>
+<li class="chapter" data-level="8.2.1" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#unknown-gbar-constr"><i class="fa fa-check"></i><b>8.2.1</b> Construction and computation</a></li>
+<li class="chapter" data-level="8.2.2" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#elementary-stat-prop-iptw"><i class="fa fa-check"></i><b>8.2.2</b> Elementary statistical properties</a></li>
+<li class="chapter" data-level="8.2.3" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#empirical-inves-IPTW-bis"><i class="fa fa-check"></i><b>8.2.3</b> Empirical investigation</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#exo-a-nice-title"><i class="fa fa-check"></i><b>8.3</b> ⚙ Investigating further the IPTW inference strategy</a></li>
+<li class="chapter" data-level="8.4" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#Gcomp-estimator"><i class="fa fa-check"></i><b>8.4</b> G-computation estimator</a><ul>
+<li class="chapter" data-level="8.4.1" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#Gcomp-construction"><i class="fa fa-check"></i><b>8.4.1</b> Construction and computation</a></li>
+<li class="chapter" data-level="8.4.2" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#elementary-statistical-properties-1"><i class="fa fa-check"></i><b>8.4.2</b> Elementary statistical properties</a></li>
+<li class="chapter" data-level="8.4.3" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#empirical-inves-Gcomp"><i class="fa fa-check"></i><b>8.4.3</b> Empirical investigation, fixed sample size</a></li>
+<li class="chapter" data-level="8.4.4" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#empirical-inves-Gcomp-varying"><i class="fa fa-check"></i><b>8.4.4</b> ☡  Empirical investigation, varying sample size</a></li>
+</ul></li>
+<li class="chapter" data-level="8.5" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#exo-plug-in-estimate"><i class="fa fa-check"></i><b>8.5</b> ⚙ Investigating further the G-computation estimation strategy</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="9-one-step.html"><a href="9-one-step.html"><i class="fa fa-check"></i><b>9</b> One-step correction</a><ul>
+<li class="chapter" data-level="9.1" data-path="9-one-step.html"><a href="9-one-step.html#analysis-of-plug-in"><i class="fa fa-check"></i><b>9.1</b> ☡  General analysis of plug-in estimators</a></li>
+<li class="chapter" data-level="9.2" data-path="9-one-step.html"><a href="9-one-step.html#huber-one-step"><i class="fa fa-check"></i><b>9.2</b> One-step correction</a></li>
+<li class="chapter" data-level="9.3" data-path="9-one-step.html"><a href="9-one-step.html#empirical-inves-one-step"><i class="fa fa-check"></i><b>9.3</b> Empirical investigation</a></li>
+<li class="chapter" data-level="9.4" data-path="9-one-step.html"><a href="9-one-step.html#exo-one-step"><i class="fa fa-check"></i><b>9.4</b> ⚙ Investigating further the one-step correction methodology</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="10-TMLE.html"><a href="10-TMLE.html"><i class="fa fa-check"></i><b>10</b> Targeted minimum loss-based estimation</a><ul>
+<li class="chapter" data-level="10.1" data-path="10-TMLE.html"><a href="10-TMLE.html#TMLE-motivations"><i class="fa fa-check"></i><b>10.1</b> Motivations</a><ul>
+<li class="chapter" data-level="10.1.1" data-path="10-TMLE.html"><a href="10-TMLE.html#falling-outside-the-parameter-space"><i class="fa fa-check"></i><b>10.1.1</b> Falling outside the parameter space</a></li>
+<li class="chapter" data-level="10.1.2" data-path="10-TMLE.html"><a href="10-TMLE.html#eic-equation"><i class="fa fa-check"></i><b>10.1.2</b> The influence curve equation</a></li>
+<li class="chapter" data-level="10.1.3" data-path="10-TMLE.html"><a href="10-TMLE.html#basic-fact"><i class="fa fa-check"></i><b>10.1.3</b> A basic fact on the influence curve equation</a></li>
+</ul></li>
+<li class="chapter" data-level="10.2" data-path="10-TMLE.html"><a href="10-TMLE.html#targeted-fluctuation-TMLE"><i class="fa fa-check"></i><b>10.2</b> Targeted fluctuation</a><ul>
+<li class="chapter" data-level="10.2.1" data-path="10-TMLE.html"><a href="10-TMLE.html#fluctuating-indirectly"><i class="fa fa-check"></i><b>10.2.1</b> ☡  Fluctuating indirectly</a></li>
+<li class="chapter" data-level="10.2.2" data-path="10-TMLE.html"><a href="10-TMLE.html#fluct-direct"><i class="fa fa-check"></i><b>10.2.2</b> Fluctuating directly</a></li>
+<li class="chapter" data-level="10.2.3" data-path="10-TMLE.html"><a href="10-TMLE.html#exo-fluct"><i class="fa fa-check"></i><b>10.2.3</b> ⚙ More on fluctuations</a></li>
+<li class="chapter" data-level="10.2.4" data-path="10-TMLE.html"><a href="10-TMLE.html#roaming"><i class="fa fa-check"></i><b>10.2.4</b> Targeted roaming of a fluctuation</a></li>
+<li class="chapter" data-level="10.2.5" data-path="10-TMLE.html"><a href="10-TMLE.html#fluct-justification"><i class="fa fa-check"></i><b>10.2.5</b> Justifying the form of the fluctutation</a></li>
+<li class="chapter" data-level="10.2.6" data-path="10-TMLE.html"><a href="10-TMLE.html#exo-tmle-flucs"><i class="fa fa-check"></i><b>10.2.6</b> ⚙ Alternative fluctuation</a></li>
+</ul></li>
+<li class="chapter" data-level="10.3" data-path="10-TMLE.html"><a href="10-TMLE.html#summary-and-perspectives"><i class="fa fa-check"></i><b>10.3</b> Summary and perspectives</a></li>
+<li class="chapter" data-level="10.4" data-path="10-TMLE.html"><a href="10-TMLE.html#empirical-inves-tmle"><i class="fa fa-check"></i><b>10.4</b> Empirical investigation</a><ul>
+<li class="chapter" data-level="10.4.1" data-path="10-TMLE.html"><a href="10-TMLE.html#empirical-inves-tmle-first"><i class="fa fa-check"></i><b>10.4.1</b> A first numerical application</a></li>
+<li class="chapter" data-level="10.4.2" data-path="10-TMLE.html"><a href="10-TMLE.html#exo-tmle"><i class="fa fa-check"></i><b>10.4.2</b> ⚙ A computational exploration</a></li>
+<li class="chapter" data-level="10.4.3" data-path="10-TMLE.html"><a href="10-TMLE.html#empirical-investigation"><i class="fa fa-check"></i><b>10.4.3</b> Empirical investigation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="11-closing-words.html"><a href="11-closing-words.html"><i class="fa fa-check"></i><b>11</b> Closing words</a></li>
+<li class="appendix"><span><b>Appendix</b></span></li>
+<li class="chapter" data-level="A" data-path="A-notation.html"><a href="A-notation.html"><i class="fa fa-check"></i><b>A</b> Notation</a></li>
+<li class="chapter" data-level="B" data-path="B-proofs.html"><a href="B-proofs.html"><i class="fa fa-check"></i><b>B</b> Basic results and their proofs</a><ul>
+<li class="chapter" data-level="B.1" data-path="B-proofs.html"><a href="B-proofs.html#npsem"><i class="fa fa-check"></i><b>B.1</b> NPSEM</a></li>
+<li class="chapter" data-level="B.2" data-path="B-proofs.html"><a href="B-proofs.html#identification"><i class="fa fa-check"></i><b>B.2</b> Identification</a></li>
+<li class="chapter" data-level="B.3" data-path="B-proofs.html"><a href="B-proofs.html#confidence-interval"><i class="fa fa-check"></i><b>B.3</b> Building a confidence interval</a><ul>
+<li class="chapter" data-level="B.3.1" data-path="B-proofs.html"><a href="B-proofs.html#clt"><i class="fa fa-check"></i><b>B.3.1</b> CLT &amp; Slutsky’s lemma</a></li>
+<li class="chapter" data-level="B.3.2" data-path="B-proofs.html"><a href="B-proofs.html#order"><i class="fa fa-check"></i><b>B.3.2</b> CLT and order statistics</a></li>
+</ul></li>
+<li class="chapter" data-level="B.4" data-path="B-proofs.html"><a href="B-proofs.html#another-rep"><i class="fa fa-check"></i><b>B.4</b> Another representation of the parameter of interest</a></li>
+<li class="chapter" data-level="B.5" data-path="B-proofs.html"><a href="B-proofs.html#prop-delta-method"><i class="fa fa-check"></i><b>B.5</b> The delta-method</a></li>
+<li class="chapter" data-level="B.6" data-path="B-proofs.html"><a href="B-proofs.html#oracle-logistic-risk"><i class="fa fa-check"></i><b>B.6</b> The oracle logistic risk</a></li>
+</ul></li>
+<li class="chapter" data-level="C" data-path="C-more-proofs.html"><a href="C-more-proofs.html"><i class="fa fa-check"></i><b>C</b> More results and their proofs</a><ul>
+<li class="chapter" data-level="C.1" data-path="C-more-proofs.html"><a href="C-more-proofs.html#estimation-of-the-asymptotic-variance-of-an-estimator"><i class="fa fa-check"></i><b>C.1</b> Estimation of the asymptotic variance of an estimator</a><ul>
+<li class="chapter" data-level="C.1.1" data-path="C-more-proofs.html"><a href="C-more-proofs.html#iptw-est-var"><i class="fa fa-check"></i><b>C.1.1</b> IPTW estimator based on a well-specified model</a></li>
+<li class="chapter" data-level="C.1.2" data-path="C-more-proofs.html"><a href="C-more-proofs.html#gcomp-est-var"><i class="fa fa-check"></i><b>C.1.2</b> G-computation estimator based on a well-specified model</a></li>
+</ul></li>
+<li class="chapter" data-level="C.2" data-path="C-more-proofs.html"><a href="C-more-proofs.html#app-analysis-of-plug-in"><i class="fa fa-check"></i><b>C.2</b> ☡  General analysis of plug-in estimators</a><ul>
+<li class="chapter" data-level="C.2.1" data-path="C-more-proofs.html"><a href="C-more-proofs.html#app-analysis-of-plug-in-main"><i class="fa fa-check"></i><b>C.2.1</b> Main analysis</a></li>
+<li class="chapter" data-level="C.2.2" data-path="C-more-proofs.html"><a href="C-more-proofs.html#estimation-of-the-asymptotic-variance"><i class="fa fa-check"></i><b>C.2.2</b> Estimation of the asymptotic variance</a></li>
+</ul></li>
+<li class="chapter" data-level="C.3" data-path="C-more-proofs.html"><a href="C-more-proofs.html#asymp-neglig-remain"><i class="fa fa-check"></i><b>C.3</b> Asymptotic negligibility of the remainder term</a></li>
+<li class="chapter" data-level="C.4" data-path="C-more-proofs.html"><a href="C-more-proofs.html#analysis-TMLE"><i class="fa fa-check"></i><b>C.4</b> Analysis of targeted estimators</a><ul>
+<li class="chapter" data-level="C.4.1" data-path="C-more-proofs.html"><a href="C-more-proofs.html#basic-eic-eq"><i class="fa fa-check"></i><b>C.4.1</b> A basic fact on the influence curve equation</a></li>
+<li class="chapter" data-level="C.4.2" data-path="C-more-proofs.html"><a href="C-more-proofs.html#fluct-reg"><i class="fa fa-check"></i><b>C.4.2</b> Fluctuation of the regression function along the fluctuation of a law</a></li>
+<li class="chapter" data-level="C.4.3" data-path="C-more-proofs.html"><a href="C-more-proofs.html#fluct-score"><i class="fa fa-check"></i><b>C.4.3</b> Computing the score of a fluctuation of the regression function</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="D" data-path="D-references.html"><a href="D-references.html"><i class="fa fa-check"></i><b>D</b> References</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">A Ride in Targeted Learning Territory</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+\(\newcommand{\bbO}{\mathbb{O}}\)
+\(\newcommand{\bbD}{\mathbb{D}}\)
+\(\newcommand{\bbP}{\mathbb{P}}\)
+\(\newcommand{\bbR}{\mathbb{R}}\)
+\(\newcommand{\Algo}{\widehat{\mathcal{A}}}\)
+\(\newcommand{\Algora}{\widetilde{\mathcal{A}}}\)
+\(\newcommand{\calF}{\mathcal{F}}\)
+\(\newcommand{\calM}{\mathcal{M}}\)
+\(\newcommand{\calP}{\mathcal{P}}\)
+\(\newcommand{\calO}{\mathcal{O}}\)
+\(\newcommand{\calQ}{\mathcal{Q}}\)
+\(\newcommand{\defq}{\doteq}\)
+\(\newcommand{\Exp}{\textrm{E}}\)
+\(\newcommand{\IC}{\textrm{IC}}\)
+\(\newcommand{\Gbar}{\bar{G}}\)
+\(\newcommand{\one}{\textbf{1}}\)
+\(\newcommand{\psinos}{\psi_{n}^{\textrm{os}}}\)
+\(\renewcommand{\Pr}{\textrm{Pr}}\)
+\(\newcommand{\Phat}{P^{\circ}}\)
+\(\newcommand{\Psihat}{\widehat{\Psi}}\)
+\(\newcommand{\Qbar}{\bar{Q}}\)
+\(\newcommand{\tcg}[1]{\textcolor{olive}{#1}}\)
+\(\DeclareMathOperator{\Dirac}{Dirac}\)
+\(\DeclareMathOperator{\expit}{expit}\)
+\(\DeclareMathOperator{\logit}{logit}\)
+\(\DeclareMathOperator{\Rem}{Rem}\)
+\(\DeclareMathOperator{\Var}{Var}\)
+<div id="naive-estimators" class="section level1">
+<h1><span class="header-section-number">Section 8</span> Two “naive” inference strategies</h1>
+<div id="why-naive" class="section level2">
+<h2><span class="header-section-number">8.1</span> Why “naive”?</h2>
+<p>In this section, we present and discuss two strategies for the inference of
+<span class="math inline">\(\Psi(P_{0})\)</span>. In light of Section <a href="7-nuisance.html#anatomy">7.1</a>, both unfold in <em>two</em>
+stages. During the first stage, some features among <span class="math inline">\(Q_{0,W}\)</span>, <span class="math inline">\(\Gbar_{0}\)</span>
+and <span class="math inline">\(\Qbar_{0}\)</span> (the <span class="math inline">\(\Psi\)</span>-specific nuisance parameters, see Section
+<a href="7-nuisance.html#nuisance">7</a>) are estimated. During the second
+stage, these estimators are used to build estimators of <span class="math inline">\(\Psi(P_{0})\)</span>.</p>
+<p>Although the strategies sound well conceived, a theoretical analysis reveals
+that they lack a third stage trying to correct an inherent flaw. They are thus
+said <em>naive</em>. The analysis and a first <em>modus operandi</em> are presented in
+Section <a href="9-one-step.html#analysis-of-plug-in">9.1</a>.</p>
+</div>
+<div id="known-gbar-second-pass" class="section level2">
+<h2><span class="header-section-number">8.2</span> IPTW estimator</h2>
+<div id="unknown-gbar-constr" class="section level3">
+<h3><span class="header-section-number">8.2.1</span> Construction and computation</h3>
+<p>In Section <a href="6-simple-strategy.html#known-gbar-first-pass">6.3</a>, we developed an IPTW estimator,
+<span class="math inline">\(\psi_{n}^{b}\)</span>, <em>assuming that</em> we knew <span class="math inline">\(\Gbar_{0}\)</span> beforehand. What if we
+did not? Obviously, we could estimate it and substitute the estimator of
+<span class="math inline">\(\ell\Gbar_{0}\)</span> for <span class="math inline">\(\ell\Gbar_{0}\)</span> in <a href="6-simple-strategy.html#eq:psi-n-b">(6.3)</a>.</p>
+<p>Let <span class="math inline">\(\Algo_{\Gbar}\)</span> be an algorithm designed for the estimation of <span class="math inline">\(\Gbar_{0}\)</span>
+(see Section <a href="7-nuisance.html#nuisance-Gbar">7.4</a>). We denote by <span class="math inline">\(\Gbar_{n} \defq \Algo_{\Gbar}(P_{n})\)</span> the output of the algorithm trained on <span class="math inline">\(P_{n}\)</span>, and by
+<span class="math inline">\(\ell\Gbar_{n}\)</span> the resulting (empirical) function given by</p>
+<p><span class="math display">\[\begin{equation*}
+\ell\Gbar_{n}(A,W) \defq A \Gbar_{n}(W) + (1-A) (1 - \Gbar_{n}(W)).
+\end{equation*}\]</span></p>
+<p>In light of <a href="6-simple-strategy.html#eq:psi-n-b">(6.3)</a>, introduce</p>
+<p><span class="math display">\[\begin{equation*}
+\psi_{n}^{c}   \defq   \frac{1}{n}    \sum_{i=1}^{n}   \left(\frac{2A_{i}   -
+1}{\ell\Gbar_{n}(A_{i}, W_{i})} Y_{i}\right).
+\end{equation*}\]</span></p>
+<p>From a computational point of view, the <code>tlrider</code> package makes it easy to
+build <span class="math inline">\(\psi_{n}^{c}\)</span>. Recall that</p>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb53-1" data-line-number="1"><span class="kw">compute_iptw</span>(<span class="kw">head</span>(obs, <span class="fl">1e3</span>), Gbar)</a></code></pre></div>
+<p>implements the computation of <span class="math inline">\(\psi_{n}^{b}\)</span> based on the <span class="math inline">\(n=1000\)</span> first
+observations stored in <code>obs</code>, using the true feature <span class="math inline">\(\Gbar_{0}\)</span> stored in
+<code>Gbar</code>, see Section <a href="6-simple-strategy.html#empirical-inves-IPTW">6.3.3</a> and the construction of
+<code>psi_hat_ab</code>. Similarly,</p>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb54-1" data-line-number="1">Gbar_hat &lt;-<span class="st"> </span><span class="kw">estimate_Gbar</span>(<span class="kw">head</span>(obs, <span class="fl">1e3</span>), working_model_G_one)</a>
+<a class="sourceLine" id="cb54-2" data-line-number="2"><span class="kw">compute_iptw</span>(<span class="kw">head</span>(obs, <span class="fl">1e3</span>), <span class="kw">wrapper</span>(Gbar_hat)) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(psi_n)</a>
+<a class="sourceLine" id="cb54-3" data-line-number="3"><span class="co">#&gt; [1] 0.0707</span></a></code></pre></div>
+<p>implements <em>(i)</em> the estimation of <span class="math inline">\(\Gbar_{0}\)</span> with <span class="math inline">\(\Gbar_{n}\)</span>/<code>Gbar_hat</code>
+using algorithm <span class="math inline">\(\Algo_{\Gbar,1}\)</span> (first line) then <em>(ii)</em> the computation of
+<span class="math inline">\(\psi_{n}^{c}\)</span> (second line), both based on the same observations as above.</p>
+<p>Note how we use function <code>wrapper</code> (simply run <code>?wrapper</code> to see its man
+page).</p>
+</div>
+<div id="elementary-stat-prop-iptw" class="section level3">
+<h3><span class="header-section-number">8.2.2</span> Elementary statistical properties</h3>
+<p>Because <span class="math inline">\(\Gbar_{n}\)</span> minimizes the empirical risk over a finite-dimensional,
+identifiable, and <strong>well-specified</strong> working model, <span class="math inline">\(\sqrt{n} (\psi_{n}^{c} - \psi_{0})\)</span> converges in law to a centered Gaussian law.
+Moreover, the asymptotic variance of <span class="math inline">\(\sqrt{n} (\psi_{n}^{c} - \psi_{0})\)</span> is
+<strong>conservatively</strong><a href="#fn15" class="footnote-ref" id="fnref15"><sup>15</sup></a> estimated
+with</p>
+<p><span class="math display">\[\begin{align*}            v_{n}^{c}            &amp;\defq            \Var_{P_{n}}
+\left(\frac{2A-1}{\ell\Gbar_{n}(A,W)}Y\right)      \\      &amp;=      \frac{1}{n}
+\sum_{i=1}^{n}\left(\frac{2A_{i}-1}{\ell\Gbar_{n}   (A_{i},W_{i})}   Y_{i}   -
+\psi_{n}^{c}\right)^{2}.  \end{align*}\]</span></p>
+<p>We investigate <em>empirically</em> the statistical behavior of <span class="math inline">\(\psi_{n}^{c}\)</span> in
+Section <a href="8-naive-estimators.html#empirical-inves-IPTW-bis">8.2.3</a>. For an analysis of the reason why
+<span class="math inline">\(v_{n}^{c}\)</span> is a conservative estimator of the asymptotic variance of
+<span class="math inline">\(\sqrt{n} (\psi_{n}^{c} - \psi_{0})\)</span>, see <a href="C-more-proofs.html#iptw-est-var">there</a> in Appendix
+<a href="C-more-proofs.html#iptw-est-var">C.1.1</a>.</p>
+<p>Before proceeding, let us touch upon what would have happened if we had used a
+less amenable algorithm <span class="math inline">\(\Algo_{\Gbar}\)</span>. For instance, <span class="math inline">\(\Algo_{\Gbar}\)</span> could
+still be well-specified<a href="#fn16" class="footnote-ref" id="fnref16"><sup>16</sup></a> but so
+<em>versatile/complex</em> (as opposed to being based on well-behaved,
+finite-dimensional parametric model) that the estimator <span class="math inline">\(\Gbar_{n}\)</span>, though
+still consistent, would converge slowly to its target. Then, root-<span class="math inline">\(n\)</span>
+consistency would fail to hold. Or <span class="math inline">\(\Algo_{\Gbar}\)</span> could be
+mis-specified and there would be no guarantee at all
+that the resulting estimator <span class="math inline">\(\psi_{n}^{c}\)</span> be even consistent.</p>
+</div>
+<div id="empirical-inves-IPTW-bis" class="section level3">
+<h3><span class="header-section-number">8.2.3</span> Empirical investigation</h3>
+<p>Let us compute <span class="math inline">\(\psi_{n}^{c}\)</span> on the same <code>iter =</code> 1000 independent
+samples of independent observations drawn from <span class="math inline">\(P_{0}\)</span> as in Section
+<a href="6-simple-strategy.html#known-gbar-first-pass">6.3</a>. As explained in Sections <a href="5-inference.html#inference">5</a> and
+<a href="6-simple-strategy.html#empirical-inves-IPTW">6.3.3</a>, we first make <code>iter</code> data sets out of the <code>obs</code>
+data set (third line), then train algorithm <span class="math inline">\(\Algo_{\Gbar,1}\)</span> on each of them
+(fifth to seventh lines). After the first series of commands the object
+<code>learned_features_fixed_sample_size</code>, a <code>tibble</code>, contains 1000 rows and
+three columns.</p>
+<p>We created <code>learned_features_fixed_sample_size</code> to store the estimators of
+<span class="math inline">\(\Gbar_{0}\)</span> for future use. We will at a later stage enrich the object, for
+instance by adding to it estimators of <span class="math inline">\(\Qbar_{0}\)</span> obtained by training
+different algorithms on each smaller data set.</p>
+<p>In the second series of commands, the object <code>psi_hat_abc</code> is obtained by
+adding to <code>psi_hat_ab</code> (see Section <a href="6-simple-strategy.html#empirical-inves-IPTW">6.3.3</a>) an 1000
+by four <code>tibble</code> containing notably the values of <span class="math inline">\(\psi_{n}^{c}\)</span> and
+<span class="math inline">\(\sqrt{v_{n}^{c}}/\sqrt{n}\)</span> computed by calling <code>compute_iptw</code>. The object
+also contains the values of the recentered (with respect to <span class="math inline">\(\psi_{0}\)</span>) and
+renormalized <span class="math inline">\(\sqrt{n}/\sqrt{v_{n}^{c}} (\psi_{n}^{c} - \psi_{0})\)</span>. Finally,
+<code>bias_abc</code> reports amounts of bias (at the renormalized scale).</p>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb55-1" data-line-number="1">learned_features_fixed_sample_size &lt;-</a>
+<a class="sourceLine" id="cb55-2" data-line-number="2"><span class="st">  </span>obs <span class="op">%&gt;%</span><span class="st"> </span>as_tibble <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb55-3" data-line-number="3"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">id =</span> (<span class="kw">seq_len</span>(<span class="kw">n</span>()) <span class="op">-</span><span class="st"> </span><span class="dv">1</span>) <span class="op">%%</span><span class="st"> </span>iter) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb55-4" data-line-number="4"><span class="st">  </span><span class="kw">nest</span>(<span class="dt">obs =</span> <span class="kw">c</span>(W, A, Y)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb55-5" data-line-number="5"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Gbar_hat =</span></a>
+<a class="sourceLine" id="cb55-6" data-line-number="6">           <span class="kw">map</span>(obs,</a>
+<a class="sourceLine" id="cb55-7" data-line-number="7">               <span class="op">~</span><span class="st"> </span><span class="kw">estimate_Gbar</span>(., <span class="dt">algorithm =</span> working_model_G_one)))</a>
+<a class="sourceLine" id="cb55-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb55-9" data-line-number="9">psi_hat_abc &lt;-</a>
+<a class="sourceLine" id="cb55-10" data-line-number="10"><span class="st">  </span>learned_features_fixed_sample_size <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb55-11" data-line-number="11"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">est_c =</span></a>
+<a class="sourceLine" id="cb55-12" data-line-number="12">           <span class="kw">map2</span>(obs, Gbar_hat,</a>
+<a class="sourceLine" id="cb55-13" data-line-number="13">                <span class="op">~</span><span class="st"> </span><span class="kw">compute_iptw</span>(<span class="kw">as.matrix</span>(.x), <span class="kw">wrapper</span>(.y, <span class="ot">FALSE</span>)))) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb55-14" data-line-number="14"><span class="st">  </span><span class="kw">unnest</span>(est_c) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(<span class="op">-</span>Gbar_hat, <span class="op">-</span>obs) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb55-15" data-line-number="15"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">clt =</span> (psi_n <span class="op">-</span><span class="st"> </span>psi_zero) <span class="op">/</span><span class="st"> </span>sig_n,</a>
+<a class="sourceLine" id="cb55-16" data-line-number="16">         <span class="dt">type =</span> <span class="st">&quot;c&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb55-17" data-line-number="17"><span class="st">  </span><span class="kw">full_join</span>(psi_hat_ab)</a>
+<a class="sourceLine" id="cb55-18" data-line-number="18"></a>
+<a class="sourceLine" id="cb55-19" data-line-number="19">(bias_abc &lt;-<span class="st"> </span>psi_hat_abc <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb55-20" data-line-number="20"><span class="st">   </span><span class="kw">group_by</span>(type) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">summarise</span>(<span class="dt">bias =</span> <span class="kw">mean</span>(clt)))</a>
+<a class="sourceLine" id="cb55-21" data-line-number="21"><span class="co">#&gt; # A tibble: 3 x 2</span></a>
+<a class="sourceLine" id="cb55-22" data-line-number="22"><span class="co">#&gt;   type    bias</span></a>
+<a class="sourceLine" id="cb55-23" data-line-number="23"><span class="co">#&gt;   &lt;chr&gt;  &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb55-24" data-line-number="24"><span class="co">#&gt; 1 a     0.456 </span></a>
+<a class="sourceLine" id="cb55-25" data-line-number="25"><span class="co">#&gt; 2 b     0.0951</span></a>
+<a class="sourceLine" id="cb55-26" data-line-number="26"><span class="co">#&gt; 3 c     0.0236</span></a></code></pre></div>
+<p>By the above chunk of code, the average of <span class="math inline">\(\sqrt{n/v_{n}^{c}} (\psi_{n}^{c} - \psi_{0})\)</span> computed across the realizations is equal to
+0.024 (see <code>bias_abc</code>). In words, the average bias of <span class="math inline">\(\psi_{n}^{c}\)</span> is of the
+same magnitude as that of <span class="math inline">\(\psi_{n}^{b}\)</span> despite the fact that the
+construction of <span class="math inline">\(\psi_{n}^{c}\)</span> hinges on the estimation of <span class="math inline">\(\Gbar_{0}\)</span> (based
+on the well-specified algorithm <span class="math inline">\(\Algo_{\Gbar,1}\)</span>).</p>
+<p>We represent the empirical laws of the recentered (with respect to <span class="math inline">\(\psi_{0}\)</span>)
+and renormalized <span class="math inline">\(\psi_{n}^{a}\)</span>, <span class="math inline">\(\psi_{n}^{b}\)</span> and <span class="math inline">\(\psi_{n}^{c}\)</span> in Figures
+<a href="8-naive-estimators.html#fig:unknown-Gbar-three">8.1</a> (kernel density estimators) and
+<a href="8-naive-estimators.html#fig:unknown-Gbar-four">8.2</a> (quantile-quantile plots).</p>
+
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb56-1" data-line-number="1">fig_bias_ab <span class="op">+</span></a>
+<a class="sourceLine" id="cb56-2" data-line-number="2"><span class="st">  </span><span class="kw">geom_density</span>(<span class="kw">aes</span>(clt, <span class="dt">fill =</span> type, <span class="dt">colour =</span> type), psi_hat_abc, <span class="dt">alpha =</span> <span class="fl">0.1</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb56-3" data-line-number="3"><span class="st">  </span><span class="kw">geom_vline</span>(<span class="kw">aes</span>(<span class="dt">xintercept =</span> bias, <span class="dt">colour =</span> type),</a>
+<a class="sourceLine" id="cb56-4" data-line-number="4">             bias_abc, <span class="dt">size =</span> <span class="fl">1.5</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb56-5" data-line-number="5"><span class="st">  </span><span class="kw">xlim</span>(<span class="op">-</span><span class="dv">3</span>, <span class="dv">4</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb56-6" data-line-number="6"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">y =</span> <span class="st">&quot;&quot;</span>,</a>
+<a class="sourceLine" id="cb56-7" data-line-number="7">       <span class="dt">x =</span> <span class="kw">bquote</span>(<span class="kw">paste</span>(<span class="kw">sqrt</span>(n<span class="op">/</span>v[n]<span class="op">^</span>{<span class="kw">list</span>(a, b, c)})<span class="op">*</span></a>
+<a class="sourceLine" id="cb56-8" data-line-number="8"><span class="st">                        </span>(psi[n]<span class="op">^</span>{<span class="kw">list</span>(a, b, c)} <span class="op">-</span><span class="st"> </span>psi[<span class="dv">0</span>]))))</a></code></pre></div>
+<div class="figure" style="text-align: center"><span id="fig:unknown-Gbar-three"></span>
+<img src="img/unknown-Gbar-three-1.png" alt="Kernel density estimators of the law of three estimators of \(\psi_{0}\) (recentered with respect to \(\psi_{0}\), and renormalized), one of them misconceived (a), one assuming that \(\Gbar_{0}\) is known (b) and one that hinges on the estimation of \(\Gbar_{0}\) (c). The present figure includes Figure 6.1 (but the colors differ). Built based on iter independent realizations of each estimator." width="70%" />
+<p class="caption">
+Figure 8.1: Kernel density estimators of the law of three estimators of <span class="math inline">\(\psi_{0}\)</span> (recentered with respect to <span class="math inline">\(\psi_{0}\)</span>, and renormalized), one of them misconceived (a), one assuming that <span class="math inline">\(\Gbar_{0}\)</span> is known (b) and one that hinges on the estimation of <span class="math inline">\(\Gbar_{0}\)</span> (c). The present figure includes Figure <a href="6-simple-strategy.html#fig:known-Gbar-one-b">6.1</a> (but the colors differ). Built based on <code>iter</code> independent realizations of each estimator.
+</p>
+</div>
+
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb57-1" data-line-number="1"><span class="kw">ggplot</span>(psi_hat_abc, <span class="kw">aes</span>(<span class="dt">sample =</span> clt, <span class="dt">fill =</span> type, <span class="dt">colour =</span> type)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb57-2" data-line-number="2"><span class="st">  </span><span class="kw">geom_abline</span>(<span class="dt">intercept =</span> <span class="dv">0</span>, <span class="dt">slope =</span> <span class="dv">1</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb57-3" data-line-number="3"><span class="st">  </span><span class="kw">geom_qq</span>(<span class="dt">alpha =</span> <span class="dv">1</span>)</a></code></pre></div>
+<div class="figure" style="text-align: center"><span id="fig:unknown-Gbar-four"></span>
+<img src="img/unknown-Gbar-four-1.png" alt="Quantile-quantile plot of the standard normal law against the empirical laws of three estimators of \(\psi_{0}\), one of them misconceived (a), one assuming that \(\Gbar_{0}\) is known (b) and one that hinges on the estimation of \(\Gbar_{0}\) (c). Built based on iter independent realizations of each estimator." width="70%" />
+<p class="caption">
+Figure 8.2: Quantile-quantile plot of the standard normal law against the empirical laws of three estimators of <span class="math inline">\(\psi_{0}\)</span>, one of them misconceived (a), one assuming that <span class="math inline">\(\Gbar_{0}\)</span> is known (b) and one that hinges on the estimation of <span class="math inline">\(\Gbar_{0}\)</span> (c). Built based on <code>iter</code> independent realizations of each estimator.
+</p>
+</div>
+<p>Figures <a href="8-naive-estimators.html#fig:unknown-Gbar-three">8.1</a> and <a href="8-naive-estimators.html#fig:unknown-Gbar-four">8.2</a> confirm
+that <span class="math inline">\(\psi_{n}^{c}\)</span> behaves as well as <span class="math inline">\(\psi_{n}^{b}\)</span> in terms of bias — but
+remember that we acted as oracles when we chose the well-specified algorithm
+<span class="math inline">\(\Algo_{\Gbar,1}\)</span>. They also corroborate that <span class="math inline">\(v_{n}^{c}\)</span>, the estimator of
+the asymptotic variance of <span class="math inline">\(\sqrt{n} (\psi_{n}^{c} - \psi_{0})\)</span>, is
+conservative: for instance, the corresponding bell-shaped blue curve is too
+much concentrated around its axis of symmetry.</p>
+<p>The actual asymptotic variance of <span class="math inline">\(\sqrt{n} (\psi_{n}^{c} - \psi_{0})\)</span> can be
+estimated with the empirical variance of the <code>iter</code> replications of the
+construction of <span class="math inline">\(\psi_{n}^{c}\)</span>.</p>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb58-1" data-line-number="1">(emp_sig_n &lt;-<span class="st"> </span>psi_hat_abc <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(type <span class="op">==</span><span class="st"> &quot;c&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb58-2" data-line-number="2"><span class="st">   </span><span class="kw">summarize</span>(<span class="kw">sd</span>(psi_n)) <span class="op">%&gt;%</span><span class="st"> </span>pull)</a>
+<a class="sourceLine" id="cb58-3" data-line-number="3"><span class="co">#&gt; [1] 0.589</span></a>
+<a class="sourceLine" id="cb58-4" data-line-number="4">(summ_sig_n &lt;-<span class="st"> </span>psi_hat_abc <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(type <span class="op">==</span><span class="st"> &quot;c&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(sig_n) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb58-5" data-line-number="5"><span class="st">   </span>summary)</a>
+<a class="sourceLine" id="cb58-6" data-line-number="6"><span class="co">#&gt;      sig_n      </span></a>
+<a class="sourceLine" id="cb58-7" data-line-number="7"><span class="co">#&gt;  Min.   :0.142  </span></a>
+<a class="sourceLine" id="cb58-8" data-line-number="8"><span class="co">#&gt;  1st Qu.:0.172  </span></a>
+<a class="sourceLine" id="cb58-9" data-line-number="9"><span class="co">#&gt;  Median :0.182  </span></a>
+<a class="sourceLine" id="cb58-10" data-line-number="10"><span class="co">#&gt;  Mean   :0.206  </span></a>
+<a class="sourceLine" id="cb58-11" data-line-number="11"><span class="co">#&gt;  3rd Qu.:0.197  </span></a>
+<a class="sourceLine" id="cb58-12" data-line-number="12"><span class="co">#&gt;  Max.   :1.086</span></a></code></pre></div>
+<p>The empirical standard deviation is approximately
+0.35 times smaller than the average
+<em>estimated</em> standard deviation. The estimator is conservative indeed!
+Furthermore, note the better fit with the density of the standard normal
+density of the kernel density estimator of the law of <span class="math inline">\(\sqrt{n} (\psi_{n}^{c} - \psi_{0})\)</span> <strong>renormalized with</strong> <code>emp_sig_n</code>.</p>
+
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb59-1" data-line-number="1">clt_c &lt;-<span class="st"> </span>psi_hat_abc <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(type <span class="op">==</span><span class="st"> &quot;c&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb59-2" data-line-number="2"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">clt =</span> clt <span class="op">*</span><span class="st"> </span>sig_n <span class="op">/</span><span class="st">  </span>emp_sig_n)</a>
+<a class="sourceLine" id="cb59-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb59-4" data-line-number="4">fig_bias_ab <span class="op">+</span></a>
+<a class="sourceLine" id="cb59-5" data-line-number="5"><span class="st">  </span><span class="kw">geom_density</span>(<span class="kw">aes</span>(clt, <span class="dt">fill =</span> type, <span class="dt">colour =</span> type), clt_c, <span class="dt">alpha =</span> <span class="fl">0.1</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb59-6" data-line-number="6"><span class="st">  </span><span class="kw">geom_vline</span>(<span class="kw">aes</span>(<span class="dt">xintercept =</span> bias, <span class="dt">colour =</span> type),</a>
+<a class="sourceLine" id="cb59-7" data-line-number="7">             bias_abc, <span class="dt">size =</span> <span class="fl">1.5</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb59-8" data-line-number="8"><span class="st">  </span><span class="kw">xlim</span>(<span class="op">-</span><span class="dv">3</span>, <span class="dv">4</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb59-9" data-line-number="9"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">y =</span> <span class="st">&quot;&quot;</span>,</a>
+<a class="sourceLine" id="cb59-10" data-line-number="10">       <span class="dt">x =</span> <span class="kw">bquote</span>(<span class="kw">paste</span>(<span class="kw">sqrt</span>(n<span class="op">/</span>v[n]<span class="op">^</span>{<span class="kw">list</span>(a, b, c)})<span class="op">*</span></a>
+<a class="sourceLine" id="cb59-11" data-line-number="11"><span class="st">                        </span>(psi[n]<span class="op">^</span>{<span class="kw">list</span>(a, b, c)} <span class="op">-</span><span class="st"> </span>psi[<span class="dv">0</span>]))))</a></code></pre></div>
+<div class="figure" style="text-align: center"><span id="fig:unknown-Gbar-seven"></span>
+<img src="img/unknown-Gbar-seven-1.png" alt="Kernel density estimators of the law of three estimators of \(\psi_{0}\) (recentered with respect to \(\psi_{0}\), and renormalized), one of them misconceived (a), one assuming that \(\Gbar_{0}\) is known (b) and one that hinges on the estimation of \(\Gbar_{0}\) and an estimator of the asymptotic variance computed across the replications (c). The present figure includes Figure 6.1 (but the colors differ) and it should be compared to Figure 8.2. Built based on iter independent realizations of each estimator." width="70%" />
+<p class="caption">
+Figure 8.3: Kernel density estimators of the law of three estimators of <span class="math inline">\(\psi_{0}\)</span> (recentered with respect to <span class="math inline">\(\psi_{0}\)</span>, and renormalized), one of them misconceived (a), one assuming that <span class="math inline">\(\Gbar_{0}\)</span> is known (b) and one that hinges on the estimation of <span class="math inline">\(\Gbar_{0}\)</span> <strong>and an estimator of the asymptotic variance computed across the replications</strong> (c). The present figure includes Figure <a href="6-simple-strategy.html#fig:known-Gbar-one-b">6.1</a> (but the colors differ) and it should be compared to Figure <a href="8-naive-estimators.html#fig:unknown-Gbar-four">8.2</a>. Built based on <code>iter</code> independent realizations of each estimator.
+</p>
+</div>
+<p><strong>Workaround.</strong> In a real world data-analysis, one could correct the
+estimation of the asymptotic variance of <span class="math inline">\(\sqrt{n} (\psi_{n}^{c} - \psi_{0})\)</span>.
+We could for instance derive the influence function as it is
+described <a href="C-more-proofs.html#iptw-est-var">there</a> in Appendix <a href="C-more-proofs.html#iptw-est-var">C.1.1</a> and use the
+corresponding influence function-based estimator of the variance. One could
+also rely on the cross-validation, possibly combined with the previous
+workaround. Or one could also rely on the bootstrap.<a href="#fn17" class="footnote-ref" id="fnref17"><sup>17</sup></a> This, however, would only make sense if one knew for sure that
+the algorithm for the estimation of <span class="math inline">\(\Gbar_{0}\)</span> is well-specified.</p>
+</div>
+</div>
+<div id="exo-a-nice-title" class="section level2">
+<h2><span class="header-section-number">8.3</span> ⚙ Investigating further the IPTW inference strategy</h2>
+<ol style="list-style-type: decimal">
+<li><p>Building upon the chunks of code devoted to the repeated computation of
+<span class="math inline">\(\psi_{n}^{b}\)</span> and its companion quantities, construct confidence intervals
+for <span class="math inline">\(\psi_{0}\)</span> of (asymptotic) level <span class="math inline">\(95\%\)</span>, and check if the empirical
+coverage is satisfactory. Note that if the coverage was exactly <span class="math inline">\(95\%\)</span>, then
+the number of confidence intervals that would contain <span class="math inline">\(\psi_{0}\)</span> would follow
+a binomial law with parameters <code>iter</code> and <code>0.95</code>, and recall that function
+<code>binom.test</code> performs an exact test of a simple null hypothesis about the
+probability of success in a Bernoulli experiment against its three one-sided
+and two-sided alternatives.</p></li>
+<li><p>Discuss what happens when the dimension of the (still well-specified) working model grows. Start with the built-in working model <code>working_model_G_two</code>. The following chunk of code re-defines <code>working_model_G_two</code></p></li>
+</ol>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb60-1" data-line-number="1"><span class="co">## make sure &#39;1/2&#39; and &#39;1&#39; belong to &#39;powers&#39;</span></a>
+<a class="sourceLine" id="cb60-2" data-line-number="2">powers &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">seq</span>(<span class="dv">1</span><span class="op">/</span><span class="dv">4</span>, <span class="dv">3</span>, <span class="dt">by =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">4</span>), <span class="dt">each =</span> <span class="dv">2</span>) </a>
+<a class="sourceLine" id="cb60-3" data-line-number="3">working_model_G_two &lt;-<span class="st"> </span><span class="kw">list</span>(</a>
+<a class="sourceLine" id="cb60-4" data-line-number="4">  <span class="dt">model =</span> <span class="cf">function</span>(...) {<span class="kw">trim_glm_fit</span>(<span class="kw">glm</span>(<span class="dt">family =</span> <span class="kw">binomial</span>(), ...))},</a>
+<a class="sourceLine" id="cb60-5" data-line-number="5">  <span class="dt">formula =</span> stats<span class="op">::</span><span class="kw">as.formula</span>(</a>
+<a class="sourceLine" id="cb60-6" data-line-number="6">    <span class="kw">paste</span>(<span class="st">&quot;A ~&quot;</span>,</a>
+<a class="sourceLine" id="cb60-7" data-line-number="7">          <span class="kw">paste</span>(<span class="kw">c</span>(<span class="st">&quot;I(W^&quot;</span>, <span class="st">&quot;I(abs(W - 5/12)^&quot;</span>),</a>
+<a class="sourceLine" id="cb60-8" data-line-number="8">                powers, </a>
+<a class="sourceLine" id="cb60-9" data-line-number="9">                <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>, <span class="dt">collapse =</span> <span class="st">&quot;) + &quot;</span>),</a>
+<a class="sourceLine" id="cb60-10" data-line-number="10">          <span class="st">&quot;)&quot;</span>)</a>
+<a class="sourceLine" id="cb60-11" data-line-number="11">  ),</a>
+<a class="sourceLine" id="cb60-12" data-line-number="12">  <span class="dt">type_of_preds =</span> <span class="st">&quot;response&quot;</span></a>
+<a class="sourceLine" id="cb60-13" data-line-number="13">)</a>
+<a class="sourceLine" id="cb60-14" data-line-number="14"><span class="kw">attr</span>(working_model_G_two, <span class="st">&quot;ML&quot;</span>) &lt;-<span class="st"> </span><span class="ot">FALSE</span></a></code></pre></div>
+<ol start="3" style="list-style-type: decimal">
+<li><p>Play around with argument <code>powers</code> (making sure that <code>1/2</code> and <code>1</code> belong to
+it), and plot graphics similar to those presented in Figures
+<a href="8-naive-estimators.html#fig:unknown-Gbar-three">8.1</a> and <a href="8-naive-estimators.html#fig:unknown-Gbar-four">8.2</a>.</p></li>
+<li><p>Discuss what happens when the working model is
+mis-specified. You could use the built-in working
+model <code>working_model_G_three</code>.</p></li>
+<li><p>Repeat the analysis developed in response to problem 1 above but for
+<span class="math inline">\(\psi_{n}^{c}\)</span>. What can you say about the coverage of the confidence
+intervals?</p></li>
+<li><p>☡  (Follow-up to problem 5). Implement the bootstrap
+procedure evoked at the end of Section <a href="8-naive-estimators.html#empirical-inves-IPTW-bis">8.2.3</a>. Repeat
+the analysis developed in response to problem 1. Compare your results with
+those to problem 5.</p></li>
+<li><p>☡  Is it legitimate to infer the asymptotic variance
+of <span class="math inline">\(\psi_{n}^{c}\)</span> with <span class="math inline">\(v_{n}^{c}\)</span> when one relies on a very
+data-adaptive/versatile algorithm to estimate <span class="math inline">\(\Gbar_{0}\)</span>?</p></li>
+</ol>
+</div>
+<div id="Gcomp-estimator" class="section level2">
+<h2><span class="header-section-number">8.4</span> G-computation estimator</h2>
+<div id="Gcomp-construction" class="section level3">
+<h3><span class="header-section-number">8.4.1</span> Construction and computation</h3>
+<p>Let <span class="math inline">\(\Algo_{Q_{W}}\)</span> be an algorithm designed for the estimation of <span class="math inline">\(Q_{0,W}\)</span>
+(see Section <a href="7-nuisance.html#nuisance-QW">7.3</a>). We denote by <span class="math inline">\(Q_{n,W} \defq \Algo_{Q_{W}}(P_{n})\)</span> the output of the algorithm trained on <span class="math inline">\(P_{n}\)</span>.</p>
+<p>Let <span class="math inline">\(\Algo_{\Qbar}\)</span> be an algorithm designed for the estimation of <span class="math inline">\(\Qbar_{0}\)</span>
+(see Section <a href="7-nuisance.html#nuisance-Qbar">7.6</a>). We denote by <span class="math inline">\(\Qbar_{n} \defq \Algo_{\Qbar}(P_{n})\)</span> the output of the algorithm trained on <span class="math inline">\(P_{n}\)</span>.</p>
+<p>Equation <a href="2-parameter.html#eq:psi-zero">(2.1)</a> suggests the following, simple estimator of
+<span class="math inline">\(\Psi(P_0)\)</span>:</p>
+<p><span class="math display" id="eq:Gcomp-estimator">\[\begin{equation} 
+\psi_{n}   \defq   \int   \left(\Qbar_{n}(1,   w)   -   \Qbar_{n}(0,w)\right)
+dQ_{n,W}(w). \tag{8.1}
+\end{equation}\]</span></p>
+<p>In words, this estimator is implemented by first regressing <span class="math inline">\(Y\)</span> on <span class="math inline">\((A,W)\)</span>,
+then by marginalizing with respect to the estimated law of <span class="math inline">\(W\)</span>. The resulting
+estimator is referred to as a <em>G-computation</em> (or <em>standardization</em>)
+estimator.</p>
+<p>From a computational point of view, the <code>tlrider</code> package makes it easy to
+build the G-computation estimator. Recall that we have already estimated the
+marginal law <span class="math inline">\(Q_{0,W}\)</span> of <span class="math inline">\(W\)</span> under <span class="math inline">\(P_{0}\)</span> by training the algorithm
+<span class="math inline">\(\Algo_{Q_{W}}\)</span> as it is implemented in <code>estimate_QW</code> on the <span class="math inline">\(n = 1000\)</span> first
+observations in <code>obs</code> (see Section <a href="7-nuisance.html#nuisance-QW">7.3</a>):</p>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb61-1" data-line-number="1">QW_hat &lt;-<span class="st"> </span><span class="kw">estimate_QW</span>(<span class="kw">head</span>(obs, <span class="fl">1e3</span>))</a></code></pre></div>
+<p>Recall that <span class="math inline">\(\Algo_{\Qbar,1}\)</span> is the algorithm for the estimation of
+<span class="math inline">\(\Qbar_{0}\)</span> as it is implemented in <code>estimate_Qbar</code> with its argument
+<code>algorithm</code> set to the built-in <code>working_model_Q_one</code> (see Section
+<a href="7-nuisance.html#nuisance-Qbar-wm">7.5</a>). Recall also that <span class="math inline">\(\Algo_{\Qbar,\text{kNN}}\)</span> is the
+algorithm for the estimation of <span class="math inline">\(\Qbar_{0}\)</span> as it is implemented in
+<code>estimate_Qbar</code> with its argument <code>algorithm</code> set to the built-in <code>kknn_algo</code>
+(see Section <a href="7-nuisance.html#Qbar-knn-algo">7.6.2</a>). We have already trained the latter on the
+<span class="math inline">\(n=1000\)</span> first observations in <code>obs</code>. Let us train the former on the same data
+set:</p>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb62-1" data-line-number="1">Qbar_hat_kknn &lt;-<span class="st"> </span><span class="kw">estimate_Qbar</span>(<span class="kw">head</span>(obs, <span class="fl">1e3</span>),</a>
+<a class="sourceLine" id="cb62-2" data-line-number="2">                               <span class="dt">algorithm =</span> kknn_algo,</a>
+<a class="sourceLine" id="cb62-3" data-line-number="3">                               <span class="dt">trControl =</span> kknn_control,</a>
+<a class="sourceLine" id="cb62-4" data-line-number="4">                               <span class="dt">tuneGrid =</span> kknn_grid)</a></code></pre></div>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb63-1" data-line-number="1">Qbar_hat_d &lt;-<span class="st"> </span><span class="kw">estimate_Qbar</span>(<span class="kw">head</span>(obs, <span class="fl">1e3</span>), working_model_Q_one)</a></code></pre></div>
+<p>With these estimators handy, computing the G-computation estimator is as
+simple as running the following chunk of code:</p>
+<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb64-1" data-line-number="1">(<span class="kw">compute_gcomp</span>(QW_hat, <span class="kw">wrapper</span>(Qbar_hat_kknn, <span class="ot">FALSE</span>), <span class="fl">1e3</span>))</a>
+<a class="sourceLine" id="cb64-2" data-line-number="2"><span class="co">#&gt; # A tibble: 1 x 2</span></a>
+<a class="sourceLine" id="cb64-3" data-line-number="3"><span class="co">#&gt;    psi_n   sig_n</span></a>
+<a class="sourceLine" id="cb64-4" data-line-number="4"><span class="co">#&gt;    &lt;dbl&gt;   &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb64-5" data-line-number="5"><span class="co">#&gt; 1 0.0730 0.00260</span></a>
+<a class="sourceLine" id="cb64-6" data-line-number="6">(<span class="kw">compute_gcomp</span>(QW_hat, <span class="kw">wrapper</span>(Qbar_hat_d, <span class="ot">FALSE</span>), <span class="fl">1e3</span>))</a>
+<a class="sourceLine" id="cb64-7" data-line-number="7"><span class="co">#&gt; # A tibble: 1 x 2</span></a>
+<a class="sourceLine" id="cb64-8" data-line-number="8"><span class="co">#&gt;    psi_n   sig_n</span></a>
+<a class="sourceLine" id="cb64-9" data-line-number="9"><span class="co">#&gt;    &lt;dbl&gt;   &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb64-10" data-line-number="10"><span class="co">#&gt; 1 0.0742 0.00215</span></a></code></pre></div>
+<p>Note how we use function <code>wrapper</code> again, and that it is necessary to provide
+the number of observations upon which the estimation of the <span class="math inline">\(Q_{W}\)</span> and
+<span class="math inline">\(\Qbar\)</span> features of <span class="math inline">\(P_{0}\)</span>.</p>
+</div>
+<div id="elementary-statistical-properties-1" class="section level3">
+<h3><span class="header-section-number">8.4.2</span> Elementary statistical properties</h3>
+<p>This subsection is very similar to its counterpart for the IPTW estimator, see
+Section <a href="8-naive-estimators.html#elementary-stat-prop-iptw">8.2.2</a>.</p>
+<p>Let us denote by <span class="math inline">\(\Qbar_{n,1}\)</span> the output of algorithm <span class="math inline">\(\Algo_{\Qbar,1}\)</span>
+trained on <span class="math inline">\(P_{n}\)</span>, and recall that <span class="math inline">\(\Qbar_{n,\text{kNN}}\)</span> is the output of
+algorithm <span class="math inline">\(\Algo_{\Qbar,\text{kNN}}\)</span> trained on <span class="math inline">\(P_{n}\)</span>. Let <span class="math inline">\(\psi_{n}^{d}\)</span>
+and <span class="math inline">\(\psi_{n}^{e}\)</span> be the G-computation estimators obtained by substituting
+<span class="math inline">\(\Qbar_{n,1}\)</span> and <span class="math inline">\(\Qbar_{n,\text{kNN}}\)</span> for <span class="math inline">\(\Qbar_{n}\)</span> in
+<a href="8-naive-estimators.html#eq:Gcomp-estimator">(8.1)</a>, respectively.</p>
+<p>If <span class="math inline">\(\Qbar_{n,\bullet}\)</span> minimized the empirical risk over a
+finite-dimensional, identifiable, and <strong>well-specified</strong> working model, then
+<span class="math inline">\(\sqrt{n} (\psi_{n}^{\bullet} - \psi_{0})\)</span> would converge in law to a
+centered Gaussian law (here <span class="math inline">\(\psi_{n}^{\bullet}\)</span> represents the G-computation
+estimator obtained by substituting <span class="math inline">\(\Qbar_{n,\bullet}\)</span> for <span class="math inline">\(\Qbar_{n}\)</span> in
+<a href="8-naive-estimators.html#eq:Gcomp-estimator">(8.1)</a>). Moreover, the asymptotic
+variance of <span class="math inline">\(\sqrt{n} (\psi_{n}^{\bullet} - \psi_{0})\)</span> would be estimated
+<strong>anti-conservatively</strong><a href="#fn18" class="footnote-ref" id="fnref18"><sup>18</sup></a> with</p>
+<p><span class="math display" id="eq:var-Gcomp-n">\[\begin{align} 
+v_{n}^{d}            &amp;\defq            \Var_{P_{n}}
+\left(\Qbar_{n,1}(1,\cdot) - \Qbar_{n,1}(0,\cdot)\right) \\ &amp;= \frac{1}{n}
+\sum_{i=1}^{n}\left(\Qbar_{n,1}(1,W_{i})         -        \Qbar_{n,1}(0,W_{i})
+-\psi_{n}^{d}\right)^{2}.  \tag{8.2} 
+\end{align}\]</span></p>
+<p>Unfortunately, algorithm <span class="math inline">\(\Algo_{\Qbar,1}\)</span> is mis-specified and
+<span class="math inline">\(\Algo_{\Qbar,\text{kNN}}\)</span> is not based on a finite-dimensional working
+model. Nevertheless, function <code>compute_gcomp</code> estimates (in general, very
+poorly) the asymptotic variance with <a href="8-naive-estimators.html#eq:var-Gcomp-n">(8.2)</a>.</p>
+<p>We investigate <em>empirically</em> the statistical behavior of <span class="math inline">\(\psi_{n}^{d}\)</span> in
+Section <a href="8-naive-estimators.html#empirical-inves-Gcomp">8.4.3</a>. For an analysis of the reason why
+<span class="math inline">\(v_{n}^{d}\)</span> is an anti-conservative estimator of the asymptotic variance of
+<span class="math inline">\(\sqrt{n} (\psi_{n}^{d} - \psi_{0})\)</span>, see <a href="C-more-proofs.html#gcomp-est-var">there</a> in Appendix
+<a href="C-more-proofs.html#gcomp-est-var">C.1.2</a>. We wish to emphasize that anti-conservativeness is even
+more embarrassing that conservativeness (both being contingent on the fact
+that the algorithms are well-specified, fact that cannot be true in the
+present case in real world situations).</p>
+<p>What would happen if we used a less amenable algorithm <span class="math inline">\(\Algo_{\Qbar}\)</span>. For
+instance, <span class="math inline">\(\Algo_{\Qbar}\)</span> could still be well-specified but so
+<em>versatile/complex</em> (as opposed to being based on well-behaved,
+finite-dimensional parametric model) that the estimator <span class="math inline">\(\Qbar_{n}\)</span>, though
+still consistent, would converge slowly to its target. Then, root-<span class="math inline">\(n\)</span>
+consistency would fail to hold. We can explore empirically this situation
+with estimator <span class="math inline">\(\psi_{n}^{e}\)</span> that hinges on algorithm
+<span class="math inline">\(\Algo_{\Qbar,\text{kNN}}\)</span>. Or <span class="math inline">\(\Algo_{\Qbar}\)</span> could be
+mis-specified and there would be no guarantee at all
+that the resulting estimator <span class="math inline">\(\psi_{n}\)</span> be even consistent.</p>
+</div>
+<div id="empirical-inves-Gcomp" class="section level3">
+<h3><span class="header-section-number">8.4.3</span> Empirical investigation, fixed sample size</h3>
+<p>Let us compute <span class="math inline">\(\psi_{n}^{d}\)</span> and <span class="math inline">\(\psi_{n}^{e}\)</span> on the same <code>iter =</code>
+1000 independent samples of independent observations drawn from <span class="math inline">\(P_{0}\)</span> as in
+Sections <a href="6-simple-strategy.html#known-gbar-first-pass">6.3</a> and <a href="8-naive-estimators.html#empirical-inves-IPTW-bis">8.2.3</a>. We
+first enrich object <code>learned_features_fixed_sample_size</code> that was created in
+Section <a href="8-naive-estimators.html#empirical-inves-IPTW-bis">8.2.3</a>, adding to it estimators of
+<span class="math inline">\(\Qbar_{0}\)</span> obtained by training algorithms <span class="math inline">\(\Algo_{\Qbar,1}\)</span> and
+<span class="math inline">\(\Algo_{\Qbar,\text{kNN}}\)</span> on each smaller data set.</p>
+<p>The second series of commands creates object <code>psi_hat_de</code>, an 1000 by six
+<code>tibble</code> containing notably the values of <span class="math inline">\(\psi_{n}^{d}\)</span> and
+<span class="math inline">\(\sqrt{v_{n}^{d}}/\sqrt{n}\)</span> computed by calling <code>compute_gcomp</code>, and those of
+the recentered (with respect to <span class="math inline">\(\psi_{0}\)</span>) and renormalized
+<span class="math inline">\(\sqrt{n}/\sqrt{v_{n}^{d}} (\psi_{n}^{d} - \psi_{0})\)</span>. Because we know
+beforehand that <span class="math inline">\(v_{n}^{d}\)</span> under-estimates the actual asymptotic variance of
+<span class="math inline">\(\sqrt{n} (\psi_{n}^{d} - \psi_{0})\)</span>, the <code>tibble</code> also includes the values of
+<span class="math inline">\(\sqrt{n}/\sqrt{v^{d*}} (\psi_{n}^{d} - \psi_{0})\)</span> where the estimator
+<span class="math inline">\(v^{d*}\)</span> of the asymptotic variance is computed <em>across the replications of
+<span class="math inline">\(\psi_{n}^{d}\)</span></em>. The tibble includes the same quantities pertaining to
+<span class="math inline">\(\psi_{n}^{e}\)</span>, although there is no theoretical guarantee that the central
+limit theorem does hold and, even if it did, that the counterpart <span class="math inline">\(v_{n}^{e}\)</span>
+to <span class="math inline">\(v_{n}^{d}\)</span> estimates in any way the asymptotic variance of <span class="math inline">\(\sqrt{n} (\psi_{n}^{e} - \psi_{0})\)</span>.</p>
+<p>Finally, <code>bias_de</code> reports amounts of bias (at the renormalized scales —
+plural). There is one value of bias for each combination of <em>(i)</em> type of the
+estimator (<code>d</code> or <code>e</code>) and <em>(ii)</em> how the renormalization is carried out,
+either based on <span class="math inline">\(v_{n}^{d}\)</span> and <span class="math inline">\(v_{n}^{e}\)</span> (<code>auto_renormalization</code> is <code>TRUE</code>)
+<em>or</em> on the estimator of the asymptotic variance computed across the
+replications of <span class="math inline">\(\psi_{n}^{d}\)</span> and <span class="math inline">\(\psi_{n}^{e}\)</span> (<code>auto_renormalization</code> is
+<code>FALSE</code>).</p>
+
+<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb65-1" data-line-number="1">learned_features_fixed_sample_size &lt;-</a>
+<a class="sourceLine" id="cb65-2" data-line-number="2"><span class="st">  </span>learned_features_fixed_sample_size <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb65-3" data-line-number="3"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Qbar_hat_d =</span></a>
+<a class="sourceLine" id="cb65-4" data-line-number="4">           <span class="kw">map</span>(obs,</a>
+<a class="sourceLine" id="cb65-5" data-line-number="5">               <span class="op">~</span><span class="st"> </span><span class="kw">estimate_Qbar</span>(., <span class="dt">algorithm =</span> working_model_Q_one)),</a>
+<a class="sourceLine" id="cb65-6" data-line-number="6">         <span class="dt">Qbar_hat_e =</span></a>
+<a class="sourceLine" id="cb65-7" data-line-number="7">           <span class="kw">map</span>(obs,</a>
+<a class="sourceLine" id="cb65-8" data-line-number="8">               <span class="op">~</span><span class="st"> </span><span class="kw">estimate_Qbar</span>(., <span class="dt">algorithm =</span> kknn_algo,</a>
+<a class="sourceLine" id="cb65-9" data-line-number="9">                               <span class="dt">trControl =</span> kknn_control,</a>
+<a class="sourceLine" id="cb65-10" data-line-number="10">                               <span class="dt">tuneGrid =</span> kknn_grid))) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb65-11" data-line-number="11"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">QW =</span> <span class="kw">map</span>(obs, estimate_QW),</a>
+<a class="sourceLine" id="cb65-12" data-line-number="12">         <span class="dt">est_d =</span></a>
+<a class="sourceLine" id="cb65-13" data-line-number="13">           <span class="kw">pmap</span>(<span class="kw">list</span>(QW, Qbar_hat_d, <span class="kw">n</span>()),</a>
+<a class="sourceLine" id="cb65-14" data-line-number="14">                <span class="op">~</span><span class="st"> </span><span class="kw">compute_gcomp</span>(..<span class="dv">1</span>, <span class="kw">wrapper</span>(..<span class="dv">2</span>, <span class="ot">FALSE</span>), ..<span class="dv">3</span>)),</a>
+<a class="sourceLine" id="cb65-15" data-line-number="15">         <span class="dt">est_e =</span></a>
+<a class="sourceLine" id="cb65-16" data-line-number="16">           <span class="kw">pmap</span>(<span class="kw">list</span>(QW, Qbar_hat_e, <span class="kw">n</span>()),</a>
+<a class="sourceLine" id="cb65-17" data-line-number="17">                <span class="op">~</span><span class="st"> </span><span class="kw">compute_gcomp</span>(..<span class="dv">1</span>, <span class="kw">wrapper</span>(..<span class="dv">2</span>, <span class="ot">FALSE</span>), ..<span class="dv">3</span>)))</a>
+<a class="sourceLine" id="cb65-18" data-line-number="18"></a>
+<a class="sourceLine" id="cb65-19" data-line-number="19">psi_hat_de &lt;-<span class="st"> </span>learned_features_fixed_sample_size <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb65-20" data-line-number="20"><span class="st">  </span><span class="kw">select</span>(est_d, est_e) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb65-21" data-line-number="21"><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="kw">c</span>(<span class="st">`</span><span class="dt">est_d</span><span class="st">`</span>, <span class="st">`</span><span class="dt">est_e</span><span class="st">`</span>),</a>
+<a class="sourceLine" id="cb65-22" data-line-number="22">               <span class="dt">names_to =</span> <span class="st">&quot;type&quot;</span>, <span class="dt">values_to =</span> <span class="st">&quot;estimates&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb65-23" data-line-number="23"><span class="st">  </span><span class="kw">extract</span>(type, <span class="st">&quot;type&quot;</span>, <span class="st">&quot;_([de])$&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb65-24" data-line-number="24"><span class="st">  </span><span class="kw">unnest</span>(estimates) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb65-25" data-line-number="25"><span class="st">  </span><span class="kw">group_by</span>(type) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb65-26" data-line-number="26"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">sig_alt =</span> <span class="kw">sd</span>(psi_n)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb65-27" data-line-number="27"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">clt_ =</span> (psi_n <span class="op">-</span><span class="st"> </span>psi_zero) <span class="op">/</span><span class="st"> </span>sig_n,</a>
+<a class="sourceLine" id="cb65-28" data-line-number="28">         <span class="dt">clt_alt =</span> (psi_n <span class="op">-</span><span class="st"> </span>psi_zero) <span class="op">/</span><span class="st"> </span>sig_alt) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb65-29" data-line-number="29"><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="kw">c</span>(<span class="st">`</span><span class="dt">clt_</span><span class="st">`</span>, <span class="st">`</span><span class="dt">clt_alt</span><span class="st">`</span>),</a>
+<a class="sourceLine" id="cb65-30" data-line-number="30">               <span class="dt">names_to =</span> <span class="st">&quot;key&quot;</span>, <span class="dt">values_to =</span> <span class="st">&quot;clt&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb65-31" data-line-number="31"><span class="st">  </span><span class="kw">extract</span>(key, <span class="st">&quot;key&quot;</span>, <span class="st">&quot;_(.*)$&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb65-32" data-line-number="32"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">key =</span> <span class="kw">ifelse</span>(key <span class="op">==</span><span class="st"> &quot;&quot;</span>, <span class="ot">TRUE</span>, <span class="ot">FALSE</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb65-33" data-line-number="33"><span class="st">  </span><span class="kw">rename</span>(<span class="st">&quot;auto_renormalization&quot;</span> =<span class="st"> </span>key)</a>
+<a class="sourceLine" id="cb65-34" data-line-number="34"></a>
+<a class="sourceLine" id="cb65-35" data-line-number="35">(bias_de &lt;-<span class="st"> </span>psi_hat_de <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb65-36" data-line-number="36"><span class="st">   </span><span class="kw">group_by</span>(type, auto_renormalization) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb65-37" data-line-number="37"><span class="st">   </span><span class="kw">summarize</span>(<span class="dt">bias =</span> <span class="kw">mean</span>(clt)) <span class="op">%&gt;%</span><span class="st"> </span>ungroup)</a>
+<a class="sourceLine" id="cb65-38" data-line-number="38"><span class="co">#&gt; # A tibble: 4 x 3</span></a>
+<a class="sourceLine" id="cb65-39" data-line-number="39"><span class="co">#&gt;   type  auto_renormalization   bias</span></a>
+<a class="sourceLine" id="cb65-40" data-line-number="40"><span class="co">#&gt;   &lt;chr&gt; &lt;lgl&gt;                 &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb65-41" data-line-number="41"><span class="co">#&gt; 1 d     FALSE                0.0530</span></a>
+<a class="sourceLine" id="cb65-42" data-line-number="42"><span class="co">#&gt; 2 d     TRUE                 0.0886</span></a>
+<a class="sourceLine" id="cb65-43" data-line-number="43"><span class="co">#&gt; 3 e     FALSE                0.251 </span></a>
+<a class="sourceLine" id="cb65-44" data-line-number="44"><span class="co">#&gt; 4 e     TRUE                 9.89</span></a>
+<a class="sourceLine" id="cb65-45" data-line-number="45"></a>
+<a class="sourceLine" id="cb65-46" data-line-number="46">fig &lt;-<span class="st"> </span><span class="kw">ggplot</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb65-47" data-line-number="47"><span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">x =</span> x, <span class="dt">y =</span> y), </a>
+<a class="sourceLine" id="cb65-48" data-line-number="48">            <span class="dt">data =</span> <span class="kw">tibble</span>(<span class="dt">x =</span> <span class="kw">seq</span>(<span class="op">-</span><span class="dv">4</span>, <span class="dv">4</span>, <span class="dt">length.out =</span> <span class="fl">1e3</span>),</a>
+<a class="sourceLine" id="cb65-49" data-line-number="49">                          <span class="dt">y =</span> <span class="kw">dnorm</span>(x)),</a>
+<a class="sourceLine" id="cb65-50" data-line-number="50">            <span class="dt">linetype =</span> <span class="dv">1</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb65-51" data-line-number="51"><span class="st">  </span><span class="kw">geom_density</span>(<span class="kw">aes</span>(clt, <span class="dt">fill =</span> type, <span class="dt">colour =</span> type),</a>
+<a class="sourceLine" id="cb65-52" data-line-number="52">               psi_hat_de, <span class="dt">alpha =</span> <span class="fl">0.1</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb65-53" data-line-number="53"><span class="st">  </span><span class="kw">geom_vline</span>(<span class="kw">aes</span>(<span class="dt">xintercept =</span> bias, <span class="dt">colour =</span> type),</a>
+<a class="sourceLine" id="cb65-54" data-line-number="54">             bias_de, <span class="dt">size =</span> <span class="fl">1.5</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb65-55" data-line-number="55"><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span><span class="st"> </span>auto_renormalization,</a>
+<a class="sourceLine" id="cb65-56" data-line-number="56">             <span class="dt">labeller =</span></a>
+<a class="sourceLine" id="cb65-57" data-line-number="57">               <span class="kw">as_labeller</span>(<span class="kw">c</span>(<span class="st">`</span><span class="dt">TRUE</span><span class="st">`</span> =<span class="st"> &quot;auto-renormalization: TRUE&quot;</span>,</a>
+<a class="sourceLine" id="cb65-58" data-line-number="58">                             <span class="st">`</span><span class="dt">FALSE</span><span class="st">`</span> =<span class="st"> &quot;auto-renormalization: FALSE&quot;</span>)),</a>
+<a class="sourceLine" id="cb65-59" data-line-number="59">             <span class="dt">scales =</span> <span class="st">&quot;free&quot;</span>)</a>
+<a class="sourceLine" id="cb65-60" data-line-number="60">  </a>
+<a class="sourceLine" id="cb65-61" data-line-number="61">fig <span class="op">+</span></a>
+<a class="sourceLine" id="cb65-62" data-line-number="62"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">y =</span> <span class="st">&quot;&quot;</span>,</a>
+<a class="sourceLine" id="cb65-63" data-line-number="63">       <span class="dt">x =</span> <span class="kw">bquote</span>(<span class="kw">paste</span>(<span class="kw">sqrt</span>(n<span class="op">/</span>v[n]<span class="op">^</span>{<span class="kw">list</span>(d, e)})<span class="op">*</span></a>
+<a class="sourceLine" id="cb65-64" data-line-number="64"><span class="st">                        </span>(psi[n]<span class="op">^</span>{<span class="kw">list</span>(d, e)} <span class="op">-</span><span class="st"> </span>psi[<span class="dv">0</span>]))))</a></code></pre></div>
+<div class="figure" style="text-align: center"><span id="fig:estimating-Qbar-one-bis"></span>
+<img src="img/estimating-Qbar-one-bis-1.png" alt="Kernel density estimators of the law of two G-computation estimators of \(\psi_{0}\) (recentered with respect to \(\psi_{0}\), and renormalized). The estimators respectively hinge on algorithms \(\Algo_{\Qbar,1}\) (d) and \(\Algo_{\Qbar,\text{kNN}}\) (e) to estimate \(\Qbar_{0}\). Two renormalization schemes are considered, either based on an estimator of the asymptotic variance (right) or on the empirical variance computed across the iter independent replications of the estimators (left). We emphasize that the \(x\)-axis ranges differ starkly between the left and right plots." width="70%" />
+<p class="caption">
+Figure 8.4: Kernel density estimators of the law of two G-computation estimators of <span class="math inline">\(\psi_{0}\)</span> (recentered with respect to <span class="math inline">\(\psi_{0}\)</span>, and renormalized). The estimators respectively hinge on algorithms <span class="math inline">\(\Algo_{\Qbar,1}\)</span> (d) and <span class="math inline">\(\Algo_{\Qbar,\text{kNN}}\)</span> (e) to estimate <span class="math inline">\(\Qbar_{0}\)</span>. Two renormalization schemes are considered, either based on an estimator of the asymptotic variance (right) or on the empirical variance computed across the <code>iter</code> independent replications of the estimators (left). We emphasize that the <span class="math inline">\(x\)</span>-axis ranges differ starkly between the left and right plots.
+</p>
+</div>
+<p>We represent the empirical laws of the recentered (with respect to <span class="math inline">\(\psi_{0}\)</span>)
+and renormalized <span class="math inline">\(\psi_{n}^{d}\)</span> and <span class="math inline">\(\psi_{n}^{e}\)</span> in Figure
+<a href="8-naive-estimators.html#fig:estimating-Qbar-one-bis">8.4</a> (kernel density estimators). Two
+renormalization schemes are considered, either based on an estimator of the
+asymptotic variance (left) or on the empirical variance computed across the
+<code>iter</code> independent replications of the estimators (right). We emphasize that
+the <span class="math inline">\(x\)</span>-axis ranges differ starkly between the left and right plots.</p>
+<p>Two important comments are in order. First, on the one hand, the
+G-computation estimator <span class="math inline">\(\psi_{n}^{d}\)</span> is biased. Specifically, by the above
+chunk of code, the averages of <span class="math inline">\(\sqrt{n/v_{n}^{d}} (\psi_{n}^{d} - \psi_{0})\)</span>
+and <span class="math inline">\(\sqrt{n/v_{n}^{d*}} (\psi_{n}^{d} - \psi_{0})\)</span> computed across the
+realizations are equal to 0.089 and 0.053 (see <code>bias_de</code>). On the other hand, the G-computation
+estimator <span class="math inline">\(\psi_{n}^{e}\)</span> is biased too, though slightly less than
+<span class="math inline">\(\psi_{n}^{d}\)</span>. Specifically, by the above chunk of code, the averages of
+<span class="math inline">\(\sqrt{n/v_{n}^{e}} (\psi_{n}^{e} - \psi_{0})\)</span> and <span class="math inline">\(\sqrt{n/v^{e*}} (\psi_{n}^{e} - \psi_{0})\)</span> computed across the realizations are equal to
+9.892 and 0.251 (see
+<code>bias_de</code>). We can provide an oracular explanation. Estimator <span class="math inline">\(\psi_{n}^{d}\)</span>
+suffers from the poor approximation of <span class="math inline">\(\Qbar_{0}\)</span> by
+<span class="math inline">\(\Algo_{\Qbar,1}(P_{n})\)</span>, a result of the algorithm’s mis-specification. As
+for <span class="math inline">\(\psi_{n}^{e}\)</span>, it behaves better because <span class="math inline">\(\Algo_{\Qbar,\text{kNN}} (P_{n})\)</span> approximates <span class="math inline">\(\Qbar_{0}\)</span> better than <span class="math inline">\(\Algo_{\Qbar,1}(P_{n})\)</span>, an
+apparent consequence of the greater versatility of the algorithm.</p>
+<p>Second, we get a visual confirmation that <span class="math inline">\(v_{n}^{d}\)</span> under-estimates the
+actual asymptotic variance of <span class="math inline">\(\sqrt{n} (\psi_{n}^{d} - \psi_{0})\)</span>: the
+right-hand side red bell-shaped curve is too dispersed. In contrast, the
+right-hand side blue bell-shaped curve is much closer to the black curve that
+represents the density of the standard normal law. Looking at the left-hand
+side plot reveals that the empirical law of <span class="math inline">\(\sqrt{n/v^{d*}} (\psi_{n}^{d} - \psi_{0})\)</span>, once translated to compensate for the bias, is rather close to the
+black curve. This means that the random variable is approximately distributed
+like a Gaussian random variable. On the contrary, the empirical law of
+<span class="math inline">\(\sqrt{n/v^{e*}} (\psi_{n}^{e} - \psi_{0})\)</span> does not strike us as being as
+closely Gaussian-like as that of <span class="math inline">\(\sqrt{n/v^{d*}} (\psi_{n}^{d} - \psi_{0})\)</span>.
+By being more data-adaptive than <span class="math inline">\(\Algo_{\Qbar,1}\)</span>, algorithm
+<span class="math inline">\(\Algo_{\Qbar,\text{kNN}}\)</span> yields a better estimator of <span class="math inline">\(\Qbar_{0}\)</span>. However,
+the rate of convergence of <span class="math inline">\(\Algo_{\Qbar,\text{kNN}}(P_{n})\)</span> to its limit may
+be slower than root-<span class="math inline">\(n\)</span>, invalidating a central limit theorem.</p>
+<p>How do the estimated variances of <span class="math inline">\(\psi_{n}^{d}\)</span> and <span class="math inline">\(\psi_{n}^{e}\)</span> compare
+with their empirical counterparts (computed across the <code>iter</code> replications of
+the construction of the two estimators)?</p>
+<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb66-1" data-line-number="1"><span class="co">## psi_n^d</span></a>
+<a class="sourceLine" id="cb66-2" data-line-number="2">(psi_hat_de <span class="op">%&gt;%</span><span class="st"> </span>ungroup <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb66-3" data-line-number="3"><span class="st">   </span><span class="kw">filter</span>(type <span class="op">==</span><span class="st"> &quot;d&quot;</span> <span class="op">&amp;</span><span class="st"> </span>auto_renormalization) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(sig_n) <span class="op">%&gt;%</span><span class="st"> </span>summary)</a>
+<a class="sourceLine" id="cb66-4" data-line-number="4"><span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span></a>
+<a class="sourceLine" id="cb66-5" data-line-number="5"><span class="co">#&gt; 0.00041 0.00304 0.00391 0.00392 0.00484 0.01015</span></a>
+<a class="sourceLine" id="cb66-6" data-line-number="6"><span class="co">## psi_n^e</span></a>
+<a class="sourceLine" id="cb66-7" data-line-number="7">(psi_hat_de <span class="op">%&gt;%</span><span class="st"> </span>ungroup <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb66-8" data-line-number="8"><span class="st">   </span><span class="kw">filter</span>(type <span class="op">==</span><span class="st"> &quot;e&quot;</span> <span class="op">&amp;</span><span class="st"> </span>auto_renormalization) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(sig_n) <span class="op">%&gt;%</span><span class="st"> </span>summary)</a>
+<a class="sourceLine" id="cb66-9" data-line-number="9"><span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span></a>
+<a class="sourceLine" id="cb66-10" data-line-number="10"><span class="co">#&gt; 0.00039 0.00124 0.00165 0.00206 0.00260 0.00986</span></a></code></pre></div>
+<p>The empirical standard deviation of <span class="math inline">\(\psi_{n}^{d}\)</span> is approximately
+13.669 times larger than the average <em>estimated</em>
+standard deviation. The estimator is anti-conservative indeed!</p>
+<p>As for the empirical standard deviation of <span class="math inline">\(\psi_{n}^{e}\)</span>, it is approximately
+26.169 times larger than the average <em>estimated</em>
+standard deviation.</p>
+</div>
+<div id="empirical-inves-Gcomp-varying" class="section level3">
+<h3><span class="header-section-number">8.4.4</span> ☡  Empirical investigation, varying sample size</h3>
+<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb67-1" data-line-number="1">sample_size &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="fl">5e3</span>, <span class="fl">15e3</span>)</a>
+<a class="sourceLine" id="cb67-2" data-line-number="2">block_size &lt;-<span class="st"> </span><span class="kw">sum</span>(sample_size)</a>
+<a class="sourceLine" id="cb67-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb67-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb67-5" data-line-number="5">learned_features_varying_sample_size &lt;-<span class="st"> </span>obs <span class="op">%&gt;%</span><span class="st"> </span>as_tibble <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb67-6" data-line-number="6"><span class="st">  </span><span class="kw">head</span>(<span class="dt">n =</span> (<span class="kw">nrow</span>(.) <span class="op">%/%</span><span class="st"> </span>block_size) <span class="op">*</span><span class="st"> </span>block_size) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb67-7" data-line-number="7"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">block =</span> <span class="kw">label</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(.), sample_size)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb67-8" data-line-number="8"><span class="st">  </span><span class="kw">nest</span>(<span class="dt">obs =</span> <span class="kw">c</span>(W, A, Y))</a></code></pre></div>
+<p>First, we cut the data set into independent sub-data sets of sample size <span class="math inline">\(n\)</span>
+in ${<span class="math inline">\(5000, 1.5\times 10^{4}\)</span>}$. Second, we infer <span class="math inline">\(\psi_{0}\)</span> as shown two chunks
+earlier. We thus obtain 5 independent realizations
+of each estimator derived on data sets of 2, increasing
+sample sizes.</p>
+<div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb68-1" data-line-number="1">learned_features_varying_sample_size &lt;-</a>
+<a class="sourceLine" id="cb68-2" data-line-number="2"><span class="st">  </span>learned_features_varying_sample_size <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb68-3" data-line-number="3"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Qbar_hat_d =</span></a>
+<a class="sourceLine" id="cb68-4" data-line-number="4">           <span class="kw">map</span>(obs,</a>
+<a class="sourceLine" id="cb68-5" data-line-number="5">               <span class="op">~</span><span class="st"> </span><span class="kw">estimate_Qbar</span>(., <span class="dt">algorithm =</span> working_model_Q_one)),</a>
+<a class="sourceLine" id="cb68-6" data-line-number="6">         <span class="dt">Qbar_hat_e =</span></a>
+<a class="sourceLine" id="cb68-7" data-line-number="7">           <span class="kw">map</span>(obs,</a>
+<a class="sourceLine" id="cb68-8" data-line-number="8">               <span class="op">~</span><span class="st"> </span><span class="kw">estimate_Qbar</span>(., <span class="dt">algorithm =</span> kknn_algo,</a>
+<a class="sourceLine" id="cb68-9" data-line-number="9">                               <span class="dt">trControl =</span> kknn_control,</a>
+<a class="sourceLine" id="cb68-10" data-line-number="10">                               <span class="dt">tuneGrid =</span> kknn_grid))) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb68-11" data-line-number="11"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">QW =</span> <span class="kw">map</span>(obs, estimate_QW),</a>
+<a class="sourceLine" id="cb68-12" data-line-number="12">         <span class="dt">est_d =</span></a>
+<a class="sourceLine" id="cb68-13" data-line-number="13">           <span class="kw">pmap</span>(<span class="kw">list</span>(QW, Qbar_hat_d, <span class="kw">n</span>()),</a>
+<a class="sourceLine" id="cb68-14" data-line-number="14">                <span class="op">~</span><span class="st"> </span><span class="kw">compute_gcomp</span>(..<span class="dv">1</span>, <span class="kw">wrapper</span>(..<span class="dv">2</span>, <span class="ot">FALSE</span>), ..<span class="dv">3</span>)),</a>
+<a class="sourceLine" id="cb68-15" data-line-number="15">         <span class="dt">est_e =</span></a>
+<a class="sourceLine" id="cb68-16" data-line-number="16">           <span class="kw">pmap</span>(<span class="kw">list</span>(QW, Qbar_hat_e, <span class="kw">n</span>()),</a>
+<a class="sourceLine" id="cb68-17" data-line-number="17">                <span class="op">~</span><span class="st"> </span><span class="kw">compute_gcomp</span>(..<span class="dv">1</span>, <span class="kw">wrapper</span>(..<span class="dv">2</span>, <span class="ot">FALSE</span>), ..<span class="dv">3</span>)))</a>
+<a class="sourceLine" id="cb68-18" data-line-number="18"></a>
+<a class="sourceLine" id="cb68-19" data-line-number="19">root_n_bias &lt;-<span class="st"> </span>learned_features_varying_sample_size <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb68-20" data-line-number="20"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">block =</span> <span class="kw">unlist</span>(<span class="kw">map</span>(<span class="kw">strsplit</span>(block, <span class="st">&quot;_&quot;</span>), <span class="op">~</span>.x[<span class="dv">2</span>])),</a>
+<a class="sourceLine" id="cb68-21" data-line-number="21">         <span class="dt">sample_size =</span> sample_size[<span class="kw">as.integer</span>(block)]) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb68-22" data-line-number="22"><span class="st">  </span><span class="kw">select</span>(block, sample_size, est_d, est_e) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb68-23" data-line-number="23"><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="kw">c</span>(<span class="st">`</span><span class="dt">est_d</span><span class="st">`</span>, <span class="st">`</span><span class="dt">est_e</span><span class="st">`</span>),</a>
+<a class="sourceLine" id="cb68-24" data-line-number="24">               <span class="dt">names_to =</span> <span class="st">&quot;type&quot;</span>, <span class="dt">values_to =</span> <span class="st">&quot;estimates&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb68-25" data-line-number="25"><span class="st">  </span><span class="kw">extract</span>(type, <span class="st">&quot;type&quot;</span>, <span class="st">&quot;_([de])$&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb68-26" data-line-number="26"><span class="st">  </span><span class="kw">unnest</span>(estimates) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb68-27" data-line-number="27"><span class="st">  </span><span class="kw">group_by</span>(block, type) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb68-28" data-line-number="28"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">sig_alt =</span> <span class="kw">sd</span>(psi_n)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb68-29" data-line-number="29"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">clt_ =</span> (psi_n <span class="op">-</span><span class="st"> </span>psi_zero) <span class="op">/</span><span class="st"> </span>sig_n,</a>
+<a class="sourceLine" id="cb68-30" data-line-number="30">         <span class="dt">clt_alt =</span> (psi_n <span class="op">-</span><span class="st"> </span>psi_zero) <span class="op">/</span><span class="st"> </span>sig_alt) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb68-31" data-line-number="31"><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="kw">c</span>(<span class="st">`</span><span class="dt">clt_</span><span class="st">`</span>, <span class="st">`</span><span class="dt">clt_alt</span><span class="st">`</span>),</a>
+<a class="sourceLine" id="cb68-32" data-line-number="32">               <span class="dt">names_to =</span> <span class="st">&quot;key&quot;</span>, <span class="dt">values_to =</span> <span class="st">&quot;clt&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb68-33" data-line-number="33"><span class="st">  </span><span class="kw">extract</span>(key, <span class="st">&quot;key&quot;</span>, <span class="st">&quot;_(.*)$&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb68-34" data-line-number="34"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">key =</span> <span class="kw">ifelse</span>(key <span class="op">==</span><span class="st"> &quot;&quot;</span>, <span class="ot">TRUE</span>, <span class="ot">FALSE</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb68-35" data-line-number="35"><span class="st">  </span><span class="kw">rename</span>(<span class="st">&quot;auto_renormalization&quot;</span> =<span class="st"> </span>key)</a></code></pre></div>
+<p>The <code>tibble</code> called <code>root_n_bias</code> reports root-<span class="math inline">\(n\)</span> times bias for all
+combinations of estimator and sample size. The next chunk of code presents
+visually our findings, see Figure <a href="8-naive-estimators.html#fig:estimating-Qbar-four">8.5</a>. Note how we
+include the realizations of the estimators derived earlier and contained in
+<code>psi_hat_de</code> (thus breaking the independence between components of
+<code>root_n_bias</code>, a small price to pay in this context).</p>
+
+<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb69-1" data-line-number="1">root_n_bias &lt;-<span class="st"> </span>learned_features_fixed_sample_size <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb69-2" data-line-number="2"><span class="st">   </span><span class="kw">mutate</span>(<span class="dt">block =</span> <span class="st">&quot;0&quot;</span>,</a>
+<a class="sourceLine" id="cb69-3" data-line-number="3">          <span class="dt">sample_size =</span> B<span class="op">/</span>iter) <span class="op">%&gt;%</span><span class="st">  </span><span class="co"># because *fixed* sample size</span></a>
+<a class="sourceLine" id="cb69-4" data-line-number="4"><span class="st">   </span><span class="kw">select</span>(block, sample_size, est_d, est_e) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb69-5" data-line-number="5"><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="kw">c</span>(<span class="st">`</span><span class="dt">est_d</span><span class="st">`</span>, <span class="st">`</span><span class="dt">est_e</span><span class="st">`</span>),</a>
+<a class="sourceLine" id="cb69-6" data-line-number="6">               <span class="dt">names_to =</span> <span class="st">&quot;type&quot;</span>, <span class="dt">values_to =</span> <span class="st">&quot;estimates&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb69-7" data-line-number="7"><span class="st">   </span><span class="kw">extract</span>(type, <span class="st">&quot;type&quot;</span>, <span class="st">&quot;_([de])$&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb69-8" data-line-number="8"><span class="st">   </span><span class="kw">unnest</span>(estimates) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb69-9" data-line-number="9"><span class="st">   </span><span class="kw">group_by</span>(block, type) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb69-10" data-line-number="10"><span class="st">   </span><span class="kw">mutate</span>(<span class="dt">sig_alt =</span> <span class="kw">sd</span>(psi_n)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb69-11" data-line-number="11"><span class="st">   </span><span class="kw">mutate</span>(<span class="dt">clt_ =</span> (psi_n <span class="op">-</span><span class="st"> </span>psi_zero) <span class="op">/</span><span class="st"> </span>sig_n,</a>
+<a class="sourceLine" id="cb69-12" data-line-number="12">          <span class="dt">clt_alt =</span> (psi_n <span class="op">-</span><span class="st"> </span>psi_zero) <span class="op">/</span><span class="st"> </span>sig_alt) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb69-13" data-line-number="13"><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="kw">c</span>(<span class="st">`</span><span class="dt">clt_</span><span class="st">`</span>, <span class="st">`</span><span class="dt">clt_alt</span><span class="st">`</span>),</a>
+<a class="sourceLine" id="cb69-14" data-line-number="14">               <span class="dt">names_to =</span> <span class="st">&quot;key&quot;</span>, <span class="dt">values_to =</span> <span class="st">&quot;clt&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb69-15" data-line-number="15"><span class="st">   </span><span class="kw">extract</span>(key, <span class="st">&quot;key&quot;</span>, <span class="st">&quot;_(.*)$&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb69-16" data-line-number="16"><span class="st">   </span><span class="kw">mutate</span>(<span class="dt">key =</span> <span class="kw">ifelse</span>(key <span class="op">==</span><span class="st"> &quot;&quot;</span>, <span class="ot">TRUE</span>, <span class="ot">FALSE</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb69-17" data-line-number="17"><span class="st">   </span><span class="kw">rename</span>(<span class="st">&quot;auto_renormalization&quot;</span> =<span class="st"> </span>key) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb69-18" data-line-number="18"><span class="st">   </span><span class="kw">full_join</span>(root_n_bias)</a>
+<a class="sourceLine" id="cb69-19" data-line-number="19"> </a>
+<a class="sourceLine" id="cb69-20" data-line-number="20">root_n_bias <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(auto_renormalization) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb69-21" data-line-number="21"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">rnb =</span> <span class="kw">sqrt</span>(sample_size) <span class="op">*</span><span class="st"> </span>(psi_n <span class="op">-</span><span class="st"> </span>psi_zero)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb69-22" data-line-number="22"><span class="st">  </span><span class="kw">group_by</span>(sample_size, type) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb69-23" data-line-number="23"><span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb69-24" data-line-number="24"><span class="st">  </span><span class="kw">stat_summary</span>(<span class="kw">aes</span>(<span class="dt">x =</span> sample_size, <span class="dt">y =</span> rnb,</a>
+<a class="sourceLine" id="cb69-25" data-line-number="25">                   <span class="dt">group =</span> <span class="kw">interaction</span>(sample_size, type),</a>
+<a class="sourceLine" id="cb69-26" data-line-number="26">                   <span class="dt">color =</span> type),</a>
+<a class="sourceLine" id="cb69-27" data-line-number="27">               <span class="dt">fun.data =</span> mean_se, <span class="dt">fun.args =</span> <span class="kw">list</span>(<span class="dt">mult =</span> <span class="dv">1</span>),</a>
+<a class="sourceLine" id="cb69-28" data-line-number="28">               <span class="dt">position =</span> <span class="kw">position_dodge</span>(<span class="dt">width =</span> <span class="dv">250</span>), <span class="dt">cex =</span> <span class="dv">1</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb69-29" data-line-number="29"><span class="st">  </span><span class="kw">stat_summary</span>(<span class="kw">aes</span>(<span class="dt">x =</span> sample_size, <span class="dt">y =</span> rnb,</a>
+<a class="sourceLine" id="cb69-30" data-line-number="30">                   <span class="dt">group =</span> <span class="kw">interaction</span>(sample_size, type),</a>
+<a class="sourceLine" id="cb69-31" data-line-number="31">                   <span class="dt">color =</span> type),</a>
+<a class="sourceLine" id="cb69-32" data-line-number="32">               <span class="dt">fun.data =</span> mean_se, <span class="dt">fun.args =</span> <span class="kw">list</span>(<span class="dt">mult =</span> <span class="dv">1</span>),</a>
+<a class="sourceLine" id="cb69-33" data-line-number="33">               <span class="dt">position =</span> <span class="kw">position_dodge</span>(<span class="dt">width =</span> <span class="dv">250</span>), <span class="dt">cex =</span> <span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb69-34" data-line-number="34">               <span class="dt">geom =</span> <span class="st">&quot;errorbar&quot;</span>, <span class="dt">width =</span> <span class="dv">750</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb69-35" data-line-number="35"><span class="st">  </span><span class="kw">stat_summary</span>(<span class="kw">aes</span>(<span class="dt">x =</span> sample_size, <span class="dt">y =</span> rnb,</a>
+<a class="sourceLine" id="cb69-36" data-line-number="36">                   <span class="dt">color =</span> type),</a>
+<a class="sourceLine" id="cb69-37" data-line-number="37">               <span class="dt">fun =</span> mean,</a>
+<a class="sourceLine" id="cb69-38" data-line-number="38">               <span class="dt">position =</span> <span class="kw">position_dodge</span>(<span class="dt">width =</span> <span class="dv">250</span>),</a>
+<a class="sourceLine" id="cb69-39" data-line-number="39">               <span class="dt">geom =</span> <span class="st">&quot;polygon&quot;</span>, <span class="dt">fill =</span> <span class="ot">NA</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb69-40" data-line-number="40"><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x =</span> sample_size, <span class="dt">y =</span> rnb,</a>
+<a class="sourceLine" id="cb69-41" data-line-number="41">                 <span class="dt">group =</span> <span class="kw">interaction</span>(sample_size, type),</a>
+<a class="sourceLine" id="cb69-42" data-line-number="42">                 <span class="dt">color =</span> type),</a>
+<a class="sourceLine" id="cb69-43" data-line-number="43">             <span class="dt">position =</span> <span class="kw">position_dodge</span>(<span class="dt">width =</span> <span class="dv">250</span>),</a>
+<a class="sourceLine" id="cb69-44" data-line-number="44">             <span class="dt">alpha =</span> <span class="fl">0.1</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb69-45" data-line-number="45"><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks =</span> <span class="kw">unique</span>(<span class="kw">c</span>(B <span class="op">/</span><span class="st"> </span>iter, sample_size))) <span class="op">+</span></a>
+<a class="sourceLine" id="cb69-46" data-line-number="46"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;sample size n&quot;</span>,</a>
+<a class="sourceLine" id="cb69-47" data-line-number="47">       <span class="dt">y =</span> <span class="kw">bquote</span>(<span class="kw">paste</span>(<span class="kw">sqrt</span>(n) <span class="op">*</span><span class="st"> </span>(psi[n]<span class="op">^</span>{<span class="kw">list</span>(d, e)} <span class="op">-</span><span class="st"> </span>psi[<span class="dv">0</span>]))))</a></code></pre></div>
+<div class="figure" style="text-align: center"><span id="fig:estimating-Qbar-four"></span>
+<img src="img/estimating-Qbar-four-1.png" alt="Evolution of root-\(n\) times bias versus sample size for two G-computation estimators of \(\psi_{0}\). The estimators respectively hinge on algorithms \(\Algo_{\Qbar,1}\) (d) and \(\Algo_{\Qbar,\text{kNN}}\) (e) to estimate \(\Qbar_{0}\). Big dots represent the average biases and vertical lines represent twice the standard error." width="70%" />
+<p class="caption">
+Figure 8.5: Evolution of root-<span class="math inline">\(n\)</span> times bias versus sample size for two G-computation estimators of <span class="math inline">\(\psi_{0}\)</span>. The estimators respectively hinge on algorithms <span class="math inline">\(\Algo_{\Qbar,1}\)</span> (d) and <span class="math inline">\(\Algo_{\Qbar,\text{kNN}}\)</span> (e) to estimate <span class="math inline">\(\Qbar_{0}\)</span>. Big dots represent the average biases and vertical lines represent twice the standard error.
+</p>
+</div>
+<p>Root-<span class="math inline">\(n\)</span> bias for <span class="math inline">\(\psi_{n}^{d}\)</span> (red lines and points) is positive and tends
+to increase from sample size 1000 to 5000 and from
+5000 to 1.510^{4}. Moreover, root-<span class="math inline">\(n\)</span> bias tends to be
+larger for <span class="math inline">\(\psi_{n}^{d}\)</span> than for <span class="math inline">\(\psi_{n}^{e}\)</span>. In addition, root-<span class="math inline">\(n\)</span> bias
+for <span class="math inline">\(\psi_{n}^{e}\)</span> tends to increase from sample size 1000 to
+1.510^{4}, where it tends to be positive too.<a href="#fn19" class="footnote-ref" id="fnref19"><sup>19</sup></a></p>
+<p>In essence, we observe that the bias does not vanish faster than root-<span class="math inline">\(n\)</span>. For
+<span class="math inline">\(\psi_{n}^{d}\)</span>, this is because <span class="math inline">\(\Algo_{\Qbar,1}\)</span> is mis-specified and we
+expect that the bias increases at rate root-<span class="math inline">\(n\)</span>. For <span class="math inline">\(\psi_{n}^{e}\)</span>, this is
+because the estimator produced by the versatile <span class="math inline">\(\Algo_{\Qbar,\text{kNN}}\)</span>
+converges slowly to its limit. Can anything be done to amend <span class="math inline">\(\psi_{n}^{d}\)</span>
+and <span class="math inline">\(\psi_{n}^{e}\)</span>?</p>
+</div>
+</div>
+<div id="exo-plug-in-estimate" class="section level2">
+<h2><span class="header-section-number">8.5</span> ⚙ Investigating further the G-computation estimation strategy</h2>
+<ol style="list-style-type: decimal">
+<li><p>Implement the G-computation estimator based on well-specified working
+model. To do so, <em>(i)</em> create a copy <code>working_model_Q_two</code> of
+<code>working_model_Q_one</code>, <em>(ii)</em> replace its <code>family</code> entry in such a way that
+<span class="math inline">\(\Qbar_{0}\)</span> falls in the corresponding working model, and <em>(iii)</em> adapt the
+chunk of code where we computed <code>Qbar_hat_d</code> in Section
+<a href="8-naive-estimators.html#Gcomp-construction">8.4.1</a>.</p></li>
+<li><p>Evaluate the empirical properties of the estimator of problem 1.</p></li>
+<li><p>Create a function to estimate the marginal law <span class="math inline">\(Q_{0,W}\)</span> of <span class="math inline">\(W\)</span> by maximum
+likelihood estimation based on a mis-specified model that assumes (wrongly)
+that <span class="math inline">\(W\)</span> is drawn from a Gaussian law with unknown mean and variance.</p></li>
+<li><p>☡  Implement the G-computation estimator using either
+<code>working_model_Q_one</code> or <code>working_model_Q_two</code> and the estimator of
+<span class="math inline">\(Q_{0,W}\)</span> of problem 3.</p></li>
+</ol>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="7-nuisance.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="9-one-step.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="assets/gitbook-2.6.7/js/app.min.js"></script>
+<script src="assets/gitbook-2.6.7/js/lunr.js"></script>
+<script src="assets/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="assets/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": null,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["tlride-book.pdf"],
+"toc": {
+"collapse": "section",
+"scroll_hightlight": true,
+"toolbar": {
+"position": "static"
+},
+"edit": null,
+"download": "pdf",
+"search": true,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+}
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

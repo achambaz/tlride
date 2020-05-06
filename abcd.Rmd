@@ -4,7 +4,7 @@ options(digits = 3)
 knitr::opts_chunk$set(
   comment = "#>",
   collapse = TRUE,
-  cache = FALSE,
+  cache = TRUE,
   out.width = "70%",
   fig.align = 'center',
   fig.width = 6, # used to have: fig.width = 12,
