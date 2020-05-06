@@ -417,7 +417,7 @@ observations stored in <code>obs</code>, using the true feature <span class="mat
 <code>psi_hat_ab</code>. Similarly,</p>
 <div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb54-1" data-line-number="1">Gbar_hat &lt;-<span class="st"> </span><span class="kw">estimate_Gbar</span>(<span class="kw">head</span>(obs, <span class="fl">1e3</span>), working_model_G_one)</a>
 <a class="sourceLine" id="cb54-2" data-line-number="2"><span class="kw">compute_iptw</span>(<span class="kw">head</span>(obs, <span class="fl">1e3</span>), <span class="kw">wrapper</span>(Gbar_hat)) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(psi_n)</a>
-<a class="sourceLine" id="cb54-3" data-line-number="3"><span class="co">#&gt; [1] 0.0707</span></a></code></pre></div>
+<a class="sourceLine" id="cb54-3" data-line-number="3"><span class="co">#&gt; [1] 0.0915</span></a></code></pre></div>
 <p>implements <em>(i)</em> the estimation of <span class="math inline">\(\Gbar_{0}\)</span> with <span class="math inline">\(\Gbar_{n}\)</span>/<code>Gbar_hat</code>
 using algorithm <span class="math inline">\(\Algo_{\Gbar,1}\)</span> (first line) then <em>(ii)</em> the computation of
 <span class="math inline">\(\psi_{n}^{c}\)</span> (second line), both based on the same observations as above.</p>
@@ -492,13 +492,13 @@ renormalized <span class="math inline">\(\sqrt{n}/\sqrt{v_{n}^{c}} (\psi_{n}^{c}
 <a class="sourceLine" id="cb55-19" data-line-number="19">(bias_abc &lt;-<span class="st"> </span>psi_hat_abc <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb55-20" data-line-number="20"><span class="st">   </span><span class="kw">group_by</span>(type) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">summarise</span>(<span class="dt">bias =</span> <span class="kw">mean</span>(clt)))</a>
 <a class="sourceLine" id="cb55-21" data-line-number="21"><span class="co">#&gt; # A tibble: 3 x 2</span></a>
-<a class="sourceLine" id="cb55-22" data-line-number="22"><span class="co">#&gt;   type    bias</span></a>
-<a class="sourceLine" id="cb55-23" data-line-number="23"><span class="co">#&gt;   &lt;chr&gt;  &lt;dbl&gt;</span></a>
-<a class="sourceLine" id="cb55-24" data-line-number="24"><span class="co">#&gt; 1 a     0.456 </span></a>
-<a class="sourceLine" id="cb55-25" data-line-number="25"><span class="co">#&gt; 2 b     0.0951</span></a>
-<a class="sourceLine" id="cb55-26" data-line-number="26"><span class="co">#&gt; 3 c     0.0236</span></a></code></pre></div>
+<a class="sourceLine" id="cb55-22" data-line-number="22"><span class="co">#&gt;   type      bias</span></a>
+<a class="sourceLine" id="cb55-23" data-line-number="23"><span class="co">#&gt;   &lt;chr&gt;    &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb55-24" data-line-number="24"><span class="co">#&gt; 1 a      1.40   </span></a>
+<a class="sourceLine" id="cb55-25" data-line-number="25"><span class="co">#&gt; 2 b      0.0353 </span></a>
+<a class="sourceLine" id="cb55-26" data-line-number="26"><span class="co">#&gt; 3 c     -0.00443</span></a></code></pre></div>
 <p>By the above chunk of code, the average of <span class="math inline">\(\sqrt{n/v_{n}^{c}} (\psi_{n}^{c} - \psi_{0})\)</span> computed across the realizations is equal to
-0.024 (see <code>bias_abc</code>). In words, the average bias of <span class="math inline">\(\psi_{n}^{c}\)</span> is of the
+-0.004 (see <code>bias_abc</code>). In words, the average bias of <span class="math inline">\(\psi_{n}^{c}\)</span> is of the
 same magnitude as that of <span class="math inline">\(\psi_{n}^{b}\)</span> despite the fact that the
 construction of <span class="math inline">\(\psi_{n}^{c}\)</span> hinges on the estimation of <span class="math inline">\(\Gbar_{0}\)</span> (based
 on the well-specified algorithm <span class="math inline">\(\Algo_{\Gbar,1}\)</span>).</p>
@@ -543,18 +543,18 @@ estimated with the empirical variance of the <code>iter</code> replications of t
 construction of <span class="math inline">\(\psi_{n}^{c}\)</span>.</p>
 <div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb58-1" data-line-number="1">(emp_sig_n &lt;-<span class="st"> </span>psi_hat_abc <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(type <span class="op">==</span><span class="st"> &quot;c&quot;</span>) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb58-2" data-line-number="2"><span class="st">   </span><span class="kw">summarize</span>(<span class="kw">sd</span>(psi_n)) <span class="op">%&gt;%</span><span class="st"> </span>pull)</a>
-<a class="sourceLine" id="cb58-3" data-line-number="3"><span class="co">#&gt; [1] 0.589</span></a>
+<a class="sourceLine" id="cb58-3" data-line-number="3"><span class="co">#&gt; [1] 0.0175</span></a>
 <a class="sourceLine" id="cb58-4" data-line-number="4">(summ_sig_n &lt;-<span class="st"> </span>psi_hat_abc <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(type <span class="op">==</span><span class="st"> &quot;c&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(sig_n) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb58-5" data-line-number="5"><span class="st">   </span>summary)</a>
-<a class="sourceLine" id="cb58-6" data-line-number="6"><span class="co">#&gt;      sig_n      </span></a>
-<a class="sourceLine" id="cb58-7" data-line-number="7"><span class="co">#&gt;  Min.   :0.142  </span></a>
-<a class="sourceLine" id="cb58-8" data-line-number="8"><span class="co">#&gt;  1st Qu.:0.172  </span></a>
-<a class="sourceLine" id="cb58-9" data-line-number="9"><span class="co">#&gt;  Median :0.182  </span></a>
-<a class="sourceLine" id="cb58-10" data-line-number="10"><span class="co">#&gt;  Mean   :0.206  </span></a>
-<a class="sourceLine" id="cb58-11" data-line-number="11"><span class="co">#&gt;  3rd Qu.:0.197  </span></a>
-<a class="sourceLine" id="cb58-12" data-line-number="12"><span class="co">#&gt;  Max.   :1.086</span></a></code></pre></div>
+<a class="sourceLine" id="cb58-6" data-line-number="6"><span class="co">#&gt;      sig_n       </span></a>
+<a class="sourceLine" id="cb58-7" data-line-number="7"><span class="co">#&gt;  Min.   :0.0523  </span></a>
+<a class="sourceLine" id="cb58-8" data-line-number="8"><span class="co">#&gt;  1st Qu.:0.0549  </span></a>
+<a class="sourceLine" id="cb58-9" data-line-number="9"><span class="co">#&gt;  Median :0.0560  </span></a>
+<a class="sourceLine" id="cb58-10" data-line-number="10"><span class="co">#&gt;  Mean   :0.0561  </span></a>
+<a class="sourceLine" id="cb58-11" data-line-number="11"><span class="co">#&gt;  3rd Qu.:0.0570  </span></a>
+<a class="sourceLine" id="cb58-12" data-line-number="12"><span class="co">#&gt;  Max.   :0.0631</span></a></code></pre></div>
 <p>The empirical standard deviation is approximately
-0.35 times smaller than the average
+3.213 times smaller than the average
 <em>estimated</em> standard deviation. The estimator is conservative indeed!
 Furthermore, note the better fit with the density of the standard normal
 density of the kernel density estimator of the law of <span class="math inline">\(\sqrt{n} (\psi_{n}^{c} - \psi_{0})\)</span> <strong>renormalized with</strong> <code>emp_sig_n</code>.</p>
@@ -677,12 +677,12 @@ simple as running the following chunk of code:</p>
 <a class="sourceLine" id="cb64-2" data-line-number="2"><span class="co">#&gt; # A tibble: 1 x 2</span></a>
 <a class="sourceLine" id="cb64-3" data-line-number="3"><span class="co">#&gt;    psi_n   sig_n</span></a>
 <a class="sourceLine" id="cb64-4" data-line-number="4"><span class="co">#&gt;    &lt;dbl&gt;   &lt;dbl&gt;</span></a>
-<a class="sourceLine" id="cb64-5" data-line-number="5"><span class="co">#&gt; 1 0.0730 0.00260</span></a>
+<a class="sourceLine" id="cb64-5" data-line-number="5"><span class="co">#&gt; 1 0.0887 0.00245</span></a>
 <a class="sourceLine" id="cb64-6" data-line-number="6">(<span class="kw">compute_gcomp</span>(QW_hat, <span class="kw">wrapper</span>(Qbar_hat_d, <span class="ot">FALSE</span>), <span class="fl">1e3</span>))</a>
 <a class="sourceLine" id="cb64-7" data-line-number="7"><span class="co">#&gt; # A tibble: 1 x 2</span></a>
 <a class="sourceLine" id="cb64-8" data-line-number="8"><span class="co">#&gt;    psi_n   sig_n</span></a>
 <a class="sourceLine" id="cb64-9" data-line-number="9"><span class="co">#&gt;    &lt;dbl&gt;   &lt;dbl&gt;</span></a>
-<a class="sourceLine" id="cb64-10" data-line-number="10"><span class="co">#&gt; 1 0.0742 0.00215</span></a></code></pre></div>
+<a class="sourceLine" id="cb64-10" data-line-number="10"><span class="co">#&gt; 1 0.0961 0.00161</span></a></code></pre></div>
 <p>Note how we use function <code>wrapper</code> again, and that it is necessary to provide
 the number of observations upon which the estimation of the <span class="math inline">\(Q_{W}\)</span> and
 <span class="math inline">\(\Qbar\)</span> features of <span class="math inline">\(P_{0}\)</span>.</p>
@@ -802,12 +802,12 @@ replications of <span class="math inline">\(\psi_{n}^{d}\)</span> and <span clas
 <a class="sourceLine" id="cb65-36" data-line-number="36"><span class="st">   </span><span class="kw">group_by</span>(type, auto_renormalization) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb65-37" data-line-number="37"><span class="st">   </span><span class="kw">summarize</span>(<span class="dt">bias =</span> <span class="kw">mean</span>(clt)) <span class="op">%&gt;%</span><span class="st"> </span>ungroup)</a>
 <a class="sourceLine" id="cb65-38" data-line-number="38"><span class="co">#&gt; # A tibble: 4 x 3</span></a>
-<a class="sourceLine" id="cb65-39" data-line-number="39"><span class="co">#&gt;   type  auto_renormalization   bias</span></a>
-<a class="sourceLine" id="cb65-40" data-line-number="40"><span class="co">#&gt;   &lt;chr&gt; &lt;lgl&gt;                 &lt;dbl&gt;</span></a>
-<a class="sourceLine" id="cb65-41" data-line-number="41"><span class="co">#&gt; 1 d     FALSE                0.0530</span></a>
-<a class="sourceLine" id="cb65-42" data-line-number="42"><span class="co">#&gt; 2 d     TRUE                 0.0886</span></a>
-<a class="sourceLine" id="cb65-43" data-line-number="43"><span class="co">#&gt; 3 e     FALSE                0.251 </span></a>
-<a class="sourceLine" id="cb65-44" data-line-number="44"><span class="co">#&gt; 4 e     TRUE                 9.89</span></a>
+<a class="sourceLine" id="cb65-39" data-line-number="39"><span class="co">#&gt;   type  auto_renormalization  bias</span></a>
+<a class="sourceLine" id="cb65-40" data-line-number="40"><span class="co">#&gt;   &lt;chr&gt; &lt;lgl&gt;                &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb65-41" data-line-number="41"><span class="co">#&gt; 1 d     FALSE                0.240</span></a>
+<a class="sourceLine" id="cb65-42" data-line-number="42"><span class="co">#&gt; 2 d     TRUE                 2.25 </span></a>
+<a class="sourceLine" id="cb65-43" data-line-number="43"><span class="co">#&gt; 3 e     FALSE                0.122</span></a>
+<a class="sourceLine" id="cb65-44" data-line-number="44"><span class="co">#&gt; 4 e     TRUE                 0.679</span></a>
 <a class="sourceLine" id="cb65-45" data-line-number="45"></a>
 <a class="sourceLine" id="cb65-46" data-line-number="46">fig &lt;-<span class="st"> </span><span class="kw">ggplot</span>() <span class="op">+</span></a>
 <a class="sourceLine" id="cb65-47" data-line-number="47"><span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">x =</span> x, <span class="dt">y =</span> y), </a>
@@ -845,11 +845,11 @@ the <span class="math inline">\(x\)</span>-axis ranges differ starkly between th
 G-computation estimator <span class="math inline">\(\psi_{n}^{d}\)</span> is biased. Specifically, by the above
 chunk of code, the averages of <span class="math inline">\(\sqrt{n/v_{n}^{d}} (\psi_{n}^{d} - \psi_{0})\)</span>
 and <span class="math inline">\(\sqrt{n/v_{n}^{d*}} (\psi_{n}^{d} - \psi_{0})\)</span> computed across the
-realizations are equal to 0.089 and 0.053 (see <code>bias_de</code>). On the other hand, the G-computation
+realizations are equal to 2.247 and 0.24 (see <code>bias_de</code>). On the other hand, the G-computation
 estimator <span class="math inline">\(\psi_{n}^{e}\)</span> is biased too, though slightly less than
 <span class="math inline">\(\psi_{n}^{d}\)</span>. Specifically, by the above chunk of code, the averages of
 <span class="math inline">\(\sqrt{n/v_{n}^{e}} (\psi_{n}^{e} - \psi_{0})\)</span> and <span class="math inline">\(\sqrt{n/v^{e*}} (\psi_{n}^{e} - \psi_{0})\)</span> computed across the realizations are equal to
-9.892 and 0.251 (see
+0.679 and 0.122 (see
 <code>bias_de</code>). We can provide an oracular explanation. Estimator <span class="math inline">\(\psi_{n}^{d}\)</span>
 suffers from the poor approximation of <span class="math inline">\(\Qbar_{0}\)</span> by
 <span class="math inline">\(\Algo_{\Qbar,1}(P_{n})\)</span>, a result of the algorithm’s mis-specification. As
@@ -876,17 +876,17 @@ the construction of the two estimators)?</p>
 <a class="sourceLine" id="cb66-2" data-line-number="2">(psi_hat_de <span class="op">%&gt;%</span><span class="st"> </span>ungroup <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb66-3" data-line-number="3"><span class="st">   </span><span class="kw">filter</span>(type <span class="op">==</span><span class="st"> &quot;d&quot;</span> <span class="op">&amp;</span><span class="st"> </span>auto_renormalization) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(sig_n) <span class="op">%&gt;%</span><span class="st"> </span>summary)</a>
 <a class="sourceLine" id="cb66-4" data-line-number="4"><span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span></a>
-<a class="sourceLine" id="cb66-5" data-line-number="5"><span class="co">#&gt; 0.00041 0.00304 0.00391 0.00392 0.00484 0.01015</span></a>
+<a class="sourceLine" id="cb66-5" data-line-number="5"><span class="co">#&gt; 0.00061 0.00171 0.00208 0.00208 0.00244 0.00373</span></a>
 <a class="sourceLine" id="cb66-6" data-line-number="6"><span class="co">## psi_n^e</span></a>
 <a class="sourceLine" id="cb66-7" data-line-number="7">(psi_hat_de <span class="op">%&gt;%</span><span class="st"> </span>ungroup <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb66-8" data-line-number="8"><span class="st">   </span><span class="kw">filter</span>(type <span class="op">==</span><span class="st"> &quot;e&quot;</span> <span class="op">&amp;</span><span class="st"> </span>auto_renormalization) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(sig_n) <span class="op">%&gt;%</span><span class="st"> </span>summary)</a>
 <a class="sourceLine" id="cb66-9" data-line-number="9"><span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span></a>
-<a class="sourceLine" id="cb66-10" data-line-number="10"><span class="co">#&gt; 0.00039 0.00124 0.00165 0.00206 0.00260 0.00986</span></a></code></pre></div>
+<a class="sourceLine" id="cb66-10" data-line-number="10"><span class="co">#&gt; 0.00151 0.00261 0.00288 0.00289 0.00316 0.00430</span></a></code></pre></div>
 <p>The empirical standard deviation of <span class="math inline">\(\psi_{n}^{d}\)</span> is approximately
-13.669 times larger than the average <em>estimated</em>
+8.56 times larger than the average <em>estimated</em>
 standard deviation. The estimator is anti-conservative indeed!</p>
 <p>As for the empirical standard deviation of <span class="math inline">\(\psi_{n}^{e}\)</span>, it is approximately
-26.169 times larger than the average <em>estimated</em>
+6.093 times larger than the average <em>estimated</em>
 standard deviation.</p>
 </div>
 <div id="empirical-inves-Gcomp-varying" class="section level3">
@@ -901,7 +901,7 @@ standard deviation.</p>
 <a class="sourceLine" id="cb67-8" data-line-number="8"><span class="st">  </span><span class="kw">nest</span>(<span class="dt">obs =</span> <span class="kw">c</span>(W, A, Y))</a></code></pre></div>
 <p>First, we cut the data set into independent sub-data sets of sample size <span class="math inline">\(n\)</span>
 in ${<span class="math inline">\(5000, 1.5\times 10^{4}\)</span>}$. Second, we infer <span class="math inline">\(\psi_{0}\)</span> as shown two chunks
-earlier. We thus obtain 5 independent realizations
+earlier. We thus obtain 50 independent realizations
 of each estimator derived on data sets of 2, increasing
 sample sizes.</p>
 <div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb68-1" data-line-number="1">learned_features_varying_sample_size &lt;-</a>

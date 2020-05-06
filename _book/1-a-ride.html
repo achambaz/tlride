@@ -492,11 +492,11 @@ page of method <code>sample_from</code>). The next chunk of code runs the experi
 times, independently:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">(five_obs &lt;-<span class="st"> </span><span class="kw">sample_from</span>(experiment, <span class="dt">n =</span> <span class="dv">5</span>))</a>
 <a class="sourceLine" id="cb7-2" data-line-number="2"><span class="co">#&gt;          W A     Y</span></a>
-<a class="sourceLine" id="cb7-3" data-line-number="3"><span class="co">#&gt; [1,] 0.429 1 0.981</span></a>
-<a class="sourceLine" id="cb7-4" data-line-number="4"><span class="co">#&gt; [2,] 0.454 1 0.855</span></a>
-<a class="sourceLine" id="cb7-5" data-line-number="5"><span class="co">#&gt; [3,] 0.377 0 0.836</span></a>
-<a class="sourceLine" id="cb7-6" data-line-number="6"><span class="co">#&gt; [4,] 0.461 1 0.582</span></a>
-<a class="sourceLine" id="cb7-7" data-line-number="7"><span class="co">#&gt; [5,] 0.419 1 0.878</span></a></code></pre></div>
+<a class="sourceLine" id="cb7-3" data-line-number="3"><span class="co">#&gt; [1,] 0.414 1 0.996</span></a>
+<a class="sourceLine" id="cb7-4" data-line-number="4"><span class="co">#&gt; [2,] 0.409 1 0.669</span></a>
+<a class="sourceLine" id="cb7-5" data-line-number="5"><span class="co">#&gt; [3,] 0.404 0 0.825</span></a>
+<a class="sourceLine" id="cb7-6" data-line-number="6"><span class="co">#&gt; [4,] 0.462 1 0.539</span></a>
+<a class="sourceLine" id="cb7-7" data-line-number="7"><span class="co">#&gt; [5,] 0.404 1 0.986</span></a></code></pre></div>
 </div>
 <div id="revealing-experiment" class="section level3">
 <h3><span class="header-section-number">1.2.3</span> Revealing <code>experiment</code></h3>
@@ -526,7 +526,7 @@ features of <span class="math inline">\(P_{0}\)</span> revealed in <code>relevan
 <a class="sourceLine" id="cb9-12" data-line-number="12"><span class="co">#&gt;                       })</span></a>
 <a class="sourceLine" id="cb9-13" data-line-number="13"><span class="co">#&gt;         return(rowSums(out))</span></a>
 <a class="sourceLine" id="cb9-14" data-line-number="14"><span class="co">#&gt;       }</span></a>
-<a class="sourceLine" id="cb9-15" data-line-number="15"><span class="co">#&gt; &lt;environment: 0x103715d8&gt;</span></a></code></pre></div>
+<a class="sourceLine" id="cb9-15" data-line-number="15"><span class="co">#&gt; &lt;environment: 0xf7a5608&gt;</span></a></code></pre></div>
 <p>It appears that <span class="math inline">\(Q_{0,W}\)</span> is a mixture of the uniform laws over <span class="math inline">\([0,1]\)</span>
 (weight <span class="math inline">\(1/10\)</span>) and <span class="math inline">\([11/30,14/30]\)</span> (weight <span class="math inline">\(9/10\)</span>).<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a></p>
 </div>
@@ -541,7 +541,7 @@ A\Gbar_{0}(W) + (1-A) (1-\Gbar_{0}(W)).\end{equation*}\]</span></p>
 <a class="sourceLine" id="cb10-2" data-line-number="2"><span class="co">#&gt; function(W) {</span></a>
 <a class="sourceLine" id="cb10-3" data-line-number="3"><span class="co">#&gt;         expit(1 + 2 * W - 4 * sqrt(abs((W - 5/12))))</span></a>
 <a class="sourceLine" id="cb10-4" data-line-number="4"><span class="co">#&gt;       }</span></a>
-<a class="sourceLine" id="cb10-5" data-line-number="5"><span class="co">#&gt; &lt;environment: 0x103715d8&gt;</span></a></code></pre></div>
+<a class="sourceLine" id="cb10-5" data-line-number="5"><span class="co">#&gt; &lt;environment: 0xf7a5608&gt;</span></a></code></pre></div>
 <p>Note how real numbers of the form <span class="math inline">\(1 + 2W - 4 * \sqrt{|W - 5/12|})\)</span> are mapped
 into the interval <span class="math inline">\([0,1]\)</span> by the <span class="math inline">\(\expit\)</span> link function. We refer the reader
 to Figure <a href="7-nuisance.html#fig:estimate-Gbar-three">7.2</a> for a visualization of <span class="math inline">\(\Gbar_{0}\)</span>.</p>
@@ -561,7 +561,7 @@ evaluated at <span class="math inline">\(y\)</span> of <span class="math inline"
 <a class="sourceLine" id="cb11-8" data-line-number="8"><span class="co">#&gt;                      shape1 = shape1,</span></a>
 <a class="sourceLine" id="cb11-9" data-line-number="9"><span class="co">#&gt;                      shape2 = shape1 * (1 - QAW) / QAW)</span></a>
 <a class="sourceLine" id="cb11-10" data-line-number="10"><span class="co">#&gt;       }</span></a>
-<a class="sourceLine" id="cb11-11" data-line-number="11"><span class="co">#&gt; &lt;environment: 0x103715d8&gt;</span></a></code></pre></div>
+<a class="sourceLine" id="cb11-11" data-line-number="11"><span class="co">#&gt; &lt;environment: 0xf7a5608&gt;</span></a></code></pre></div>
 <p>It appears that the conditional law of <span class="math inline">\(Y\)</span> given <span class="math inline">\(A\)</span> and <span class="math inline">\(W\)</span> is the Beta law
 with conditional mean and variance characterized by the <code>Qbar</code> feature of
 <code>experiment</code> (see below) and the <code>shape10</code> and <code>shape11</code> parameters.</p>
@@ -579,8 +579,8 @@ and <span class="math inline">\(W\)</span>.</p>
 <a class="sourceLine" id="cb12-7" data-line-number="7"><span class="co">#&gt;              (W &gt;= 3/4) * (W - 3/4) * 2) +</span></a>
 <a class="sourceLine" id="cb12-8" data-line-number="8"><span class="co">#&gt;           (1 - A) * (sin(4 * W^2 * pi) / 4 + 1/2) </span></a>
 <a class="sourceLine" id="cb12-9" data-line-number="9"><span class="co">#&gt;       }</span></a>
-<a class="sourceLine" id="cb12-10" data-line-number="10"><span class="co">#&gt; &lt;bytecode: 0x11210630&gt;</span></a>
-<a class="sourceLine" id="cb12-11" data-line-number="11"><span class="co">#&gt; &lt;environment: 0x103715d8&gt;</span></a></code></pre></div>
+<a class="sourceLine" id="cb12-10" data-line-number="10"><span class="co">#&gt; &lt;bytecode: 0x108b41e8&gt;</span></a>
+<a class="sourceLine" id="cb12-11" data-line-number="11"><span class="co">#&gt; &lt;environment: 0xf7a5608&gt;</span></a></code></pre></div>
 <p>We denote <span class="math inline">\(\Qbar_0(A,W) = \Exp_{P_{0}}(Y|A,W)\)</span> the conditional mean of <span class="math inline">\(Y\)</span>
 given <span class="math inline">\(A\)</span> and <span class="math inline">\(W\)</span>. Note how <span class="math inline">\(\Qbar_0(A,W)\)</span> does depend heavily on <span class="math inline">\(A\)</span> and
 <span class="math inline">\(W\)</span>. We refer the reader to Section <a href="1-a-ride.html#exo-visualization">1.3</a> for a
@@ -630,8 +630,8 @@ visualization of <span class="math inline">\(\Qbar_{0}\)</span>.</p>
 <a class="sourceLine" id="cb13-37" data-line-number="37"><span class="co">#&gt;         }</span></a>
 <a class="sourceLine" id="cb13-38" data-line-number="38"><span class="co">#&gt;         return(obs)</span></a>
 <a class="sourceLine" id="cb13-39" data-line-number="39"><span class="co">#&gt;       }</span></a>
-<a class="sourceLine" id="cb13-40" data-line-number="40"><span class="co">#&gt; &lt;bytecode: 0x1014f568&gt;</span></a>
-<a class="sourceLine" id="cb13-41" data-line-number="41"><span class="co">#&gt; &lt;environment: 0x103715d8&gt;</span></a></code></pre></div>
+<a class="sourceLine" id="cb13-40" data-line-number="40"><span class="co">#&gt; &lt;bytecode: 0xf1728c0&gt;</span></a>
+<a class="sourceLine" id="cb13-41" data-line-number="41"><span class="co">#&gt; &lt;environment: 0xf7a5608&gt;</span></a></code></pre></div>
 <p>We will comment upon the <code>ideal</code> argument in the above <code>sample_from</code> feature
 in Section <a href="2-parameter.html#parameter-first-pass">2.1</a>.</p>
 </div>
@@ -722,9 +722,9 @@ and conditional probability <span class="math inline">\(\Gbar_{0}\)</span>.</li>
 </ol>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1">(<span class="kw">sample_from</span>(my_experiment, <span class="dv">3</span>))</a>
 <a class="sourceLine" id="cb16-2" data-line-number="2"><span class="co">#&gt;      W A Y</span></a>
-<a class="sourceLine" id="cb16-3" data-line-number="3"><span class="co">#&gt; [1,] 0 0 1</span></a>
-<a class="sourceLine" id="cb16-4" data-line-number="4"><span class="co">#&gt; [2,] 1 1 1</span></a>
-<a class="sourceLine" id="cb16-5" data-line-number="5"><span class="co">#&gt; [3,] 1 0 1</span></a></code></pre></div>
+<a class="sourceLine" id="cb16-3" data-line-number="3"><span class="co">#&gt; [1,] 1 0 1</span></a>
+<a class="sourceLine" id="cb16-4" data-line-number="4"><span class="co">#&gt; [2,] 0 0 1</span></a>
+<a class="sourceLine" id="cb16-5" data-line-number="5"><span class="co">#&gt; [3,] 1 1 1</span></a></code></pre></div>
 <ol start="4" style="list-style-type: decimal">
 <li>Characterize entirely the law of <code>my_experiment</code>. Hint:</li>
 </ol>
@@ -735,20 +735,20 @@ and conditional probability <span class="math inline">\(\Gbar_{0}\)</span>.</li>
 <a class="sourceLine" id="cb17-5" data-line-number="5"><span class="co">#&gt;       W     A     Y how_many</span></a>
 <a class="sourceLine" id="cb17-6" data-line-number="6"><span class="co">#&gt;   &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;</span></a>
 <a class="sourceLine" id="cb17-7" data-line-number="7"><span class="co">#&gt; 1     0     0     0      826</span></a>
-<a class="sourceLine" id="cb17-8" data-line-number="8"><span class="co">#&gt; 2     0     0     1      808</span></a>
-<a class="sourceLine" id="cb17-9" data-line-number="9"><span class="co">#&gt; 3     0     1     0      285</span></a>
-<a class="sourceLine" id="cb17-10" data-line-number="10"><span class="co">#&gt; 4     0     1     1      556</span></a>
-<a class="sourceLine" id="cb17-11" data-line-number="11"><span class="co">#&gt; 5     1     0     0      419</span></a>
-<a class="sourceLine" id="cb17-12" data-line-number="12"><span class="co">#&gt; 6     1     0     1     2665</span></a>
+<a class="sourceLine" id="cb17-8" data-line-number="8"><span class="co">#&gt; 2     0     0     1      833</span></a>
+<a class="sourceLine" id="cb17-9" data-line-number="9"><span class="co">#&gt; 3     0     1     0      286</span></a>
+<a class="sourceLine" id="cb17-10" data-line-number="10"><span class="co">#&gt; 4     0     1     1      561</span></a>
+<a class="sourceLine" id="cb17-11" data-line-number="11"><span class="co">#&gt; 5     1     0     0      376</span></a>
+<a class="sourceLine" id="cb17-12" data-line-number="12"><span class="co">#&gt; 6     1     0     1     2564</span></a>
 <a class="sourceLine" id="cb17-13" data-line-number="13"><span class="co">#&gt; # … with 2 more rows</span></a>
 <a class="sourceLine" id="cb17-14" data-line-number="14">obs <span class="op">%&gt;%</span><span class="st"> </span>as_tibble <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(W, A) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb17-15" data-line-number="15"><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">prob =</span> <span class="kw">mean</span>(Y)) <span class="op">%&gt;%</span><span class="st"> </span>ungroup</a>
 <a class="sourceLine" id="cb17-16" data-line-number="16"><span class="co">#&gt; # A tibble: 4 x 3</span></a>
 <a class="sourceLine" id="cb17-17" data-line-number="17"><span class="co">#&gt;       W     A  prob</span></a>
 <a class="sourceLine" id="cb17-18" data-line-number="18"><span class="co">#&gt;   &lt;int&gt; &lt;int&gt; &lt;dbl&gt;</span></a>
-<a class="sourceLine" id="cb17-19" data-line-number="19"><span class="co">#&gt; 1     0     0 0.494</span></a>
-<a class="sourceLine" id="cb17-20" data-line-number="20"><span class="co">#&gt; 2     0     1 0.661</span></a>
-<a class="sourceLine" id="cb17-21" data-line-number="21"><span class="co">#&gt; 3     1     0 0.864</span></a>
+<a class="sourceLine" id="cb17-19" data-line-number="19"><span class="co">#&gt; 1     0     0 0.502</span></a>
+<a class="sourceLine" id="cb17-20" data-line-number="20"><span class="co">#&gt; 2     0     1 0.662</span></a>
+<a class="sourceLine" id="cb17-21" data-line-number="21"><span class="co">#&gt; 3     1     0 0.872</span></a>
 <a class="sourceLine" id="cb17-22" data-line-number="22"><span class="co">#&gt; 4     1     1 0.798</span></a></code></pre></div>
 <ol start="5" style="list-style-type: decimal">
 <li>Now, make your own experiment.</li>

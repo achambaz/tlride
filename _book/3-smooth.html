@@ -438,8 +438,8 @@ again at the <code>sample_from</code> feature of <code>another_experiment</code>
 <a class="sourceLine" id="cb25-24" data-line-number="24"><span class="co">#&gt;         obs &lt;- cbind(W = W, A = A, Y = Y)</span></a>
 <a class="sourceLine" id="cb25-25" data-line-number="25"><span class="co">#&gt;         return(obs)</span></a>
 <a class="sourceLine" id="cb25-26" data-line-number="26"><span class="co">#&gt;       }</span></a>
-<a class="sourceLine" id="cb25-27" data-line-number="27"><span class="co">#&gt; &lt;bytecode: 0xa23ec20&gt;</span></a>
-<a class="sourceLine" id="cb25-28" data-line-number="28"><span class="co">#&gt; &lt;environment: 0x1153d6d8&gt;</span></a></code></pre></div>
+<a class="sourceLine" id="cb25-27" data-line-number="27"><span class="co">#&gt; &lt;bytecode: 0xf5819a0&gt;</span></a>
+<a class="sourceLine" id="cb25-28" data-line-number="28"><span class="co">#&gt; &lt;environment: 0x10bdcf08&gt;</span></a></code></pre></div>
 <p>Let us call <span class="math inline">\(\Pi_{h} \in \calM\)</span> the law encoded by <code>another_experiment</code> for a
 given <code>h</code> taken in <span class="math inline">\(]-1,1[\)</span>. Note that <span class="math display">\[\begin{equation*}\calP  \defq
 \{\Pi_h : h \in ]-1,1[\}\end{equation*}\]</span> defines a collection of laws, <em>i.e.</em>,
@@ -602,7 +602,7 @@ characterized by <code>experiment</code>:</p>
 drawn from <span class="math inline">\(P_{0}\)</span> in Section <a href="1-a-ride.html#synthetic-experiment">1.2.2</a>. This is what the
 next chunk of code does:</p>
 <div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1">(<span class="kw">eic_experiment</span>(five_obs))</a>
-<a class="sourceLine" id="cb29-2" data-line-number="2"><span class="co">#&gt; [1]  0.260  0.161 -0.387 -0.186  0.110</span></a></code></pre></div>
+<a class="sourceLine" id="cb29-2" data-line-number="2"><span class="co">#&gt; [1]  0.246 -0.157 -0.534 -0.243  0.234</span></a></code></pre></div>
 <p>Finally, the efficient influence curve can be visualized as two images that
 represent <span class="math inline">\((w,y) \mapsto D^{*}(P_{0})(w,a,y)\)</span> for <span class="math inline">\(a = 0,1\)</span>, respectively:</p>
 
@@ -679,7 +679,7 @@ level 95%:</p>
 <a class="sourceLine" id="cb32-5" data-line-number="5"></a>
 <a class="sourceLine" id="cb32-6" data-line-number="6">sd_hat &lt;-<span class="st"> </span><span class="kw">sd</span>(vars)</a>
 <a class="sourceLine" id="cb32-7" data-line-number="7">(slope_hat &lt;-<span class="st"> </span><span class="kw">mean</span>(vars))</a>
-<a class="sourceLine" id="cb32-8" data-line-number="8"><span class="co">#&gt; [1] 1.35</span></a>
+<a class="sourceLine" id="cb32-8" data-line-number="8"><span class="co">#&gt; [1] 1.36</span></a>
 <a class="sourceLine" id="cb32-9" data-line-number="9">(slope_CI &lt;-<span class="st"> </span>slope_hat <span class="op">+</span><span class="st"> </span><span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>) <span class="op">*</span></a>
 <a class="sourceLine" id="cb32-10" data-line-number="10"><span class="st">   </span><span class="kw">qnorm</span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>alpha <span class="op">/</span><span class="st"> </span><span class="dv">2</span>) <span class="op">*</span><span class="st"> </span>sd_hat <span class="op">/</span><span class="st"> </span><span class="kw">sqrt</span>(B))</a>
 <a class="sourceLine" id="cb32-11" data-line-number="11"><span class="co">#&gt; [1] 1.35 1.36</span></a></code></pre></div>
@@ -751,7 +751,7 @@ estimator, it is often referred to as the <em>efficient influence curve</em>.</p
 <div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" data-line-number="1">obs_another_experiment &lt;-<span class="st"> </span><span class="kw">sample_from</span>(another_experiment, B, <span class="dt">h =</span> <span class="dv">0</span>)</a>
 <a class="sourceLine" id="cb34-2" data-line-number="2">(cramer_rao_Pi_zero_hat &lt;-</a>
 <a class="sourceLine" id="cb34-3" data-line-number="3"><span class="st">   </span><span class="kw">var</span>(<span class="kw">eic_another_experiment</span>(obs_another_experiment)))</a>
-<a class="sourceLine" id="cb34-4" data-line-number="4"><span class="co">#&gt; [1] 0.098</span></a></code></pre></div>
+<a class="sourceLine" id="cb34-4" data-line-number="4"><span class="co">#&gt; [1] 0.0957</span></a></code></pre></div>
 <ol start="3" style="list-style-type: decimal">
 <li><p>With a large independent sample drawn from <span class="math inline">\(\Psi(P_0)\)</span> (or <span class="math inline">\(\Psi(\Pi_0)\)</span>),
 is it possible to construct a regular estimator <span class="math inline">\(\psi_{n}\)</span> of <span class="math inline">\(\Psi(P_0)\)</span>

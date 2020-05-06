@@ -459,7 +459,7 @@ estimator, using again the estimator <code>QW_hat</code> of the marginal law of 
 <a class="sourceLine" id="cb70-2" data-line-number="2"><span class="co">#&gt; # A tibble: 1 x 2</span></a>
 <a class="sourceLine" id="cb70-3" data-line-number="3"><span class="co">#&gt;    psi_n   sig_n</span></a>
 <a class="sourceLine" id="cb70-4" data-line-number="4"><span class="co">#&gt;    &lt;dbl&gt;   &lt;dbl&gt;</span></a>
-<a class="sourceLine" id="cb70-5" data-line-number="5"><span class="co">#&gt; 1 0.0730 0.00260</span></a>
+<a class="sourceLine" id="cb70-5" data-line-number="5"><span class="co">#&gt; 1 0.0887 0.00245</span></a>
 <a class="sourceLine" id="cb70-6" data-line-number="6">(psin_kknn_os &lt;-<span class="st"> </span><span class="kw">apply_one_step_correction</span>(<span class="kw">head</span>(obs, <span class="fl">1e3</span>),</a>
 <a class="sourceLine" id="cb70-7" data-line-number="7">                                           <span class="kw">wrapper</span>(Gbar_hat, <span class="ot">FALSE</span>),</a>
 <a class="sourceLine" id="cb70-8" data-line-number="8">                                           <span class="kw">wrapper</span>(Qbar_hat_kknn, <span class="ot">FALSE</span>),</a>
@@ -467,7 +467,7 @@ estimator, using again the estimator <code>QW_hat</code> of the marginal law of 
 <a class="sourceLine" id="cb70-10" data-line-number="10"><span class="co">#&gt; # A tibble: 1 x 3</span></a>
 <a class="sourceLine" id="cb70-11" data-line-number="11"><span class="co">#&gt;    psi_n  sig_n   crit_n</span></a>
 <a class="sourceLine" id="cb70-12" data-line-number="12"><span class="co">#&gt;    &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;</span></a>
-<a class="sourceLine" id="cb70-13" data-line-number="13"><span class="co">#&gt; 1 0.0695 0.0169 -0.00354</span></a></code></pre></div>
+<a class="sourceLine" id="cb70-13" data-line-number="13"><span class="co">#&gt; 1 0.0888 0.0162 0.000124</span></a></code></pre></div>
 <p>In the call to <code>apply_one_step_correction</code> we provide <em>(i)</em> the data set at
 hand (first line), <em>(ii)</em> the estimator <code>Gbar_hat</code> of <span class="math inline">\(\Gbar_{0}\)</span> that we
 built earlier by using algorithm <span class="math inline">\(\Algo_{\Gbar,1}\)</span> (second line; see Section
@@ -514,12 +514,12 @@ namely, thus we merely have to call the function <code>apply_one_step_correction
 <a class="sourceLine" id="cb71-31" data-line-number="31"><span class="st">   </span><span class="kw">group_by</span>(type, auto_renormalization) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb71-32" data-line-number="32"><span class="st">   </span><span class="kw">summarize</span>(<span class="dt">bias =</span> <span class="kw">mean</span>(clt)) <span class="op">%&gt;%</span><span class="st"> </span>ungroup)</a>
 <a class="sourceLine" id="cb71-33" data-line-number="33"><span class="co">#&gt; # A tibble: 4 x 3</span></a>
-<a class="sourceLine" id="cb71-34" data-line-number="34"><span class="co">#&gt;   type       auto_renormalization    bias</span></a>
-<a class="sourceLine" id="cb71-35" data-line-number="35"><span class="co">#&gt;   &lt;chr&gt;      &lt;lgl&gt;                  &lt;dbl&gt;</span></a>
-<a class="sourceLine" id="cb71-36" data-line-number="36"><span class="co">#&gt; 1 d_one_step FALSE                 0.0279</span></a>
-<a class="sourceLine" id="cb71-37" data-line-number="37"><span class="co">#&gt; 2 d_one_step TRUE                 -0.0437</span></a>
-<a class="sourceLine" id="cb71-38" data-line-number="38"><span class="co">#&gt; 3 e_one_step FALSE                -0.0226</span></a>
-<a class="sourceLine" id="cb71-39" data-line-number="39"><span class="co">#&gt; 4 e_one_step TRUE                  0.0499</span></a>
+<a class="sourceLine" id="cb71-34" data-line-number="34"><span class="co">#&gt;   type       auto_renormalization     bias</span></a>
+<a class="sourceLine" id="cb71-35" data-line-number="35"><span class="co">#&gt;   &lt;chr&gt;      &lt;lgl&gt;                   &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb71-36" data-line-number="36"><span class="co">#&gt; 1 d_one_step FALSE                -0.00668</span></a>
+<a class="sourceLine" id="cb71-37" data-line-number="37"><span class="co">#&gt; 2 d_one_step TRUE                 -0.0240 </span></a>
+<a class="sourceLine" id="cb71-38" data-line-number="38"><span class="co">#&gt; 3 e_one_step FALSE                 0.0333 </span></a>
+<a class="sourceLine" id="cb71-39" data-line-number="39"><span class="co">#&gt; 4 e_one_step TRUE                  0.0171</span></a>
 <a class="sourceLine" id="cb71-40" data-line-number="40"></a>
 <a class="sourceLine" id="cb71-41" data-line-number="41">fig &lt;-<span class="st"> </span><span class="kw">ggplot</span>() <span class="op">+</span></a>
 <a class="sourceLine" id="cb71-42" data-line-number="42"><span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">x =</span> x, <span class="dt">y =</span> y), </a>
@@ -552,12 +552,12 @@ compare <code>bias_de</code> with <code>bias_de_one_step</code>):</p>
 <a class="sourceLine" id="cb72-2" data-line-number="2"><span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span>auto_renormalization) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb72-3" data-line-number="3"><span class="st">  </span><span class="kw">arrange</span>(type)</a>
 <a class="sourceLine" id="cb72-4" data-line-number="4"><span class="co">#&gt; # A tibble: 4 x 3</span></a>
-<a class="sourceLine" id="cb72-5" data-line-number="5"><span class="co">#&gt;   type       auto_renormalization    bias</span></a>
-<a class="sourceLine" id="cb72-6" data-line-number="6"><span class="co">#&gt;   &lt;chr&gt;      &lt;lgl&gt;                  &lt;dbl&gt;</span></a>
-<a class="sourceLine" id="cb72-7" data-line-number="7"><span class="co">#&gt; 1 d          FALSE                 0.0530</span></a>
-<a class="sourceLine" id="cb72-8" data-line-number="8"><span class="co">#&gt; 2 d_one_step FALSE                 0.0279</span></a>
-<a class="sourceLine" id="cb72-9" data-line-number="9"><span class="co">#&gt; 3 e          FALSE                 0.251 </span></a>
-<a class="sourceLine" id="cb72-10" data-line-number="10"><span class="co">#&gt; 4 e_one_step FALSE                -0.0226</span></a></code></pre></div>
+<a class="sourceLine" id="cb72-5" data-line-number="5"><span class="co">#&gt;   type       auto_renormalization     bias</span></a>
+<a class="sourceLine" id="cb72-6" data-line-number="6"><span class="co">#&gt;   &lt;chr&gt;      &lt;lgl&gt;                   &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb72-7" data-line-number="7"><span class="co">#&gt; 1 d          FALSE                 0.240  </span></a>
+<a class="sourceLine" id="cb72-8" data-line-number="8"><span class="co">#&gt; 2 d_one_step FALSE                -0.00668</span></a>
+<a class="sourceLine" id="cb72-9" data-line-number="9"><span class="co">#&gt; 3 e          FALSE                 0.122  </span></a>
+<a class="sourceLine" id="cb72-10" data-line-number="10"><span class="co">#&gt; 4 e_one_step FALSE                 0.0333</span></a></code></pre></div>
 <p>What about the estimation of the asymptotic variance, and of the mean-square
 errors of the estimators?</p>
 <div class="sourceCode" id="cb73"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb73-1" data-line-number="1">psi_hat_de <span class="op">%&gt;%</span></a>
@@ -569,12 +569,12 @@ errors of the estimators?</p>
 <a class="sourceLine" id="cb73-7" data-line-number="7">            <span class="dt">mse =</span> <span class="kw">mean</span>((psi_n <span class="op">-</span><span class="st"> </span>psi_zero)<span class="op">^</span><span class="dv">2</span>) <span class="op">*</span><span class="st"> </span><span class="kw">n</span>()) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb73-8" data-line-number="8"><span class="st">  </span><span class="kw">arrange</span>(type)</a>
 <a class="sourceLine" id="cb73-9" data-line-number="9"><span class="co">#&gt; # A tibble: 4 x 4</span></a>
-<a class="sourceLine" id="cb73-10" data-line-number="10"><span class="co">#&gt;   type             sd       se     mse</span></a>
-<a class="sourceLine" id="cb73-11" data-line-number="11"><span class="co">#&gt;   &lt;chr&gt;         &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;</span></a>
-<a class="sourceLine" id="cb73-12" data-line-number="12"><span class="co">#&gt; 1 d          3.92e- 3 5.36e- 2 2.88e 0</span></a>
-<a class="sourceLine" id="cb73-13" data-line-number="13"><span class="co">#&gt; 2 d_one_step 1.77e+12 5.46e+12 2.98e28</span></a>
-<a class="sourceLine" id="cb73-14" data-line-number="14"><span class="co">#&gt; 3 e          2.06e- 3 5.40e- 2 3.09e 0</span></a>
-<a class="sourceLine" id="cb73-15" data-line-number="15"><span class="co">#&gt; 4 e_one_step 1.76e+12 4.22e+12 1.78e28</span></a></code></pre></div>
+<a class="sourceLine" id="cb73-10" data-line-number="10"><span class="co">#&gt;   type            sd     se   mse</span></a>
+<a class="sourceLine" id="cb73-11" data-line-number="11"><span class="co">#&gt;   &lt;chr&gt;        &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb73-12" data-line-number="12"><span class="co">#&gt; 1 d          0.00208 0.0178 0.336</span></a>
+<a class="sourceLine" id="cb73-13" data-line-number="13"><span class="co">#&gt; 2 d_one_step 0.0174  0.0174 0.302</span></a>
+<a class="sourceLine" id="cb73-14" data-line-number="14"><span class="co">#&gt; 3 e          0.00289 0.0176 0.314</span></a>
+<a class="sourceLine" id="cb73-15" data-line-number="15"><span class="co">#&gt; 4 e_one_step 0.0167  0.0176 0.309</span></a></code></pre></div>
 <p>The <code>sd</code> (<em>estimator</em> of the asymptotic standard deviation) and <code>se</code>
 (<em>empirical</em> standard deviation) entries are similar. This indicates that the
 inference of the asymptotic variance of the one-step estimators based on the

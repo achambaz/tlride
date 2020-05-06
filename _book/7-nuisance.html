@@ -470,12 +470,12 @@ in the next subsection. The latter sort is discussed in Section
 <a class="sourceLine" id="cb45-4" data-line-number="4"><span class="co">#&gt; {</span></a>
 <a class="sourceLine" id="cb45-5" data-line-number="5"><span class="co">#&gt;     trim_glm_fit(glm(family = binomial(), ...))</span></a>
 <a class="sourceLine" id="cb45-6" data-line-number="6"><span class="co">#&gt; }</span></a>
-<a class="sourceLine" id="cb45-7" data-line-number="7"><span class="co">#&gt; &lt;environment: 0xf614e38&gt;</span></a>
+<a class="sourceLine" id="cb45-7" data-line-number="7"><span class="co">#&gt; &lt;environment: 0xf0aa480&gt;</span></a>
 <a class="sourceLine" id="cb45-8" data-line-number="8"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb45-9" data-line-number="9"><span class="co">#&gt; $formula</span></a>
 <a class="sourceLine" id="cb45-10" data-line-number="10"><span class="co">#&gt; A ~ I(W^0.5) + I(abs(W - 5/12)^0.5) + I(W^1) + I(abs(W - 5/12)^1) + </span></a>
 <a class="sourceLine" id="cb45-11" data-line-number="11"><span class="co">#&gt;     I(W^1.5) + I(abs(W - 5/12)^1.5)</span></a>
-<a class="sourceLine" id="cb45-12" data-line-number="12"><span class="co">#&gt; &lt;environment: 0xf614e38&gt;</span></a>
+<a class="sourceLine" id="cb45-12" data-line-number="12"><span class="co">#&gt; &lt;environment: 0xf0aa480&gt;</span></a>
 <a class="sourceLine" id="cb45-13" data-line-number="13"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb45-14" data-line-number="14"><span class="co">#&gt; $type_of_preds</span></a>
 <a class="sourceLine" id="cb45-15" data-line-number="15"><span class="co">#&gt; [1] &quot;response&quot;</span></a>
@@ -560,11 +560,11 @@ Sections <a href="7-nuisance.html#nuisance-Qbar">7.6</a> and <a href="7-nuisance
 <a class="sourceLine" id="cb48-4" data-line-number="4"><span class="co">#&gt; {</span></a>
 <a class="sourceLine" id="cb48-5" data-line-number="5"><span class="co">#&gt;     trim_glm_fit(glm(family = binomial(), ...))</span></a>
 <a class="sourceLine" id="cb48-6" data-line-number="6"><span class="co">#&gt; }</span></a>
-<a class="sourceLine" id="cb48-7" data-line-number="7"><span class="co">#&gt; &lt;environment: 0xf614e38&gt;</span></a>
+<a class="sourceLine" id="cb48-7" data-line-number="7"><span class="co">#&gt; &lt;environment: 0xf0aa480&gt;</span></a>
 <a class="sourceLine" id="cb48-8" data-line-number="8"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb48-9" data-line-number="9"><span class="co">#&gt; $formula</span></a>
 <a class="sourceLine" id="cb48-10" data-line-number="10"><span class="co">#&gt; Y ~ A * (I(W^0.5) + I(W^1) + I(W^1.5))</span></a>
-<a class="sourceLine" id="cb48-11" data-line-number="11"><span class="co">#&gt; &lt;environment: 0xf614e38&gt;</span></a>
+<a class="sourceLine" id="cb48-11" data-line-number="11"><span class="co">#&gt; &lt;environment: 0xf0aa480&gt;</span></a>
 <a class="sourceLine" id="cb48-12" data-line-number="12"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb48-13" data-line-number="13"><span class="co">#&gt; $type_of_preds</span></a>
 <a class="sourceLine" id="cb48-14" data-line-number="14"><span class="co">#&gt; [1] &quot;response&quot;</span></a>
@@ -656,13 +656,13 @@ and <span class="math inline">\(\Qbar_{0}(0,\cdot)\)</span>:</p>
 <a class="sourceLine" id="cb51-6" data-line-number="6">Qbar_hat_trees <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(a <span class="op">==</span><span class="st"> &quot;one&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(fit) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb51-7" data-line-number="7"><span class="st">  </span>capture.output <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">tail</span>(<span class="dv">3</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">str_wrap</span>(<span class="dt">width =</span> <span class="dv">60</span>) <span class="op">%&gt;%</span><span class="st"> </span>cat</a>
 <a class="sourceLine" id="cb51-8" data-line-number="8"><span class="co">#&gt; RMSE was used to select the optimal model using the smallest</span></a>
-<a class="sourceLine" id="cb51-9" data-line-number="9"><span class="co">#&gt; value. The final values used for the model were mstop = 20,</span></a>
-<a class="sourceLine" id="cb51-10" data-line-number="10"><span class="co">#&gt; maxdepth = 1 and nu = 0.2.</span></a>
+<a class="sourceLine" id="cb51-9" data-line-number="9"><span class="co">#&gt; value. The final values used for the model were mstop = 30,</span></a>
+<a class="sourceLine" id="cb51-10" data-line-number="10"><span class="co">#&gt; maxdepth = 1 and nu = 0.1.</span></a>
 <a class="sourceLine" id="cb51-11" data-line-number="11">                                                             </a>
 <a class="sourceLine" id="cb51-12" data-line-number="12">Qbar_hat_trees <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(a <span class="op">==</span><span class="st"> &quot;zero&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(fit) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb51-13" data-line-number="13"><span class="st">  </span>capture.output <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">tail</span>(<span class="dv">3</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">str_wrap</span>(<span class="dt">width =</span> <span class="dv">60</span>) <span class="op">%&gt;%</span><span class="st"> </span>cat</a>
 <a class="sourceLine" id="cb51-14" data-line-number="14"><span class="co">#&gt; RMSE was used to select the optimal model using the smallest</span></a>
-<a class="sourceLine" id="cb51-15" data-line-number="15"><span class="co">#&gt; value. The final values used for the model were mstop = 10,</span></a>
+<a class="sourceLine" id="cb51-15" data-line-number="15"><span class="co">#&gt; value. The final values used for the model were mstop = 20,</span></a>
 <a class="sourceLine" id="cb51-16" data-line-number="16"><span class="co">#&gt; maxdepth = 1 and nu = 0.2.</span></a></code></pre></div>
 <p>We can compare visually the estimators <span class="math inline">\(\Qbar_{n,\text{kNN}}\)</span>,
 <span class="math inline">\(\Qbar_{n,\text{trees}} \defq \Algo_{\Qbar,\text{trees}}(P_{n})\)</span> with its
