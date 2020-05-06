@@ -77,7 +77,8 @@ __Technical details__
 The   text   is    written   in   [`RMarkdown`](https://rmarkdown.rstudio.com)
 with         [`bookdown`](https://bookdown.org).         Assuming         that
 the  [`knitr`](https://yihui.name/knitr/)   package  is  installed,   you  can
-retrieve all the `R` code by running
+retrieve    all     the    `R`     code    by    cloning     this    [`github`
+repository](https://github.com/achambaz/tlride) then running 
 
 ```{r extract, eval = FALSE}
 knitr::purl("abcd.Rmd")

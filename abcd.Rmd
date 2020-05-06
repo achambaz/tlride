@@ -4,7 +4,7 @@ options(digits = 3)
 knitr::opts_chunk$set(
   comment = "#>",
   collapse = TRUE,
-  cache = TRUE,
+  cache = FALSE,
   out.width = "70%",
   fig.align = 'center',
   fig.width = 6, # used to have: fig.width = 12,
@@ -62,12 +62,14 @@ running the following code:
 devtools::install_github("achambaz/tlride/tlrider")
 ```
 
-Additional packages are also  required, including `tidyverse` [@r4ds], `caret`
+The version used in this document is `r packageVersion("tlrider")`.
+
+Additional packages are also required, including `tidyverse` [@r4ds], `caret`
 [@caret] and `ggdag`  [@ggdag]. Assuming that these are installed  too, we can
 run the next chunk of code:
 
 ```{r visible-setup, results = FALSE}
-set.seed(54321) ## because reproducibility matters...
+set.seed(3141516) ## because reproducibility matters...
 library(tidyverse)
 library(caret)
 library(ggdag)
@@ -446,7 +448,7 @@ large  numbers,  the  following  code approximates  $\psi_{0}$  and  shows  it
 approximate value.
 
 ```{r approx-psi-zero-a-two}
-B <- 1e5
+B <- 1e6
 ideal_obs <- sample_from(experiment, B, ideal = TRUE)
 (psi_approx <- mean(ideal_obs[, "Yone"] - ideal_obs[, "Yzero"]))
 ```
@@ -999,7 +1001,8 @@ vars <- eic_another_experiment(obs_another_experiment) *
 
 sd_hat <- sd(vars)
 (slope_hat <- mean(vars))
-(slope_CI <- slope_hat + c(-1, 1) * qnorm(1 - alpha / 2) * sd_hat / sqrt(B))
+(slope_CI <- slope_hat + c(-1, 1) *
+   qnorm(1 - alpha / 2) * sd_hat / sqrt(B))
 ```
 
 Equal  to `r  round(slope_approx, 3)`  (rounded  to three  decimal places  ---
@@ -1553,7 +1556,8 @@ psi_hat_ab <- obs %>% as_tibble  %>%
   nest(obs = c(W, A, Y)) %>%
   mutate(est_a = map(obs, ~ compute_irrelevant_estimator(.)),
          est_b = map(obs, ~ compute_iptw(as.matrix(.), Gbar))) %>%
-  pivot_longer(c(`est_a`, `est_b`), names_to = "type", values_to = "estimates") %>%
+  pivot_longer(c(`est_a`, `est_b`),
+               names_to = "type", values_to = "estimates") %>%
   extract(type, "type", "_([ab])$") %>%
   unnest(estimates) %>% select(-obs)
 
@@ -1580,8 +1584,8 @@ fig_bias_ab <- ggplot() +
   
 fig_bias_ab +
   labs(y = "",
-       x = expression(paste(sqrt(n/v[n]^{list(a, b)})*
-                            (psi[n]^{list(a, b)} - psi[0]))))
+       x = bquote(paste(sqrt(n/v[n]^{list(a, b)})*
+                        (psi[n]^{list(a, b)} - psi[0]))))
 ```
 
 By   the  above   chunk   of  code,   the   averages  of   $\sqrt{n/v_{n}^{a}}
@@ -1905,10 +1909,10 @@ Qbar_hat_trees <- estimate_Qbar(head(obs, 1e3),
                                 trControl = bstTree_control,
                                 tuneGrid = bstTree_grid)
 
-Qbar_hat_trees %>% dplyr::filter(a == "one") %>% pull(fit) %>%
+Qbar_hat_trees %>% filter(a == "one") %>% pull(fit) %>%
   capture.output %>% tail(3) %>% str_wrap(width = 60) %>% cat
                                                              
-Qbar_hat_trees %>% dplyr::filter(a == "zero") %>% pull(fit) %>%
+Qbar_hat_trees %>% filter(a == "zero") %>% pull(fit) %>%
   capture.output %>% tail(3) %>% str_wrap(width = 60) %>% cat
 ```
  
@@ -2123,8 +2127,8 @@ fig_bias_ab +
              bias_abc, size = 1.5, alpha = 0.5) +
   xlim(-3, 4) + 
   labs(y = "",
-       x = expression(paste(sqrt(n/v[n]^{list(a, b, c)})*
-                            (psi[n]^{list(a, b, c)} - psi[0]))))
+       x = bquote(paste(sqrt(n/v[n]^{list(a, b, c)})*
+                        (psi[n]^{list(a, b, c)} - psi[0]))))
 ```
 
 (ref:unknown-Gbar-four) Quantile-quantile plot of the standard normal law against the empirical laws of three estimators of $\psi_{0}$, one of them misconceived (a), one assuming that $\Gbar_{0}$ is known (b) and one that hinges on the estimation of $\Gbar_{0}$ (c).  Built based on `iter` independent realizations of each estimator.
@@ -2179,8 +2183,8 @@ fig_bias_ab +
              bias_abc, size = 1.5, alpha = 0.5) +
   xlim(-3, 4) + 
   labs(y = "",
-       x = expression(paste(sqrt(n/v[n]^{list(a, b, c)})*
-                            (psi[n]^{list(a, b, c)} - psi[0]))))
+       x = bquote(paste(sqrt(n/v[n]^{list(a, b, c)})*
+                        (psi[n]^{list(a, b, c)} - psi[0]))))
 ```
 
 **Workaround.**  In  a  real  world   data-analysis,  one  could  correct  the
@@ -2440,14 +2444,16 @@ learned_features_fixed_sample_size <-
 
 psi_hat_de <- learned_features_fixed_sample_size %>%
   select(est_d, est_e) %>%
-  pivot_longer(c(`est_d`, `est_e`), names_to = "type", values_to = "estimates") %>%
+  pivot_longer(c(`est_d`, `est_e`),
+               names_to = "type", values_to = "estimates") %>%
   extract(type, "type", "_([de])$") %>% 
   unnest(estimates) %>%
   group_by(type) %>%
   mutate(sig_alt = sd(psi_n)) %>%
   mutate(clt_ = (psi_n - psi_zero) / sig_n,
          clt_alt = (psi_n - psi_zero) / sig_alt) %>%
-  pivot_longer(c(`clt_`, `clt_alt`), names_to = "key", values_to = "clt") %>%
+  pivot_longer(c(`clt_`, `clt_alt`),
+               names_to = "key", values_to = "clt") %>%
   extract(key, "key", "_(.*)$") %>%
   mutate(key = ifelse(key == "", TRUE, FALSE)) %>%
   rename("auto_renormalization" = key)
@@ -2473,8 +2479,8 @@ fig <- ggplot() +
   
 fig +
   labs(y = "",
-       x = expression(paste(sqrt(n/v[n]^{list(d, e)})*
-                            (psi[n]^{list(d, e)} - psi[0]))))
+       x = bquote(paste(sqrt(n/v[n]^{list(d, e)})*
+                        (psi[n]^{list(d, e)} - psi[0]))))
 ```
 
 ```{r bias-de, echo = FALSE}
@@ -2612,14 +2618,16 @@ root_n_bias <- learned_features_varying_sample_size %>%
   mutate(block = unlist(map(strsplit(block, "_"), ~.x[2])),
          sample_size = sample_size[as.integer(block)]) %>%
   select(block, sample_size, est_d, est_e) %>%
-  pivot_longer(c(`est_d`, `est_e`), names_to = "type", values_to = "estimates") %>%
+  pivot_longer(c(`est_d`, `est_e`),
+               names_to = "type", values_to = "estimates") %>%
   extract(type, "type", "_([de])$") %>% 
   unnest(estimates) %>%
   group_by(block, type) %>%
   mutate(sig_alt = sd(psi_n)) %>%
   mutate(clt_ = (psi_n - psi_zero) / sig_n,
          clt_alt = (psi_n - psi_zero) / sig_alt) %>%
-  pivot_longer(c(`clt_`, `clt_alt`), names_to = "key", values_to = "clt") %>%
+  pivot_longer(c(`clt_`, `clt_alt`),
+               names_to = "key", values_to = "clt") %>%
   extract(key, "key", "_(.*)$") %>%
   mutate(key = ifelse(key == "", TRUE, FALSE)) %>%
   rename("auto_renormalization" = key)
@@ -2638,14 +2646,16 @@ root_n_bias <- learned_features_fixed_sample_size %>%
    mutate(block = "0",
           sample_size = B/iter) %>%  # because *fixed* sample size
    select(block, sample_size, est_d, est_e) %>%
-   pivot_longer(c(`est_d`, `est_e`), names_to = "type", values_to = "estimates") %>%
+  pivot_longer(c(`est_d`, `est_e`),
+               names_to = "type", values_to = "estimates") %>%
    extract(type, "type", "_([de])$") %>% 
    unnest(estimates) %>%
    group_by(block, type) %>%
    mutate(sig_alt = sd(psi_n)) %>%
    mutate(clt_ = (psi_n - psi_zero) / sig_n,
           clt_alt = (psi_n - psi_zero) / sig_alt) %>%
-   pivot_longer(c(`clt_`, `clt_alt`), names_to = "key", values_to = "clt") %>%
+  pivot_longer(c(`clt_`, `clt_alt`),
+               names_to = "key", values_to = "clt") %>%
    extract(key, "key", "_(.*)$") %>%
    mutate(key = ifelse(key == "", TRUE, FALSE)) %>%
    rename("auto_renormalization" = key) %>%
@@ -2668,7 +2678,7 @@ root_n_bias %>% filter(auto_renormalization) %>%
                geom = "errorbar", width = 750) +
   stat_summary(aes(x = sample_size, y = rnb,
                    color = type),
-               fun.y = mean,
+               fun = mean,
                position = position_dodge(width = 250),
                geom = "polygon", fill = NA) +
   geom_point(aes(x = sample_size, y = rnb,
@@ -2678,7 +2688,7 @@ root_n_bias %>% filter(auto_renormalization) %>%
              alpha = 0.1) +
   scale_x_continuous(breaks = unique(c(B / iter, sample_size))) +
   labs(x = "sample size n",
-       y = expression(paste(sqrt(n) * (psi[n]^{list(d, e)} - psi[0]))))
+       y = bquote(paste(sqrt(n) * (psi[n]^{list(d, e)} - psi[0]))))
 ```	
 
 Root-$n$ bias for $\psi_{n}^{d}$ (red lines  and points) is positive and tends
@@ -2854,7 +2864,8 @@ psi_hat_de_one_step <- learned_features_fixed_sample_size %>%
                                  wrapper(..3, FALSE),
                                  ..4$psi_n))) %>%
   select(os_est_d, os_est_e) %>%
-  pivot_longer(c(`os_est_d`, `os_est_e`), names_to = "type", values_to = "estimates") %>%
+  pivot_longer(c(`os_est_d`, `os_est_e`),
+               names_to = "type", values_to = "estimates") %>%
   extract(type, "type", "_([de])$") %>%
   mutate(type = paste0(type, "_one_step")) %>%
   unnest(estimates) %>%
@@ -2862,7 +2873,8 @@ psi_hat_de_one_step <- learned_features_fixed_sample_size %>%
   mutate(sig_alt = sd(psi_n)) %>%
   mutate(clt_ = (psi_n - psi_zero) / sig_n,
          clt_alt = (psi_n - psi_zero) / sig_alt) %>%
-  pivot_longer(c(`clt_`, `clt_alt`), names_to = "key", values_to = "clt") %>%
+  pivot_longer(c(`clt_`, `clt_alt`),
+               names_to = "key", values_to = "clt") %>%
   extract(key, "key", "_(.*)$") %>%
   mutate(key = ifelse(key == "", TRUE, FALSE)) %>%
   rename("auto_renormalization" = key)
@@ -2888,15 +2900,17 @@ fig <- ggplot() +
   
 fig +
   labs(y = "",
-       x = expression(paste(sqrt(n/v[n]^{list(d, e, os)})*
-                            (psi[n]^{list(d, e, os)} - psi[0]))))
+       x = bquote(paste(sqrt(n/v[n]^{list(d, e, os)})*
+                        (psi[n]^{list(d, e, os)} - psi[0]))))
 ```
  
 It  seems that  the  one-step  correction performs  qui  well (in  particular,
 compare `bias_de` with `bias_de_one_step`):
 
 ```{r one-step-two}
-bind_rows(bias_de, bias_de_one_step) %>% filter(!auto_renormalization)
+bind_rows(bias_de, bias_de_one_step) %>%
+  filter(!auto_renormalization) %>%
+  arrange(type)
 ```
 
 What about the  estimation of the asymptotic variance, and  of the mean-square
@@ -2909,7 +2923,8 @@ psi_hat_de %>%
   group_by(type) %>%
   summarize(sd = mean(sig_n),
             se = sd(psi_n),
-            mse = mean((psi_n - psi_zero)^2) * n())
+            mse = mean((psi_n - psi_zero)^2) * n()) %>%
+  arrange(type)
 ```
 
 The  `sd`  (*estimator*  of  the   asymptotic  standard  deviation)  and  `se`
@@ -3146,7 +3161,7 @@ tibble(w = seq(0, 1, length.out = 1e3)) %>%
   ggplot +
   geom_line(aes(x = w, y = value, color = h, linetype = f, group = fh),
             size = 1) +
-  labs(y = expression(paste(f[h](a,w))),
+  labs(y = bquote(paste(f[h](a,w))),
        title = bquote("Visualizing three elements of two fluctuations of"
                       ~ bar(Q)[0] ~ "and" ~ bar(Q)[n])) +
   ylim(NA, 1) +
@@ -3225,7 +3240,7 @@ labels <- c(expression(R[n](bar(Q)[list(n,hn)]^list(o))),
             expression(R[n](bar(Q)[list(n,0)]^list(o))))
 risk %>% enframe %>%
   mutate(h = candidates) %>%
-  dplyr::filter(abs(h - h[idx_min]) <= abs(h[idx_min])) %>%
+  filter(abs(h - h[idx_min]) <= abs(h[idx_min])) %>%
   ggplot() +
   geom_point(aes(x = h, y = value), color = "#CC6666") +
   geom_vline(xintercept = c(0, candidates[idx_min])) +
@@ -3482,8 +3497,8 @@ rbind(t(psi_trees_epsilon), t(psi_kknn_epsilon)) %>% as_tibble %>%
   geom_vline(xintercept = 0) +
   geom_hline(yintercept = c(psi_trees_epsilon[1,idx_trees],
                             psi_kknn_epsilon[1,idx_kknn])) +
-  labs(x = expression(paste(P[n]~D^"*", (P[list(n,h)]^o))),
-       y = expression(Psi(P[list(n,h)]^o)))
+  labs(x = bquote(paste(P[n]~D^"*", (P[list(n,h)]^o))),
+       y = bquote(Psi(P[list(n,h)]^o)))
 ```	
 
 3. Discuss the fact that  the colored curves in Figure \@ref(fig:exo-tmle)
@@ -3518,7 +3533,8 @@ psi_tmle <- learned_features_fixed_sample_size %>%
                                  wrapper(..2, FALSE),
                                  wrapper(..3, FALSE)))) %>%
   select(tmle_d, tmle_e) %>%
-  pivot_longer(c(`tmle_d`, `tmle_e`), names_to = "type", values_to = "estimates") %>%
+  pivot_longer(c(`tmle_d`, `tmle_e`),
+               names_to = "type", values_to = "estimates") %>%
   extract(type, "type", "_([de])$") %>%
   mutate(type = paste0(type, "_targeted")) %>%
   unnest(estimates) %>%
@@ -3526,7 +3542,8 @@ psi_tmle <- learned_features_fixed_sample_size %>%
   mutate(sig_alt = sd(psi_n)) %>%
   mutate(clt_ = (psi_n - psi_zero) / sig_n,
          clt_alt = (psi_n - psi_zero) / sig_alt) %>%
-  pivot_longer(c(`clt_`, `clt_alt`), names_to = "key", values_to = "clt") %>%
+  pivot_longer(c(`clt_`, `clt_alt`),
+               names_to = "key", values_to = "clt") %>%
   extract(key, "key", "_(.*)$") %>%
   mutate(key = ifelse(key == "", TRUE, FALSE)) %>%
   rename("auto_renormalization" = key)
@@ -3552,8 +3569,8 @@ fig <- ggplot() +
   
 fig +
   labs(y = "",
-       x = expression(paste(sqrt(n/v[n]^{"*"})*
-                            (psi[n]^{"*"} - psi[0]))))
+       x = bquote(paste(sqrt(n/v[n]^{"*"})*
+                        (psi[n]^{"*"} - psi[0]))))
 ```
 
 We see that the step of targeting is as promised: the bias of the resulting
