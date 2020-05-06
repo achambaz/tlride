@@ -60,6 +60,11 @@ jQuery.fn.highlight = function (words, options) {
 
     if (words.constructor === String) {
         words = [words];
+<<<<<<< HEAD
+=======
+        // also match 'foo-bar' if search for 'foo bar'
+        if (/\s/.test(words[0])) words.push(words[0].replace(/\s+/, '-'));
+>>>>>>> develop
     }
     words = jQuery.grep(words, function(word, i){
       return word !== '';

@@ -33,11 +33,15 @@ identical(experiment, experiment_ter)
 Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2019).
 }
 \seealso{
-Other methods and functions for LAW objects: \code{\link{LAW}},
-  \code{\link{alter}}, \code{\link{as.character}},
-  \code{\link{evaluate_eic}}, \code{\link{evaluate_psi}},
-  \code{\link{evaluate_remainder}},
-  \code{\link{get_feature}}, \code{\link{reveal}},
-  \code{\link{sample_from}}
+Other methods and functions for LAW objects: 
+\code{\link{LAW}()},
+\code{\link{alter}()},
+\code{\link{as.character}()},
+\code{\link{evaluate_eic}()},
+\code{\link{evaluate_psi}()},
+\code{\link{evaluate_remainder}()},
+\code{\link{get_feature}()},
+\code{\link{reveal}()},
+\code{\link{sample_from}()}
 }
 \concept{methods and functions for LAW objects}

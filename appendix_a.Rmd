@@ -44,7 +44,7 @@ Y)$, thus concealing $Y_{0}$ and $Y_{1}$.
 
 ## Identification {#identification}
 
-Let $\bbP_{0}$ be an experiment that  generates $\bbO \equiv (W, Y_{0}, Y_{1},
+Let $\bbP_{0}$ be an experiment that  generates $\bbO \defq (W, Y_{0}, Y_{1},
 A, Y)$.   We think of  $W$ as  the context where  an action is  undertaken, of
 $Y_{0}$ and  $Y_{1}$ as  the counterfactual  (potential) rewards  that actions
 $a=0$ and $a=1$ would entail, of $A$ as  the action carried out, and of $Y$ as
@@ -81,7 +81,7 @@ stated result easily follows.
 ```
 
 **Remark.** The positivity assumption is needed  for $\Exp_{P_0}(Y \mid A = a,
-W) \equiv \Qbar_{0}(a,W)$ to be well-defined.
+W) \defq \Qbar_{0}(a,W)$ to be well-defined.
 
 ## Building a confidence interval {#confidence-interval}
 
@@ -90,8 +90,8 @@ $\ldots$, $X_{n}$ be independently drawn from a given law.
 
 ### CLT & Slutsky's lemma {#clt}
 
-Assume  that  $\sigma^{2}  \equiv  \Var(X_{1})$  is  finite.   Let  $m  \equiv
-\Exp(X_{1})$  be   the  mean  of   $X_{1}$  and  $\bar{X}_{n}   \equiv  n^{-1}
+Assume  that  $\sigma^{2}  \defq  \Var(X_{1})$  is  finite.   Let  $m  \defq
+\Exp(X_{1})$  be   the  mean  of   $X_{1}$  and  $\bar{X}_{n}   \defq  n^{-1}
 \sum_{i=1}^{n} X_{i}$  be the  empirical mean.  By  the central  limit theorem
 (CLT), it  holds that  $\sqrt{n} (\bar{X}_{n}  - m)$ converges  in law  as $n$
 grows to the centered Gaussian law with variance $\sigma^{2}$.

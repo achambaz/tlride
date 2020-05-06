@@ -1,5 +1,8 @@
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> develop
 # Basic results and their proofs {#proofs}
 
 ## NPSEM {#npsem}
@@ -25,7 +28,11 @@ Y)$, thus concealing $Y_{0}$ and $Y_{1}$.
 
 ## Identification {#identification}
 
+<<<<<<< HEAD
 Let $\bbP_{0}$ be an experiment that  generates $\bbO \equiv (W, Y_{0}, Y_{1},
+=======
+Let $\bbP_{0}$ be an experiment that  generates $\bbO \defq (W, Y_{0}, Y_{1},
+>>>>>>> develop
 A, Y)$.   We think of  $W$ as  the context where  an action is  undertaken, of
 $Y_{0}$ and  $Y_{1}$ as  the counterfactual  (potential) rewards  that actions
 $a=0$ and $a=1$ would entail, of $A$ as  the action carried out, and of $Y$ as
@@ -33,8 +40,13 @@ the  reward  received  in  response  to action  $A$.  Consider  the  following
 assumptions:
 
 1. **Randomization**:   under   $\bbP_{0}$,  the   counterfactual   rewards
+<<<<<<< HEAD
    $(Y_0,Y_1)$ and action $A$ are conditionally independent given $W$, *i.e.*,
    $(Y_0,Y_1) \perp A \mid W$.
+=======
+   $Y_0$, $Y_1$ and action $A$ are conditionally independent given $W$, *i.e.*,
+   $Y_a \perp A \mid W$ for $a=0,1$.
+>>>>>>> develop
 
 1. **Consistency**: under $\bbP_{0}$, if action $A$ is undertaken then reward
   $Y_{A}$ is received, *i.e.*, $Y = Y_{A}$ (or $Y=Y_{a}$ given that $A=a$).
@@ -45,7 +57,11 @@ assumptions:
 
 
 
+<<<<<<< HEAD
 \BeginKnitrBlock{proposition}\iffalse{-91-73-100-101-110-116-105-102-105-99-97-116-105-111-110-93-}\fi{}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-3"><strong>(\#prp:unnamed-chunk-3)  \iffalse (Identification) \fi{} </strong></span>Under  the  above assumptions,  it  holds  that \begin{equation*}  \psi_{0}  =
+=======
+\BeginKnitrBlock{proposition}\iffalse{-91-73-100-101-110-116-105-102-105-99-97-116-105-111-110-93-}\fi{}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-2"><strong>(\#prp:unnamed-chunk-2)  \iffalse (Identification) \fi{} </strong></span>Under  the  above assumptions,  it  holds  that \begin{equation*}  \psi_{0}  =
+>>>>>>> develop
 \Exp_{\bbP_{0}}   \left(Y_{1}   -   Y_{0}\right)  =   \Exp_{\bbP_{0}}(Y_1)   -
 \Exp_{\bbP_{0}}(Y_0). \end{equation*}</div>\EndKnitrBlock{proposition}
 
@@ -58,7 +74,11 @@ A =  a, W = w)  dQ_{0,W}(w) = \int \Qbar_0(a,W)  dQ_{0,W}(w). \end{align*} The
 stated result easily follows.</div>\EndKnitrBlock{proof}
 
 **Remark.** The positivity assumption is needed  for $\Exp_{P_0}(Y \mid A = a,
+<<<<<<< HEAD
 W) \equiv \Qbar_{0}(a,W)$ to be well-defined.
+=======
+W) \defq \Qbar_{0}(a,W)$ to be well-defined.
+>>>>>>> develop
 
 ## Building a confidence interval {#confidence-interval}
 
@@ -67,8 +87,13 @@ $\ldots$, $X_{n}$ be independently drawn from a given law.
 
 ### CLT & Slutsky's lemma {#clt}
 
+<<<<<<< HEAD
 Assume  that  $\sigma^{2}  \equiv  \Var(X_{1})$  is  finite.   Let  $m  \equiv
 \Exp(X_{1})$  be   the  mean  of   $X_{1}$  and  $\bar{X}_{n}   \equiv  n^{-1}
+=======
+Assume  that  $\sigma^{2}  \defq  \Var(X_{1})$  is  finite.   Let  $m  \defq
+\Exp(X_{1})$  be   the  mean  of   $X_{1}$  and  $\bar{X}_{n}   \defq  n^{-1}
+>>>>>>> develop
 \sum_{i=1}^{n} X_{i}$  be the  empirical mean.  By  the central  limit theorem
 (CLT), it  holds that  $\sqrt{n} (\bar{X}_{n}  - m)$ converges  in law  as $n$
 grows to the centered Gaussian law with variance $\sigma^{2}$.
@@ -78,7 +103,11 @@ $\sigma^{2}$ then, by Slutsky's lemma, $\sqrt{n}/\sigma_{n} (\bar{X}_{n} - m)$
 converges in law  to the standard normal law.  The  empirical variance $n^{-1}
 \sum_{i=1}^{n}(X_{i} - \bar{X}_{n})^{2}$ is such an estimator. 
 
+<<<<<<< HEAD
 \BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-5"><strong>(\#prp:unnamed-chunk-5) </strong></span>Under   the  above   assumptions,   \begin{equation*}  \left[\bar{X}_{n}   \pm
+=======
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-4"><strong>(\#prp:unnamed-chunk-4) </strong></span>Under   the  above   assumptions,   \begin{equation*}  \left[\bar{X}_{n}   \pm
+>>>>>>> develop
 \Phi^{-1}(1-\alpha)  \frac{\sigma_{n}}{\sqrt{n}}\right]  \end{equation*} is  a
 confidence interval for $m$ with asymptotic level $(1-2\alpha)$.</div>\EndKnitrBlock{proposition}
     
@@ -91,7 +120,11 @@ $F$. Set $p \in ]0,1[$ and, assuming that  $n$ is large, find $k\geq 1$ and $l
 \begin{equation*}    \frac{l}{n}     \approx    p     +    \Phi^{-1}(1-\alpha)
 \sqrt{\frac{p(1-p)}{n}}.  \end{equation*} 
 
+<<<<<<< HEAD
 \BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-6"><strong>(\#prp:unnamed-chunk-6) </strong></span>Under the above assumptions, $[X_{(k)},X_{(l)}]$  is a confidence interval for
+=======
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-5"><strong>(\#prp:unnamed-chunk-5) </strong></span>Under the above assumptions, $[X_{(k)},X_{(l)}]$  is a confidence interval for
+>>>>>>> develop
 $F^{-1}(p)$ with asymptotic level $1 - 2\alpha$.</div>\EndKnitrBlock{proposition}
 
 ## Another representation of the parameter of interest {#another-rep}
@@ -119,7 +152,11 @@ Let  $f$  be a  map  from  $\Theta \subset  \bbR^{p}$  to  $\bbR^{q}$ that  is
 differentiable at $\theta\in \Theta$. Let $X_{n}$ be a random vector taking its
 values in $\Theta$.
 
+<<<<<<< HEAD
 \BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-7"><strong>(\#prp:unnamed-chunk-7) </strong></span>If $\sqrt{n} (X_{n} - \theta)$ converges in  law to the Gaussian law with mean
+=======
+\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-6"><strong>(\#prp:unnamed-chunk-6) </strong></span>If $\sqrt{n} (X_{n} - \theta)$ converges in  law to the Gaussian law with mean
+>>>>>>> develop
 $\mu$ and covariance  matrix $\Sigma$, then $\sqrt{n}  (f(X_{n}) - f(\theta))$
 converge in  law to the Gaussian  law with mean $\nabla  f(\theta) \times \mu$
 and  covariance   matrix  $\nabla   f(\theta)  \times  \Sigma   \times  \nabla
@@ -129,6 +166,7 @@ consistently then,  by Slutsky's lemma,  the asymptotic variance  of $\sqrt{n}
 \Sigma_{n} \times \nabla f(X_{n})^{\top}$.</div>\EndKnitrBlock{proposition}
 
 
+<<<<<<< HEAD
 ## Asymptotic negligibility of the remainder term {#asymp-neglig-remain}
 
 Recall that  $\|f\|_{P}^{2} \equiv  \Exp_{P} \left(  f(O)^{2} \right)$  is the
@@ -148,5 +186,36 @@ o_{P_0}(n^{-1/4})\end{equation*}     *and*    \begin{equation*}\|\Gbar_n     -
 
 
 # References
+=======
+## The oracle logistic risk {#oracle-logistic-risk}
+
+First, let us recall the definition of the Kullback-Leibler divergence between
+Bernoulli laws of parameters $p,q\in]0,1[$:
+\begin{equation*}\text{KL}(p,q)  \triangleq  p \log\left(\frac{p}{q}\right)  +
+(1-p) \log \left(\frac{1-p}{1-q}\right).\end{equation*}
+It satisfies $\text{KL}(p,q)  \geq 0$ where the equality holds  if and only if
+$p=q$. 
+
+Let  $f:[0,1]  \times  \{0,1\}  \times  [0,1] \to  [0,1]$  be  a  (measurable)
+function.   Applying  the tower  rule  shows  that  the oracle  logistic  risk
+satisfies 
+\begin{align} 
+\Exp_{P_{0}}  \left(L_{y}   (f)(O)\right)&=\Exp_{P_{0}}  \left(-\Qbar_{0}(A,W)
+\log   f(A,W)   -   \left(1   -  \Qbar_{0}   (A,W)\right)   \log   \left(1   -
+f(A,W)\right)\right)\notag\\&=\Exp_{P_{0}}
+\left(\text{KL}\left(\Qbar_{0}(A,W),           f(A,W)\right)\right)          +
+\text{constant},(\#eq:KL) 
+\end{align}
+where the above constant equals \begin{equation*} -\Exp_{P_{0}}\left(\Qbar_{0}(A,W) \log \Qbar_{0}(A,W) - \left(1 - \Qbar_{0} (A,W)\right) \log \left(1 - \Qbar_{0,W}(A,W)\right)\right).  \end{equation*}
+
+In  light  of  \@ref(eq:KL),  $\Qbar_{0}$ minimizes  $f  \mapsto  \Exp_{P_{0}}
+\left(L_{y}  (f)(O)\right)$ over  the  set of  (measurable) functions  mapping
+$[0,1] \times  \{0,1\} \times [0,1]$ to  $[0,1]$.  Moreover, as an  average of
+measures of  discrepancy, $\Exp_{P_{0}}  \left(L_{y} (f)(O)\right)$ is  also a
+measure of discrepancy. 
+
+
+
+>>>>>>> develop
    
    

@@ -26,3 +26,9 @@
 .book.with-search .book-summary ul.summary {
   top: 50px;
 }
+<<<<<<< HEAD
+=======
+.with-search .summary li[data-level] a[href*=".html#"] {
+  display: none;
+}
+>>>>>>> develop

@@ -17,10 +17,38 @@
 \alias{bstLm_grid}
 \alias{bstLm_control}
 \title{Algorithms for the estimation of Gbar and Qbar}
-\format{Either  a  \code{list}   with  entries  'model',  'formula'  and
+\format{
+Either  a  \code{list}   with  entries  'model',  'formula'  and
   'type_of_preds'  (with \code{attribue}  'ML'  set to  \code{FALSE}) or  a
   \code{list} with entries 'algo' and 'type_of_preds' (with \code{attribue}
-  'ML' set to \code{TRUE}).}
+  'ML' set to \code{TRUE}).
+
+An object of class \code{list} of length 3.
+
+An object of class \code{list} of length 3.
+
+An object of class \code{list} of length 3.
+
+An object of class \code{list} of length 3.
+
+An object of class \code{list} of length 2.
+
+An object of class \code{data.frame} with 1 rows and 3 columns.
+
+An object of class \code{list} of length 27.
+
+An object of class \code{list} of length 2.
+
+An object of class \code{data.frame} with 18 rows and 3 columns.
+
+An object of class \code{list} of length 27.
+
+An object of class \code{list} of length 2.
+
+An object of class \code{data.frame} with 6 rows and 2 columns.
+
+An object of class \code{list} of length 27.
+}
 \usage{
 data(algorithms)
 

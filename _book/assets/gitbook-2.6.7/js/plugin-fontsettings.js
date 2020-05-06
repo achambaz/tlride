@@ -96,7 +96,12 @@ gitbook.require(["gitbook", "lodash", "jQuery"], function(gitbook, _, $) {
 
     gitbook.events.bind("start", function(e, config) {
         var opts = config.fontsettings;
+<<<<<<< HEAD
 
+=======
+        if (!opts) return;
+        
+>>>>>>> develop
         // Create buttons in toolbar
         gitbook.toolbar.createButton({
             icon: 'fa fa-font',

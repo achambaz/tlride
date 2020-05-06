@@ -4,8 +4,11 @@
 \name{label}
 \alias{label}
 \title{Labels the elements of a data set}
+\format{
+An object of class \code{function} of length 1.
+}
 \usage{
-label(xx, sample_size = c(1000, 2000))
+label
 }
 \arguments{
 \item{xx}{A \code{vector}.}
@@ -28,3 +31,4 @@ Let 'L'  be the length of 'sample_size' and  'Q'be the quotient in
 \references{
 Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2019).
 }
+\keyword{datasets}

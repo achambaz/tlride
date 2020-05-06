@@ -3,7 +3,6 @@
 \docType{package}
 \name{tlrider}
 \alias{tlrider}
-\alias{tlrider-package}
 \title{tlrider: A Companion Package to the Article "A Ride in Targeted Learning Territory"}
 \description{
 The  'tlrider'  package  provides   two  categories  of  important

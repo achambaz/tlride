@@ -46,11 +46,15 @@ Benkeser & Chambaz, "A Ride in Targeted Learning Territory" (2019).
   and \code{\link{evaluate_eic}} to evaluate  the efficient influence curve
   of \eqn{Psi} at the law.
 
-Other methods and functions for LAW objects: \code{\link{LAW}},
-  \code{\link{alter}}, \code{\link{as.character}},
-  \code{\link{copy}}, \code{\link{evaluate_eic}},
-  \code{\link{evaluate_remainder}},
-  \code{\link{get_feature}}, \code{\link{reveal}},
-  \code{\link{sample_from}}
+Other methods and functions for LAW objects: 
+\code{\link{LAW}()},
+\code{\link{alter}()},
+\code{\link{as.character}()},
+\code{\link{copy}()},
+\code{\link{evaluate_eic}()},
+\code{\link{evaluate_remainder}()},
+\code{\link{get_feature}()},
+\code{\link{reveal}()},
+\code{\link{sample_from}()}
 }
 \concept{methods and functions for LAW objects}

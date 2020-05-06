@@ -21,8 +21,9 @@ A convenient wrapper to make predictions  based on a fit produced by either
 \code{estimate_Gbar} or \code{estimate_Qbar}.
 }
 \seealso{
-Other estimating functions: \code{\link{compute_Gbar_hatW}},
-  \code{\link{compute_Qbar_hatAW}},
-  \code{\link{compute_lGbar_hatAW}}
+Other estimating functions: 
+\code{\link{compute_Gbar_hatW}()},
+\code{\link{compute_Qbar_hatAW}()},
+\code{\link{compute_lGbar_hatAW}()}
 }
 \concept{estimating functions}
