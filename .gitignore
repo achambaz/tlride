@@ -35,7 +35,7 @@ vignettes/*.pdf
 *.utf8.md
 *.knit.md
 .Rproj.user
-*.html
+# *.html # keeping them for the 'tlride' project
 
 .Rbuildignore
 *.Rproj
