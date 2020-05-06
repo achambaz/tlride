@@ -202,7 +202,7 @@ relevant_features$QW
 #>                       })
 #>         return(rowSums(out))
 #>       }
-#> <environment: 0xf319608>
+#> <environment: 0xfd12800>
 ```
 
 It  appears that  $Q_{0,W}$ is  a  mixture of  the uniform  laws over  $[0,1]$
@@ -224,7 +224,7 @@ relevant_features$Gbar
 #> function(W) {
 #>         expit(1 + 2 * W - 4 * sqrt(abs((W - 5/12))))
 #>       }
-#> <environment: 0xf319608>
+#> <environment: 0xfd12800>
 ```
 
 Note how real numbers of the form $1 + 2W - 4 * \sqrt{|W - 5/12|})$ are mapped
@@ -249,7 +249,7 @@ relevant_features$qY
 #>                      shape1 = shape1,
 #>                      shape2 = shape1 * (1 - QAW) / QAW)
 #>       }
-#> <environment: 0xf319608>
+#> <environment: 0xfd12800>
 ```
 
 It appears that the  conditional law of $Y$ given $A$ and $W$  is the Beta law
@@ -272,8 +272,8 @@ relevant_features$Qbar
 #>              (W >= 3/4) * (W - 3/4) * 2) +
 #>           (1 - A) * (sin(4 * W^2 * pi) / 4 + 1/2) 
 #>       }
-#> <bytecode: 0x104281e8>
-#> <environment: 0xf319608>
+#> <bytecode: 0x10e213e0>
+#> <environment: 0xfd12800>
 ```
 
 We denote  $\Qbar_0(A,W) =  \Exp_{P_{0}}(Y|A,W)$ the  conditional mean  of $Y$
@@ -328,8 +328,8 @@ relevant_features$sample_from
 #>         }
 #>         return(obs)
 #>       }
-#> <bytecode: 0xece68c0>
-#> <environment: 0xf319608>
+#> <bytecode: 0xf6dfee0>
+#> <environment: 0xfd12800>
 ```
 
 We will comment  upon the `ideal` argument in the  above `sample_from` feature
@@ -744,13 +744,13 @@ reveal(another_experiment)
 #> function(x, min = 1/10, max = 9/10){
 #>              stats::dunif(x, min = min, max = max)
 #>       }
-#> <environment: 0x10750f08>
+#> <environment: 0x1114a100>
 #> 
 #> $Gbar
 #> function(W) {
 #>         sin((1 + W) * pi / 6)
 #>       }
-#> <environment: 0x10750f08>
+#> <environment: 0x1114a100>
 #> 
 #> $Qbar
 #> function(AW, h) {
@@ -759,7 +759,7 @@ reveal(another_experiment)
 #>         expit( logit( A *  W + (1 - A) * W^2 ) +
 #>                h * 10 * sqrt(W) * A )
 #>       }
-#> <environment: 0x10750f08>
+#> <environment: 0x1114a100>
 #> 
 #> $qY
 #> function(obs, Qbar, shape1 = 4){
@@ -769,7 +769,7 @@ reveal(another_experiment)
 #>                       shape1 = shape1,
 #>                       shape2 = shape1 * (1 - QAW) / QAW)
 #>       }
-#> <environment: 0x10750f08>
+#> <environment: 0x1114a100>
 #> 
 #> $sample_from
 #> function(n, h) {
@@ -797,7 +797,7 @@ reveal(another_experiment)
 #>         obs <- cbind(W = W, A = A, Y = Y)
 #>         return(obs)
 #>       }
-#> <environment: 0x10750f08>
+#> <environment: 0x1114a100>
 (two_obs_another_experiment <- sample_from(another_experiment, 2, h = 0))
 #>          W A       Y
 #> [1,] 0.101 0 0.00841
@@ -976,8 +976,8 @@ reveal(another_experiment)$sample_from
 #>         obs <- cbind(W = W, A = A, Y = Y)
 #>         return(obs)
 #>       }
-#> <bytecode: 0xf0f59a0>
-#> <environment: 0x10750f08>
+#> <bytecode: 0xfabdb40>
+#> <environment: 0x1114a100>
 ```
 
 Let us call $\Pi_{h} \in \calM$  the law encoded by `another_experiment` for a
@@ -2068,12 +2068,12 @@ working_model_G_one
 #> {
 #>     trim_glm_fit(glm(family = binomial(), ...))
 #> }
-#> <environment: 0xec1e480>
+#> <environment: 0xf617678>
 #> 
 #> $formula
 #> A ~ I(W^0.5) + I(abs(W - 5/12)^0.5) + I(W^1) + I(abs(W - 5/12)^1) + 
 #>     I(W^1.5) + I(abs(W - 5/12)^1.5)
-#> <environment: 0xec1e480>
+#> <environment: 0xf617678>
 #> 
 #> $type_of_preds
 #> [1] "response"
@@ -2182,11 +2182,11 @@ working_model_Q_one
 #> {
 #>     trim_glm_fit(glm(family = binomial(), ...))
 #> }
-#> <environment: 0xec1e480>
+#> <environment: 0xf617678>
 #> 
 #> $formula
 #> Y ~ A * (I(W^0.5) + I(W^1) + I(W^1.5))
-#> <environment: 0xec1e480>
+#> <environment: 0xf617678>
 #> 
 #> $type_of_preds
 #> [1] "response"
