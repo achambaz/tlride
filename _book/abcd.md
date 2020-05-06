@@ -1,19 +1,5 @@
 
 
-<<<<<<< HEAD
-
-
-
-# A ride
-
-
-## Introduction {#introduction}
-
-Our ambition is to present a gentle  introduction to the inference of a causal
-quantity whose statistical analysis is typical  and thus paves the way to more
-involved analyses.   The introduction  weaves together  two main  threads, one
-theoretical and the other computational.
-=======
 # (PART) On the road {-}
 
 # A ride
@@ -27,17 +13,10 @@ quantity that  is ubiquitous in  the causal  literature. We use  this exemplar
 parameter to  introduce key concepts that  can be applied to  more complicated
 problems. The introduction  weaves together two main  threads, one theoretical
 and the other computational.
->>>>>>> develop
 
 ### A causal story  {#causal-story}
 
 We focus on a causal story where a  random reward (a real number between 0 and
-<<<<<<< HEAD
-1) depends  on the action  undertaken (one among  two) and the  random context
-where the action is  performed (summarized by a real number  between 0 and 1).
-The  causal  quantity  of  interest  is the  average  difference  of  the  two
-counterfactual rewards.
-=======
 1) is  given based  on an  action undertaken  (one among  two) and  the random
 context where the  action is performed (summarized by a  real number between 0
 and 1).  The causal quantity of interest  is the average difference of the two
@@ -46,7 +25,6 @@ pill  or the  blue  pill? Should  we  show our  customers  advertisement A  or
 advertisement B? Should we require individuals to undergo cancer screening? At
 their core, each of  these questions is asking what action  should be taken to
 maximize a "reward."
->>>>>>> develop
 
 We  will  build  several  estimators  and  discuss  their  respective  merits,
 theoretically  and  computationally. The  construction  of  the most  involved
@@ -57,28 +35,14 @@ based on semiparametric models.
 ### The `tlrider` package {#tlrider-package}
 
 The  computational illustrations  will  be developed  based  on the  companion
-<<<<<<< HEAD
-package `tlrider`. Make  sure you have installed it,  for instance by
-running the following chunk of code:
-=======
 package `tlrider`. The package can be installed by
 running the following code:
->>>>>>> develop
 
 
 ```r
 devtools::install_github("achambaz/tlride/tlrider")
 ```
 
-<<<<<<< HEAD
-Note that additional  packages are required, among  which `tidyverse` [@r4ds],
-`caret` and  `ggdag`. Assuming that  these are installed  too, we can  run the
-next chunk of code:
-
-
-```r
-set.seed(54321) ## because reproducibility matters...
-=======
 The version used in this document is 1.1.0.
 
 Additional packages are also required, including `tidyverse` [@r4ds], `caret`
@@ -88,7 +52,6 @@ run the next chunk of code:
 
 ```r
 set.seed(3141516) ## because reproducibility matters...
->>>>>>> develop
 library(tidyverse)
 library(caret)
 library(ggdag)
@@ -97,9 +60,6 @@ library(tlrider)
 
 ### What we will discuss {#discuss}
 
-<<<<<<< HEAD
-...
-=======
 To begin, we  discuss the nature of  the parameter of interest,  viewing it as
 the value of a  statistical mapping evaluated at the law  of the data (Section
 \@ref(parameter)), with  an emphasis  on the smoothness  and double-robustness
@@ -116,15 +76,10 @@ minimum loss estimation  procedure tailored to the inference  of the parameter
 of  main  interest.   In  the  appendix,  we  collect  our  notation  (Section
 \@ref(notation)), and present some results that  are used in the main text and
 their proofs (Sections \@ref(proofs) and \@ref(more-proofs)).
->>>>>>> develop
  
 ## A simulation study {#simulation-study}
 
 
-<<<<<<< HEAD
-
-=======
->>>>>>> develop
 ### Reproducible experiment as a law {#reproducible-experiment}
 
 We are interested in a reproducible  experiment. Every time this experiment is
@@ -160,21 +115,12 @@ A few objects have been defined:
 ```r
 ls()
 #> [1] "another_experiment" "experiment"         "expit"             
-<<<<<<< HEAD
-#> [4] "logit"              "sigma0"
-```
-
-Function `expit` implements the link function  $\expit : \bbR \to ]0,1[$ given
-by  $\expit(x) \equiv  (1 +  e^{-x})^{-1}$.  Function  `logit` implements  its
-inverse function  $\logit : ]0,1[  \to \bbR$  given by $\logit(p)  \equiv \log
-=======
 #> [4] "filter"             "logit"              "sigma0"
 ```
 
 The function `expit` implements the link function $\expit : \bbR \to ]0,1[$ given
 by $\expit(x) \defq (1 + e^{-x})^{-1}$.  The function `logit` implements its
 inverse function  $\logit : ]0,1[  \to \bbR$  given by $\logit(p)  \defq \log
->>>>>>> develop
 [p/(1-p)]$. 
 
 Let us take a look at `experiment`:
@@ -187,22 +133,6 @@ experiment
 #> If the law is fully characterized, you can use method
 #> 'sample_from' to sample from it.
 #> 
-<<<<<<< HEAD
-#> If you built the law, or if you are an _oracle_, you can
-#> also use methods 'reveal' to reveal its relevant features
-#> (QW, Gbar, Qbar, qY -- see '?reveal'), and 'alter' to change
-#> some of them.
-#> 
-#> If all its relevant features are characterized, you can
-#> use methods 'evaluate_psi' to obtain the value of 'Psi' at
-#> this law (see '?evaluate_psi') and 'evaluate_eic' to obtain
-#> the efficient influence curve of 'Psi' at this law (see '?
-#> evaluate_eic').
-```
-
-The law $P_{0}$ of the synthetic experiment `experiment` built by us generates
-a generic observation $O$ that decomposes as \begin{equation*} O \equiv (W, A,
-=======
 #> If you built the law, or if you are an _oracle_, you can also
 #> use methods 'reveal' to reveal its relevant features (QW, Gbar,
 #> Qbar, qY -- see '?reveal'), and 'alter' to change some of them.
@@ -215,7 +145,6 @@ a generic observation $O$ that decomposes as \begin{equation*} O \equiv (W, A,
 
 The law $P_{0}$ of the synthetic experiment `experiment` built by us generates
 a generic observation $O$ that decomposes as \begin{equation*} O \defq (W, A,
->>>>>>> develop
 Y) \in [0,1] \times \{0,1\} \times [0,1].  \end{equation*} We interpret $W$ as
 a real valued summary  measure of a random context where  an action $A$ chosen
 among two is undertaken, leading to a real valued reward $Y$.
@@ -228,19 +157,11 @@ times, independently:
 ```r
 (five_obs <- sample_from(experiment, n = 5))
 #>          W A     Y
-<<<<<<< HEAD
-#> [1,] 0.429 1 0.981
-#> [2,] 0.454 1 0.855
-#> [3,] 0.377 0 0.836
-#> [4,] 0.461 1 0.582
-#> [5,] 0.419 1 0.878
-=======
 #> [1,] 0.414 1 0.996
 #> [2,] 0.409 1 0.669
 #> [3,] 0.404 0 0.825
 #> [4,] 0.462 1 0.539
 #> [5,] 0.404 1 0.986
->>>>>>> develop
 ```
 ### Revealing `experiment` {#revealing-experiment}
 
@@ -263,11 +184,7 @@ features of $P_{0}$ revealed in `relevant_features`.
 
 The `QW` feature describes the marginal law of $W$, that we call $Q_{0,W}$.^[A
 summary   of   the   notation   used  throughout   the   text   is   presented
-<<<<<<< HEAD
-[here](#notation).]
-=======
 [there](#notation), in Appendix \@ref(notation).]
->>>>>>> develop
 
 
 ```r
@@ -285,11 +202,7 @@ relevant_features$QW
 #>                       })
 #>         return(rowSums(out))
 #>       }
-<<<<<<< HEAD
-#> <environment: 0xe822610>
-=======
-#> <environment: 0xf319608>
->>>>>>> develop
+#> <environment: 0xfd12800>
 ```
 
 It  appears that  $Q_{0,W}$ is  a  mixture of  the uniform  laws over  $[0,1]$
@@ -301,13 +214,8 @@ important messages.]
 
 The `Gbar`  feature describes the  conditional probability  of action $A  = 1$
 given  $W$. For  each $a  \in  \{0,1\}$, we  denote \begin{align*}  \Gbar_0(W)
-<<<<<<< HEAD
-&\equiv \Pr_{P_0}(A  = 1 |  W), \\\ell\Gbar_0(a,W)  &\equiv \Pr_{P_0}(A =  a |
-W).\end{align*}    Obviously,    \begin{equation*}\ell\Gbar_{0}(A,W)    \equiv
-=======
 &\defq \Pr_{P_0}(A  = 1 |  W), \\\ell\Gbar_0(a,W)  &\defq \Pr_{P_0}(A =  a |
 W).\end{align*}    Obviously,    \begin{equation*}\ell\Gbar_{0}(A,W)    \defq
->>>>>>> develop
 A\Gbar_{0}(W) + (1-A) (1-\Gbar_{0}(W)).\end{equation*}
 
 
@@ -316,20 +224,12 @@ relevant_features$Gbar
 #> function(W) {
 #>         expit(1 + 2 * W - 4 * sqrt(abs((W - 5/12))))
 #>       }
-<<<<<<< HEAD
-#> <environment: 0xe822610>
-```
-
-Note how real numbers of the form $1 + 2W - 4 * \sqrt{|W - 5/12|})$ are mapped
-into the interval $[0,1]$ by the $\expit$ link function.
-=======
-#> <environment: 0xf319608>
+#> <environment: 0xfd12800>
 ```
 
 Note how real numbers of the form $1 + 2W - 4 * \sqrt{|W - 5/12|})$ are mapped
 into the interval  $[0,1]$ by the $\expit$ link function.  We refer the reader
 to Figure \@ref(fig:estimate-Gbar-three) for a visualization of $\Gbar_{0}$.
->>>>>>> develop
 
 #### `qY` {-}
 
@@ -349,11 +249,7 @@ relevant_features$qY
 #>                      shape1 = shape1,
 #>                      shape2 = shape1 * (1 - QAW) / QAW)
 #>       }
-<<<<<<< HEAD
-#> <environment: 0xe822610>
-=======
-#> <environment: 0xf319608>
->>>>>>> develop
+#> <environment: 0xfd12800>
 ```
 
 It appears that the  conditional law of $Y$ given $A$ and $W$  is the Beta law
@@ -376,13 +272,8 @@ relevant_features$Qbar
 #>              (W >= 3/4) * (W - 3/4) * 2) +
 #>           (1 - A) * (sin(4 * W^2 * pi) / 4 + 1/2) 
 #>       }
-<<<<<<< HEAD
-#> <bytecode: 0xf3afad8>
-#> <environment: 0xe822610>
-=======
-#> <bytecode: 0x104281e8>
-#> <environment: 0xf319608>
->>>>>>> develop
+#> <bytecode: 0x10e213e0>
+#> <environment: 0xfd12800>
 ```
 
 We denote  $\Qbar_0(A,W) =  \Exp_{P_{0}}(Y|A,W)$ the  conditional mean  of $Y$
@@ -437,13 +328,8 @@ relevant_features$sample_from
 #>         }
 #>         return(obs)
 #>       }
-<<<<<<< HEAD
-#> <bytecode: 0xd2a6a80>
-#> <environment: 0xe822610>
-=======
-#> <bytecode: 0xece68c0>
-#> <environment: 0xf319608>
->>>>>>> develop
+#> <bytecode: 0xf6dfee0>
+#> <environment: 0xfd12800>
 ```
 
 We will comment  upon the `ideal` argument in the  above `sample_from` feature
@@ -472,11 +358,7 @@ features %>% select(-Qw, -Gw) %>%
   rename("Q(1,.)" = Q1w,
          "Q(0,.)" = Q0w,
          "Q(1,.) - Q(0,.)" = blip_Qw) %>%
-<<<<<<< HEAD
-  gather("f", "value", -w) %>%
-=======
   pivot_longer(-w, names_to = "f", values_to = "value") %>%
->>>>>>> develop
   ggplot() +
   geom_line(aes(x = w, y = value, color = f), size = 1) +
   labs(y = "f(w)", title = bquote("Visualizing" ~ bar(Q)[0])) +
@@ -547,15 +429,9 @@ alter(my_experiment,   ## characterize its relevant features
 ```r
 (sample_from(my_experiment, 3))
 #>      W A Y
-<<<<<<< HEAD
-#> [1,] 0 0 1
-#> [2,] 1 1 1
-#> [3,] 1 0 1
-=======
 #> [1,] 1 0 1
 #> [2,] 0 0 1
 #> [3,] 1 1 1
->>>>>>> develop
 ```
 
 4. Characterize entirely the law of `my_experiment`. Hint:
@@ -563,28 +439,6 @@ alter(my_experiment,   ## characterize its relevant features
 
 ```r
 obs <- sample_from(my_experiment, 1e4)
-<<<<<<< HEAD
-obs %>% as.tibble %>% group_by(W, A, Y) %>% summarize(how_many = n())
-#> # A tibble: 8 x 4
-#> # Groups:   W, A [?]
-#>       W     A     Y how_many
-#>   <int> <int> <int>    <int>
-#> 1     0     0     0      826
-#> 2     0     0     1      808
-#> 3     0     1     0      285
-#> 4     0     1     1      556
-#> 5     1     0     0      419
-#> 6     1     0     1     2665
-#> # ... with 2 more rows
-obs %>% as.tibble %>% group_by(W, A) %>% summarize(prob = mean(Y))
-#> # A tibble: 4 x 3
-#> # Groups:   W [?]
-#>       W     A  prob
-#>   <int> <int> <dbl>
-#> 1     0     0 0.494
-#> 2     0     1 0.661
-#> 3     1     0 0.864
-=======
 obs %>% as_tibble %>% group_by(W, A, Y) %>%
   summarize(how_many = n()) %>% ungroup
 #> # A tibble: 8 x 4
@@ -605,7 +459,6 @@ obs %>% as_tibble %>% group_by(W, A) %>%
 #> 1     0     0 0.502
 #> 2     0     1 0.662
 #> 3     1     0 0.872
->>>>>>> develop
 #> 4     1     1 0.798
 ```
 
@@ -621,11 +474,7 @@ It happens that we especially care for a finite-dimensional feature of $P_{0}$
 that  we   denote  by  $\psi_{0}$.    Its  definition  involves  two   of  the
 aforementioned infinite-dimensional  features, the  marginal law  $Q_{0,W}$ of
 $W$  and  the  conditional  mean  $\Qbar_{0}$   of  $Y$  given  $A$  and  $W$:
-<<<<<<< HEAD
-\begin{align}  \psi_{0}  &\equiv  \int \left(\Qbar_{0}(1,  w)  -  \Qbar_{0}(0,
-=======
 \begin{align}  \psi_{0}  &\defq  \int \left(\Qbar_{0}(1,  w)  -  \Qbar_{0}(0,
->>>>>>> develop
 w)\right)    dQ_{0,W}(w)    (\#eq:psi-zero)\\     \notag    &=    \Exp_{P_{0}}
 \left(\Exp_{P_0}(Y \mid  A =  1, W)  - \Exp_{P_0}(Y  \mid A  = 0,  W) \right).
 \end{align}
@@ -646,15 +495,9 @@ $\psi_{0}$.   The  `evaluate_psi`  method  makes  it  very  easy  (simply  run
 Our interest in $\psi_{0}$  is of causal nature.  Taking a  closer look at the
 `sample_from` feature of `experiment` reveals indeed that the random making of
 an  observation $O$  drawn from  $P_{0}$ can  be summarized  by the  following
-<<<<<<< HEAD
-causal graph:
-
-(ref:DAG) Causal graph summarizing the inner causal mechanism at play in `experiment`. 
-=======
 directed acyclic graph:
 
 (ref:DAG) Directed acyclic graph summarizing the inner causal mechanism at play in `experiment`. 
->>>>>>> develop
 
 
 ```r
@@ -694,11 +537,7 @@ In words, the experiment unfolds like this (see also Section \@ref(npsem)):
 4. the  action yields  a reward  $Y$, which equals  either $Y_{0}$  or $Y_{1}$
    depending on whether action $a=0$ or $a=1$ has been undertaken;
    
-<<<<<<< HEAD
-5. summarize  the course  of the experiment  with $O \equiv  (W, A,  Y)$, thus
-=======
 5. summarize  the course  of the experiment  with $O \defq  (W, A,  Y)$, thus
->>>>>>> develop
    concealing $Y_{0}$ and $Y_{1}$.
 
 
@@ -708,11 +547,7 @@ to  `sample_from` for  `experiment`  (see Section  \@ref(causal-computation)).
 Doing so  triggers a modification of  the nature of the  experiment, enforcing
 that the counterfactual rewards $Y_{0}$ and  $Y_{1}$ be part of the summary of
 the   experiment   eventually.    In   light   of   the   above   enumeration,
-<<<<<<< HEAD
-\begin{equation*}  \bbO \equiv  (W,  Y_{0}, Y_{1},  A,  Y) \end{equation*}  is
-=======
 \begin{equation*}  \bbO \defq  (W,  Y_{0}, Y_{1},  A,  Y) \end{equation*}  is
->>>>>>> develop
 output,  as  opposed  to  its  summary  measure  $O$.   This  defines  another
 experiment and its law, that we denote $\bbP_{0}$.
 
@@ -741,17 +576,10 @@ approximate value.
 
 
 ```r
-<<<<<<< HEAD
-B <- 1e5
-ideal_obs <- sample_from(experiment, B, ideal = TRUE)
-(psi_approx <- mean(ideal_obs[, "Yone"] - ideal_obs[, "Yzero"]))
-#> [1] 0.0841
-=======
 B <- 1e6
 ideal_obs <- sample_from(experiment, B, ideal = TRUE)
 (psi_approx <- mean(ideal_obs[, "Yone"] - ideal_obs[, "Yzero"]))
 #> [1] 0.083
->>>>>>> develop
 ```
 
 The object  `psi_approx` contains  an approximation to  $\psi_0$ based  on `B`
@@ -767,11 +595,7 @@ sd_approx <- sd(ideal_obs[, "Yone"] - ideal_obs[, "Yzero"])
 alpha <- 0.05
 (psi_approx_CI <- psi_approx + c(-1, 1) *
    qnorm(1 - alpha / 2) * sd_approx / sqrt(B))
-<<<<<<< HEAD
-#> [1] 0.0822 0.0860
-=======
 #> [1] 0.0824 0.0836
->>>>>>> develop
 ```
 
 We note that the interpretation of this confidence interval is that in 95\% of 
@@ -785,38 +609,24 @@ Equality    \@ref(eq:psi-zero-bis)     shows    that     parameter    $\psi_0$
 $a = 1$ rather than $a = 0$.  An alternative way to describe the rewards under
 different actions involves *quantiles* as opposed to *averages*.
 
-<<<<<<< HEAD
-Let \begin{equation*} Q_{0,Y}(y,  A, W) \equiv \int_{0}^y q_{0,Y}(u,  A, W) du
-=======
 Let \begin{equation*} Q_{0,Y}(y,  A, W) \defq \int_{0}^y q_{0,Y}(u,  A, W) du
->>>>>>> develop
 \end{equation*} be the conditional cumulative distribution of reward $Y$ given
 $A$ and $W$, evaluated  at $y \in ]0,1[$, that is implied  by $P_0$.  For each
 action $a \in \{0,1\}$ and $c \in ]0,1[$, introduce 
 
 \begin{equation}
-<<<<<<< HEAD
-\gamma_{0,a,c}  \equiv  \inf  \left\{y  \in  ]0,1[ :  \int  Q_{0,Y}(y,  a,  w)
-dQ_{0,W}(w) \ge c \right\}. (\#eq:def-quantile)
-\end{equation}
-=======
 \gamma_{0,a,c}  \defq  \inf  \left\{y  \in  ]0,1[ :  \int  Q_{0,Y}(y,  a,  w)
 dQ_{0,W}(w) \ge c \right\}. (\#eq:def-quantile)
 \end{equation}
 (Note:  $\inf$ merely  generalizes $\min$,  accounting for  the fact  that the
 minimum may fail to be achieved.)
->>>>>>> develop
 
 It   is  not   very   difficult  to   check  (see   Problem   1  below)   that
 \begin{equation}\gamma_{0,a,c} =  \inf\left\{y \in ]0,1[  : \Pr_{\bbP_{0}}(Y_a
 \leq   y)   \geq   c\right\}.    (\#eq:alter-gamma-zero)\end{equation}   Thus,
 $\gamma_{0,a,c}$ can  be interpreted  as a covariate-adjusted  $c$-th quantile
 reward     when     action     $a$    is     enforced.      The     difference
-<<<<<<< HEAD
-\begin{equation}\delta_{0,c}    \equiv    \gamma_{0,1,c}   -    \gamma_{0,0,c}
-=======
 \begin{equation}\delta_{0,c}    \defq    \gamma_{0,1,c}   -    \gamma_{0,0,c}
->>>>>>> develop
 (\#eq:def-delta)\end{equation} is the $c$-th quantile counterpart to parameter
 $\psi_{0}$ \@ref(eq:psi-zero).
 
@@ -853,17 +663,10 @@ $P_{0}     =    P_{\theta_{0}}$,     and     one     wishes    to     estimate
 $\theta_{0}$.\index{identifiability}
 
 For instance,  each $P_{\theta}$ could be  the Gaussian law with  mean $\theta
-<<<<<<< HEAD
-\in T  \equiv \bbR$ and variance  1, and one  could wish to estimate  the mean
-$\theta_{0}$ of $P_{0}$. To do so, one could rely on $n$ observations $X_{1}$,
-\ldots,  $X_{n}$  drawn  independently   from  $P_{0}$.   The  empirical  mean
-\begin{equation*}\theta_{n}       \equiv      \frac{1}{n}       \sum_{i=1}^{n}
-=======
 \in T  \defq \bbR$ and variance  1, and one  could wish to estimate  the mean
 $\theta_{0}$ of $P_{0}$. To do so, one could rely on $n$ observations $X_{1}$,
 \ldots,  $X_{n}$  drawn  independently   from  $P_{0}$.   The  empirical  mean
 \begin{equation*}\theta_{n}       \defq      \frac{1}{n}       \sum_{i=1}^{n}
->>>>>>> develop
 X_{i}\end{equation*} estimates $\theta_{0}$.  If  we assume that $\Var_{P_{0}}
 (X_{1})$ is  finite, then  $\theta_{n}$ satisfies  many useful  properties. In
 particular, it can be used [to construct confidence intervals](#clt).
@@ -871,15 +674,9 @@ particular, it can be used [to construct confidence intervals](#clt).
 Of course, the mean of a law is defined beyond the small model $\{P_{\theta} :
 \theta \in \bbR\}$.   Let $\calM$ be the  set of laws $P$ on  $\bbR$ such that
 $\Var_{P}(X)$ is finite.  In particular, $P_{0}  \in \calM$.  For every $P \in
-<<<<<<< HEAD
-\calM$,  the mean  $E_{P}(X)$ is  well defined.   Thus, we  can introduce  the
-*statistical    mapping*    $\Theta   :    \calM    \to    \bbR$   given    by
-\begin{equation*}\Theta(P) \equiv E_{P}(X).\end{equation*}
-=======
 \calM$,  the mean  $\Exp_{P}(X)$ is  well defined.   Thus, we  can introduce  the
 *statistical    mapping*    $\Theta   :    \calM    \to    \bbR$   given    by
 \begin{equation*}\Theta(P) \defq \Exp_{P}(X).\end{equation*}
->>>>>>> develop
 
 Interestingly, the empirical measure $P_{n}$^[The empirical measure $P_{n}$ is
 the law such that  *(i)* $X$ drawn from $P_{n}$ takes  its values in $\{X_{1},
@@ -889,13 +686,9 @@ evaluated   at    $P_{n}$:   \begin{equation*}\Theta(P_{n})    =   \frac{1}{n}
 \sum_{i=1}^{n} X_{i}  = \theta_{n}.\end{equation*} We *recover*  the empirical
 mean, and  understand that it  is a *substitution*  estimator of the  mean: in
 order to estimate $\Theta(P_{0})$, we  *substitute* $P_{n}$ for $P_{0}$ within
-<<<<<<< HEAD
-$\Theta$.
-=======
 $\Theta$.^[There   are  many   interesting  parameters   $\Theta$  for   which
 $\Theta(P_n)$ is not defined, see for instance \@ref(eq:psimap), our parameter
 of main interest.]
->>>>>>> develop
 
 Substitution-based estimators are particularly  valuable notably because they,
 by construction, satisfy  all the constraints to which  the targeted parameter
@@ -905,17 +698,6 @@ substitution-based, some are not.
 ### The parameter as the value of a statistical mapping at the experiment {#parameter-mapping}
 
 We now go back to our main  topic of interest. Suppose we know beforehand that
-<<<<<<< HEAD
-$O$ drawn from $P_{0}$ takes its  values in $\calO \equiv [0,1] \times \{0,1\}
-\times [0,1]$ and that $\Gbar_{0}(W) \equiv _Pr_{P_{0}}(A=1|W)$ is bounded away from
-zero and one  $Q_{0,W}$-almost surely (this is the case  indeed).  Then we can
-define  model  $\calM$ as  the  set  of all  laws  $P$  on $\calO$  such  that
-\begin{equation*}\Gbar(W)  \equiv \Pr_{P}(A=1|W)\end{equation*}  is bounded  away
-from zero and one $Q_{W}$-almost surely,  where $Q_{W}$ is the marginal law of
-$W$ under $P$.
-
-Let us also define generically  $\Qbar$ as \begin{equation*}\Qbar (A,W) \equiv
-=======
 $O$ drawn from $P_{0}$ takes its  values in $\calO \defq [0,1] \times \{0,1\}
 \times [0,1]$ and that $\Gbar_{0}(W) \defq \Pr_{P_{0}}(A=1|W)$ is bounded away from
 zero and one  $Q_{0,W}$-almost surely (this is the case  indeed).  Then we can
@@ -925,23 +707,16 @@ from zero and one $Q_{W}$-almost surely,  where $Q_{W}$ is the marginal law of
 $W$ under $P$.
 
 Let us also define generically  $\Qbar$ as \begin{equation*}\Qbar (A,W) \defq
->>>>>>> develop
 \Exp_{P} (Y|A, W).\end{equation*}  Note how we have  suppressed the dependence
 of $\Gbar$ and $\Qbar$ on $P$ for notational simplicity.
 
 Central to our approach  is viewing $\psi_{0}$ as the value  at $P_{0}$ of the
 statistical  mapping   $\Psi$  from   $\calM$  to  $[0,1]$   characterized  by
-<<<<<<< HEAD
-\begin{align}  \Psi(P) &\equiv  \int  \left(\Qbar(1, w)  - \Qbar(0,  w)\right)
-dQ_{W}(w) (\#eq:psimap)\\ &= \Exp_{P}  \left(\Qbar(1, W) - \Qbar(0, W)\right),
-\notag \end{align} a clear extension of \@ref(eq:psi-zero).
-=======
 \begin{align}  \Psi(P)  &\defq  \int  \left(\Qbar_P(1,  w)  -  \Qbar_P(0,
 w)\right)  dQ_{W}(w)   (\#eq:psimap)\\  &=  \Exp_{P}  \left(\Qbar_P(1,   W)  -
 \Qbar_P(0,   W)\right),    \notag   \end{align}    a   clear    extension   of
 \@ref(eq:psi-zero) where, for  once, we make the dependence of  $\Qbar$ on $P$
 explicit to emphasize how $\Psi(P)$ truly depends on $P$.
->>>>>>> develop
 
 ### The value of the statistical mapping at another experiment {#value-another-experiment}
 
@@ -956,75 +731,6 @@ another_experiment
 #> If the law is fully characterized, you can use method
 #> 'sample_from' to sample from it.
 #> 
-<<<<<<< HEAD
-#> If you built the law, or if you are an _oracle_, you can
-#> also use methods 'reveal' to reveal its relevant features
-#> (QW, Gbar, Qbar, qY -- see '?reveal'), and 'alter' to change
-#> some of them.
-#> 
-#> If all its relevant features are characterized, you can
-#> use methods 'evaluate_psi' to obtain the value of 'Psi' at
-#> this law (see '?evaluate_psi') and 'evaluate_eic' to obtain
-#> the efficient influence curve of 'Psi' at this law (see '?
-#> evaluate_eic').
-reveal(another_experiment)
-#> $QW
-#> function (x, min = 1/10, max = 9/10) 
-#> {
-#>     stats::dunif(x, min = min, max = max)
-#> }
-#> <environment: 0xf61e700>
-#> 
-#> $Gbar
-#> function (W) 
-#> {
-#>     sin((1 + W) * pi/6)
-#> }
-#> <environment: 0xf61e700>
-#> 
-#> $Qbar
-#> function (AW, h) 
-#> {
-#>     A <- AW[, "A"]
-#>     W <- AW[, "W"]
-#>     expit(logit(A * W + (1 - A) * W^2) + h * 10 * sqrt(W) * A)
-#> }
-#> <environment: 0xf61e700>
-#> 
-#> $qY
-#> function (obs, Qbar, shape1 = 4) 
-#> {
-#>     AW <- obs[, c("A", "W")]
-#>     QAW <- Qbar(AW)
-#>     stats::gdbeta(Y, shape1 = shape1, shape2 = shape1 * (1 - 
-#>         QAW)/QAW)
-#> }
-#> <environment: 0xf61e700>
-#> 
-#> $sample_from
-#> function (n, h) 
-#> {
-#>     n <- R.utils::Arguments$getInteger(n, c(1, Inf))
-#>     h <- R.utils::Arguments$getNumeric(h)
-#>     Gbar <- another_experiment$.Gbar
-#>     Qbar <- another_experiment$.Qbar
-#>     params <- formals(another_experiment$.QW)
-#>     W <- stats::runif(n, min = eval(params$min), max = eval(params$max))
-#>     A <- stats::rbinom(n, size = 1, prob = Gbar(W))
-#>     params <- formals(another_experiment$.qY)
-#>     shape1 <- eval(params$shape1)
-#>     QAW <- Qbar(cbind(A = A, W = W), h = h)
-#>     Y <- stats::rbeta(n, shape1 = shape1, shape2 = shape1 * (1 - 
-#>         QAW)/QAW)
-#>     obs <- cbind(W = W, A = A, Y = Y)
-#>     return(obs)
-#> }
-#> <environment: 0xf61e700>
-(two_obs_another_experiment <- sample_from(another_experiment, 2, h = 0))
-#>          W A     Y
-#> [1,] 0.585 1 0.507
-#> [2,] 0.347 1 0.345
-=======
 #> If you built the law, or if you are an _oracle_, you can also
 #> use methods 'reveal' to reveal its relevant features (QW, Gbar,
 #> Qbar, qY -- see '?reveal'), and 'alter' to change some of them.
@@ -1038,13 +744,13 @@ reveal(another_experiment)
 #> function(x, min = 1/10, max = 9/10){
 #>              stats::dunif(x, min = min, max = max)
 #>       }
-#> <environment: 0x10750f08>
+#> <environment: 0x1114a100>
 #> 
 #> $Gbar
 #> function(W) {
 #>         sin((1 + W) * pi / 6)
 #>       }
-#> <environment: 0x10750f08>
+#> <environment: 0x1114a100>
 #> 
 #> $Qbar
 #> function(AW, h) {
@@ -1053,7 +759,7 @@ reveal(another_experiment)
 #>         expit( logit( A *  W + (1 - A) * W^2 ) +
 #>                h * 10 * sqrt(W) * A )
 #>       }
-#> <environment: 0x10750f08>
+#> <environment: 0x1114a100>
 #> 
 #> $qY
 #> function(obs, Qbar, shape1 = 4){
@@ -1063,7 +769,7 @@ reveal(another_experiment)
 #>                       shape1 = shape1,
 #>                       shape2 = shape1 * (1 - QAW) / QAW)
 #>       }
-#> <environment: 0x10750f08>
+#> <environment: 0x1114a100>
 #> 
 #> $sample_from
 #> function(n, h) {
@@ -1091,12 +797,11 @@ reveal(another_experiment)
 #>         obs <- cbind(W = W, A = A, Y = Y)
 #>         return(obs)
 #>       }
-#> <environment: 0x10750f08>
+#> <environment: 0x1114a100>
 (two_obs_another_experiment <- sample_from(another_experiment, 2, h = 0))
 #>          W A       Y
 #> [1,] 0.101 0 0.00841
 #> [2,] 0.620 1 0.51166
->>>>>>> develop
 ```
 By taking an  oracular look at the output  of `reveal(another_experiment)`, we
 discover that  the law $\Pi_{0}  \in \calM$  encoded by default  (*i.e.*, with
@@ -1110,22 +815,15 @@ confirms the equality.
 ```r
 (psi_Pi_zero <- evaluate_psi(another_experiment, h = 0))
 #> [1] 0.197
-<<<<<<< HEAD
-=======
 round(59/300, 3)
 #> [1] 0.197
->>>>>>> develop
 ```
 
 
 
 ## &#9881; \gear Alternative statistical mapping {#exo-alternative-parameter-second-pass}
 
-<<<<<<< HEAD
-We        now        resume        the       exercize        of        Section
-=======
 We        now        resume        the       exercise        of        Section
->>>>>>> develop
 \@ref(exo-alternative-parameter-first-pass).    Like   we   did   in   Section
 \@ref(parameter-second-pass), we  introduce a generic version  of the relevant
 features $q_{0,Y}$  and $Q_{0,Y}$.  Specifically, we  define $q_{Y}(y,A,W)$ to
@@ -1140,11 +838,7 @@ of  a  mapping  $\Gamma_{a,c}$  from   $\calM$  to  $[0,1]$  characterized  by
 dQ_W(w) \ge  c \right\}.   \end{equation*} The  difference in  $c$-th quantile
 rewards, $\delta_{0,c}$  \@ref(eq:def-delta), may  similarly be viewed  as the
 value  at   $P_{0}$  of  a   mapping  $\Delta_c$  from  $\calM$   to  $[0,1]$,
-<<<<<<< HEAD
-characterized  by  \begin{equation*}   \Delta_c(P)  \equiv  \Gamma_{1,c}(P)  -
-=======
 characterized  by  \begin{equation*}   \Delta_c(P)  \defq  \Gamma_{1,c}(P)  -
->>>>>>> develop
 \Gamma_{0,c}(P).  \end{equation*}
 
 1. Compute the numerical value of $\Gamma_{a,c}(\Pi_0)$ for $(a,c) \in \{0,1\}
@@ -1239,18 +933,6 @@ another_experiment
 #> If the law is fully characterized, you can use method
 #> 'sample_from' to sample from it.
 #> 
-<<<<<<< HEAD
-#> If you built the law, or if you are an _oracle_, you can
-#> also use methods 'reveal' to reveal its relevant features
-#> (QW, Gbar, Qbar, qY -- see '?reveal'), and 'alter' to change
-#> some of them.
-#> 
-#> If all its relevant features are characterized, you can
-#> use methods 'evaluate_psi' to obtain the value of 'Psi' at
-#> this law (see '?evaluate_psi') and 'evaluate_eic' to obtain
-#> the efficient influence curve of 'Psi' at this law (see '?
-#> evaluate_eic').
-=======
 #> If you built the law, or if you are an _oracle_, you can also
 #> use methods 'reveal' to reveal its relevant features (QW, Gbar,
 #> Qbar, qY -- see '?reveal'), and 'alter' to change some of them.
@@ -1259,7 +941,6 @@ another_experiment
 #> methods 'evaluate_psi' to obtain the value of 'Psi' at this law
 #> (see '?evaluate_psi') and 'evaluate_eic' to obtain the efficient
 #> influence curve of 'Psi' at this law (see '?evaluate_eic').
->>>>>>> develop
 ```
 
 The message  is a little  misleading. Indeed, `another_experiment` is  not *a*
@@ -1295,21 +976,12 @@ reveal(another_experiment)$sample_from
 #>         obs <- cbind(W = W, A = A, Y = Y)
 #>         return(obs)
 #>       }
-<<<<<<< HEAD
-#> <bytecode: 0xa6a2180>
-#> <environment: 0xf61e700>
-```
-
-Let us call $\Pi_{h} \in \calM$  the law encoded by `another_experiment` for a
-given  `h`  taken  in   $]-1,1[$.   Note  that  \begin{equation*}\calP  \equiv
-=======
-#> <bytecode: 0xf0f59a0>
-#> <environment: 0x10750f08>
+#> <bytecode: 0xfabdb40>
+#> <environment: 0x1114a100>
 ```
 
 Let us call $\Pi_{h} \in \calM$  the law encoded by `another_experiment` for a
 given  `h`  taken  in   $]-1,1[$.   Note  that  \begin{equation*}\calP  \defq
->>>>>>> develop
 \{\Pi_h : h \in ]-1,1[\}\end{equation*}  defines a collection of laws, *i.e.*,
 a statistical model.  
 
@@ -1367,17 +1039,10 @@ ggplot() +
 <p class="caption">(\#fig:psi-approx-psi-one)(ref:psi-approx-psi-one)</p>
 </div>
 
-<<<<<<< HEAD
-The dotted curve  represents the function $h \mapsto  \Psi(\Pi_{h})$. The blue
-line  represents the  tangent to  the previous  curve at  $h=0$, which  indeed
-appears to be  differentiable around $h=0$.  In  Section \@ref(revisiting), we
-derive a closed-form expression for the slope of the blue curve.
-=======
 The red curve represents the function $h \mapsto \Psi(\Pi_{h})$. The blue line
 represents the tangent to the previous curve at $h=0$, which indeed appears to
 be differentiable  around $h=0$.   In Section  \@ref(revisiting), we  derive a
 closed-form expression for the slope of the blue curve.
->>>>>>> develop
 
 
 ## &#9881; \gear Yet another experiment {#exo-yet-another-experiment}
@@ -1419,26 +1084,6 @@ laws $\Pi_0$ and $\Pi_0'$?
 
 ## &#9761; \stixdanger{} More on fluctuations and smoothness {#smooth-second-pass}
 
-<<<<<<< HEAD
-### Fluctuations
-
-Let us now formally define what it means for statistical mapping $\Psi$ to be
-smooth at every  $P \in \calM$.  For every $h  \in H \equiv ]-M^{-1},M^{-1}[$,
-we can  define a  law $P_{h}  \in \calM$  by setting  $P_{h} \ll  P$^[That is,
-$P_{h}$  is dominated  by $P$:  if an  event $A$  satisfies $P(A)  = 0$,  then
-necessarily $P_{h} (A) = 0$ too.]  and 
-\begin{equation}
-\frac{dP_h}{dP} \equiv
-1 + h s, (\#eq:fluct)
-\end{equation} 
-where   $s  :  \calO\to  \bbR$  is  a
-(measurable) function of $O$ such that  $s(O)$ is not equal to zero $P$-almost
-surely,  $\Exp_{P}  (s(O))  =  0$,  and  $s$ bounded  by  $M$.   We  make  the
-observation that 
-\begin{equation}
-(i)  \quad P_h|_{h=0}  = P,\quad  (ii) \quad
-\left.\frac{d}{dh}  \log \frac{dP_h}{dP}(O)\right|_{h=0}  =s(O).  (\#eq:score)
-=======
 ### Fluctuations {#smooth-second-pass-fluctuations}
 
 Let us now formally define what it  means for statistical mapping $\Psi$ to be
@@ -1456,7 +1101,6 @@ by $M$.  We make the observation that
 \begin{equation} (i) \quad P_h|_{h=0} =
 P,\quad  (ii)  \quad \left.\frac{d}{dh}  \log  \frac{dP_h}{dP}(O)\right|_{h=0}
 =s(O).  (\#eq:score) 
->>>>>>> develop
 \end{equation}
 
 Because  of *(i)*,  $\{P_{h} :  h \in  H\}$ is  a submodel  through $P$,  also
@@ -1479,15 +1123,10 @@ function $D^{*}(P)  : \calO \to  \bbR$ such that $\Exp_{P}(D^{*}(P)(O))  = 0$,
 $\Var_{P}(D^{*}(P)(O)) < \infty$, and, for  every fluctuation $\{P_{h} : h \in
 H\}$  with  score  $s$  at  $h  =  0$,  the  real-valued  mapping  $h  \mapsto
 \Psi(P_{h})$  is  differentiable   at  $h=0$,  with  a   derivative  equal  to
-<<<<<<< HEAD
-\begin{equation}  \Exp_{P}  \left(D^{*}(P)(O) s(O)\right).   (\#eq:derivative)
-\end{equation}  The  object  $D^*(P)$  in  \@ref(eq:derivative)  is  called  a
-=======
 \begin{equation} 
 \Exp_{P} \left( D^{*}(P)(O) s(O) \right).  (\#eq:derivative) 
 \end{equation} 
 The object $D^*(P)$ in \@ref(eq:derivative) is called a
->>>>>>> develop
 gradient of $\Psi$  at $P$.^[Interestingly, if a fluctuation $\{P_{h}  : h \in
 H\}$  satisfies \@ref(eq:score)  for  a  direction $s$  such  that $s\neq  0$,
 $\Exp_{P}(s(O))  =  0$  and  $\Var_{P}  (s(O))  <  \infty$,  then  $h  \mapsto
@@ -1528,15 +1167,9 @@ of $D\mapsto \Var_{P} (D(O))$ over the set of all gradients.
 
 It is not difficult to check that the efficient influence curve of statistical
 mapping  $\Psi$  \@ref(eq:psimap)   at  $P  \in  \calM$  can   be  written  as
-<<<<<<< HEAD
-\begin{align}  D^{*}(P)  &  \equiv  D_{1}^{*}   (P)  +  D_{2}^{*}  (P),  \quad
-\text{where} (\#eq:eif)\\  D_{1}^{*}(P) (O) &\equiv \Qbar(1,W)  - \Qbar(0,W) -
-\Psi(P),  \notag\\ D_{2}^{*}(P)  (O)  &\equiv \frac{2A-1}{\ell\Gbar(A,W)}(Y  -
-=======
 \begin{align}  D^{*}(P)  &  \defq  D_{1}^{*}   (P)  +  D_{2}^{*}  (P),  \quad
 \text{where} (\#eq:eif)\\  D_{1}^{*}(P) (O) &\defq \Qbar(1,W)  - \Qbar(0,W) -
 \Psi(P),  \notag\\ D_{2}^{*}(P)  (O)  &\defq \frac{2A-1}{\ell\Gbar(A,W)}(Y  -
->>>>>>> develop
 \Qbar(A,W)).\notag \end{align}
 
 A `method` from package `tlrider` evaluates the efficient influence curve at a
@@ -1550,11 +1183,7 @@ characterized by `experiment`:
 eic_experiment <- evaluate_eic(experiment)
 ```
 
-<<<<<<< HEAD
-The  efficient influence  curve $D^{*}(P_{0})$  is a  function from  $\bbO$ to
-=======
 The  efficient influence  curve $D^{*}(P_{0})$  is a  function from  $\calO$ to
->>>>>>> develop
 $\bbR$.  As  such, it can  be evaluated  at the five  independent observations
 drawn from  $P_{0}$ in Section  \@ref(synthetic-experiment). This is  what the
 next chunk of code does:
@@ -1562,11 +1191,7 @@ next chunk of code does:
 
 ```r
 (eic_experiment(five_obs))
-<<<<<<< HEAD
-#> [1]  0.260  0.161 -0.387 -0.186  0.110
-=======
 #> [1]  0.246 -0.157 -0.534 -0.243  0.234
->>>>>>> develop
 ```
 
 Finally, the  efficient influence curve can  be visualized as two  images that
@@ -1604,16 +1229,6 @@ $\{\Pi_{h} :  h \in [-1,1]\}$ is  a fluctuation of $\Pi_{0}$  in the direction
 (in the sense of \@ref(eq:fluct)) of
 
 \begin{align}
-<<<<<<< HEAD
-\notag\sigma_{0}(O) \equiv - 10 \sqrt{W} A \times \beta_{0} & (A,W)\\
-&\times\left(\log(1    -     Y)    +     \sum_{k=0}^{3}    \left(k     +    \beta_{0}
-(A,W)\right)^{-1}\right)     +      \text{constant},\\     \text{where}     \;
-\beta_{0}(A,W)&\equiv                                                  \frac{1
--\Qbar_{\Pi_{0}}(A,W)}{\Qbar_{\Pi_{0}}(A,W)}. (\#eq:sigma0)\end{align}
-
-Consequently,    the    slope    of     the    dotted    curve    in    Figure
-\@ref(fig:psi-approx-psi-one) is equal to 
-=======
 \notag\sigma_{0}(O)  \defq &- 10 \sqrt{W} A \times \beta_{0}  (A,W)\\
 &\times\left(\log(1    -     Y)    +     \sum_{k=0}^{3}    \left(k     +    \beta_{0}
 (A,W)\right)^{-1}\right) + \text{constant}, \quad \text{where}\\
@@ -1622,7 +1237,6 @@ Consequently,    the    slope    of     the    dotted    curve    in    Figure
 
 Consequently,  the slope  of line  in Figure  \@ref(fig:psi-approx-psi-one) is
 equal to
->>>>>>> develop
 
 \begin{equation}
 \Exp_{\Pi_{0}} (D^{*}(\Pi_{0}) (O) \sigma_{0}(O)). (\#eq:slope-Pi)
@@ -1672,16 +1286,10 @@ vars <- eic_another_experiment(obs_another_experiment) *
 
 sd_hat <- sd(vars)
 (slope_hat <- mean(vars))
-<<<<<<< HEAD
-#> [1] 1.35
-(slope_CI <- slope_hat + c(-1, 1) * qnorm(1 - alpha / 2) * sd_hat / sqrt(B))
-#> [1] 1.33 1.36
-=======
 #> [1] 1.36
 (slope_CI <- slope_hat + c(-1, 1) *
    qnorm(1 - alpha / 2) * sd_hat / sqrt(B))
 #> [1] 1.35 1.36
->>>>>>> develop
 ```
 
 Equal  to 1.349  (rounded  to three  decimal places  ---
@@ -1695,15 +1303,10 @@ numerical approximation `slope_approx` is not too off!
 Suppose  that  $O_{1},  \ldots,  O_{n}$ are  drawn  independently  from  $P\in
 \calM$. If an estimator $\psi_n$ of $\Psi(P)$ can be written as
 
-<<<<<<< HEAD
-\begin{equation*}  \psi_n  =  \Psi(P) +  \frac{1}{n}\sum_{i=1}^n  \IC(O_i)  +
-o_{P}(1/\sqrt{n})\end{equation*}
-=======
 \begin{equation} 
 \psi_n  =  \Psi(P) +  \frac{1}{n}\sum_{i=1}^n  \IC(O_i)  +
 o_{P}(1/\sqrt{n}) (\#eq:asymptotic-lin)
 \end{equation}
->>>>>>> develop
 
 for some function  $\IC : \calO \to  \bbR$ such that $\Exp_P(\IC(O))  = 0$ and
 $\Var_{P}(\IC(O))  < \infty$,  then we  say that  $\psi_n$ is  *asymptotically
@@ -1777,11 +1380,7 @@ obs <- sample_from(experiment, B)
 obs_another_experiment <- sample_from(another_experiment, B, h = 0)
 (cramer_rao_Pi_zero_hat <-
    var(eic_another_experiment(obs_another_experiment)))
-<<<<<<< HEAD
-#> [1] 0.098
-=======
 #> [1] 0.0957
->>>>>>> develop
 ```
 
 3. With a large independent sample drawn from $\Psi(P_0)$ (or $\Psi(\Pi_0)$),
@@ -1831,13 +1430,8 @@ Returning to  the present  problem with this  in mind, we  find that  indeed a
 similar approximation strategy may be applied. 
 
 For clarity,  let us introduce a  new shorthand notation.  For  any measurable
-<<<<<<< HEAD
-function $f$ of  the observed data $O$, we  may write from now on  $P f \equiv
-\Exp_P(f(O))$. One may argue that the  notation is valuable beyong the gain of
-=======
 function $f$ of  the observed data $O$, we  may write from now on  $P f \defq
 \Exp_P(f(O))$. One may argue that the  notation is valuable beyond the gain of
->>>>>>> develop
 space. For instance, \@ref(eq:asymp-lin) 
 
 \begin{equation*}
@@ -1862,17 +1456,6 @@ given $P \in \calM$, we can write
 (\#eq:taylor-expansion) 
 \end{equation}
 
-<<<<<<< HEAD
-where $\Rem_{P_0}(P)$ is a  *remainder term* satisfying that \begin{equation*}
-\frac{\Rem_{P_0}(P)}{d(P,  P_0)}  \rightarrow  0   \  \mbox{as}  \  d(P,  P_0)
-\rightarrow 0  , \end{equation*}  where $d$  is a  measure of  discrepancy for
-distributions  in  $\calM$.   Note   that  \@ref(eq:taylor-expansion)  can  be
-equivalently   written   as   \begin{equation*}    \Psi(P_0)   =   \Psi(P)   +
-\Exp_{P_0}(D^*(P)(O))  - \Exp_P(D^*(P)(O))  - \Rem_{P_0}(P).   \end{equation*}
-The  remainder term  formalizes the  notion that  if $P$  is *close*  to $P_0$
-(*i.e.*, if $d(P,P_0)$ is small), then the linear approximation of $\Psi(P_0)$
-is more accurate.
-=======
 where $\Rem_{P_0}(P)$  (defined *implicitly* by  \@ref(eq:taylor-expansion) --
 see \@ref(eq:remainder-one)) is a
 *remainder term*  satisfying that  \begin{equation*} \frac{\Rem_{P_0}(P)}{d(P,
@@ -1883,7 +1466,6 @@ with $d$ a measure of discrepancy for distributions in $\calM$.  Note that
 \Rem_{P_0}(P).  \end{equation*} The remainder  term formalizes the notion that
 if $P$ is *close*  to $P_0$ (*i.e.*, if $d(P,P_0)$ is  small), then the linear
 approximation of $\Psi(P_0)$ is more accurate.
->>>>>>> develop
 
 ### Expressing the remainder term as a function of the relevant features
 
@@ -1892,11 +1474,7 @@ the  canonical   gradient  \@ref(eq:eif),   and  linearization   of  parameter
 \@ref(eq:taylor-expansion) combine to determine the remainder: 
 
 \begin{equation}
-<<<<<<< HEAD
-\Rem_{P_0}(P)    \equiv   \Psi(P)    -   \Psi(P_0)    -   (P_0    -   P)D^*(P)
-=======
 \Rem_{P_0}(P)    \defq   \Psi(P)    -   \Psi(P_0)    -   (P_0    -   P)D^*(P)
->>>>>>> develop
 (\#eq:remainder-one)
 \end{equation}
 
@@ -1943,13 +1521,8 @@ observations drawn independently from $P_{0}$.)
 ### The key property
 
 Let us  denote by  $\|f\|_{P}^{2}$ the  square of  the $L^{2}(P)$-norm  of any
-<<<<<<< HEAD
-function  $f$  from $\bbO$  to  $\bbR$  *i.e.*,  using a  recently  introduced
-notation,  $\|f\|_{P}^{2}  \equiv  Pf^{2}$.    For  instance,  $\|\Qbar_{1}  -
-=======
 function  $f$  from $\calO$  to  $\bbR$  *i.e.*,  using a  recently  introduced
 notation,  $\|f\|_{P}^{2}  \defq  Pf^{2}$.    For  instance,  $\|\Qbar_{1}  -
->>>>>>> develop
 \Qbar_{0}\|_{P}$ or  $\|\Gbar_{1} - \Gbar_{0}\|_{P}$ is  a distance separating
 the features $\Qbar_{1}$ and $\Qbar_{0}$ or $\Gbar_{1}$ and $\Gbar_{0}$.
 
@@ -1959,19 +1532,11 @@ remarkable property:  it is *double-robust*.   Specifically, for every  $P \in
 
 \begin{equation} 
 \Rem_{P_{0}}   (P)^{2}  \leq   \|\Qbar   -
-<<<<<<< HEAD
-\Qbar_{0}\|_{P}^{2}  \times   \|(\Gbar  -  \Gbar_{0})/\ell\Gbar_{0}\|_{P}^{2},
-(\#eq:rem-two)
-\end{equation}
-
-where $\Qbar$ and  $\Gbar$ are the counterparts under $P$  to $\Qbar$_{0}$ and
-=======
 \Qbar_{0}\|_{P_0}^{2}  \times   \|(\Gbar  -  \Gbar_{0})/\ell\Gbar_{0}\|_{P_0}^{2},
 (\#eq:rem-two)
 \end{equation}
 
 where $\Qbar$ and  $\Gbar$ are the counterparts under $P$  to $\Qbar_{0}$ and
->>>>>>> develop
 $\Gbar_{0}$.   The proof  consists  in a  straightforward  application of  the
 Cauchy-Schwarz   inequality    to   the   right-hand   side    expression   in
 \@ref(eq:remainder-one).
@@ -2027,11 +1592,6 @@ consistent   estimators   of  $\Psi(P)$,   as   we   shall  see   in   Section
    thus  characterized.   Can  you  guess the  values  of  $\Rem_{P_{0}}(P')$,
    $\Psi(P')$ and $P_{0} D^{*}(P')$? Support your argument.
 
-<<<<<<< HEAD
-3. Add more exercizes?
-
-=======
->>>>>>> develop
 
 
 # Inference {#inference}
@@ -2050,17 +1610,6 @@ and  the  observations  are  stored  in  `obs`  that  we  created  in  Section
 
 
 ```r
-<<<<<<< HEAD
-iter <- 1e2
-```
-
-Equal to 0.1 million, the sample size `B` is very large. We will in fact
-use  100 disjoint  subsamples  composed  of $n$  independent
-observations among $O_{1}, \ldots, O_{B}$,  where $n$ equals `B/iter`, *i.e.*,
-1000.   We will  thus be  in a  position to  investigate the
-statistical  properties  of  every  estimation  procedure  by  replicating  it
-independently 100 times.
-=======
 iter <- 1e3
 ```
 
@@ -2070,28 +1619,18 @@ observations among $O_{1}, \ldots, O_{B}$,  where $n$ equals `B/iter`, *i.e.*,
 1000.   We will  thus be  in a  position to  investigate the
 statistical  properties  of  every  estimation  procedure  by  replicating  it
 independently 1000 times.
->>>>>>> develop
 
 ## Where we go
 
 The  following  sections  explore  different statistical  paths  to  inferring
 $\psi_{0}$ or, rather (though equivalently), $\Psi(P_{0})$.
 
-<<<<<<< HEAD
-- Section \@ref(simple-strategy) present a  simple inference strategy.  It can
-=======
 - Section \@ref(simple-strategy) presents a simple inference strategy.  It can
->>>>>>> develop
   be  carried out  in situations  where $\Gbar_{0}$  is already  known to  the
   statistician.
 
 - Section    \@ref(nuisance)    discusses   the    estimation    of    some
   infinite-dimensional  features of  $P_{0}$.   The  resulting estimators  are
-<<<<<<< HEAD
-  later used to infer $\psi_{0}$.
-  
-- Section...
-=======
   later used to estimate $\psi_{0}$.
   
 - Section \@ref(naive-estimators) extends  the inference strategy discussed in
@@ -2117,7 +1656,6 @@ $\psi_{0}$ or, rather (though equivalently), $\Psi(P_{0})$.
   estimation  of $\psi_{0}$.   It  is the  main destination  of  this ride  in
   targeted  learning territory,  far  from  its outposts  yet  well into  this
   exciting territory.
->>>>>>> develop
 
 # A simple inference strategy {#simple-strategy}
 
@@ -2127,22 +1665,14 @@ Let us introduce first the following estimator:
 
 \begin{align}
 \notag \psi_{n}^{a}
-<<<<<<< HEAD
-&\equiv \frac{\Exp_{P_{n}} (AY)}{\Exp_{P_{n}} (A)} - \frac{\Exp_{P_{n}}
-=======
 &\defq \frac{\Exp_{P_{n}} (AY)}{\Exp_{P_{n}} (A)} - \frac{\Exp_{P_{n}}
->>>>>>> develop
 ((1-A)Y)}{\Exp_{P_{n}}(1-A)} \\ 
 &=          \frac{\sum_{i=1}^{n}         \one\{A_{i}=Y_{i}=1\}}{\sum_{i=1}^{n}
 \one\{A_{i}=1\}}                     -                    \frac{\sum_{i=1}^{n}
 \one\{A_{i}=0,Y_{i}=1\}}{\sum_{i=1}^{n}\one\{A_{i}=0\}}. (\#eq:cautionary) 
 \end{align} 
 
-<<<<<<< HEAD
-It    estimates     \begin{align*}\Phi(P_{0})    &\equiv    \frac{\Exp_{P_{0}}
-=======
 It    estimates     \begin{align*}\Phi(P_{0})    &\defq    \frac{\Exp_{P_{0}}
->>>>>>> develop
 (AY)}{\Exp_{P_{0}} (A)} - \frac{\Exp_{P_{0}} ((1-A)Y)}{\Exp_{P_{0}} (1-A)}\\&=
 \Exp_{P_{0}} (Y | A=1) - \Exp_{P_{0}} (Y | A=0).\end{align*}
 
@@ -2167,10 +1697,7 @@ Consider the next chunk of code:
 
 ```r
 compute_irrelevant_estimator <- function(obs) {
-<<<<<<< HEAD
-=======
   obs <- as_tibble(obs)
->>>>>>> develop
   Y <- pull(obs, Y)
   A <- pull(obs, A)
   psi_n <- mean(A * Y) / mean(A) - mean((1 - A) * Y) / mean(1 - A)
@@ -2187,31 +1714,18 @@ compute_irrelevant_estimator <- function(obs) {
 Function `compute_irrelevant_estimator` computes  the estimator $\psi_{n}^{a}$
 \@ref(eq:cautionary) based on the data set in `obs`. 
 
-<<<<<<< HEAD
-Introduce   $X_{n}   \equiv  n^{-1}\sum_{i=1}^{n}   \left(A_{i}Y_{i},   A_{i},
-(1-A_{i})Y_{i},  1-A_{i}\right)^{\top}$ and  $X  \equiv  \left(AY, A,  (1-A)Y,
-1-A\right)^{\top}$.  It  happens that  $X_{n}$ is asymptotically  Gaussian: as
-$n$  goes  to  infinity,\begin{equation*}\sqrt{n} \left(X_{n}  -  \Exp_{P_{0}}
-(X)\right)\end{equation*} converges in  law to the centered  Gaussian law with
-covariance matrix \begin{equation*}V_{0} \equiv \Exp_{P_{0}} \left((X
-=======
 Introduce $X_{n} \defq n^{-1}\sum_{i=1}^{n} \left(A_{i}Y_{i}, A_{i},
 (1-A_{i})Y_{i},  1-A_{i}\right)^{\top}$ and  $X  \defq  \left(AY, A,  (1-A)Y,
 1-A\right)^{\top}$.  It  happens that  $X_{n}$ is asymptotically  Gaussian: as
 $n$  goes  to  infinity,\begin{equation*}\sqrt{n} \left(X_{n}  -  \Exp_{P_{0}}
 (X)\right)\end{equation*} converges in  law to the centered  Gaussian law with
 covariance matrix \begin{equation*}V_{0} \defq \Exp_{P_{0}} \left((X
->>>>>>> develop
 - \Exp_{P_{0}} (X)) \times (X- \Exp_{P_{0}} (X))^{\top}\right).\end{equation*} 
 
 Let $f:\bbR\times \bbR^{*} \times \bbR\times \bbR^{*}$ be given by $f(r,s,t,u)
 = r/s - t/u$. The function is differentiable.
 
-<<<<<<< HEAD
-1.    Check that  $\psi_{n}^{a}  = f(X_{n})$.   Point out  to  the line  where
-=======
 1.    Check that  $\psi_{n}^{a}  = f(X_{n})$.   Point out    the line  where
->>>>>>> develop
    $\psi_{n}^{a}$ is  computed in the body  of `compute_irrelevant_estimator`.
    Also point out  to the line where the above  asymptotic variance of $X_{n}$
    is estimated with its empirical counterpart, say $V_{n}$.
@@ -2219,18 +1733,6 @@ Let $f:\bbR\times \bbR^{*} \times \bbR\times \bbR^{*}$ be given by $f(r,s,t,u)
 2. &#9761; \stixdanger{}  Argue  how the  [delta-method](#prop-delta-method)
    yields that $\sqrt{n}(\psi_{n}^{a} - \Phi(P_{0}))$  converges in law to the
    centered  Gaussian  law  with  a   variance  that  can  be  estimated  with
-<<<<<<< HEAD
-   \begin{equation}  v_{n}^{a}  \equiv  \nabla f(X_{n})  \times  V_{n}  \times
-   \nabla f(X_{n})^{\top}. (\#eq:v-n-a) \end{equation}
-
-3. Check  that the  gradient $\nabla f$  of $f$ is  given by  $\nabla f(r,s,t,u)
-   \equiv (1/s,  -r/s^{2}, -1/u, t/u^{2})$.  Point out  to the line  where the
-   asymptotic variance of $\psi_{n}^{a}$ is estimated.
-
-## IPTW estimator assuming the mechanism of action known {#known-gbar-first-pass}
-
-### A simple substitution estimator
-=======
    \begin{equation}  v_{n}^{a}  \defq  \nabla f(X_{n})  \times  V_{n}  \times
    \nabla f(X_{n})^{\top}. (\#eq:v-n-a) \end{equation}
 
@@ -2257,7 +1759,6 @@ computes the numerical values of $\psi_{n}^{a}$ and $v_{n}^{a}$ based on the
 ## IPTW estimator assuming the mechanism of action known {#known-gbar-first-pass}
 
 ### A simple  estimator
->>>>>>> develop
 
 Let us assume for a moment that we know $\Gbar_{0}$.  This would have been the
 case  indeed if  $P_{0}$  were a  controlled experiment.   Note  that, on  the
@@ -2272,33 +1773,19 @@ The   alternative  expression   \@ref(eq:psi-zero-b)   suggests  to   estimate
 $\Psi(P_{0})$ with 
 
 \begin{align}
-<<<<<<< HEAD
-\psi_{n}^{b}  &\equiv \Exp_{P_{n}}  \left( \frac{2A-1}{\ell  \Gbar_{0}(A,W)} Y
-=======
 \psi_{n}^{b}  &\defq \Exp_{P_{n}}  \left( \frac{2A-1}{\ell  \Gbar_{0}(A,W)} Y
->>>>>>> develop
 \right) \\ 
 &       =        \frac{1}{n}       \sum_{i=1}^{n}       \left(\frac{2A_{i}-1}{
 \ell\Gbar_{0}(A_{i},W_{i})}Y_{i} \right). (\#eq:psi-n-b)
 \end{align}
 
 Note how $P_{n}$  is substituted for $P_{0}$ in  \@ref(eq:psi-n-b) relative to
-<<<<<<< HEAD
-\@ref(eq:psi-zero-b).    This  justifies   that  we   call  $\psi_{n}^{b}$   a
-*substitution   estimator*  (for   the  same   reason,  $\psi_{n}^{a}$   is  a
-substitution estimator of  $\Phi(P_{0})$).  It is also dubbed  an IPTW (inverse
-probability  of  treatment weighted)  estimator  because  of the  denominators
-$\ell\Gbar_{0}(A_{i},W_{i})$  in  its  definition.^[We  could  have  used  the
-alternative expression IPAW, where A (like  action) is substituted for T (like
-treatment).]
-=======
 \@ref(eq:psi-zero-b).  However, we cannot  call $\psi_{n}^{b}$ a *substitution
 estimator* because  it does  not write  as $\Psi$ evaluated  at an  element of
 $\calM$.  This  said, it is  dubbed an  IPTW (inverse probability  of treatment
 weighted) estimator  because of the  denominators $\ell\Gbar_{0}(A_{i},W_{i})$
 in its definition.^[We could have  used the alternative expression IPAW, where
 A (like action) is substituted for T (like treatment).]
->>>>>>> develop
 
 In Section  \@ref(known-gbar-second-pass), we  develop another  IPTW estimator
 that does not assume that $\Gbar_{0}$ is known beforehand.
@@ -2309,20 +1796,12 @@ It is easy to check  that $\psi_{n}^{b}$ estimates $\Psi(P_{0})$ consistently,
 but this  is too little to  request from an estimator  of $\psi_{0}$.  Better,
 $\psi_{n}^{b}$   also   satisfies   a   central   limit   theorem:   $\sqrt{n}
 (\psi_{n}^{b} -  \psi_{0})$ converges in law  to a centered Gaussian  law with
-<<<<<<< HEAD
-asymptotic     variance     \begin{equation*}v^{b}     \equiv     \Var_{P_{0}}
-=======
 asymptotic     variance     \begin{equation*}v^{b}     \defq     \Var_{P_{0}}
->>>>>>> develop
 \left(\frac{2A-1}{\ell\Gbar_{0}(A,W)}Y\right),\end{equation*}   where  $v^{b}$
 can be consistently estimated by its empirical counterpart
 
 \begin{align}
-<<<<<<< HEAD
-(\#eq:v-n-b)      v_{n}^{b}       &\equiv      \Var_{P_{n}}
-=======
 (\#eq:v-n-b)      v_{n}^{b}       &\defq      \Var_{P_{n}}
->>>>>>> develop
 \left(\frac{2A-1}{\ell\Gbar_{0}(A,W)}Y\right) \\ 
 &=        \frac{1}{n}        \sum_{i=1}^{n}\left(\frac{2A_{i}-1}{\ell\Gbar_{0}
 (A_{i},W_{i})} Y_{i} - \psi_{n}^{b}\right)^{2}.
@@ -2334,13 +1813,6 @@ Section \@ref(empirical-inves-IPTW).
 
 ### Empirical investigation {#empirical-inves-IPTW}
 
-<<<<<<< HEAD
-The  next chunk  of code  investigates the  empirical behaviors  of estimators
-$\psi_{n}^{a}$ and  $\psi_{n}^{b}$. As explained in  Section \@ref(inference),
-we first make `iter`  data sets out of the `obs` data  set (second line), then
-build the estimators on each of them (fourth and fifth lines). After the first
-series of  commands the object  `psi_hat_ab`, a `tibble`, contains  200
-=======
 The package `tlrider` includes `compute_iptw`,  a function that implements the
 IPTW inference strategy (simply run `?compute_iptw`  to see its man page). For
 instance, 
@@ -2362,7 +1834,6 @@ $\psi_{n}^{a}$ and  $\psi_{n}^{b}$. As explained in  Section \@ref(inference),
 we first make `iter`  data sets out of the `obs` data  set (second line), then
 build the estimators on each of them (fourth and fifth lines). After the first
 series of  commands the object  `psi_hat_ab`, a `tibble`, contains  2000
->>>>>>> develop
 rows and  four columns.  For each  smaller data set (identified  by its `id`),
 two    rows    contain   the    values    of    either   $\psi_{n}^{a}$    and
 $\sqrt{v_{n}^{a}}/\sqrt{n}$  (if  `type`  equals `a`)  or  $\psi_{n}^{b}$  and
@@ -2376,21 +1847,6 @@ $\sqrt{n}/\sqrt{v_{n}^{b}}  (\psi_{n}^{b}  -   \psi_{0})$,  where  $v_{n}^{a}$
 variances  of   $\psi_{n}^{a}$  and  $\psi_{n}^{b}$,   respectively.  Finally,
 `bias_ab` reports amounts of bias (at the renormalized scale).
 
-<<<<<<< HEAD
-(ref:known-Gbar-one-b) Kernel density estimators of the law of two estimators
-of $\psi_{0}$ (recentered  with respect to $\psi_{0}$,  and renormalized), one
-of  them  misconceived (a),  the  other  assuming  that $\Gbar_{0}$  is  known
-(b). Built based on `iter` independent realizations of each estimator.
-
-
-```r
-psi_hat_ab <- obs %>% as_tibble() %>%
-  mutate(id = (seq_len(n()) - 1) %% iter) %>%
-  nest(-id, .key = "obs") %>%
-  mutate(est_a = map(obs, ~ compute_irrelevant_estimator(.)),
-         est_b = map(obs, ~ compute_iptw(as.matrix(.), Gbar))) %>%
-  gather(`est_a`, `est_b`, key = "type", value = "estimates") %>%
-=======
 We will  refer to  the recentering  (always with  respect to  $\psi_{0}$) then
 renormalizing procedure as  a *renormalization scheme*, because  what may vary
 between  two such  procedures is  the  renormalization factor.  We will  judge
@@ -2410,23 +1866,10 @@ psi_hat_ab <- obs %>% as_tibble  %>%
          est_b = map(obs, ~ compute_iptw(as.matrix(.), Gbar))) %>%
   pivot_longer(c(`est_a`, `est_b`),
                names_to = "type", values_to = "estimates") %>%
->>>>>>> develop
   extract(type, "type", "_([ab])$") %>%
   unnest(estimates) %>% select(-obs)
 
 (psi_hat_ab)
-<<<<<<< HEAD
-#> # A tibble: 200 x 4
-#>      id type  psi_n  sig_n
-#>   <dbl> <chr> <dbl>  <dbl>
-#> 1     0 a     0.130 0.0174
-#> 2     1 a     0.126 0.0180
-#> 3     2 a     0.112 0.0161
-#> 4     3 a     0.116 0.0164
-#> 5     4 a     0.110 0.0187
-#> 6     5 a     0.140 0.0178
-#> # ... with 194 more rows
-=======
 #> # A tibble: 2,000 x 4
 #>      id type   psi_n  sig_n
 #>   <dbl> <chr>  <dbl>  <dbl>
@@ -2437,26 +1880,12 @@ psi_hat_ab <- obs %>% as_tibble  %>%
 #> 5     2 a     0.111  0.0187
 #> 6     2 b     0.135  0.0546
 #> # … with 1,994 more rows
->>>>>>> develop
 
 psi_hat_ab <- psi_hat_ab %>% 
   group_by(id) %>%
   mutate(clt = (psi_n - psi_zero) / sig_n)
 
 (psi_hat_ab)
-<<<<<<< HEAD
-#> # A tibble: 200 x 5
-#> # Groups:   id [100]
-#>      id type  psi_n  sig_n   clt
-#>   <dbl> <chr> <dbl>  <dbl> <dbl>
-#> 1     0 a     0.130 0.0174  2.71
-#> 2     1 a     0.126 0.0180  2.40
-#> 3     2 a     0.112 0.0161  1.78
-#> 4     3 a     0.116 0.0164  2.01
-#> 5     4 a     0.110 0.0187  1.42
-#> 6     5 a     0.140 0.0178  3.19
-#> # ... with 194 more rows
-=======
 #> # A tibble: 2,000 x 5
 #> # Groups:   id [1,000]
 #>      id type   psi_n  sig_n    clt
@@ -2468,20 +1897,14 @@ psi_hat_ab <- psi_hat_ab %>%
 #> 5     2 a     0.111  0.0187  1.49 
 #> 6     2 b     0.135  0.0546  0.952
 #> # … with 1,994 more rows
->>>>>>> develop
 
 (bias_ab <- psi_hat_ab %>%
    group_by(type) %>% summarise(bias = mean(clt)))
 #> # A tibble: 2 x 2
 #>   type    bias
 #>   <chr>  <dbl>
-<<<<<<< HEAD
-#> 1 a     1.53  
-#> 2 b     0.0922
-=======
 #> 1 a     1.40  
 #> 2 b     0.0353
->>>>>>> develop
 
 fig_bias_ab <- ggplot() +
   geom_line(aes(x = x, y = y), 
@@ -2495,13 +1918,8 @@ fig_bias_ab <- ggplot() +
   
 fig_bias_ab +
   labs(y = "",
-<<<<<<< HEAD
-       x = expression(paste(sqrt(n/v[n]^{list(a, b)})*
-                            (psi[n]^{list(a, b)} - psi[0]))))
-=======
        x = bquote(paste(sqrt(n/v[n]^{list(a, b)})*
                         (psi[n]^{list(a, b)} - psi[0]))))
->>>>>>> develop
 ```
 
 <div class="figure" style="text-align: center">
@@ -2512,13 +1930,8 @@ fig_bias_ab +
 By   the  above   chunk   of  code,   the   averages  of   $\sqrt{n/v_{n}^{a}}
 (\psi_{n}^{a} - \psi_{0})$ and  $\sqrt{n/v_{n}^{b}} (\psi_{n}^{b} - \psi_{0})$
 computed across the realizations of  the two estimators are respectively equal
-<<<<<<< HEAD
-to 1.526 and 
-0.092 (see `bias_ab`).  Interpreted as amounts of bias, those two
-=======
 to 1.404 and 
 0.035 (see `bias_ab`).  Interpreted as amounts of bias, those two
->>>>>>> develop
 quantities    are     represented    by     vertical    lines     in    Figure
 \@ref(fig:known-Gbar-one-b). The red and blue bell-shaped curves represent the
 empirical laws  of $\psi_{n}^{a}$ and $\psi_{n}^{b}$  (recentered with respect
@@ -2559,19 +1972,11 @@ influence curve $D^{*}(P_{0})$.
 In general, we can view an estimator of any feature $f_0$ of $P_{0}$ as the
 output of an algorithm $\Algo$ that maps any element of
 
-<<<<<<< HEAD
-\begin{equation*}    \calM^{\text{empirical}}     \equiv    \left\{\frac{1}{m}
-\sum_{i=1}^{m} \Dirac(o_{i}) : m \geq 1, o_{1}, \ldots, o_{m} \in [0,1] \times
-\{0,1\} \times [0,1]\right\} \end{equation*}
-
-to   the    set   $\calF$   where    $f_{0}$   is   know   to    live.   Here,
-=======
 \begin{equation*}    \calM^{\text{empirical}}     \defq    \left\{\frac{1}{m}
 \sum_{i=1}^{m} \Dirac(o_{i}) : m \geq 1, o_{1}, \ldots, o_{m} \in [0,1] \times
 \{0,1\} \times [0,1]\right\} \end{equation*}
 
 to   the    set   $\calF$   where    $f_{0}$   is   known   to    live.   Here,
->>>>>>> develop
 $\calM^{\text{empirical}}$  can be  interpreted  as the  set  of all  possible
 empirical measures summarizing  the outcomes of any number  of replications of
 the experiment $P_{0}$. In particular, $P_{n}$ belongs to this set.
@@ -2608,15 +2013,10 @@ alter(empirical_experiment, sample_from = function(n) {
   W <- sample(pull(QW, "value"), n, prob = pull(QW, "weight"))
   cbind(W = W, A = NA, Y = NA)
 })
-<<<<<<< HEAD
-W <- sample_from(empirical_experiment, 1e3) %>% as.tibble
-W %>% ggplot() +
-=======
 W <- sample_from(empirical_experiment, 1e3) %>% as_tibble
 
 W %>%
 ggplot() +
->>>>>>> develop
   geom_histogram(aes(x = W, y = stat(density)), bins = 40) +
   stat_function(fun = get_feature(experiment, "QW"), col = "red")
 ```
@@ -2654,11 +2054,7 @@ There are two  sorts of specifications, of  which we say that  they are either
 in  the   next  subsection.    The  latter  sort   is  discussed   in  Section
 \@ref(nuisance-Qbar).
 
-<<<<<<< HEAD
-### Working model-based algorithms
-=======
 ### Working model-based algorithms {#logis-loss}
->>>>>>> develop
 
 \index{algorithm!working~model|(}
 
@@ -2672,20 +2068,12 @@ working_model_G_one
 #> {
 #>     trim_glm_fit(glm(family = binomial(), ...))
 #> }
-<<<<<<< HEAD
-#> <environment: 0xdea07a8>
-=======
-#> <environment: 0xec1e480>
->>>>>>> develop
+#> <environment: 0xf617678>
 #> 
 #> $formula
 #> A ~ I(W^0.5) + I(abs(W - 5/12)^0.5) + I(W^1) + I(abs(W - 5/12)^1) + 
 #>     I(W^1.5) + I(abs(W - 5/12)^1.5)
-<<<<<<< HEAD
-#> <environment: 0xdea07a8>
-=======
-#> <environment: 0xec1e480>
->>>>>>> develop
+#> <environment: 0xf617678>
 #> 
 #> $type_of_preds
 #> [1] "response"
@@ -2704,24 +2092,14 @@ In words,  by using `working_model_G_one`  we implicitly choose  the so-called
 logistic   (or   negative   binomial)   loss   function   $L_{a}$   given   by
 
 \begin{equation} 
-<<<<<<< HEAD
-(\#eq:logis-loss) -L_{a}(f)(A,W) \equiv A \log f(W) + (1 - A)
-=======
 (\#eq:logis-loss) -L_{a}(f)(A,W) \defq A \log f(W) + (1 - A)
->>>>>>> develop
 \log (1 - f(W)) 
 \end{equation} 
 
 for  any  function  $f :  [0,1]  \to  [0,1]$  paired  with the  working  model
-<<<<<<< HEAD
-\begin{equation*}   \calF_{1}   \equiv    \left\{f_{\theta}   :   \theta   \in
-\bbR^{5}\right\}  \end{equation*}  where,  for   any  $\theta  \in  \bbR^{5}$,
-\begin{equation*}\logit  f_{\theta}  (W)  \equiv \theta_{0}  +  \sum_{j=1}^{4}
-=======
 \begin{equation*}   \calF_{1}   \defq    \left\{f_{\theta}   :   \theta   \in
 \bbR^{5}\right\}  \end{equation*}  where,  for   any  $\theta  \in  \bbR^{5}$,
 \begin{equation*}\logit  f_{\theta}  (W)  \defq \theta_{0}  +  \sum_{j=1}^{4}
->>>>>>> develop
 \theta_{j} W^{j/2}.\end{equation*}
 
 We  acted   as  oracles   when  we   specified  the   working  model:   it  is
@@ -2748,11 +2126,7 @@ However,  if $\Gbar_{0}$  can nevertheless  be *projected*  unambiguously onto
 $\calF_{2}$ (an assumption  that cannot be checked), then  the estimator might
 converge to the projection. 
 
-<<<<<<< HEAD
-### Visualization
-=======
 ### Visualization {#algo-Gbar-one}
->>>>>>> develop
 
 To illustrate the use of the algorithm $\Algo_{\Gbar,1}$ obtained by combining
 `estimate_Gbar` and  `working_model_G_one`, let us estimate  $\Gbar_{0}$ based
@@ -2766,31 +2140,19 @@ Gbar_hat <- estimate_Gbar(head(obs, 1e3), algorithm = working_model_G_one)
 Using     `compute_Gbar_hat_W`^[See     also    the     companion     function
 `compute_lGbar_hat_AW`  (run `?compute_lGbar_hat_AW`  to  see  its man  page.]
 (simply run  `?compute_Gbar_hat_W` to see  its man page)  makes it is  easy to
-<<<<<<< HEAD
-compare visually the estimator  $\Gbar_{n} \equiv \Algo_{\Gbar,1}(P_{n})$ with
-its target $\Gbar0$:
-
-(ref:estimate-Gbar-three) Comparing $\Gbar_{n}\equiv \Algo_{\Gbar,1}(P_{n})$ and $\Gbar_{0}$. The estimator is consistent because the algorithm relies on a working model that is correctly specified.
-=======
 compare visually the estimator  $\Gbar_{n} \defq \Algo_{\Gbar,1}(P_{n})$ with
 its target $\Gbar_0$:
 
 (ref:estimate-Gbar-three) Comparing $\Gbar_{n}\defq \Algo_{\Gbar,1}(P_{n})$ and $\Gbar_{0}$. The estimator is consistent because the algorithm relies on a working model that is correctly specified.
->>>>>>> develop
 
 
 ```r
 tibble(w = seq(0, 1, length.out = 1e3)) %>%
   mutate("truth" = Gbar(w),
          "estimated" = compute_Gbar_hatW(w, Gbar_hat)) %>%
-<<<<<<< HEAD
-  gather("f", "value", -w) %>%
-  ggplot() + geom_line(aes(x = w, y = value, color = f), size = 1) +
-=======
   pivot_longer(-w, names_to = "f", values_to = "value") %>%
   ggplot() +
   geom_line(aes(x = w, y = value, color = f), size = 1) +
->>>>>>> develop
   labs(y = "f(w)",
        title = bquote("Visualizing" ~ bar(G)[0] ~ "and" ~ hat(G)[n])) +
   ylim(NA, 1)
@@ -2820,19 +2182,11 @@ working_model_Q_one
 #> {
 #>     trim_glm_fit(glm(family = binomial(), ...))
 #> }
-<<<<<<< HEAD
-#> <environment: 0xdea07a8>
+#> <environment: 0xf617678>
 #> 
 #> $formula
 #> Y ~ A * (I(W^0.5) + I(W^1) + I(W^1.5))
-#> <environment: 0xdea07a8>
-=======
-#> <environment: 0xec1e480>
-#> 
-#> $formula
-#> Y ~ A * (I(W^0.5) + I(W^1) + I(W^1.5))
-#> <environment: 0xec1e480>
->>>>>>> develop
+#> <environment: 0xf617678>
 #> 
 #> $type_of_preds
 #> [1] "response"
@@ -2877,11 +2231,7 @@ Here, we merely  illustrate the concept with two  specifications built-in into
 `tlrider`.   Based on  the *$k$-nearest  neighbors* non-parametric  estimating
 methodology, the  first one  is discussed  in the  next subsection.   Based on
 *boosted trees*, another non-parametric estimating methodology, the second one
-<<<<<<< HEAD
-is used in the exercize that follows the next subsection.
-=======
 is used in the exercise that follows the next subsection.
->>>>>>> develop
 
 ### `Qbar`, kNN algorithm {#Qbar-knn-algo}
 
@@ -2913,11 +2263,7 @@ Qbar_hat_kknn <- estimate_Qbar(head(obs, 1e3),
 
 Using `compute_Qbar_hat_AW` (simply run  `?compute_Qbar_hat_AW` to see its man
 page) makes it is easy to compare visually the estimator $\Qbar_{n,\text{kNN}}
-<<<<<<< HEAD
-\equiv \Algo_{\Qbar,\text{kNN}}(P_{n})$  with its target $\Qbar0$,  see Figure
-=======
 \defq \Algo_{\Qbar,\text{kNN}}(P_{n})$  with its target $\Qbar0$,  see Figure
->>>>>>> develop
 \@ref(fig:estimate-Qbar-five).
 
 
@@ -2929,11 +2275,7 @@ fig <- tibble(w = seq(0, 1, length.out = 1e3),
               kNN_0 = compute_Qbar_hatAW(0, w, Qbar_hat_kknn))
 ```
 
-<<<<<<< HEAD
-### `Qbar`, boosted trees algorithm
-=======
 ### `Qbar`, boosted trees algorithm {#boosted-trees}
->>>>>>> develop
 
 Algorithm    $\Algo_{\Qbar,\text{trees}}$    is    obtained    by    combining
 `estimate_Qbar`      and      `bstTree_algo`.        The      training      of
@@ -2962,22 +2304,6 @@ Qbar_hat_trees <- estimate_Qbar(head(obs, 1e3),
                                 trControl = bstTree_control,
                                 tuneGrid = bstTree_grid)
 
-<<<<<<< HEAD
-Qbar_hat_trees %>% dplyr::filter(a == "one") %>% pull(fit) %>%
-  capture.output %>% tail(3) %>% str_wrap(width = 60) %>% cat
-#> The final values used for the model were mstop = 20,
-#> maxdepth = 1 and nu = 0.2.
-                                                             
-Qbar_hat_trees %>% dplyr::filter(a == "zero") %>% pull(fit) %>%
-  capture.output %>% tail(3) %>% str_wrap(width = 60) %>% cat
-#> The final values used for the model were mstop = 30,
-#> maxdepth = 1 and nu = 0.1.
-```
- 
-We can compare visually the estimators $\Qbar_{n,\text{kNN}}$,
-$\Qbar_{n,\text{trees}}  \equiv  \Algo_{\Qbar,\text{trees}}(P_{n})$  with  its
-target  $\Qbar0$,  see   Figure  \@ref(fig:estimate-Qbar-five).   In  summary,
-=======
 Qbar_hat_trees %>% filter(a == "one") %>% pull(fit) %>%
   capture.output %>% tail(3) %>% str_wrap(width = 60) %>% cat
 #> RMSE was used to select the optimal model using the smallest
@@ -2994,7 +2320,6 @@ Qbar_hat_trees %>% filter(a == "zero") %>% pull(fit) %>%
 We can compare visually the estimators $\Qbar_{n,\text{kNN}}$,
 $\Qbar_{n,\text{trees}}  \defq  \Algo_{\Qbar,\text{trees}}(P_{n})$  with  its
 target  $\Qbar_0$,  see   Figure  \@ref(fig:estimate-Qbar-five).   In  summary,
->>>>>>> develop
 $\Qbar_{n,\text{kNN}}$ is rather good, though  very versatile at the vincinity
 of the  break points.  As for  $\Qbar_{n,\text{trees}}$, it  does not  seem to
 capture the shape of its target.
@@ -3006,11 +2331,7 @@ capture the shape of its target.
 fig %>%
   mutate(trees_1 = compute_Qbar_hatAW(1, w, Qbar_hat_trees),
          trees_0 = compute_Qbar_hatAW(0, w, Qbar_hat_trees)) %>%
-<<<<<<< HEAD
-  gather("f", "value", -w) %>%
-=======
   pivot_longer(-w, names_to = "f", values_to = "value") %>%
->>>>>>> develop
   extract(f, c("f", "a"), "([^_]+)_([01]+)") %>%
   mutate(a = paste0("a=", a)) %>%
   ggplot +
@@ -3043,20 +2364,6 @@ fig %>%
 
 \index{algorithm|)}
 
-<<<<<<< HEAD
-# Two "naive" plug-in inference strategies 
-
-## Why "naive"?
-
-In  this section,  we  present  and discuss  two  plug-in  strategies for  the
-inference of $\Psi(P_{0})$. In light of Section \@ref(anatomy), both unfold in
-*two*  stages.   During  the  first  stage,  some  features  among  $Q_{0,W}$,
-$\Gbar_{0}$  and $\Qbar_{0}$  (the  $\Psi$-specific  nuisance parameters,  see
-Section \@ref(nuisance))\index{nuisance~parameters} are  estimated. During the
-second   stage,  the   estimators  are   substituted  for   their  theoretical
-counterparts  in the  definition  of $\Psi(P_{0})$,  thus yielding  estimators
-of $\Psi(P_{0})$.
-=======
 # Two "naive"  inference strategies {#naive-estimators}
 
 ## Why "naive"?
@@ -3067,7 +2374,6 @@ stages.  During  the first stage,  some features among  $Q_{0,W}$, $\Gbar_{0}$
 and  $\Qbar_{0}$   (the  $\Psi$-specific  nuisance  parameters,   see  Section
 \@ref(nuisance))\index{nuisance~parameters} are  estimated. During  the second
 stage, these estimators are used to build estimators of $\Psi(P_{0})$.
->>>>>>> develop
 
 Although the strategies  sound well conceived, a  theoretical analysis reveals
 that they lack a third stage trying to correct an inherent flaw. They are thus
@@ -3076,18 +2382,6 @@ Section \@ref(analysis-of-plug-in).
 
 ## IPTW estimator {#known-gbar-second-pass}
 
-<<<<<<< HEAD
-### Construction and computation
-
-In Section \@ref(known-gbar-first-pass), we developed an IPTW substitution
-estimator,    $\psi_{n}^{b}$,   *assuming    that*    we   knew    $\Gbar_{0}$
-beforehand.  What  if  we  did  not?  Obviously,  we  could  estimate  it  and
-substitute   the  estimator   of   $\ell\Gbar_{0}$   for  $\ell\Gbar_{0}$   in
-\@ref(eq:psi-n-b). 
-
-Let $\Algo_{\Gbar}$ be an algorithm designed for the estimation of $\Gbar_{0}$
-(see   Section  \@ref(nuisance-Gbar)).    We  denote   by  $\Gbar_{n}   \equiv
-=======
 ### Construction and computation {#unknown-gbar-constr}
 
 In  Section  \@ref(known-gbar-first-pass),  we developed  an  IPTW  estimator,
@@ -3097,26 +2391,17 @@ $\ell\Gbar_{0}$ for $\ell\Gbar_{0}$ in \@ref(eq:psi-n-b).
 
 Let $\Algo_{\Gbar}$ be an algorithm designed for the estimation of $\Gbar_{0}$
 (see   Section  \@ref(nuisance-Gbar)).    We  denote   by  $\Gbar_{n}   \defq
->>>>>>> develop
 \Algo_{\Gbar}(P_{n})$ the output  of the algorithm trained on  $P_{n}$, and by
 $\ell\Gbar_{n}$ the resulting (empirical) function given by
 
 \begin{equation*}
-<<<<<<< HEAD
-\ell\Gbar_{n}(A,W) \equiv A \Gbar_{n}(W) + (1-A) (1 - \Gbar_{n}(W)).
-=======
 \ell\Gbar_{n}(A,W) \defq A \Gbar_{n}(W) + (1-A) (1 - \Gbar_{n}(W)).
->>>>>>> develop
 \end{equation*}
 
 In light of \@ref(eq:psi-n-b), introduce 
 
 \begin{equation*}
-<<<<<<< HEAD
-\psi_{n}^{c}   \equiv   \frac{1}{n}    \sum_{i=1}^{n}   \left(\frac{2A_{i}   -
-=======
 \psi_{n}^{c}   \defq   \frac{1}{n}    \sum_{i=1}^{n}   \left(\frac{2A_{i}   -
->>>>>>> develop
 1}{\ell\Gbar_{n}(A_{i}, W_{i})} Y_{i}\right).
 \end{equation*} 
 
@@ -3135,15 +2420,6 @@ observations stored  in `obs`,  using the true  feature $\Gbar_{0}$  stored in
 
 
 ```r
-<<<<<<< HEAD
-Ghat <- estimate_Gbar(head(obs, 1e3), working_model_G_one)
-compute_iptw(head(obs, 1e3), wrapper(Ghat)) %>% pull(psi_n)
-#> [1] 0.0707
-```
-
-implements *(i)*  the estimation of $\Gbar_{0}$  with $\Gbar_{n}$/`Ghat` using
-algorithm  $\Algo_{\Gbar,1}$  (first  line)  then *(ii)*  the  computation  of
-=======
 Gbar_hat <- estimate_Gbar(head(obs, 1e3), working_model_G_one)
 compute_iptw(head(obs, 1e3), wrapper(Gbar_hat)) %>% pull(psi_n)
 #> [1] 0.0915
@@ -3151,7 +2427,6 @@ compute_iptw(head(obs, 1e3), wrapper(Gbar_hat)) %>% pull(psi_n)
 
 implements  *(i)* the  estimation of  $\Gbar_{0}$ with  $\Gbar_{n}$/`Gbar_hat`
 using algorithm $\Algo_{\Gbar,1}$ (first line)  then *(ii)* the computation of
->>>>>>> develop
 $\psi_{n}^{c}$ (second line), both based on the same observations as above.
 
 Note  how we  use function  `wrapper` (simply  run `?wrapper`  to see  its man
@@ -3168,11 +2443,7 @@ Moreover, the asymptotic  variance of $\sqrt{n} (\psi_{n}^{c}  - \psi_{0})$ is
 true        asymptotic         variance.]\index{conservative}        estimated
 with\index{well/mis-specified}
 
-<<<<<<< HEAD
-\begin{align*}            v_{n}^{c}            &\equiv            \Var_{P_{n}}
-=======
 \begin{align*}            v_{n}^{c}            &\defq            \Var_{P_{n}}
->>>>>>> develop
 \left(\frac{2A-1}{\ell\Gbar_{n}(A,W)}Y\right)      \\      &=      \frac{1}{n}
 \sum_{i=1}^{n}\left(\frac{2A_{i}-1}{\ell\Gbar_{n}   (A_{i},W_{i})}   Y_{i}   -
 \psi_{n}^{c}\right)^{2}.  \end{align*}
@@ -3180,12 +2451,8 @@ with\index{well/mis-specified}
 We  investigate *empirically*  the statistical  behavior of  $\psi_{n}^{c}$ in
 Section  \@ref(empirical-inves-IPTW-bis). For  an analysis  of the  reason why
 $v_{n}^{c}$  is  a  conservative  estimator  of  the  asymptotic  variance  of
-<<<<<<< HEAD
-$\sqrt{n} (\psi_{n}^{c} - \psi_{0})$, see [here](#iptw-est-var).
-=======
 $\sqrt{n}  (\psi_{n}^{c} -  \psi_{0})$, see  [there](#iptw-est-var) in  Appendix
 \@ref(iptw-est-var). 
->>>>>>> develop
 
 Before proceeding, let us touch upon what would have happened if we had used a
 less amenable  algorithm $\Algo_{\Gbar}$. For instance,  $\Algo_{\Gbar}$ could
@@ -3204,21 +2471,13 @@ that the resulting estimator $\psi_{n}^{c}$ be even consistent.
 
 ### Empirical investigation {#empirical-inves-IPTW-bis}
 
-<<<<<<< HEAD
-Let  us compute  $\psi_{n}^{c}$ on  the same  `iter =  ` 100 independent
-=======
 Let  us compute  $\psi_{n}^{c}$ on  the same  `iter =  ` 1000 independent
->>>>>>> develop
 samples  of  independent  observations  drawn   from  $P_{0}$  as  in  Section
 \@ref(known-gbar-first-pass).  As  explained in Sections  \@ref(inference) and
 \@ref(empirical-inves-IPTW), we first  make `iter` data sets out  of the `obs`
 data set (third line), then train  algorithm $\Algo_{\Gbar,1}$ on each of them
 (fifth  to seventh  lines).  After  the first  series of  commands the  object
-<<<<<<< HEAD
-`learned_features_fixed_sample_size`, a `tibble`, contains 100 rows and
-=======
 `learned_features_fixed_sample_size`, a `tibble`, contains 1000 rows and
->>>>>>> develop
 three columns.  
 
 We  created `learned_features_fixed_sample_size`  to store  the estimators  of
@@ -3227,11 +2486,7 @@ instance  by adding  to  it  estimators of  $\Qbar_{0}$  obtained by  training
 different algorithms on each smaller data set.
 
 In the  second series  of commands,  the object  `psi_hat_abc` is  obtained by
-<<<<<<< HEAD
-adding to  `psi_hat_ab` (see Section \@ref(empirical-inves-IPTW))  an 100
-=======
 adding to  `psi_hat_ab` (see Section \@ref(empirical-inves-IPTW))  an 1000
->>>>>>> develop
 by  four  `tibble`  containing  notably   the  values  of  $\psi_{n}^{c}$  and
 $\sqrt{v_{n}^{c}}/\sqrt{n}$  computed by  calling  `compute_iptw`. The  object
 also contains  the values of the  recentered (with respect to  $\psi_{0}$) and
@@ -3241,15 +2496,9 @@ renormalized $\sqrt{n}/\sqrt{v_{n}^{c}}  (\psi_{n}^{c} -  \psi_{0})$. Finally,
 
 ```r
 learned_features_fixed_sample_size <-
-<<<<<<< HEAD
-  obs %>% as_tibble() %>%
-  mutate(id = (seq_len(n()) - 1) %% iter) %>%
-  nest(-id, .key = "obs") %>%
-=======
   obs %>% as_tibble %>%
   mutate(id = (seq_len(n()) - 1) %% iter) %>%
   nest(obs = c(W, A, Y)) %>%
->>>>>>> develop
   mutate(Gbar_hat =
            map(obs,
                ~ estimate_Gbar(., algorithm = working_model_G_one)))
@@ -3267,28 +2516,16 @@ psi_hat_abc <-
 (bias_abc <- psi_hat_abc %>%
    group_by(type) %>% summarise(bias = mean(clt)))
 #> # A tibble: 3 x 2
-<<<<<<< HEAD
-#>   type    bias
-#>   <chr>  <dbl>
-#> 1 a     1.53  
-#> 2 b     0.0922
-#> 3 c     0.0254
-=======
 #>   type      bias
 #>   <chr>    <dbl>
 #> 1 a      1.40   
 #> 2 b      0.0353 
 #> 3 c     -0.00443
->>>>>>> develop
 ```
 
 By the above chunk of code, the average of $\sqrt{n/v_{n}^{c}} (\psi_{n}^{c} -
 \psi_{0})$ computed across the realizations is equal to 
-<<<<<<< HEAD
-0.025 (see  `bias_abc`). In words, the  average bias of $\psi_{n}^{c}$  is of the
-=======
 -0.004 (see  `bias_abc`). In words, the  average bias of $\psi_{n}^{c}$  is of the
->>>>>>> develop
 same  magnitude  as   that  of  $\psi_{n}^{b}$  despite  the   fact  that  the
 construction of $\psi_{n}^{c}$ hinges on  the estimation of $\Gbar_{0}$ (based
 on the well-specified algorithm $\Algo_{\Gbar,1}$).
@@ -3298,16 +2535,7 @@ and renormalized $\psi_{n}^{a}$, $\psi_{n}^{b}$  and $\psi_{n}^{c}$ in Figures
 \@ref(fig:unknown-Gbar-three)     (kernel      density     estimators)     and
 \@ref(fig:unknown-Gbar-four) (quantile-quantile plots).
  
-<<<<<<< HEAD
-(ref:unknown-Gbar-three)  Kernel  density  estimators  of  the  law  of  three
-estimators  of   $\psi_{0}$  (recentered  with  respect   to  $\psi_{0}$,  and
-renormalized), one of them misconceived  (a), one assuming that $\Gbar_{0}$ is
-known  (b) and  one that  hinges  on the  estimation of  $\Gbar_{0}$ (c).  The
-present  figure includes  Figure \@ref(fig:known-Gbar-one-b)  (but the  colors
-differ). Built based on `iter` independent realizations of each estimator.
-=======
 (ref:unknown-Gbar-three) Kernel density estimators of the law of three estimators of $\psi_{0}$ (recentered with respect to $\psi_{0}$, and renormalized), one of them misconceived (a), one assuming that $\Gbar_{0}$ is known (b) and one that hinges on the estimation of $\Gbar_{0}$ (c).  The present figure includes Figure \@ref(fig:known-Gbar-one-b) (but the colors differ). Built based on `iter` independent realizations of each estimator.
->>>>>>> develop
  
 
 ```r
@@ -3317,13 +2545,8 @@ fig_bias_ab +
              bias_abc, size = 1.5, alpha = 0.5) +
   xlim(-3, 4) + 
   labs(y = "",
-<<<<<<< HEAD
-       x = expression(paste(sqrt(n/v[n]^{list(a, b, c)})*
-                            (psi[n]^{list(a, b, c)} - psi[0]))))
-=======
        x = bquote(paste(sqrt(n/v[n]^{list(a, b, c)})*
                         (psi[n]^{list(a, b, c)} - psi[0]))))
->>>>>>> develop
 ```
 
 <div class="figure" style="text-align: center">
@@ -3331,15 +2554,7 @@ fig_bias_ab +
 <p class="caption">(\#fig:unknown-Gbar-three)(ref:unknown-Gbar-three)</p>
 </div>
 
-<<<<<<< HEAD
-(ref:unknown-Gbar-four)  Quantile-quantile plot  of  the  standard normal  law
-against the  empirical laws  of three  estimators of  $\psi_{0}$, one  of them
-misconceived (a),  one assuming  that $\Gbar_{0}$  is known  (b) and  one that
-hinges  on  the  estimation  of   $\Gbar_{0}$  (c).   Built  based  on  `iter`
-independent realizations of each estimator. 
-=======
 (ref:unknown-Gbar-four) Quantile-quantile plot of the standard normal law against the empirical laws of three estimators of $\psi_{0}$, one of them misconceived (a), one assuming that $\Gbar_{0}$ is known (b) and one that hinges on the estimation of $\Gbar_{0}$ (c).  Built based on `iter` independent realizations of each estimator.
->>>>>>> develop
 
 
 ```r
@@ -3369,18 +2584,6 @@ construction   of  $\psi_{n}^{c}$.
 ```r
 (emp_sig_n <- psi_hat_abc %>% filter(type == "c") %>%
    summarize(sd(psi_n)) %>% pull)
-<<<<<<< HEAD
-#> [1] 0.0191
-(summ_sig_n <- psi_hat_abc %>% filter(type == "c") %>% select(sig_n) %>%
-   summary)
-#>      sig_n       
-#>  Min.   :0.0531  
-#>  1st Qu.:0.0550  
-#>  Median :0.0557  
-#>  Mean   :0.0561  
-#>  3rd Qu.:0.0570  
-#>  Max.   :0.0616
-=======
 #> [1] 0.0175
 (summ_sig_n <- psi_hat_abc %>% filter(type == "c") %>% select(sig_n) %>%
    summary)
@@ -3391,35 +2594,18 @@ construction   of  $\psi_{n}^{c}$.
 #>  Mean   :0.0561  
 #>  3rd Qu.:0.0570  
 #>  Max.   :0.0631
->>>>>>> develop
 ```
 
 
 
 The empirical standard deviation is approximately 
-<<<<<<< HEAD
-2.939  times smaller  than the  average
-=======
 3.213  times smaller  than the  average
->>>>>>> develop
 *estimated*  standard   deviation.  The  estimator  is   conservative  indeed!
 Furthermore, note  the better fit with  the density of the  standard normal
 density    of  the  kernel  density estimator  of  the  law  of  $\sqrt{n}
 (\psi_{n}^{c} - \psi_{0})$ **renormalized with** `emp_sig_n`.
 
-<<<<<<< HEAD
-(ref:unknown-Gbar-seven)  Kernel  density  estimators  of  the  law  of  three
-estimators  of   $\psi_{0}$  (recentered  with  respect   to  $\psi_{0}$,  and
-renormalized), one of them misconceived  (a), one assuming that $\Gbar_{0}$ is
-known  (b) and  one that  hinges  on the  estimation of  $\Gbar_{0}$ **and  an
-estimator  of  the  asymptotic  variance computed  across  the  replications**
-(c). The  present figure includes Figure  \@ref(fig:known-Gbar-one-b) (but the
-colors     differ)    and     it    should     be    compared     to    Figure
-\@ref(fig:unknown-Gbar-four). Built  based on `iter`  independent realizations
-of each estimator.
-=======
 (ref:unknown-Gbar-seven) Kernel density estimators of the law of three estimators of $\psi_{0}$ (recentered with respect to $\psi_{0}$, and renormalized), one of them misconceived (a), one assuming that $\Gbar_{0}$ is known (b) and one that hinges on the estimation of $\Gbar_{0}$ **and an estimator of the asymptotic variance computed across the replications** (c). The present figure includes Figure \@ref(fig:known-Gbar-one-b) (but the colors differ) and it should be compared to Figure \@ref(fig:unknown-Gbar-four). Built based on `iter` independent realizations of each estimator.
->>>>>>> develop
 
 
 
@@ -3433,13 +2619,8 @@ fig_bias_ab +
              bias_abc, size = 1.5, alpha = 0.5) +
   xlim(-3, 4) + 
   labs(y = "",
-<<<<<<< HEAD
-       x = expression(paste(sqrt(n/v[n]^{list(a, b, c)})*
-                            (psi[n]^{list(a, b, c)} - psi[0]))))
-=======
        x = bquote(paste(sqrt(n/v[n]^{list(a, b, c)})*
                         (psi[n]^{list(a, b, c)} - psi[0]))))
->>>>>>> develop
 ```
 
 <div class="figure" style="text-align: center">
@@ -3449,16 +2630,6 @@ fig_bias_ab +
 
 **Workaround.**  In  a  real  world   data-analysis,  one  could  correct  the
 estimation of the asymptotic variance of $\sqrt{n} (\psi_{n}^{c} - \psi_{0})$.
-<<<<<<< HEAD
-We  could for  instance  derive  the influence  function  as  it is  described
-[here](#iptw-est-var)  and  use  the  corresponding  influence  function-based
-estimator of  the variance.   Or one  could rely  on the  bootstrap.^[That is,
-replicate the  construction of  $\psi_{n}^{c}$ many times  based on  data sets
-obtained  by  resampling  from  the  original  data  set,  then  estimate  the
-asymptotic  variance with  the empirical  variance of  $\psi_{n}^{c}$ computed
-across the replications.] This, however, would only make sense if one knew for
-sure that the algorithm for the estimation of $\Gbar_{0}$ is well-specified.
-=======
 We   could   for  instance   derive   the   influence   function  as   it   is
 described [there](#iptw-est-var)  in Appendix  \@ref(iptw-est-var) and  use the
 corresponding influence  function-based estimator of the  variance.  One could
@@ -3469,7 +2640,6 @@ resampling from the  original data set, then estimate  the asymptotic variance
 with   the  empirical   variance   of  $\psi_{n}^{c}$   computed  across   the
 replications.] This, however, would only make  sense if one knew for sure that
 the algorithm for the estimation of $\Gbar_{0}$ is well-specified.
->>>>>>> develop
 
 ## &#9881; \gear Investigating further the IPTW inference strategy {#exo-a-nice-title}
 
@@ -3530,37 +2700,22 @@ data-adaptive/versatile algorithm to estimate $\Gbar_{0}$?
 
 ## G-computation estimator {#Gcomp-estimator}
 
-<<<<<<< HEAD
-### Construction and computation
-
-Let $\Algo_{Q_{W}}$ be  an algorithm designed for the  estimation of $Q_{0,W}$
-(see   Section   \@ref(nuisance-QW)).    We    denote   by   $Q_{n,W}   \equiv
-=======
 ### Construction and computation {#Gcomp-construction}
 
 Let $\Algo_{Q_{W}}$ be  an algorithm designed for the  estimation of $Q_{0,W}$
 (see   Section   \@ref(nuisance-QW)).    We    denote   by   $Q_{n,W}   \defq
->>>>>>> develop
 \Algo_{Q_{W}}(P_{n})$ the output of the algorithm trained on $P_{n}$.
 
 
 Let $\Algo_{\Qbar}$ be an algorithm designed for the estimation of $\Qbar_{0}$
-<<<<<<< HEAD
-(see   Section  \@ref(nuisance-Qbar)).    We  denote   by  $\Qbar_{n}   \equiv
-=======
 (see   Section  \@ref(nuisance-Qbar)).    We  denote   by  $\Qbar_{n}   \defq
->>>>>>> develop
 \Algo_{\Qbar}(P_{n})$ the output of the algorithm trained on $P_{n}$. 
 
 Equation \@ref(eq:psi-zero) suggests the following, simple estimator of
 $\Psi(P_0)$:
 
 \begin{equation} 
-<<<<<<< HEAD
-\psi_{n}   \equiv   \int   \left(\Qbar_{n}(1,   w)   -   \Qbar_{n}(0,w)\right)
-=======
 \psi_{n}   \defq   \int   \left(\Qbar_{n}(1,   w)   -   \Qbar_{n}(0,w)\right)
->>>>>>> develop
 dQ_{n,W}(w). (\#eq:Gcomp-estimator)
 \end{equation} 
 
@@ -3612,20 +2767,12 @@ simple as running the following chunk of code:
 #> # A tibble: 1 x 2
 #>    psi_n   sig_n
 #>    <dbl>   <dbl>
-<<<<<<< HEAD
-#> 1 0.0722 0.00487
-=======
 #> 1 0.0887 0.00245
->>>>>>> develop
 (compute_gcomp(QW_hat, wrapper(Qbar_hat_d, FALSE), 1e3))
 #> # A tibble: 1 x 2
 #>    psi_n   sig_n
 #>    <dbl>   <dbl>
-<<<<<<< HEAD
-#> 1 0.0742 0.00215
-=======
 #> 1 0.0961 0.00161
->>>>>>> develop
 ```
 
 
@@ -3658,11 +2805,7 @@ variance  of $\sqrt{n}  (\psi_{n}^{\bullet} -  \psi_{0})$ would  be estimated
 the true asymptotic variance.]\index{conservative} with\index{well/mis-specified}
 
 \begin{align} 
-<<<<<<< HEAD
-v_{n}^{d}            &\equiv            \Var_{P_{n}}
-=======
 v_{n}^{d}            &\defq            \Var_{P_{n}}
->>>>>>> develop
 \left(\Qbar_{n,1}(1,\cdot) - \Qbar_{n,1}(0,\cdot)\right) \\ &= \frac{1}{n}
 \sum_{i=1}^{n}\left(\Qbar_{n,1}(1,W_{i})         -        \Qbar_{n,1}(0,W_{i})
 -\psi_{n}^{d}\right)^{2}.  (\#eq:var-Gcomp-n) 
@@ -3673,16 +2816,6 @@ $\Algo_{\Qbar,\text{kNN}}$  is  not  based  on  a  finite-dimensional  working
 model.  Nevertheless, function  `compute_gcomp`  estimates  (in general,  very
 poorly) the asymptotic variance with \@ref(eq:var-Gcomp-n).
 
-<<<<<<< HEAD
-We investigate *empirically* the statistical behavior of $\psi_{n}^{d}$ in
-Section  \@ref(empirical-inves-Gcomp).   For an  analysis  of  the reason  why
-$v_{n}^{d}$ is  an anti-conservative estimator  of the asymptotic  variance of
-$\sqrt{n} (\psi_{n}^{d} - \psi_{0})$,  see [here](#gcomp-est-var).  We wish to
-emphasize   that  anti-conservativeness   is  even   more  embarrassing   that
-conservativeness (both  being contingent on  the fact that the  algorithms are
-well-specified, fact  that cannot be  true in the  present case in  real world
-situations).
-=======
 We  investigate *empirically*  the statistical  behavior of  $\psi_{n}^{d}$ in
 Section  \@ref(empirical-inves-Gcomp).   For an  analysis  of  the reason  why
 $v_{n}^{d}$ is  an anti-conservative estimator  of the asymptotic  variance of
@@ -3691,7 +2824,6 @@ $\sqrt{n} (\psi_{n}^{d}  - \psi_{0})$, see [there](#gcomp-est-var)  in Appendix
 more embarrassing  that conservativeness  (both being  contingent on  the fact
 that  the algorithms  are  well-specified, fact  that cannot  be  true in  the
 present case in real world situations).
->>>>>>> develop
 
 What would happen  if we used a less amenable  algorithm $\Algo_{\Qbar}$.  For
 instance,   $\Algo_{\Qbar}$    could   still   be   well-specified    but   so
@@ -3704,31 +2836,18 @@ $\Algo_{\Qbar,\text{kNN}}$.       Or       $\Algo_{\Qbar}$      could       be
 mis-specified\index{well/mis-specified} and there would be no guarantee at all
 that the resulting estimator $\psi_{n}$ be even consistent.
 
-<<<<<<< HEAD
-### Empirical investigation {#empirical-inves-Gcomp}
-
-**Fixed sample size**
-
-Let us compute $\psi_{n}^{d}$ and $\psi_{n}^{e}$ on the same `iter = ` 
-100 independent samples of independent observations drawn from $P_{0}$ as in
-=======
 ### Empirical investigation, fixed sample size {#empirical-inves-Gcomp}
 
 
 Let us compute $\psi_{n}^{d}$ and $\psi_{n}^{e}$ on the same `iter = ` 
 1000 independent samples of independent observations drawn from $P_{0}$ as in
->>>>>>> develop
 Sections \@ref(known-gbar-first-pass) and \@ref(empirical-inves-IPTW-bis).  We
 first enrich  object `learned_features_fixed_sample_size` that was  created in
 Section   \@ref(empirical-inves-IPTW-bis),   adding   to  it   estimators   of
 $\Qbar_{0}$   obtained   by    training   algorithms   $\Algo_{\Qbar,1}$   and
 $\Algo_{\Qbar,\text{kNN}}$ on each smaller data set.
 
-<<<<<<< HEAD
-The second series of commands creates  object `psi_hat_de`, an 100 by six
-=======
 The second series of commands creates  object `psi_hat_de`, an 1000 by six
->>>>>>> develop
 `tibble`    containing   notably    the   values    of   $\psi_{n}^{d}$    and
 $\sqrt{v_{n}^{d}}/\sqrt{n}$ computed by calling  `compute_gcomp`, and those of
 the    recentered   (with    respect   to    $\psi_{0}$)   and    renormalized
@@ -3753,19 +2872,7 @@ replications of  $\psi_{n}^{d}$ and $\psi_{n}^{e}$  (`auto_renormalization` is
 
 
 
-<<<<<<< HEAD
-(ref:estimating-Qbar-one-bis)  Kernel density  estimators  of the  law of  two
-estimators  of   $\psi_{0}$  (recentered  with  respect   to  $\psi_{0}$,  and
-renormalized).     The   estimators    respectively   hinge    on   algorithms
-$\Algo_{\Qbar,1}$   (d)  and   $\Algo_{\Qbar,\text{kNN}}$   (e)  to   estimate
-$\Qbar_{0}$.    Two   renormalization    schemes   are    considered,   either
-based on  an estimator of the  asymptotic variance (left) or  on the empirical
-variance  computed   across  the   `iter`  independent  replications   of  the
-estimators  (right). We  emphasize  that the  $x$-axis  ranges differ  starkly
-between the left and right plots.
-=======
 (ref:estimating-Qbar-one-bis) Kernel density estimators of the law of two G-computation estimators of $\psi_{0}$ (recentered with respect to $\psi_{0}$, and renormalized).  The estimators respectively hinge on algorithms $\Algo_{\Qbar,1}$ (d) and $\Algo_{\Qbar,\text{kNN}}$ (e) to estimate $\Qbar_{0}$.  Two renormalization schemes are considered, either based on an estimator of the asymptotic variance (right) or on the empirical variance computed across the `iter` independent replications of the estimators (left). We emphasize that the $x$-axis ranges differ starkly between the left and right plots.
->>>>>>> develop
 
 
 
@@ -3792,41 +2899,22 @@ learned_features_fixed_sample_size <-
 
 psi_hat_de <- learned_features_fixed_sample_size %>%
   select(est_d, est_e) %>%
-<<<<<<< HEAD
-  gather(`est_d`, `est_e`, key = "type", value = "estimates") %>%
-=======
   pivot_longer(c(`est_d`, `est_e`),
                names_to = "type", values_to = "estimates") %>%
->>>>>>> develop
   extract(type, "type", "_([de])$") %>% 
   unnest(estimates) %>%
   group_by(type) %>%
   mutate(sig_alt = sd(psi_n)) %>%
   mutate(clt_ = (psi_n - psi_zero) / sig_n,
          clt_alt = (psi_n - psi_zero) / sig_alt) %>%
-<<<<<<< HEAD
-  gather(`clt_`, `clt_alt`, key = "key", value = "clt") %>%
-=======
   pivot_longer(c(`clt_`, `clt_alt`),
                names_to = "key", values_to = "clt") %>%
->>>>>>> develop
   extract(key, "key", "_(.*)$") %>%
   mutate(key = ifelse(key == "", TRUE, FALSE)) %>%
   rename("auto_renormalization" = key)
 
 (bias_de <- psi_hat_de %>%
    group_by(type, auto_renormalization) %>%
-<<<<<<< HEAD
-   summarize(bias = mean(clt)))
-#> # A tibble: 4 x 3
-#> # Groups:   type [?]
-#>   type  auto_renormalization  bias
-#>   <chr> <lgl>                <dbl>
-#> 1 d     FALSE                0.356
-#> 2 d     TRUE                 1.08 
-#> 3 e     FALSE                0.130
-#> 4 e     TRUE                 0.150
-=======
    summarize(bias = mean(clt)) %>% ungroup)
 #> # A tibble: 4 x 3
 #>   type  auto_renormalization  bias
@@ -3835,7 +2923,6 @@ psi_hat_de <- learned_features_fixed_sample_size %>%
 #> 2 d     TRUE                 2.25 
 #> 3 e     FALSE                0.122
 #> 4 e     TRUE                 0.679
->>>>>>> develop
 
 fig <- ggplot() +
   geom_line(aes(x = x, y = y), 
@@ -3854,13 +2941,8 @@ fig <- ggplot() +
   
 fig +
   labs(y = "",
-<<<<<<< HEAD
-       x = expression(paste(sqrt(n/v[n]^{list(d, e)})*
-                            (psi[n]^{list(d, e)} - psi[0]))))
-=======
        x = bquote(paste(sqrt(n/v[n]^{list(d, e)})*
                         (psi[n]^{list(d, e)} - psi[0]))))
->>>>>>> develop
 ```
 
 <div class="figure" style="text-align: center">
@@ -3883,20 +2965,12 @@ Two  important  comments   are  in  order.   First,  on  the   one  hand,  the
 G-computation estimator  $\psi_{n}^{d}$ is biased. Specifically,  by the above
 chunk of code, the averages  of $\sqrt{n/v_{n}^{d}} (\psi_{n}^{d} - \psi_{0})$
 and  $\sqrt{n/v_{n}^{d*}}  (\psi_{n}^{d}  -  \psi_{0})$  computed  across  the
-<<<<<<< HEAD
-realizations are equal to 1.076 and 0.356 (see `bias_de`).   On  the other  hand, the  G-computation
-=======
 realizations are equal to 2.247 and 0.24 (see `bias_de`).   On  the other  hand, the  G-computation
->>>>>>> develop
 estimator   $\psi_{n}^{e}$  is   biased   too,  though   slightly  less   than
 $\psi_{n}^{d}$.  Specifically,  by the  above chunk of  code, the  averages of
 $\sqrt{n/v_{n}^{e}}   (\psi_{n}^{e}   -    \psi_{0})$   and   $\sqrt{n/v^{e*}}
 (\psi_{n}^{e} - \psi_{0})$ computed across the realizations are equal to 
-<<<<<<< HEAD
-0.15 and 0.13 (see
-=======
 0.679 and 0.122 (see
->>>>>>> develop
 `bias_de`). We  can provide an oracular  explanation. Estimator $\psi_{n}^{d}$
 suffers     from    the     poor    approximation     of    $\Qbar_{0}$     by
 $\Algo_{\Qbar,1}(P_{n})$, a  result of  the algorithm's  mis-specification. As
@@ -3930,56 +3004,18 @@ the construction of the two  estimators)?
 (psi_hat_de %>% ungroup %>%
    filter(type == "d" & auto_renormalization) %>% pull(sig_n) %>% summary)
 #>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-<<<<<<< HEAD
-#> 0.00269 0.00539 0.00641 0.00648 0.00753 0.01012
-=======
 #> 0.00061 0.00171 0.00208 0.00208 0.00244 0.00373
->>>>>>> develop
 ## psi_n^e
 (psi_hat_de %>% ungroup %>%
    filter(type == "e" & auto_renormalization) %>% pull(sig_n) %>% summary)
 #>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-<<<<<<< HEAD
-#>  0.0133  0.0149  0.0156  0.0157  0.0163  0.0188
-=======
 #> 0.00151 0.00261 0.00288 0.00289 0.00316 0.00430
->>>>>>> develop
 ```
 
 
 
 
 The empirical standard deviation of $\psi_{n}^{d}$ is approximately 
-<<<<<<< HEAD
-2.933 times larger than the average *estimated*
-standard deviation.  The estimator  is anti-conservative indeed! 
-
-As for the empirical standard deviation of $\psi_{n}^{e}$, it is approximately 
-1.214 times larger than the average *estimated*
-standard deviation. 
-
-**Varying sample size**
-
-
-```r
-##
-## not updated yet
-##
-
-sample_size <- c(2e3, 3e3)
-block_size <- sum(sample_size)
-
-
-learned_features_varying_sample_size <- obs %>% as.tibble %>% 
-  head(n = (nrow(.) %/% block_size) * block_size) %>% 
-  mutate(block = label(1:nrow(.), sample_size)) %>%
-  nest(-block, .key = "obs")
-```
-
-First, we cut the  data set into independent sub-data sets  of sample size $n$
-in $\{$ 2000, 3000 $\}$.  Second, we infer $\psi_{0}$ as shown two chunks
-earlier.  We thus obtain 20 independent realizations
-=======
 8.56 times larger than the average *estimated*
 standard deviation.  The estimator  is anti-conservative indeed! 
 
@@ -4006,7 +3042,6 @@ learned_features_varying_sample_size <- obs %>% as_tibble %>%
 First, we cut the  data set into independent sub-data sets  of sample size $n$
 in $\{$5000, 1.5\times 10^{4}$\}$.  Second, we infer $\psi_{0}$ as shown two chunks
 earlier.  We thus obtain 50 independent realizations
->>>>>>> develop
 of each estimator derived on  data sets of 2, increasing
 sample sizes.
 
@@ -4034,24 +3069,16 @@ root_n_bias <- learned_features_varying_sample_size %>%
   mutate(block = unlist(map(strsplit(block, "_"), ~.x[2])),
          sample_size = sample_size[as.integer(block)]) %>%
   select(block, sample_size, est_d, est_e) %>%
-<<<<<<< HEAD
-  gather(`est_d`, `est_e`, key = "type", value = "estimates") %>%
-=======
   pivot_longer(c(`est_d`, `est_e`),
                names_to = "type", values_to = "estimates") %>%
->>>>>>> develop
   extract(type, "type", "_([de])$") %>% 
   unnest(estimates) %>%
   group_by(block, type) %>%
   mutate(sig_alt = sd(psi_n)) %>%
   mutate(clt_ = (psi_n - psi_zero) / sig_n,
          clt_alt = (psi_n - psi_zero) / sig_alt) %>%
-<<<<<<< HEAD
-  gather(`clt_`, `clt_alt`, key = "key", value = "clt") %>%
-=======
   pivot_longer(c(`clt_`, `clt_alt`),
                names_to = "key", values_to = "clt") %>%
->>>>>>> develop
   extract(key, "key", "_(.*)$") %>%
   mutate(key = ifelse(key == "", TRUE, FALSE)) %>%
   rename("auto_renormalization" = key)
@@ -4063,11 +3090,7 @@ include the  realizations of the  estimators derived earlier and  contained in
 `psi_hat_de`   (thus  breaking   the   independence   between  components   of
 `root_n_bias`, a small price to pay in this context).
 
-<<<<<<< HEAD
-(ref:estimating-Qbar-four) Evolution of root-$n$ times bias versus sample size for two inference methodology of $\psi_{0}$ based on the estimation of $\Qbar_{0}$.  Big dots represent the average biases and vertical lines represent twice the standard error.
-=======
 (ref:estimating-Qbar-four) Evolution of root-$n$ times bias versus sample size for two G-computation estimators of $\psi_{0}$. The estimators respectively hinge on algorithms $\Algo_{\Qbar,1}$ (d) and $\Algo_{\Qbar,\text{kNN}}$ (e) to estimate $\Qbar_{0}$.  Big dots represent the average biases and vertical lines represent twice the standard error.
->>>>>>> develop
 
 
 ```r
@@ -4075,50 +3098,21 @@ root_n_bias <- learned_features_fixed_sample_size %>%
    mutate(block = "0",
           sample_size = B/iter) %>%  # because *fixed* sample size
    select(block, sample_size, est_d, est_e) %>%
-<<<<<<< HEAD
-   gather(`est_d`, `est_e`, key = "type", value = "estimates") %>%
-=======
   pivot_longer(c(`est_d`, `est_e`),
                names_to = "type", values_to = "estimates") %>%
->>>>>>> develop
    extract(type, "type", "_([de])$") %>% 
    unnest(estimates) %>%
    group_by(block, type) %>%
    mutate(sig_alt = sd(psi_n)) %>%
    mutate(clt_ = (psi_n - psi_zero) / sig_n,
           clt_alt = (psi_n - psi_zero) / sig_alt) %>%
-<<<<<<< HEAD
-   gather(`clt_`, `clt_alt`, key = "key", value = "clt") %>%
-=======
   pivot_longer(c(`clt_`, `clt_alt`),
                names_to = "key", values_to = "clt") %>%
->>>>>>> develop
    extract(key, "key", "_(.*)$") %>%
    mutate(key = ifelse(key == "", TRUE, FALSE)) %>%
    rename("auto_renormalization" = key) %>%
    full_join(root_n_bias)
  
-<<<<<<< HEAD
-root_n_bias %>%
-  ggplot() +
-  stat_summary(aes(x = sample_size, y = clt,
-                   group = interaction(sample_size, type),
-                   color = type),
-               fun.data = mean_se, fun.args = list(mult = 2),
-               position = position_dodge(width = 250), cex = 1) +
-  stat_summary(aes(x = sample_size, y = clt,
-                   group = interaction(sample_size, type),
-                   color = type),
-               fun.data = mean_se, fun.args = list(mult = 2),
-               position = position_dodge(width = 250), cex = 1,
-               geom = "errorbar", width = 750) +
-  stat_summary(aes(x = sample_size, y = clt,
-                   color = type),
-               fun.y = mean,
-               position = position_dodge(width = 250),
-               geom = "polygon", fill = NA) +
-  geom_point(aes(x = sample_size, y = clt,
-=======
 root_n_bias %>% filter(auto_renormalization) %>%
   mutate(rnb = sqrt(sample_size) * (psi_n - psi_zero)) %>%
   group_by(sample_size, type) %>%
@@ -4140,16 +3134,12 @@ root_n_bias %>% filter(auto_renormalization) %>%
                position = position_dodge(width = 250),
                geom = "polygon", fill = NA) +
   geom_point(aes(x = sample_size, y = rnb,
->>>>>>> develop
                  group = interaction(sample_size, type),
                  color = type),
              position = position_dodge(width = 250),
              alpha = 0.1) +
   scale_x_continuous(breaks = unique(c(B / iter, sample_size))) +
   labs(x = "sample size n",
-<<<<<<< HEAD
-       y = expression(paste(sqrt(n) * (psi[n]^{list(d, e)} - psi[0])))) +
-=======
        y = bquote(paste(sqrt(n) * (psi[n]^{list(d, e)} - psi[0]))))
 ```
 
@@ -4376,25 +3366,11 @@ fig <- ggplot() +
                psi_hat_de_one_step, alpha = 0.1) +
   geom_vline(aes(xintercept = bias, colour = type),
              bias_de_one_step, size = 1.5, alpha = 0.5) +
->>>>>>> develop
   facet_wrap(~ auto_renormalization,
              labeller =
                as_labeller(c(`TRUE` = "auto-renormalization: TRUE",
                              `FALSE` = "auto-renormalization: FALSE")),
              scales = "free")
-<<<<<<< HEAD
-```
-
-<div class="figure" style="text-align: center">
-<img src="img/estimating-Qbar-four-1.png" alt="(ref:estimating-Qbar-four)" width="70%" />
-<p class="caption">(\#fig:estimating-Qbar-four)(ref:estimating-Qbar-four)</p>
-</div>
-
-
-# Work in progress
-
-(...)
-=======
   
 fig +
   labs(y = "",
@@ -5260,4 +4236,3 @@ npreg_grid <- data.frame(subsample = 100,
 ```-->
 
 ```
->>>>>>> develop
