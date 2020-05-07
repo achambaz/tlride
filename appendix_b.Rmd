@@ -65,11 +65,11 @@ anti-conservativeness.
 
 Recall that  $\Algo_{Q_{W}}$ is  an algorithm designed  for the  estimation of
 $Q_{0,W}$  (see Section  \@ref(nuisance-QW)) and  that we  denote by  $Q_{n,W}
-\triangleq \Algo_{Q_{W}}(P_{n})$ the  output of the algorithm  trained on $P_{n}$.
+\defq \Algo_{Q_{W}}(P_{n})$ the  output of the algorithm  trained on $P_{n}$.
 Likewise,  $\Algo_{\Gbar}$  and  $\Algo_{\Qbar}$ are  two  generic  algorithms
 designed for  the estimation of  $\Gbar_{0}$ and of $\Qbar_{0}$  (see Sections
-\@ref(nuisance-Gbar)    and     \@ref(nuisance-Qbar)),    $\Gbar_{n}    \triangleq
-\Algo_{\Gbar}(P_{n})$  and $\Qbar_{n}  \triangleq \Algo_{\Qbar}(P_{n})$  are their
+\@ref(nuisance-Gbar)    and     \@ref(nuisance-Qbar)),    $\Gbar_{n}    \defq
+\Algo_{\Gbar}(P_{n})$  and $\Qbar_{n}  \defq \Algo_{\Qbar}(P_{n})$  are their
 outputs once trained on $P_{n}$.
 
 Let us now introduce $\Phat_n$ a law in $\calM$ such that the $Q_{W}$, $\Gbar$
