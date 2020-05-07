@@ -2,8 +2,8 @@
 knit: "bookdown::render_book"
 title: "A Ride in Targeted Learning Territory"
 author: ["David Benkeser (Emory University)", "Antoine Chambaz (Université de Paris)"]
-date: "2020-05-06"
-description: "To do..."
+date: "2020-05-07"
+description: "A ride in targeted learning territory is a gentle introduction to the filed of targeted learning.  It weaves together two main threads, one theoretical and the other computational.  It uses tlrider, a companion R package built specifically for this project."
 encoding: "UTF-8"
 github-repo: achambaz/tlride
 site: bookdown::bookdown_site

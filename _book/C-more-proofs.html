@@ -5,27 +5,27 @@
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>C More results and their proofs | A Ride in Targeted Learning Territory</title>
-  <meta name="description" content="To do…" />
+  <meta name="description" content="A ride in targeted learning territory is a gentle introduction to the filed of targeted learning. It weaves together two main threads, one theoretical and the other computational. It uses tlrider, a companion R package built specifically for this project." />
   <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
 
   <meta property="og:title" content="C More results and their proofs | A Ride in Targeted Learning Territory" />
   <meta property="og:type" content="book" />
   
   <meta property="og:image" content="cover.jpg" />
-  <meta property="og:description" content="To do…" />
+  <meta property="og:description" content="A ride in targeted learning territory is a gentle introduction to the filed of targeted learning. It weaves together two main threads, one theoretical and the other computational. It uses tlrider, a companion R package built specifically for this project." />
   <meta name="github-repo" content="achambaz/tlride" />
 
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="C More results and their proofs | A Ride in Targeted Learning Territory" />
   
-  <meta name="twitter:description" content="To do…" />
+  <meta name="twitter:description" content="A ride in targeted learning territory is a gentle introduction to the filed of targeted learning. It weaves together two main threads, one theoretical and the other computational. It uses tlrider, a companion R package built specifically for this project." />
   <meta name="twitter:image" content="cover.jpg" />
 
 <meta name="author" content="David Benkeser (Emory University)" />
 <meta name="author" content="Antoine Chambaz (Université de Paris)" />
 
 
-<meta name="date" content="2020-05-06" />
+<meta name="date" content="2020-05-07" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -229,7 +229,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="5" data-path="5-inference.html"><a href="5-inference.html"><i class="fa fa-check"></i><b>5</b> Inference</a><ul>
 <li class="chapter" data-level="5.1" data-path="5-inference.html"><a href="5-inference.html#where-we-stand"><i class="fa fa-check"></i><b>5.1</b> Where we stand</a></li>
-<li class="chapter" data-level="5.2" data-path="5-inference.html"><a href="5-inference.html#where-we-go"><i class="fa fa-check"></i><b>5.2</b> Where we go</a></li>
+<li class="chapter" data-level="5.2" data-path="5-inference.html"><a href="5-inference.html#where-we-are-going"><i class="fa fa-check"></i><b>5.2</b> Where we are going</a></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html"><i class="fa fa-check"></i><b>6</b> A simple inference strategy</a><ul>
 <li class="chapter" data-level="6.1" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#a-cautionary-detour"><i class="fa fa-check"></i><b>6.1</b> A cautionary detour</a></li>
@@ -413,10 +413,10 @@ anti-conservativeness.</p>
 <div id="app-analysis-of-plug-in" class="section level2">
 <h2><span class="header-section-number">C.2</span> ☡  General analysis of plug-in estimators</h2>
 <p>Recall that <span class="math inline">\(\Algo_{Q_{W}}\)</span> is an algorithm designed for the estimation of
-<span class="math inline">\(Q_{0,W}\)</span> (see Section <a href="7-nuisance.html#nuisance-QW">7.3</a>) and that we denote by <span class="math inline">\(Q_{n,W} \triangleq \Algo_{Q_{W}}(P_{n})\)</span> the output of the algorithm trained on <span class="math inline">\(P_{n}\)</span>.
+<span class="math inline">\(Q_{0,W}\)</span> (see Section <a href="7-nuisance.html#nuisance-QW">7.3</a>) and that we denote by <span class="math inline">\(Q_{n,W} \defq \Algo_{Q_{W}}(P_{n})\)</span> the output of the algorithm trained on <span class="math inline">\(P_{n}\)</span>.
 Likewise, <span class="math inline">\(\Algo_{\Gbar}\)</span> and <span class="math inline">\(\Algo_{\Qbar}\)</span> are two generic algorithms
 designed for the estimation of <span class="math inline">\(\Gbar_{0}\)</span> and of <span class="math inline">\(\Qbar_{0}\)</span> (see Sections
-<a href="7-nuisance.html#nuisance-Gbar">7.4</a> and <a href="7-nuisance.html#nuisance-Qbar">7.6</a>), <span class="math inline">\(\Gbar_{n} \triangleq \Algo_{\Gbar}(P_{n})\)</span> and <span class="math inline">\(\Qbar_{n} \triangleq \Algo_{\Qbar}(P_{n})\)</span> are their
+<a href="7-nuisance.html#nuisance-Gbar">7.4</a> and <a href="7-nuisance.html#nuisance-Qbar">7.6</a>), <span class="math inline">\(\Gbar_{n} \defq \Algo_{\Gbar}(P_{n})\)</span> and <span class="math inline">\(\Qbar_{n} \defq \Algo_{\Qbar}(P_{n})\)</span> are their
 outputs once trained on <span class="math inline">\(P_{n}\)</span>.</p>
 <p>Let us now introduce <span class="math inline">\(\Phat_n\)</span> a law in <span class="math inline">\(\calM\)</span> such that the <span class="math inline">\(Q_{W}\)</span>, <span class="math inline">\(\Gbar\)</span>
 and <span class="math inline">\(\Qbar\)</span> features of <span class="math inline">\(\Phat_n\)</span> equal <span class="math inline">\(Q_{n,W}\)</span>, <span class="math inline">\(\Gbar_{n}\)</span> and

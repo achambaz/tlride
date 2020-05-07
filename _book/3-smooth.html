@@ -5,27 +5,27 @@
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Section 3 Smoothness | A Ride in Targeted Learning Territory</title>
-  <meta name="description" content="To do…" />
+  <meta name="description" content="A ride in targeted learning territory is a gentle introduction to the filed of targeted learning. It weaves together two main threads, one theoretical and the other computational. It uses tlrider, a companion R package built specifically for this project." />
   <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Section 3 Smoothness | A Ride in Targeted Learning Territory" />
   <meta property="og:type" content="book" />
   
   <meta property="og:image" content="cover.jpg" />
-  <meta property="og:description" content="To do…" />
+  <meta property="og:description" content="A ride in targeted learning territory is a gentle introduction to the filed of targeted learning. It weaves together two main threads, one theoretical and the other computational. It uses tlrider, a companion R package built specifically for this project." />
   <meta name="github-repo" content="achambaz/tlride" />
 
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="Section 3 Smoothness | A Ride in Targeted Learning Territory" />
   
-  <meta name="twitter:description" content="To do…" />
+  <meta name="twitter:description" content="A ride in targeted learning territory is a gentle introduction to the filed of targeted learning. It weaves together two main threads, one theoretical and the other computational. It uses tlrider, a companion R package built specifically for this project." />
   <meta name="twitter:image" content="cover.jpg" />
 
 <meta name="author" content="David Benkeser (Emory University)" />
 <meta name="author" content="Antoine Chambaz (Université de Paris)" />
 
 
-<meta name="date" content="2020-05-06" />
+<meta name="date" content="2020-05-07" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -229,7 +229,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="5" data-path="5-inference.html"><a href="5-inference.html"><i class="fa fa-check"></i><b>5</b> Inference</a><ul>
 <li class="chapter" data-level="5.1" data-path="5-inference.html"><a href="5-inference.html#where-we-stand"><i class="fa fa-check"></i><b>5.1</b> Where we stand</a></li>
-<li class="chapter" data-level="5.2" data-path="5-inference.html"><a href="5-inference.html#where-we-go"><i class="fa fa-check"></i><b>5.2</b> Where we go</a></li>
+<li class="chapter" data-level="5.2" data-path="5-inference.html"><a href="5-inference.html#where-we-are-going"><i class="fa fa-check"></i><b>5.2</b> Where we are going</a></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html"><i class="fa fa-check"></i><b>6</b> A simple inference strategy</a><ul>
 <li class="chapter" data-level="6.1" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#a-cautionary-detour"><i class="fa fa-check"></i><b>6.1</b> A cautionary detour</a></li>
@@ -387,7 +387,8 @@ might hypothesize that it will be difficult to produce stable estimators of
 <span class="math inline">\(\psi_0\)</span>. Fortunately, this turns out not to be the case for the mapping
 <span class="math inline">\(\Psi\)</span>, and so we say that <span class="math inline">\(\Psi\)</span> is a <em>smooth</em> statistical mapping.</p>
 <p>To discuss how <span class="math inline">\(\Psi(P)\)</span> changes for distributions that <em>get nearer</em> to <span class="math inline">\(P\)</span> in
-the model, we require a more concrete notion of <em>getting-nearness</em>. The notion
+the model, we require a more concrete notion of what it means to <em>get near</em> to
+a distribution in a model. The notion
 hinges on fluctuations (or fluctuating models).</p>
 <div id="fluctuations" class="section level3">
 <h3><span class="header-section-number">3.1.1</span> The <code>another_experiment</code> fluctuation</h3>
@@ -438,8 +439,8 @@ again at the <code>sample_from</code> feature of <code>another_experiment</code>
 <a class="sourceLine" id="cb25-24" data-line-number="24"><span class="co">#&gt;         obs &lt;- cbind(W = W, A = A, Y = Y)</span></a>
 <a class="sourceLine" id="cb25-25" data-line-number="25"><span class="co">#&gt;         return(obs)</span></a>
 <a class="sourceLine" id="cb25-26" data-line-number="26"><span class="co">#&gt;       }</span></a>
-<a class="sourceLine" id="cb25-27" data-line-number="27"><span class="co">#&gt; &lt;bytecode: 0xf5819a0&gt;</span></a>
-<a class="sourceLine" id="cb25-28" data-line-number="28"><span class="co">#&gt; &lt;environment: 0x10bdcf08&gt;</span></a></code></pre></div>
+<a class="sourceLine" id="cb25-27" data-line-number="27"><span class="co">#&gt; &lt;bytecode: 0xa23ec20&gt;</span></a>
+<a class="sourceLine" id="cb25-28" data-line-number="28"><span class="co">#&gt; &lt;environment: 0x1153d6d8&gt;</span></a></code></pre></div>
 <p>Let us call <span class="math inline">\(\Pi_{h} \in \calM\)</span> the law encoded by <code>another_experiment</code> for a
 given <code>h</code> taken in <span class="math inline">\(]-1,1[\)</span>. Note that <span class="math display">\[\begin{equation*}\calP  \defq
 \{\Pi_h : h \in ]-1,1[\}\end{equation*}\]</span> defines a collection of laws, <em>i.e.</em>,
@@ -455,9 +456,8 @@ notion Section <a href="3-smooth.html#smooth-second-pass">3.3</a>.</p>
 <p>We now have a notion of how to move through the model space <span class="math inline">\(P \in \calM\)</span> and
 can study how the value of the parameter changes as we move away from a law
 <span class="math inline">\(P\)</span>. Above, we said that <span class="math inline">\(\Psi\)</span> is a smooth parameter if it does not change
-“too much” as we move towards <span class="math inline">\(P\)</span> in any particular direction. That is, we
-should hope that <span class="math inline">\(\Psi\)</span> is differentiable along our submodel at <span class="math inline">\(P\)</span>.</p>
-<p>This idea too is formalized in Section <a href="3-smooth.html#smooth-second-pass">3.3</a>. We now turn
+“abruptly” as we move towards <span class="math inline">\(P\)</span> in any particular direction. That is, we
+should hope that <span class="math inline">\(\Psi\)</span> is <em>differentiable</em> along our submodel at <span class="math inline">\(P\)</span>. This idea too is formalized in Section <a href="3-smooth.html#smooth-second-pass">3.3</a>. We now turn
 to illustrating this idea numerically.</p>
 </div>
 <div id="numerical-illus" class="section level3">
@@ -546,8 +546,7 @@ indicates that the score of this submodel at <span class="math inline">\(h = 0\)
 that the fluctuation is <em>in the direction</em> of <span class="math inline">\(s\)</span>.</p>
 <p>Fluctuations of <span class="math inline">\(P\)</span> do not necessarily take the same form as in
 <a href="3-smooth.html#eq:fluct">(3.1)</a>. No matter how the fluctuation is built, for our purposes the
-most important feature of the fluctuation is its local shape in a neighborhood
-of <span class="math inline">\(P\)</span>.</p>
+most important feature of the fluctuation is its direction.</p>
 </div>
 <div id="smoothness-and-gradients" class="section level3">
 <h3><span class="header-section-number">3.3.2</span> Smoothness and gradients</h3>
@@ -584,7 +583,7 @@ nonparametric, only a single gradient exists. The unique gradient is then
 referred to as <em>the canonical gradient</em> or <em>the efficient influence curve</em>,
 for reasons that will be clarified in Section <a href="3-smooth.html#influence-curves">3.5</a>. In the
 more general setting, the canonical gradient may be defined as the minimizer
-of <span class="math inline">\(D\mapsto \Var_{P} (D(O))\)</span> over the set of all gradients.</p>
+of <span class="math inline">\(D\mapsto \Var_{P} (D(O))\)</span> over the set of all gradients of <span class="math inline">\(\Psi\)</span> at <span class="math inline">\(P\)</span>.</p>
 <p>It is not difficult to check that the efficient influence curve of statistical
 mapping <span class="math inline">\(\Psi\)</span> <a href="2-parameter.html#eq:psimap">(2.6)</a> at <span class="math inline">\(P \in \calM\)</span> can be written as
 <span class="math display" id="eq:eif">\[\begin{align}  D^{*}(P)  &amp;  \defq  D_{1}^{*}   (P)  +  D_{2}^{*}  (P),  \quad
@@ -602,7 +601,7 @@ characterized by <code>experiment</code>:</p>
 drawn from <span class="math inline">\(P_{0}\)</span> in Section <a href="1-a-ride.html#synthetic-experiment">1.2.2</a>. This is what the
 next chunk of code does:</p>
 <div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1">(<span class="kw">eic_experiment</span>(five_obs))</a>
-<a class="sourceLine" id="cb29-2" data-line-number="2"><span class="co">#&gt; [1]  0.246 -0.157 -0.534 -0.243  0.234</span></a></code></pre></div>
+<a class="sourceLine" id="cb29-2" data-line-number="2"><span class="co">#&gt; [1]  0.260  0.161 -0.387 -0.186  0.110</span></a></code></pre></div>
 <p>Finally, the efficient influence curve can be visualized as two images that
 represent <span class="math inline">\((w,y) \mapsto D^{*}(P_{0})(w,a,y)\)</span> for <span class="math inline">\(a = 0,1\)</span>, respectively:</p>
 
@@ -679,7 +678,7 @@ level 95%:</p>
 <a class="sourceLine" id="cb32-5" data-line-number="5"></a>
 <a class="sourceLine" id="cb32-6" data-line-number="6">sd_hat &lt;-<span class="st"> </span><span class="kw">sd</span>(vars)</a>
 <a class="sourceLine" id="cb32-7" data-line-number="7">(slope_hat &lt;-<span class="st"> </span><span class="kw">mean</span>(vars))</a>
-<a class="sourceLine" id="cb32-8" data-line-number="8"><span class="co">#&gt; [1] 1.36</span></a>
+<a class="sourceLine" id="cb32-8" data-line-number="8"><span class="co">#&gt; [1] 1.35</span></a>
 <a class="sourceLine" id="cb32-9" data-line-number="9">(slope_CI &lt;-<span class="st"> </span>slope_hat <span class="op">+</span><span class="st"> </span><span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>) <span class="op">*</span></a>
 <a class="sourceLine" id="cb32-10" data-line-number="10"><span class="st">   </span><span class="kw">qnorm</span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>alpha <span class="op">/</span><span class="st"> </span><span class="dv">2</span>) <span class="op">*</span><span class="st"> </span>sd_hat <span class="op">/</span><span class="st"> </span><span class="kw">sqrt</span>(B))</a>
 <a class="sourceLine" id="cb32-11" data-line-number="11"><span class="co">#&gt; [1] 1.35 1.36</span></a></code></pre></div>
@@ -715,7 +714,7 @@ Gaussian distribution with variance <span class="math inline">\(\Var_P(\IC(O))\)
 <p>As it happens, influence curves of regular<a href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a> estimators are intimately related to
 gradients. In fact, if <span class="math inline">\(\psi_n\)</span> is a regular, asymptotically linear estimator
 of <span class="math inline">\(\Psi(P)\)</span> with influence curve <span class="math inline">\(\IC\)</span>, then it must be true that <span class="math inline">\(\Psi\)</span> is a
-smooth at <span class="math inline">\(P\)</span> and that <span class="math inline">\(\IC\)</span> is a gradient of <span class="math inline">\(\Psi\)</span> at <span class="math inline">\(P\)</span>.</p>
+smooth parameter at <span class="math inline">\(P\)</span> and that <span class="math inline">\(\IC\)</span> is a gradient of <span class="math inline">\(\Psi\)</span> at <span class="math inline">\(P\)</span>.</p>
 </div>
 <div id="asymptotic-efficiency" class="section level3">
 <h3><span class="header-section-number">3.5.3</span> Asymptotic efficiency</h3>
@@ -751,7 +750,7 @@ estimator, it is often referred to as the <em>efficient influence curve</em>.</p
 <div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" data-line-number="1">obs_another_experiment &lt;-<span class="st"> </span><span class="kw">sample_from</span>(another_experiment, B, <span class="dt">h =</span> <span class="dv">0</span>)</a>
 <a class="sourceLine" id="cb34-2" data-line-number="2">(cramer_rao_Pi_zero_hat &lt;-</a>
 <a class="sourceLine" id="cb34-3" data-line-number="3"><span class="st">   </span><span class="kw">var</span>(<span class="kw">eic_another_experiment</span>(obs_another_experiment)))</a>
-<a class="sourceLine" id="cb34-4" data-line-number="4"><span class="co">#&gt; [1] 0.0957</span></a></code></pre></div>
+<a class="sourceLine" id="cb34-4" data-line-number="4"><span class="co">#&gt; [1] 0.098</span></a></code></pre></div>
 <ol start="3" style="list-style-type: decimal">
 <li><p>With a large independent sample drawn from <span class="math inline">\(\Psi(P_0)\)</span> (or <span class="math inline">\(\Psi(\Pi_0)\)</span>),
 is it possible to construct a regular estimator <span class="math inline">\(\psi_{n}\)</span> of <span class="math inline">\(\Psi(P_0)\)</span>

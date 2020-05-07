@@ -4,7 +4,7 @@ options(digits = 3)
 knitr::opts_chunk$set(
   comment = "#>",
   collapse = TRUE,
-  cache = FALSE,
+  cache = TRUE,
   out.width = "70%",
   fig.align = 'center',
   fig.width = 6, # used to have: fig.width = 12,
@@ -191,7 +191,7 @@ important messages.]
 The `Gbar`  feature describes the  conditional probability  of action $A  = 1$
 given  $W$. For  each $a  \in  \{0,1\}$, we  denote \begin{align*}  \Gbar_0(W)
 &\defq \Pr_{P_0}(A  = 1 |  W), \\\ell\Gbar_0(a,W)  &\defq \Pr_{P_0}(A =  a |
-W).\end{align*}    Obviously,    \begin{equation*}\ell\Gbar_{0}(A,W)    \defq
+W).\end{align*}    Obviously,    \begin{equation*}\ell\Gbar_{0}(A,W)    =
 A\Gbar_{0}(W) + (1-A) (1-\Gbar_{0}(W)).\end{equation*}
 
 ```{r show-Gbar}
@@ -536,7 +536,7 @@ For instance,  each $P_{\theta}$ could be  the Gaussian law with  mean $\theta
 $\theta_{0}$ of $P_{0}$. To do so, one could rely on $n$ observations $X_{1}$,
 \ldots,  $X_{n}$  drawn  independently   from  $P_{0}$.   The  empirical  mean
 \begin{equation*}\theta_{n}       \defq      \frac{1}{n}       \sum_{i=1}^{n}
-X_{i}\end{equation*} estimates $\theta_{0}$.  If  we assume that $\Var_{P_{0}}
+X_{i}\end{equation*} estimates $\theta_{0}$.  More generally, if we assume that $\Var_{P_{0}}
 (X_{1})$ is  finite, then  $\theta_{n}$ satisfies  many useful  properties. In
 particular, it can be used [to construct confidence intervals](#clt).
 
@@ -545,7 +545,8 @@ Of course, the mean of a law is defined beyond the small model $\{P_{\theta} :
 $\Var_{P}(X)$ is finite.  In particular, $P_{0}  \in \calM$.  For every $P \in
 \calM$,  the mean  $\Exp_{P}(X)$ is  well defined.   Thus, we  can introduce  the
 *statistical    mapping*    $\Theta   :    \calM    \to    \bbR$   given    by
-\begin{equation*}\Theta(P) \defq \Exp_{P}(X).\end{equation*}
+\begin{equation*}\Theta(P) \defq \Exp_{P}(X)\end{equation*}
+(where $T$ is some index set).
 
 Interestingly, the empirical measure $P_{n}$^[The empirical measure $P_{n}$ is
 the law such that  *(i)* $X$ drawn from $P_{n}$ takes  its values in $\{X_{1},
@@ -705,7 +706,8 @@ $\psi_0$.  Fortunately, this  turns out  not to  be the  case for  the mapping
 $\Psi$, and so we say that $\Psi$ is a *smooth* statistical mapping.
 
 To discuss how $\Psi(P)$ changes for distributions that *get nearer* to $P$ in
-the model, we require a more concrete notion of *getting-nearness*. The notion
+the model, we require a more concrete notion of what it means to *get near* to
+a distribution in a model. The notion
 hinges on fluctuations (or fluctuating models). 
 
 
@@ -748,10 +750,8 @@ notion Section \@ref(smooth-second-pass).
 We now have a notion of how to  move through the model space $P \in \calM$ and
 can study how  the value of the parameter  changes as we move away  from a law
 $P$.  Above, we said  that $\Psi$ is a smooth parameter if  it does not change
-"too much" as  we move towards $P$  in any particular direction.   That is, we
-should hope that $\Psi$ is differentiable along our submodel at $P$. 
-
-This idea too is formalized  in Section \@ref(smooth-second-pass). We now turn
+"abruptly" as  we move towards $P$  in any particular direction.   That is, we
+should hope that $\Psi$ is *differentiable* along our submodel at $P$. This idea too is formalized  in Section \@ref(smooth-second-pass). We now turn
 to illustrating this idea numerically.
 
 ### Numerical illustration {#numerical-illus}
@@ -853,8 +853,7 @@ that the fluctuation is *in the direction* of $s$.
 
 Fluctuations  of   $P$  do  not   necessarily  take   the  same  form   as  in
 \@ref(eq:fluct).  No matter how the fluctuation is built, for our purposes the
-most important feature of the fluctuation is its local shape in a neighborhood
-of $P$.
+most important feature of the fluctuation is its direction.
 
 ### Smoothness and gradients
 
@@ -905,7 +904,7 @@ nonparametric,  only a  single gradient  exists. The  unique gradient  is then
 referred to  as *the canonical  gradient* or *the efficient  influence curve*,
 for reasons that will be clarified in Section \@ref(influence-curves).  In the
 more general setting,  the canonical gradient may be defined  as the minimizer
-of $D\mapsto \Var_{P} (D(O))$ over the set of all gradients.
+of $D\mapsto \Var_{P} (D(O))$ over the set of all gradients of $\Psi$ at $P$.
 
 It is not difficult to check that the efficient influence curve of statistical
 mapping  $\Psi$  \@ref(eq:psimap)   at  $P  \in  \calM$  can   be  written  as
@@ -1050,7 +1049,7 @@ $\sqrt{n} (\psi_{n,1/\sqrt{n}} - \Psi(P_{1/\sqrt{n}}))$  converges in law to a
 limit that  does not  depend on  $s$.]  estimators  are intimately  related to
 gradients.  In fact, if $\psi_n$ is a regular, asymptotically linear estimator
 of $\Psi(P)$ with influence curve $\IC$, then it must be true that $\Psi$ is a
-smooth at $P$ and that $\IC$ is a gradient of $\Psi$ at $P$.
+smooth parameter at $P$ and that $\IC$ is a gradient of $\Psi$ at $P$.
 
 ### Asymptotic efficiency
 
@@ -1325,7 +1324,7 @@ observations among $O_{1}, \ldots, O_{B}$,  where $n$ equals `B/iter`, *i.e.*,
 statistical  properties  of  every  estimation  procedure  by  replicating  it
 independently `r as.integer(iter)` times.
 
-## Where we go
+## Where we are going
 
 The  following  sections  explore  different statistical  paths  to  inferring
 $\psi_{0}$ or, rather (though equivalently), $\Psi(P_{0})$.
@@ -1381,7 +1380,7 @@ It    estimates     \begin{align*}\Phi(P_{0})    &\defq    \frac{\Exp_{P_{0}}
 (AY)}{\Exp_{P_{0}} (A)} - \frac{\Exp_{P_{0}} ((1-A)Y)}{\Exp_{P_{0}} (1-A)}\\&=
 \Exp_{P_{0}} (Y | A=1) - \Exp_{P_{0}} (Y | A=0).\end{align*}
 
-We seize  this opportunity  to demonstrate numerically  the obvious  fact that
+We seize  this opportunity  to demonstrate numerically  that
 $\psi_{n}^{a}$  *does   not*  estimate  $\Psi(P_{0})$  because,   in  general,
 $\Psi(P_{0})$  and $\Phi(P_{0})$  differ. This  is apparent  in the  following
 alternative expression of $\Phi(P_{0})$:
@@ -1460,7 +1459,7 @@ computes the numerical values of $\psi_{n}^{a}$ and $v_{n}^{a}$ based on the
 ### A simple  estimator
 
 Let us assume for a moment that we know $\Gbar_{0}$.  This would have been the
-case  indeed if  $P_{0}$  were a  controlled experiment.   Note  that, on  the
+case  indeed if we had experimental control over the actions taken by observational units, as in a randomized experiment.   Note  that, on  the
 contrary, assuming $\Qbar_{0}$ known would be difficult to justify.
 
 ```{r known-Gbar-one-a}
@@ -1615,7 +1614,7 @@ $\Gbar_{0}$ (the conditional  probability that $A=1$ given  $W$ under $P_{0}$)
 and $\Qbar_{0}$ (the conditional mean of $Y$ given $A$ and $W$ under $P_{0}$).
 
 In  this context,  because  they are  not the  parameter  of primary  interest
-(*i.e.*, they are  not the real-values feature $\Psi(P_{0})$),  they are often
+(*i.e.*, they are  not the real-valued feature $\Psi(P_{0})$),  they are often
 referred to as  *nuisance parameters* of $P_{0}$.  The unflaterring expression
 conveys the notion that their estimation  is merely an intermediate step along
 our path towards an inference of the target parameter.
@@ -1919,7 +1918,7 @@ Qbar_hat_trees %>% filter(a == "zero") %>% pull(fit) %>%
 We can compare visually the estimators $\Qbar_{n,\text{kNN}}$,
 $\Qbar_{n,\text{trees}}  \defq  \Algo_{\Qbar,\text{trees}}(P_{n})$  with  its
 target  $\Qbar_0$,  see   Figure  \@ref(fig:estimate-Qbar-five).   In  summary,
-$\Qbar_{n,\text{kNN}}$ is rather good, though  very versatile at the vincinity
+$\Qbar_{n,\text{kNN}}$ is rather good, though  very variable at the vincinity
 of the  break points.  As for  $\Qbar_{n,\text{trees}}$, it  does not  seem to
 capture the shape of its target.
 
@@ -1991,7 +1990,7 @@ $\ell\Gbar_{n}$ the resulting (empirical) function given by
 \ell\Gbar_{n}(A,W) \defq A \Gbar_{n}(W) + (1-A) (1 - \Gbar_{n}(W)).
 \end{equation*}
 
-In light of \@ref(eq:psi-n-b), introduce 
+In light of \@ref(eq:psi-n-b), we introduce 
 
 \begin{equation*}
 \psi_{n}^{c}   \defq   \frac{1}{n}    \sum_{i=1}^{n}   \left(\frac{2A_{i}   -
@@ -2778,7 +2777,7 @@ $\Psi(\Phat_{n})$.
 
 Luckily, *a very simple workaround* allows to circumvent the problem. Proposed
 in  [@LeCam69] (see  also [@Pfanzagl82]  and [@vdV98]),  the workaround  merely
-consists in subtracting the random term  to the initial estimator, that is, in
+consists in adding the random term  to the initial estimator, that is, in
 estimating $\Psi(P_0)$ not with $\Psi(\Phat_n)$ but instead with
 \begin{equation}
 \psinos  \defq  \Psi(\Phat_n)  +  P_{n} D^*(\Phat_n)  =  \Psi(\Phat_n)  +
@@ -2913,8 +2912,7 @@ bind_rows(bias_de, bias_de_one_step) %>%
   arrange(type)
 ```
 
-What about the  estimation of the asymptotic variance, and  of the mean-square
-errors of the estimators?
+What about the estimation of the asymptotic variance, and of the mean squared-error of the estimators?
 
 ```{r one-step-three}
 psi_hat_de %>%
@@ -3060,7 +3058,7 @@ It thus  remains to devise  a strategy for  ensuring that $P_n  D_2^*(P_n^*) =
 
 ## Targeted fluctuation {#targeted-fluctuation-TMLE}
 
-Our approach  to solving  \@ref(eq:solve-alt)^[or \@ref(eq:solve-approx-alt).]
+Our approach  to satisfying  \@ref(eq:solve-alt)^[or \@ref(eq:solve-approx-alt).]
 hinges on revising our initial estimator  $\Qbar_n$ of $\Qbar_0$. We propose a
 method for building an estimator of $\Qbar_0$ that is "near to" $\Qbar_n$, but
 is  such  that for  any  law  $P_n^*$ that  is  compatible  with this  revised
@@ -3408,7 +3406,7 @@ principles for sounder research through  the better design of experimental and
 nonexperimental  studies  and the  development  of  more reliable  and  honest
 statistical  analyses.   By  focusing   on  prespecified  analytic  plans  and
 algorithms that make  realistic assumptions in more  flexible nonparametric or
-semiparametric statistical models,  targeted learning has been at  the fore of
+semiparametric statistical models,  targeted learning has been at  the forefront of
 this concerted effort. Under this light, targeted learning notably consists in
 translating knowledge about the  data and underlying data-generating mechanism
 into a realistic model; in expressing  the research question under the form of

@@ -5,27 +5,27 @@
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Section 2 The parameter of interest | A Ride in Targeted Learning Territory</title>
-  <meta name="description" content="To do…" />
+  <meta name="description" content="A ride in targeted learning territory is a gentle introduction to the filed of targeted learning. It weaves together two main threads, one theoretical and the other computational. It uses tlrider, a companion R package built specifically for this project." />
   <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Section 2 The parameter of interest | A Ride in Targeted Learning Territory" />
   <meta property="og:type" content="book" />
   
   <meta property="og:image" content="cover.jpg" />
-  <meta property="og:description" content="To do…" />
+  <meta property="og:description" content="A ride in targeted learning territory is a gentle introduction to the filed of targeted learning. It weaves together two main threads, one theoretical and the other computational. It uses tlrider, a companion R package built specifically for this project." />
   <meta name="github-repo" content="achambaz/tlride" />
 
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="Section 2 The parameter of interest | A Ride in Targeted Learning Territory" />
   
-  <meta name="twitter:description" content="To do…" />
+  <meta name="twitter:description" content="A ride in targeted learning territory is a gentle introduction to the filed of targeted learning. It weaves together two main threads, one theoretical and the other computational. It uses tlrider, a companion R package built specifically for this project." />
   <meta name="twitter:image" content="cover.jpg" />
 
 <meta name="author" content="David Benkeser (Emory University)" />
 <meta name="author" content="Antoine Chambaz (Université de Paris)" />
 
 
-<meta name="date" content="2020-05-06" />
+<meta name="date" content="2020-05-07" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -229,7 +229,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="5" data-path="5-inference.html"><a href="5-inference.html"><i class="fa fa-check"></i><b>5</b> Inference</a><ul>
 <li class="chapter" data-level="5.1" data-path="5-inference.html"><a href="5-inference.html#where-we-stand"><i class="fa fa-check"></i><b>5.1</b> Where we stand</a></li>
-<li class="chapter" data-level="5.2" data-path="5-inference.html"><a href="5-inference.html#where-we-go"><i class="fa fa-check"></i><b>5.2</b> Where we go</a></li>
+<li class="chapter" data-level="5.2" data-path="5-inference.html"><a href="5-inference.html#where-we-are-going"><i class="fa fa-check"></i><b>5.2</b> Where we are going</a></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html"><i class="fa fa-check"></i><b>6</b> A simple inference strategy</a><ul>
 <li class="chapter" data-level="6.1" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#a-cautionary-detour"><i class="fa fa-check"></i><b>6.1</b> A cautionary detour</a></li>
@@ -467,7 +467,7 @@ approximate value.</p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1">B &lt;-<span class="st"> </span><span class="fl">1e6</span></a>
 <a class="sourceLine" id="cb20-2" data-line-number="2">ideal_obs &lt;-<span class="st"> </span><span class="kw">sample_from</span>(experiment, B, <span class="dt">ideal =</span> <span class="ot">TRUE</span>)</a>
 <a class="sourceLine" id="cb20-3" data-line-number="3">(psi_approx &lt;-<span class="st"> </span><span class="kw">mean</span>(ideal_obs[, <span class="st">&quot;Yone&quot;</span>] <span class="op">-</span><span class="st"> </span>ideal_obs[, <span class="st">&quot;Yzero&quot;</span>]))</a>
-<a class="sourceLine" id="cb20-4" data-line-number="4"><span class="co">#&gt; [1] 0.083</span></a></code></pre></div>
+<a class="sourceLine" id="cb20-4" data-line-number="4"><span class="co">#&gt; [1] 0.0831</span></a></code></pre></div>
 <p>The object <code>psi_approx</code> contains an approximation to <span class="math inline">\(\psi_0\)</span> based on <code>B</code>
 observations from the ideal experiment. The random sampling of observations
 results in uncertainty in the numerical approximation of <span class="math inline">\(\psi_0\)</span>. This
@@ -478,7 +478,7 @@ build such an interval as follows.</p>
 <a class="sourceLine" id="cb21-2" data-line-number="2">alpha &lt;-<span class="st"> </span><span class="fl">0.05</span></a>
 <a class="sourceLine" id="cb21-3" data-line-number="3">(psi_approx_CI &lt;-<span class="st"> </span>psi_approx <span class="op">+</span><span class="st"> </span><span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>) <span class="op">*</span></a>
 <a class="sourceLine" id="cb21-4" data-line-number="4"><span class="st">   </span><span class="kw">qnorm</span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>alpha <span class="op">/</span><span class="st"> </span><span class="dv">2</span>) <span class="op">*</span><span class="st"> </span>sd_approx <span class="op">/</span><span class="st"> </span><span class="kw">sqrt</span>(B))</a>
-<a class="sourceLine" id="cb21-5" data-line-number="5"><span class="co">#&gt; [1] 0.0824 0.0836</span></a></code></pre></div>
+<a class="sourceLine" id="cb21-5" data-line-number="5"><span class="co">#&gt; [1] 0.0822 0.0860</span></a></code></pre></div>
 <p>We note that the interpretation of this confidence interval is that in 95% of
 draws of size <code>B</code> from the ideal data generating experiment, the true value of
 <span class="math inline">\(\psi_0\)</span> will be contained in the generated confidence interval.</p>
@@ -537,12 +537,13 @@ elements <span class="math inline">\(P_{\theta}\)</span> and <span class="math i
 <span class="math inline">\(\theta_{0}\)</span> of <span class="math inline">\(P_{0}\)</span>. To do so, one could rely on <span class="math inline">\(n\)</span> observations <span class="math inline">\(X_{1}\)</span>,
 , <span class="math inline">\(X_{n}\)</span> drawn independently from <span class="math inline">\(P_{0}\)</span>. The empirical mean
 <span class="math display">\[\begin{equation*}\theta_{n}       \defq      \frac{1}{n}       \sum_{i=1}^{n}
-X_{i}\end{equation*}\]</span> estimates <span class="math inline">\(\theta_{0}\)</span>. If we assume that <span class="math inline">\(\Var_{P_{0}} (X_{1})\)</span> is finite, then <span class="math inline">\(\theta_{n}\)</span> satisfies many useful properties. In
+X_{i}\end{equation*}\]</span> estimates <span class="math inline">\(\theta_{0}\)</span>. More generally, if we assume that <span class="math inline">\(\Var_{P_{0}} (X_{1})\)</span> is finite, then <span class="math inline">\(\theta_{n}\)</span> satisfies many useful properties. In
 particular, it can be used <a href="B-proofs.html#clt">to construct confidence intervals</a>.</p>
 <p>Of course, the mean of a law is defined beyond the small model <span class="math inline">\(\{P_{\theta} : \theta \in \bbR\}\)</span>. Let <span class="math inline">\(\calM\)</span> be the set of laws <span class="math inline">\(P\)</span> on <span class="math inline">\(\bbR\)</span> such that
 <span class="math inline">\(\Var_{P}(X)\)</span> is finite. In particular, <span class="math inline">\(P_{0} \in \calM\)</span>. For every <span class="math inline">\(P \in \calM\)</span>, the mean <span class="math inline">\(\Exp_{P}(X)\)</span> is well defined. Thus, we can introduce the
 <em>statistical mapping</em> <span class="math inline">\(\Theta : \calM \to \bbR\)</span> given by
-<span class="math display">\[\begin{equation*}\Theta(P) \defq \Exp_{P}(X).\end{equation*}\]</span></p>
+<span class="math display">\[\begin{equation*}\Theta(P) \defq \Exp_{P}(X)\end{equation*}\]</span>
+(where <span class="math inline">\(T\)</span> is some index set).</p>
 <p>Interestingly, the empirical measure <span class="math inline">\(P_{n}\)</span><a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> is an
 element of <span class="math inline">\(\calM\)</span>. Therefore, the statistical mapping <span class="math inline">\(\Theta\)</span> can be
 evaluated at <span class="math inline">\(P_{n}\)</span>: <span class="math display">\[\begin{equation*}\Theta(P_{n})    =   \frac{1}{n}
@@ -598,13 +599,13 @@ explicit to emphasize how <span class="math inline">\(\Psi(P)\)</span> truly dep
 <a class="sourceLine" id="cb22-17" data-line-number="17"><span class="co">#&gt; function(x, min = 1/10, max = 9/10){</span></a>
 <a class="sourceLine" id="cb22-18" data-line-number="18"><span class="co">#&gt;              stats::dunif(x, min = min, max = max)</span></a>
 <a class="sourceLine" id="cb22-19" data-line-number="19"><span class="co">#&gt;       }</span></a>
-<a class="sourceLine" id="cb22-20" data-line-number="20"><span class="co">#&gt; &lt;environment: 0x10bdcf08&gt;</span></a>
+<a class="sourceLine" id="cb22-20" data-line-number="20"><span class="co">#&gt; &lt;environment: 0x1153d6d8&gt;</span></a>
 <a class="sourceLine" id="cb22-21" data-line-number="21"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb22-22" data-line-number="22"><span class="co">#&gt; $Gbar</span></a>
 <a class="sourceLine" id="cb22-23" data-line-number="23"><span class="co">#&gt; function(W) {</span></a>
 <a class="sourceLine" id="cb22-24" data-line-number="24"><span class="co">#&gt;         sin((1 + W) * pi / 6)</span></a>
 <a class="sourceLine" id="cb22-25" data-line-number="25"><span class="co">#&gt;       }</span></a>
-<a class="sourceLine" id="cb22-26" data-line-number="26"><span class="co">#&gt; &lt;environment: 0x10bdcf08&gt;</span></a>
+<a class="sourceLine" id="cb22-26" data-line-number="26"><span class="co">#&gt; &lt;environment: 0x1153d6d8&gt;</span></a>
 <a class="sourceLine" id="cb22-27" data-line-number="27"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb22-28" data-line-number="28"><span class="co">#&gt; $Qbar</span></a>
 <a class="sourceLine" id="cb22-29" data-line-number="29"><span class="co">#&gt; function(AW, h) {</span></a>
@@ -613,7 +614,7 @@ explicit to emphasize how <span class="math inline">\(\Psi(P)\)</span> truly dep
 <a class="sourceLine" id="cb22-32" data-line-number="32"><span class="co">#&gt;         expit( logit( A *  W + (1 - A) * W^2 ) +</span></a>
 <a class="sourceLine" id="cb22-33" data-line-number="33"><span class="co">#&gt;                h * 10 * sqrt(W) * A )</span></a>
 <a class="sourceLine" id="cb22-34" data-line-number="34"><span class="co">#&gt;       }</span></a>
-<a class="sourceLine" id="cb22-35" data-line-number="35"><span class="co">#&gt; &lt;environment: 0x10bdcf08&gt;</span></a>
+<a class="sourceLine" id="cb22-35" data-line-number="35"><span class="co">#&gt; &lt;environment: 0x1153d6d8&gt;</span></a>
 <a class="sourceLine" id="cb22-36" data-line-number="36"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb22-37" data-line-number="37"><span class="co">#&gt; $qY</span></a>
 <a class="sourceLine" id="cb22-38" data-line-number="38"><span class="co">#&gt; function(obs, Qbar, shape1 = 4){</span></a>
@@ -623,7 +624,7 @@ explicit to emphasize how <span class="math inline">\(\Psi(P)\)</span> truly dep
 <a class="sourceLine" id="cb22-42" data-line-number="42"><span class="co">#&gt;                       shape1 = shape1,</span></a>
 <a class="sourceLine" id="cb22-43" data-line-number="43"><span class="co">#&gt;                       shape2 = shape1 * (1 - QAW) / QAW)</span></a>
 <a class="sourceLine" id="cb22-44" data-line-number="44"><span class="co">#&gt;       }</span></a>
-<a class="sourceLine" id="cb22-45" data-line-number="45"><span class="co">#&gt; &lt;environment: 0x10bdcf08&gt;</span></a>
+<a class="sourceLine" id="cb22-45" data-line-number="45"><span class="co">#&gt; &lt;environment: 0x1153d6d8&gt;</span></a>
 <a class="sourceLine" id="cb22-46" data-line-number="46"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb22-47" data-line-number="47"><span class="co">#&gt; $sample_from</span></a>
 <a class="sourceLine" id="cb22-48" data-line-number="48"><span class="co">#&gt; function(n, h) {</span></a>
@@ -651,11 +652,11 @@ explicit to emphasize how <span class="math inline">\(\Psi(P)\)</span> truly dep
 <a class="sourceLine" id="cb22-70" data-line-number="70"><span class="co">#&gt;         obs &lt;- cbind(W = W, A = A, Y = Y)</span></a>
 <a class="sourceLine" id="cb22-71" data-line-number="71"><span class="co">#&gt;         return(obs)</span></a>
 <a class="sourceLine" id="cb22-72" data-line-number="72"><span class="co">#&gt;       }</span></a>
-<a class="sourceLine" id="cb22-73" data-line-number="73"><span class="co">#&gt; &lt;environment: 0x10bdcf08&gt;</span></a>
+<a class="sourceLine" id="cb22-73" data-line-number="73"><span class="co">#&gt; &lt;environment: 0x1153d6d8&gt;</span></a>
 <a class="sourceLine" id="cb22-74" data-line-number="74">(two_obs_another_experiment &lt;-<span class="st"> </span><span class="kw">sample_from</span>(another_experiment, <span class="dv">2</span>, <span class="dt">h =</span> <span class="dv">0</span>))</a>
-<a class="sourceLine" id="cb22-75" data-line-number="75"><span class="co">#&gt;          W A       Y</span></a>
-<a class="sourceLine" id="cb22-76" data-line-number="76"><span class="co">#&gt; [1,] 0.101 0 0.00841</span></a>
-<a class="sourceLine" id="cb22-77" data-line-number="77"><span class="co">#&gt; [2,] 0.620 1 0.51166</span></a></code></pre></div>
+<a class="sourceLine" id="cb22-75" data-line-number="75"><span class="co">#&gt;          W A     Y</span></a>
+<a class="sourceLine" id="cb22-76" data-line-number="76"><span class="co">#&gt; [1,] 0.585 1 0.507</span></a>
+<a class="sourceLine" id="cb22-77" data-line-number="77"><span class="co">#&gt; [2,] 0.347 1 0.345</span></a></code></pre></div>
 <p>By taking an oracular look at the output of <code>reveal(another_experiment)</code>, we
 discover that the law <span class="math inline">\(\Pi_{0} \in \calM\)</span> encoded by default (<em>i.e.</em>, with
 <code>h=0</code>) in <code>another_experiment</code> differs starkly from <span class="math inline">\(P_{0}\)</span>.</p>

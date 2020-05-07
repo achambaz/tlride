@@ -5,27 +5,27 @@
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Section 7 Nuisance parameters | A Ride in Targeted Learning Territory</title>
-  <meta name="description" content="To do…" />
+  <meta name="description" content="A ride in targeted learning territory is a gentle introduction to the filed of targeted learning. It weaves together two main threads, one theoretical and the other computational. It uses tlrider, a companion R package built specifically for this project." />
   <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Section 7 Nuisance parameters | A Ride in Targeted Learning Territory" />
   <meta property="og:type" content="book" />
   
   <meta property="og:image" content="cover.jpg" />
-  <meta property="og:description" content="To do…" />
+  <meta property="og:description" content="A ride in targeted learning territory is a gentle introduction to the filed of targeted learning. It weaves together two main threads, one theoretical and the other computational. It uses tlrider, a companion R package built specifically for this project." />
   <meta name="github-repo" content="achambaz/tlride" />
 
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="Section 7 Nuisance parameters | A Ride in Targeted Learning Territory" />
   
-  <meta name="twitter:description" content="To do…" />
+  <meta name="twitter:description" content="A ride in targeted learning territory is a gentle introduction to the filed of targeted learning. It weaves together two main threads, one theoretical and the other computational. It uses tlrider, a companion R package built specifically for this project." />
   <meta name="twitter:image" content="cover.jpg" />
 
 <meta name="author" content="David Benkeser (Emory University)" />
 <meta name="author" content="Antoine Chambaz (Université de Paris)" />
 
 
-<meta name="date" content="2020-05-06" />
+<meta name="date" content="2020-05-07" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -229,7 +229,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="5" data-path="5-inference.html"><a href="5-inference.html"><i class="fa fa-check"></i><b>5</b> Inference</a><ul>
 <li class="chapter" data-level="5.1" data-path="5-inference.html"><a href="5-inference.html#where-we-stand"><i class="fa fa-check"></i><b>5.1</b> Where we stand</a></li>
-<li class="chapter" data-level="5.2" data-path="5-inference.html"><a href="5-inference.html#where-we-go"><i class="fa fa-check"></i><b>5.2</b> Where we go</a></li>
+<li class="chapter" data-level="5.2" data-path="5-inference.html"><a href="5-inference.html#where-we-are-going"><i class="fa fa-check"></i><b>5.2</b> Where we are going</a></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html"><i class="fa fa-check"></i><b>6</b> A simple inference strategy</a><ul>
 <li class="chapter" data-level="6.1" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#a-cautionary-detour"><i class="fa fa-check"></i><b>6.1</b> A cautionary detour</a></li>
@@ -386,7 +386,7 @@ features are chosen among <span class="math inline">\(Q_{0,W}\)</span> (the marg
 <span class="math inline">\(\Gbar_{0}\)</span> (the conditional probability that <span class="math inline">\(A=1\)</span> given <span class="math inline">\(W\)</span> under <span class="math inline">\(P_{0}\)</span>)
 and <span class="math inline">\(\Qbar_{0}\)</span> (the conditional mean of <span class="math inline">\(Y\)</span> given <span class="math inline">\(A\)</span> and <span class="math inline">\(W\)</span> under <span class="math inline">\(P_{0}\)</span>).</p>
 <p>In this context, because they are not the parameter of primary interest
-(<em>i.e.</em>, they are not the real-values feature <span class="math inline">\(\Psi(P_{0})\)</span>), they are often
+(<em>i.e.</em>, they are not the real-valued feature <span class="math inline">\(\Psi(P_{0})\)</span>), they are often
 referred to as <em>nuisance parameters</em> of <span class="math inline">\(P_{0}\)</span>. The unflaterring expression
 conveys the notion that their estimation is merely an intermediate step along
 our path towards an inference of the target parameter.</p>
@@ -470,12 +470,12 @@ in the next subsection. The latter sort is discussed in Section
 <a class="sourceLine" id="cb45-4" data-line-number="4"><span class="co">#&gt; {</span></a>
 <a class="sourceLine" id="cb45-5" data-line-number="5"><span class="co">#&gt;     trim_glm_fit(glm(family = binomial(), ...))</span></a>
 <a class="sourceLine" id="cb45-6" data-line-number="6"><span class="co">#&gt; }</span></a>
-<a class="sourceLine" id="cb45-7" data-line-number="7"><span class="co">#&gt; &lt;environment: 0xf0aa480&gt;</span></a>
+<a class="sourceLine" id="cb45-7" data-line-number="7"><span class="co">#&gt; &lt;environment: 0xf614e38&gt;</span></a>
 <a class="sourceLine" id="cb45-8" data-line-number="8"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb45-9" data-line-number="9"><span class="co">#&gt; $formula</span></a>
 <a class="sourceLine" id="cb45-10" data-line-number="10"><span class="co">#&gt; A ~ I(W^0.5) + I(abs(W - 5/12)^0.5) + I(W^1) + I(abs(W - 5/12)^1) + </span></a>
 <a class="sourceLine" id="cb45-11" data-line-number="11"><span class="co">#&gt;     I(W^1.5) + I(abs(W - 5/12)^1.5)</span></a>
-<a class="sourceLine" id="cb45-12" data-line-number="12"><span class="co">#&gt; &lt;environment: 0xf0aa480&gt;</span></a>
+<a class="sourceLine" id="cb45-12" data-line-number="12"><span class="co">#&gt; &lt;environment: 0xf614e38&gt;</span></a>
 <a class="sourceLine" id="cb45-13" data-line-number="13"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb45-14" data-line-number="14"><span class="co">#&gt; $type_of_preds</span></a>
 <a class="sourceLine" id="cb45-15" data-line-number="15"><span class="co">#&gt; [1] &quot;response&quot;</span></a>
@@ -560,11 +560,11 @@ Sections <a href="7-nuisance.html#nuisance-Qbar">7.6</a> and <a href="7-nuisance
 <a class="sourceLine" id="cb48-4" data-line-number="4"><span class="co">#&gt; {</span></a>
 <a class="sourceLine" id="cb48-5" data-line-number="5"><span class="co">#&gt;     trim_glm_fit(glm(family = binomial(), ...))</span></a>
 <a class="sourceLine" id="cb48-6" data-line-number="6"><span class="co">#&gt; }</span></a>
-<a class="sourceLine" id="cb48-7" data-line-number="7"><span class="co">#&gt; &lt;environment: 0xf0aa480&gt;</span></a>
+<a class="sourceLine" id="cb48-7" data-line-number="7"><span class="co">#&gt; &lt;environment: 0xf614e38&gt;</span></a>
 <a class="sourceLine" id="cb48-8" data-line-number="8"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb48-9" data-line-number="9"><span class="co">#&gt; $formula</span></a>
 <a class="sourceLine" id="cb48-10" data-line-number="10"><span class="co">#&gt; Y ~ A * (I(W^0.5) + I(W^1) + I(W^1.5))</span></a>
-<a class="sourceLine" id="cb48-11" data-line-number="11"><span class="co">#&gt; &lt;environment: 0xf0aa480&gt;</span></a>
+<a class="sourceLine" id="cb48-11" data-line-number="11"><span class="co">#&gt; &lt;environment: 0xf614e38&gt;</span></a>
 <a class="sourceLine" id="cb48-12" data-line-number="12"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb48-13" data-line-number="13"><span class="co">#&gt; $type_of_preds</span></a>
 <a class="sourceLine" id="cb48-14" data-line-number="14"><span class="co">#&gt; [1] &quot;response&quot;</span></a>
@@ -656,18 +656,18 @@ and <span class="math inline">\(\Qbar_{0}(0,\cdot)\)</span>:</p>
 <a class="sourceLine" id="cb51-6" data-line-number="6">Qbar_hat_trees <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(a <span class="op">==</span><span class="st"> &quot;one&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(fit) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb51-7" data-line-number="7"><span class="st">  </span>capture.output <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">tail</span>(<span class="dv">3</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">str_wrap</span>(<span class="dt">width =</span> <span class="dv">60</span>) <span class="op">%&gt;%</span><span class="st"> </span>cat</a>
 <a class="sourceLine" id="cb51-8" data-line-number="8"><span class="co">#&gt; RMSE was used to select the optimal model using the smallest</span></a>
-<a class="sourceLine" id="cb51-9" data-line-number="9"><span class="co">#&gt; value. The final values used for the model were mstop = 30,</span></a>
-<a class="sourceLine" id="cb51-10" data-line-number="10"><span class="co">#&gt; maxdepth = 1 and nu = 0.1.</span></a>
+<a class="sourceLine" id="cb51-9" data-line-number="9"><span class="co">#&gt; value. The final values used for the model were mstop = 20,</span></a>
+<a class="sourceLine" id="cb51-10" data-line-number="10"><span class="co">#&gt; maxdepth = 1 and nu = 0.2.</span></a>
 <a class="sourceLine" id="cb51-11" data-line-number="11">                                                             </a>
 <a class="sourceLine" id="cb51-12" data-line-number="12">Qbar_hat_trees <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(a <span class="op">==</span><span class="st"> &quot;zero&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(fit) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb51-13" data-line-number="13"><span class="st">  </span>capture.output <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">tail</span>(<span class="dv">3</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">str_wrap</span>(<span class="dt">width =</span> <span class="dv">60</span>) <span class="op">%&gt;%</span><span class="st"> </span>cat</a>
 <a class="sourceLine" id="cb51-14" data-line-number="14"><span class="co">#&gt; RMSE was used to select the optimal model using the smallest</span></a>
-<a class="sourceLine" id="cb51-15" data-line-number="15"><span class="co">#&gt; value. The final values used for the model were mstop = 20,</span></a>
+<a class="sourceLine" id="cb51-15" data-line-number="15"><span class="co">#&gt; value. The final values used for the model were mstop = 10,</span></a>
 <a class="sourceLine" id="cb51-16" data-line-number="16"><span class="co">#&gt; maxdepth = 1 and nu = 0.2.</span></a></code></pre></div>
 <p>We can compare visually the estimators <span class="math inline">\(\Qbar_{n,\text{kNN}}\)</span>,
 <span class="math inline">\(\Qbar_{n,\text{trees}} \defq \Algo_{\Qbar,\text{trees}}(P_{n})\)</span> with its
 target <span class="math inline">\(\Qbar_0\)</span>, see Figure <a href="7-nuisance.html#fig:estimate-Qbar-five">7.3</a>. In summary,
-<span class="math inline">\(\Qbar_{n,\text{kNN}}\)</span> is rather good, though very versatile at the vincinity
+<span class="math inline">\(\Qbar_{n,\text{kNN}}\)</span> is rather good, though very variable at the vincinity
 of the break points. As for <span class="math inline">\(\Qbar_{n,\text{trees}}\)</span>, it does not seem to
 capture the shape of its target.</p>
 

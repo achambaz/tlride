@@ -132,7 +132,7 @@ consistently then,  by Slutsky's lemma,  the asymptotic variance  of $\sqrt{n}
 
 First, let us recall the definition of the Kullback-Leibler divergence between
 Bernoulli laws of parameters $p,q\in]0,1[$:
-\begin{equation*}\text{KL}(p,q)  \triangleq  p \log\left(\frac{p}{q}\right)  +
+\begin{equation*}\text{KL}(p,q)  \defq  p \log\left(\frac{p}{q}\right)  +
 (1-p) \log \left(\frac{1-p}{1-q}\right).\end{equation*}
 It satisfies $\text{KL}(p,q)  \geq 0$ where the equality holds  if and only if
 $p=q$. 
