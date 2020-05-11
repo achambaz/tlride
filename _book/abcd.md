@@ -624,7 +624,7 @@ minimum may fail to be achieved.)
 It   is  not   very   difficult  to   check  (see   Problem   1  below)   that
 \begin{equation}\gamma_{0,a,c} =  \inf\left\{y \in ]0,1[  : \Pr_{\bbP_{0}}(Y_a
 \leq   y)   \geq   c\right\}.    (\#eq:alter-gamma-zero)\end{equation}   Thus,
-$\gamma_{0,a,c}$ can  be interpreted  as a covariate-adjusted  $c$-th quantile
+$\gamma_{0,a,c}$ can  be interpreted  as the  $c$-th quantile
 reward     when     action     $a$    is     enforced.      The     difference
 \begin{equation}\delta_{0,c}    \defq    \gamma_{0,1,c}   -    \gamma_{0,0,c}
 (\#eq:def-delta)\end{equation} is the $c$-th quantile counterpart to parameter
@@ -656,7 +656,7 @@ elegance, this has paramount statistical implications.
 Oftentimes, the premise of a statistical  analysis is presented like this. One
 assumes  that the  law $P_{0}$  of  the experiment  of interest  belongs to  a
 statistical     model    \begin{equation*}\{P_{\theta}     :    \theta     \in
-T\}.\end{equation*} The statistical model is identifiable, meaning that if two
+T\}\end{equation*} (where $T$ is some index set). The statistical model is identifiable, meaning that if two
 elements $P_{\theta}$  and $P_{\theta'}$ coincide, then  necessarily $\theta =
 \theta'$.   Therefore, there  exists a  unique  $\theta_{0} \in  T$ such  that
 $P_{0}     =    P_{\theta_{0}}$,     and     one     wishes    to     estimate
@@ -676,8 +676,8 @@ Of course, the mean of a law is defined beyond the small model $\{P_{\theta} :
 $\Var_{P}(X)$ is finite.  In particular, $P_{0}  \in \calM$.  For every $P \in
 \calM$,  the mean  $\Exp_{P}(X)$ is  well defined.   Thus, we  can introduce  the
 *statistical    mapping*    $\Theta   :    \calM    \to    \bbR$   given    by
-\begin{equation*}\Theta(P) \defq \Exp_{P}(X)\end{equation*}
-(where $T$ is some index set).
+\begin{equation*}\Theta(P) \defq \Exp_{P}(X).\end{equation*}
+
 
 Interestingly, the empirical measure $P_{n}$^[The empirical measure $P_{n}$ is
 the law such that  *(i)* $X$ drawn from $P_{n}$ takes  its values in $\{X_{1},
@@ -693,7 +693,11 @@ of main interest.]
 
 Substitution-based estimators are particularly  valuable notably because they,
 by construction, satisfy  all the constraints to which  the targeted parameter
-is  subjected.   Some of  the  estimators  that  we  will build  together  are
+is subjected. For example, if $X$ is  a binary random variable and the support
+of  all  distributions  in  our  model is  $\{0,1\}$,  then  $\Theta$  can  be
+interpreted as the probability  that $X = 1$, a quantity known  to live in the
+interval $[0,1]$.  A substitution  estimator will also  be guaranteed  to fall
+into this  interval. Some of the estimators that we will build together are
 substitution-based, some are not. 
 
 ### The parameter as the value of a statistical mapping at the experiment {#parameter-mapping}
@@ -1159,8 +1163,8 @@ model.  In  turn, this determines  the possible  directions from which  we may
 approach $P$.  Thus, depending on the direction, \@ref(eq:derivative) may hold
 with different choices of $D^*$.].  Yet, in the special case that the model is
 nonparametric,  only a  single gradient  exists. The  unique gradient  is then
-referred to  as *the canonical  gradient* or *the efficient  influence curve*,
-for reasons that will be clarified in Section \@ref(influence-curves).  In the
+referred to as *the canonical gradient* or, 
+for reasons that will be clarified in Section \@ref(influence-curves), *the efficient influence curve*.  In the
 more general setting,  the canonical gradient may be defined  as the minimizer
 of $D\mapsto \Var_{P} (D(O))$ over the set of all gradients of $\Psi$ at $P$.
 
@@ -1464,7 +1468,9 @@ with $d$ a measure of discrepancy for distributions in $\calM$.  Note that
 \Psi(P_0)   =   \Psi(P)   +  \Exp_{P_0}(D^*(P)(O))   -   \Exp_P(D^*(P)(O))   -
 \Rem_{P_0}(P).  \end{equation*} The remainder  term formalizes the notion that
 if $P$ is *close*  to $P_0$ (*i.e.*, if $d(P,P_0)$ is  small), then the linear
-approximation of $\Psi(P_0)$ is more accurate.
+approximation of $\Psi(P_0)$ is more accurate. In   light   of
+the Euclidean perspective of Section \@ref(another-Euclidean-perspective), the
+remainder term $\Rem_{P_0}(P)$ plays the role of the squared distance $\|x-x_0\|^{2}$.
 
 ### Expressing the remainder term as a function of the relevant features
 
@@ -1671,7 +1677,9 @@ Let us introduce first the following estimator:
 \one\{A_{i}=0,Y_{i}=1\}}{\sum_{i=1}^{n}\one\{A_{i}=0\}}. (\#eq:cautionary) 
 \end{align} 
 
-It    estimates     \begin{align*}\Phi(P_{0})    &\defq    \frac{\Exp_{P_{0}}
+Note  that  $\psi_n^a$  is  simply  the difference  in  sample  means  between
+observations with $A = 1$ and observations with $A = 0$. It estimates 
+\begin{align*}\Phi(P_{0}) &\defq \frac{\Exp_{P_{0}}
 (AY)}{\Exp_{P_{0}} (A)} - \frac{\Exp_{P_{0}} ((1-A)Y)}{\Exp_{P_{0}} (1-A)}\\&=
 \Exp_{P_{0}} (Y | A=1) - \Exp_{P_{0}} (Y | A=0).\end{align*}
 
@@ -1688,7 +1696,13 @@ alternative expression of $\Phi(P_{0})$:
 Contrast  the above  equalities and  \@ref(eq:psi-zero).  In  the latter,  the
 outer  integral is  against the  marginal  law of  $W$ under  $P_{0}$. In  the
 former, the outer  integrals are respectively against the  conditional laws of
-$W$ given $A=1$ and $A=0$ under $P_{0}$.
+$W$ given $A=1$ and $A=0$ under $P_{0}$. Thus $\Psi(P_0)$ and $\Phi(P_0)$ will
+enjoy equality when the conditional laws of $W$ given $A = 1$ and $W$ given 
+$A = 0$ both equal the marginal law of $W$.  This can sometimes be
+ensured by  design, as  in an  experiment where $A$  is randomly  allocated to
+observations, irrespective of $W$. However, barring this level of experimental
+control, in  general the naive  estimator may lead us  astray in our  goal of
+drawing causal inference.
 
 ## &#9881; \gear Delta-method {#delta-method}
 
@@ -2097,9 +2111,9 @@ logistic   (or   negative   binomial)   loss   function   $L_{a}$   given   by
 
 for  any  function  $f :  [0,1]  \to  [0,1]$  paired  with the  working  model
 \begin{equation*}   \calF_{1}   \defq    \left\{f_{\theta}   :   \theta   \in
-\bbR^{5}\right\}  \end{equation*}  where,  for   any  $\theta  \in  \bbR^{5}$,
-\begin{equation*}\logit  f_{\theta}  (W)  \defq \theta_{0}  +  \sum_{j=1}^{4}
-\theta_{j} W^{j/2}.\end{equation*}
+\bbR^{7}\right\}  \end{equation*}  where,  for   any  $\theta  \in  \bbR^{7}$,
+\begin{equation*}\logit  f_{\theta}  (W)  \defq \theta_{0}  +  \sum_{j=1}^{3}
+\left(\theta_{j} W^{j/2} + \theta_{3+j} |W - 5/12|^{j/2}\right).\end{equation*}
 
 We  acted   as  oracles   when  we   specified  the   working  model:   it  is
 *well-specified*, *i.e.*, it happens that  $\Gbar_{0}$ is the unique minimizer
@@ -2225,12 +2239,13 @@ cross-validation)    into    a    more   powerful    machine    learning-based
 learning\index{algorithm!machine~learning!super~learning}  methodology   is  a
 popular stacking algorithm.
 
-We will elaborate further on this important topic in another forthcoming part.
-Here, we merely  illustrate the concept with two  specifications built-in into
-`tlrider`.   Based on  the *$k$-nearest  neighbors* non-parametric  estimating
-methodology, the  first one  is discussed  in the  next subsection.   Based on
-*boosted trees*, another non-parametric estimating methodology, the second one
-is used in the exercise that follows the next subsection.
+We will elaborate further on this  important topic in another forthcoming part
+and merely touch upon it in Section \@ref(meta-learning).  Here, we simply
+illustrate the concept with two specifications built-in into `tlrider`.  Based
+on  the *$k$-nearest  neighbors*  non-parametric  estimating methodology,  the
+first one  is discussed  in the  next subsection.   Based on  *boosted trees*,
+another non-parametric estimating  methodology, the second one is  used in the
+exercise that follows the next subsection.
 
 ### `Qbar`, kNN algorithm {#Qbar-knn-algo}
 
@@ -2358,6 +2373,21 @@ fig %>%
    
 3. Plot  your estimators  of $\Qbar_{0}(1,\cdot)$ and  $\Qbar_{0}(0,\cdot)$ on
    Figure \@ref(fig:estimate-Qbar-five).
+
+## Meta-learning/super learning {#meta-learning}
+
+Without a great deal of previous  experience or scientific expertise, it would
+have likely  been difficult for  us to *a priori*  postulate which of  the two
+above machine learning algorithms (or indeed  the algorithm based on a working
+model)  would  perform better  for  estimation  of $\bar{Q}_0$.   Rather  than
+committing  to  one  single  algorithm,  we may  instead  wish  to  resort  to
+meta-learning or super learning.  In  this approach, one specifies a *library*
+of   candidate  algorithms   for  estimating   a  given   nuisance  parameter.
+Cross-validation   is  used   to  determine   an  *ensemble*   (*e.g.*  convex
+combination) of  the algorithms  that yields  the best  fit to  the underlying
+function.  In this  way, one can learn  in real time which  algorithms tend to
+fit the data best and shift attention towards those algorithms.
+
 
 \index{algorithm!machine~learning|)}
 
@@ -2524,7 +2554,7 @@ psi_hat_abc <-
 
 By the above chunk of code, the average of $\sqrt{n/v_{n}^{c}} (\psi_{n}^{c} -
 \psi_{0})$ computed across the realizations is equal to 
-0.024 (see  `bias_abc`). In words, the  average bias of $\psi_{n}^{c}$  is of the
+0.024 (see  `bias_abc`). In words, the  bias of $\psi_{n}^{c}$  is of the
 same  magnitude  as   that  of  $\psi_{n}^{b}$  despite  the   fact  that  the
 construction of $\psi_{n}^{c}$ hinges on  the estimation of $\Gbar_{0}$ (based
 on the well-specified algorithm $\Algo_{\Gbar,1}$).
@@ -3509,8 +3539,8 @@ or, at the very least,
 P_n D^*(P_{n}^*) = o_{P_0}(1/\sqrt{n}). (\#eq:solve-approx) 
 \end{equation} 
 Achieving \@ref(eq:solve) is called *solving the efficient influence curve
-equation*.  Likewise,  achieving  \@ref(eq:solve-approx)  is  called  *solving
-approximately the influence curve equation*.
+equation*.     Likewise,    achieving   \@ref(eq:solve-approx)    is    called
+*approximately solving the influence curve equation*.
 
 If  such  estimators can  be  generated  indeed,  then the  plug-in  estimator
 \begin{equation*}     \psi_n^*    \defq     \Psi(P_{n}^{*})    =     \int
@@ -3548,7 +3578,7 @@ or
 P_n D_{2}^*(P_{n}^*) = o_{P_0}(1/\sqrt{n}). (\#eq:solve-approx-alt) 
 \end{equation} 
 
-It thus  remains to devise  a strategy for  ensuring that $P_n  D_2^*(P_n^*) =
+It thus remains to devise a strategy for ensuring that $P_n D_2^*(P_n^*) =
 0$ or $o_{P_0}(1/\sqrt{n})$. 
 
 ## Targeted fluctuation {#targeted-fluctuation-TMLE}

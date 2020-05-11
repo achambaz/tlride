@@ -25,7 +25,7 @@
 <meta name="author" content="Antoine Chambaz (Université de Paris)" />
 
 
-<meta name="date" content="2020-05-07" />
+<meta name="date" content="2020-05-11" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -255,6 +255,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7.6.3" data-path="7-nuisance.html"><a href="7-nuisance.html#boosted-trees"><i class="fa fa-check"></i><b>7.6.3</b> <code>Qbar</code>, boosted trees algorithm</a></li>
 </ul></li>
 <li class="chapter" data-level="7.7" data-path="7-nuisance.html"><a href="7-nuisance.html#nuisance-Qbar-ml-exo"><i class="fa fa-check"></i><b>7.7</b> ⚙ ☡  <code>Qbar</code>, machine learning-based algorithms</a></li>
+<li class="chapter" data-level="7.8" data-path="7-nuisance.html"><a href="7-nuisance.html#meta-learning"><i class="fa fa-check"></i><b>7.8</b> Meta-learning/super learning</a></li>
 </ul></li>
 <li class="chapter" data-level="8" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html"><i class="fa fa-check"></i><b>8</b> Two “naive” inference strategies</a><ul>
 <li class="chapter" data-level="8.1" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#why-naive"><i class="fa fa-check"></i><b>8.1</b> Why “naive”?</a></li>
@@ -423,8 +424,8 @@ or, at the very least,
 P_n D^*(P_{n}^*) = o_{P_0}(1/\sqrt{n}). \tag{10.2} 
 \end{equation}\]</span>
 Achieving <a href="10-TMLE.html#eq:solve">(10.1)</a> is called <em>solving the efficient influence curve
-equation</em>. Likewise, achieving <a href="10-TMLE.html#eq:solve-approx">(10.2)</a> is called <em>solving
-approximately the influence curve equation</em>.</p>
+equation</em>. Likewise, achieving <a href="10-TMLE.html#eq:solve-approx">(10.2)</a> is called
+<em>approximately solving the influence curve equation</em>.</p>
 <p>If such estimators can be generated indeed, then the plug-in estimator
 <span class="math display">\[\begin{equation*}     \psi_n^*    \defq     \Psi(P_{n}^{*})    =     \int
 \left(\Qbar_n^*(1,w)  - \Qbar_n^*(0,w)\right)  dQ_{n,W}(w) \end{equation*}\]</span> is

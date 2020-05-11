@@ -25,7 +25,7 @@
 <meta name="author" content="Antoine Chambaz (Université de Paris)" />
 
 
-<meta name="date" content="2020-05-07" />
+<meta name="date" content="2020-05-11" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -255,6 +255,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7.6.3" data-path="7-nuisance.html"><a href="7-nuisance.html#boosted-trees"><i class="fa fa-check"></i><b>7.6.3</b> <code>Qbar</code>, boosted trees algorithm</a></li>
 </ul></li>
 <li class="chapter" data-level="7.7" data-path="7-nuisance.html"><a href="7-nuisance.html#nuisance-Qbar-ml-exo"><i class="fa fa-check"></i><b>7.7</b> ⚙ ☡  <code>Qbar</code>, machine learning-based algorithms</a></li>
+<li class="chapter" data-level="7.8" data-path="7-nuisance.html"><a href="7-nuisance.html#meta-learning"><i class="fa fa-check"></i><b>7.8</b> Meta-learning/super learning</a></li>
 </ul></li>
 <li class="chapter" data-level="8" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html"><i class="fa fa-check"></i><b>8</b> Two “naive” inference strategies</a><ul>
 <li class="chapter" data-level="8.1" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#why-naive"><i class="fa fa-check"></i><b>8.1</b> Why “naive”?</a></li>
@@ -580,8 +581,8 @@ value at the point.</p>
 <h3><span class="header-section-number">3.3.4</span> The canonical gradient</h3>
 <p>In general, it is possible for many gradients to exist<a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a>. Yet, in the special case that the model is
 nonparametric, only a single gradient exists. The unique gradient is then
-referred to as <em>the canonical gradient</em> or <em>the efficient influence curve</em>,
-for reasons that will be clarified in Section <a href="3-smooth.html#influence-curves">3.5</a>. In the
+referred to as <em>the canonical gradient</em> or,
+for reasons that will be clarified in Section <a href="3-smooth.html#influence-curves">3.5</a>, <em>the efficient influence curve</em>. In the
 more general setting, the canonical gradient may be defined as the minimizer
 of <span class="math inline">\(D\mapsto \Var_{P} (D(O))\)</span> over the set of all gradients of <span class="math inline">\(\Psi\)</span> at <span class="math inline">\(P\)</span>.</p>
 <p>It is not difficult to check that the efficient influence curve of statistical

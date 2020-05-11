@@ -25,7 +25,7 @@
 <meta name="author" content="Antoine Chambaz (Université de Paris)" />
 
 
-<meta name="date" content="2020-05-07" />
+<meta name="date" content="2020-05-11" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -255,6 +255,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7.6.3" data-path="7-nuisance.html"><a href="7-nuisance.html#boosted-trees"><i class="fa fa-check"></i><b>7.6.3</b> <code>Qbar</code>, boosted trees algorithm</a></li>
 </ul></li>
 <li class="chapter" data-level="7.7" data-path="7-nuisance.html"><a href="7-nuisance.html#nuisance-Qbar-ml-exo"><i class="fa fa-check"></i><b>7.7</b> ⚙ ☡  <code>Qbar</code>, machine learning-based algorithms</a></li>
+<li class="chapter" data-level="7.8" data-path="7-nuisance.html"><a href="7-nuisance.html#meta-learning"><i class="fa fa-check"></i><b>7.8</b> Meta-learning/super learning</a></li>
 </ul></li>
 <li class="chapter" data-level="8" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html"><i class="fa fa-check"></i><b>8</b> Two “naive” inference strategies</a><ul>
 <li class="chapter" data-level="8.1" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#why-naive"><i class="fa fa-check"></i><b>8.1</b> Why “naive”?</a></li>
@@ -433,7 +434,9 @@ with <span class="math inline">\(d\)</span> a measure of discrepancy for distrib
 \Psi(P_0)   =   \Psi(P)   +  \Exp_{P_0}(D^*(P)(O))   -   \Exp_P(D^*(P)(O))   -
 \Rem_{P_0}(P).  \end{equation*}\]</span> The remainder term formalizes the notion that
 if <span class="math inline">\(P\)</span> is <em>close</em> to <span class="math inline">\(P_0\)</span> (<em>i.e.</em>, if <span class="math inline">\(d(P,P_0)\)</span> is small), then the linear
-approximation of <span class="math inline">\(\Psi(P_0)\)</span> is more accurate.</p>
+approximation of <span class="math inline">\(\Psi(P_0)\)</span> is more accurate. In light of
+the Euclidean perspective of Section <a href="4-double-robustness.html#another-Euclidean-perspective">4.1.2</a>, the
+remainder term <span class="math inline">\(\Rem_{P_0}(P)\)</span> plays the role of the squared distance <span class="math inline">\(\|x-x_0\|^{2}\)</span>.</p>
 </div>
 <div id="expressing-the-remainder-term-as-a-function-of-the-relevant-features" class="section level3">
 <h3><span class="header-section-number">4.1.4</span> Expressing the remainder term as a function of the relevant features</h3>

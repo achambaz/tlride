@@ -25,7 +25,7 @@
 <meta name="author" content="Antoine Chambaz (Université de Paris)" />
 
 
-<meta name="date" content="2020-05-07" />
+<meta name="date" content="2020-05-11" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -255,6 +255,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7.6.3" data-path="7-nuisance.html"><a href="7-nuisance.html#boosted-trees"><i class="fa fa-check"></i><b>7.6.3</b> <code>Qbar</code>, boosted trees algorithm</a></li>
 </ul></li>
 <li class="chapter" data-level="7.7" data-path="7-nuisance.html"><a href="7-nuisance.html#nuisance-Qbar-ml-exo"><i class="fa fa-check"></i><b>7.7</b> ⚙ ☡  <code>Qbar</code>, machine learning-based algorithms</a></li>
+<li class="chapter" data-level="7.8" data-path="7-nuisance.html"><a href="7-nuisance.html#meta-learning"><i class="fa fa-check"></i><b>7.8</b> Meta-learning/super learning</a></li>
 </ul></li>
 <li class="chapter" data-level="8" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html"><i class="fa fa-check"></i><b>8</b> Two “naive” inference strategies</a><ul>
 <li class="chapter" data-level="8.1" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#why-naive"><i class="fa fa-check"></i><b>8.1</b> Why “naive”?</a></li>
@@ -387,7 +388,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 \one\{A_{i}=1\}}                     -                    \frac{\sum_{i=1}^{n}
 \one\{A_{i}=0,Y_{i}=1\}}{\sum_{i=1}^{n}\one\{A_{i}=0\}}. \tag{6.1} 
 \end{align}\]</span></p>
-<p>It estimates <span class="math display">\[\begin{align*}\Phi(P_{0})    &amp;\defq    \frac{\Exp_{P_{0}}
+<p>Note that <span class="math inline">\(\psi_n^a\)</span> is simply the difference in sample means between
+observations with <span class="math inline">\(A = 1\)</span> and observations with <span class="math inline">\(A = 0\)</span>. It estimates
+<span class="math display">\[\begin{align*}\Phi(P_{0}) &amp;\defq \frac{\Exp_{P_{0}}
 (AY)}{\Exp_{P_{0}} (A)} - \frac{\Exp_{P_{0}} ((1-A)Y)}{\Exp_{P_{0}} (1-A)}\\&amp;=
 \Exp_{P_{0}} (Y | A=1) - \Exp_{P_{0}} (Y | A=0).\end{align*}\]</span></p>
 <p>We seize this opportunity to demonstrate numerically that
@@ -401,7 +404,13 @@ alternative expression of <span class="math inline">\(\Phi(P_{0})\)</span>:</p>
 <p>Contrast the above equalities and <a href="2-parameter.html#eq:psi-zero">(2.1)</a>. In the latter, the
 outer integral is against the marginal law of <span class="math inline">\(W\)</span> under <span class="math inline">\(P_{0}\)</span>. In the
 former, the outer integrals are respectively against the conditional laws of
-<span class="math inline">\(W\)</span> given <span class="math inline">\(A=1\)</span> and <span class="math inline">\(A=0\)</span> under <span class="math inline">\(P_{0}\)</span>.</p>
+<span class="math inline">\(W\)</span> given <span class="math inline">\(A=1\)</span> and <span class="math inline">\(A=0\)</span> under <span class="math inline">\(P_{0}\)</span>. Thus <span class="math inline">\(\Psi(P_0)\)</span> and <span class="math inline">\(\Phi(P_0)\)</span> will
+enjoy equality when the conditional laws of <span class="math inline">\(W\)</span> given <span class="math inline">\(A = 1\)</span> and <span class="math inline">\(W\)</span> given
+<span class="math inline">\(A = 0\)</span> both equal the marginal law of <span class="math inline">\(W\)</span>. This can sometimes be
+ensured by design, as in an experiment where <span class="math inline">\(A\)</span> is randomly allocated to
+observations, irrespective of <span class="math inline">\(W\)</span>. However, barring this level of experimental
+control, in general the naive estimator may lead us astray in our goal of
+drawing causal inference.</p>
 </div>
 <div id="delta-method" class="section level2">
 <h2><span class="header-section-number">6.2</span> ⚙ Delta-method</h2>

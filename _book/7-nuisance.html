@@ -25,7 +25,7 @@
 <meta name="author" content="Antoine Chambaz (Université de Paris)" />
 
 
-<meta name="date" content="2020-05-07" />
+<meta name="date" content="2020-05-11" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -255,6 +255,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7.6.3" data-path="7-nuisance.html"><a href="7-nuisance.html#boosted-trees"><i class="fa fa-check"></i><b>7.6.3</b> <code>Qbar</code>, boosted trees algorithm</a></li>
 </ul></li>
 <li class="chapter" data-level="7.7" data-path="7-nuisance.html"><a href="7-nuisance.html#nuisance-Qbar-ml-exo"><i class="fa fa-check"></i><b>7.7</b> ⚙ ☡  <code>Qbar</code>, machine learning-based algorithms</a></li>
+<li class="chapter" data-level="7.8" data-path="7-nuisance.html"><a href="7-nuisance.html#meta-learning"><i class="fa fa-check"></i><b>7.8</b> Meta-learning/super learning</a></li>
 </ul></li>
 <li class="chapter" data-level="8" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html"><i class="fa fa-check"></i><b>8</b> Two “naive” inference strategies</a><ul>
 <li class="chapter" data-level="8.1" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#why-naive"><i class="fa fa-check"></i><b>8.1</b> Why “naive”?</a></li>
@@ -495,9 +496,9 @@ logistic (or negative binomial) loss function <span class="math inline">\(L_{a}\
 \end{equation}\]</span></p>
 <p>for any function <span class="math inline">\(f : [0,1] \to [0,1]\)</span> paired with the working model
 <span class="math display">\[\begin{equation*}   \calF_{1}   \defq    \left\{f_{\theta}   :   \theta   \in
-\bbR^{5}\right\}  \end{equation*}\]</span> where, for any <span class="math inline">\(\theta \in \bbR^{5}\)</span>,
-<span class="math display">\[\begin{equation*}\logit  f_{\theta}  (W)  \defq \theta_{0}  +  \sum_{j=1}^{4}
-\theta_{j} W^{j/2}.\end{equation*}\]</span></p>
+\bbR^{7}\right\}  \end{equation*}\]</span> where, for any <span class="math inline">\(\theta \in \bbR^{7}\)</span>,
+<span class="math display">\[\begin{equation*}\logit  f_{\theta}  (W)  \defq \theta_{0}  +  \sum_{j=1}^{3}
+\left(\theta_{j} W^{j/2} + \theta_{3+j} |W - 5/12|^{j/2}\right).\end{equation*}\]</span></p>
 <p>We acted as oracles when we specified the working model: it is
 <em>well-specified</em>, <em>i.e.</em>, it happens that <span class="math inline">\(\Gbar_{0}\)</span> is the unique minimizer
 of the risk entailed by <span class="math inline">\(L_{a}\)</span> over <span class="math inline">\(\calF_{1}\)</span>: <span class="math display">\[\begin{equation*}\Gbar_{0} =
@@ -599,12 +600,13 @@ cross-validation) into a more powerful machine learning-based
 <em>meta-algorithm</em>. The super
 learning methodology is a
 popular stacking algorithm.</p>
-<p>We will elaborate further on this important topic in another forthcoming part.
-Here, we merely illustrate the concept with two specifications built-in into
-<code>tlrider</code>. Based on the <em><span class="math inline">\(k\)</span>-nearest neighbors</em> non-parametric estimating
-methodology, the first one is discussed in the next subsection. Based on
-<em>boosted trees</em>, another non-parametric estimating methodology, the second one
-is used in the exercise that follows the next subsection.</p>
+<p>We will elaborate further on this important topic in another forthcoming part
+and merely touch upon it in Section <a href="7-nuisance.html#meta-learning">7.8</a>. Here, we simply
+illustrate the concept with two specifications built-in into <code>tlrider</code>. Based
+on the <em><span class="math inline">\(k\)</span>-nearest neighbors</em> non-parametric estimating methodology, the
+first one is discussed in the next subsection. Based on <em>boosted trees</em>,
+another non-parametric estimating methodology, the second one is used in the
+exercise that follows the next subsection.</p>
 </div>
 <div id="Qbar-knn-algo" class="section level3">
 <h3><span class="header-section-number">7.6.2</span> <code>Qbar</code>, kNN algorithm</h3>
@@ -703,6 +705,20 @@ data-driven specification.</p></li>
 <li><p>Plot your estimators of <span class="math inline">\(\Qbar_{0}(1,\cdot)\)</span> and <span class="math inline">\(\Qbar_{0}(0,\cdot)\)</span> on
 Figure <a href="7-nuisance.html#fig:estimate-Qbar-five">7.3</a>.</p></li>
 </ol>
+</div>
+<div id="meta-learning" class="section level2">
+<h2><span class="header-section-number">7.8</span> Meta-learning/super learning</h2>
+<p>Without a great deal of previous experience or scientific expertise, it would
+have likely been difficult for us to <em>a priori</em> postulate which of the two
+above machine learning algorithms (or indeed the algorithm based on a working
+model) would perform better for estimation of <span class="math inline">\(\bar{Q}_0\)</span>. Rather than
+committing to one single algorithm, we may instead wish to resort to
+meta-learning or super learning. In this approach, one specifies a <em>library</em>
+of candidate algorithms for estimating a given nuisance parameter.
+Cross-validation is used to determine an <em>ensemble</em> (<em>e.g.</em> convex
+combination) of the algorithms that yields the best fit to the underlying
+function. In this way, one can learn in real time which algorithms tend to
+fit the data best and shift attention towards those algorithms.</p>
 <p></p>
 <p></p>
 </div>

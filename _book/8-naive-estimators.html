@@ -25,7 +25,7 @@
 <meta name="author" content="Antoine Chambaz (Université de Paris)" />
 
 
-<meta name="date" content="2020-05-07" />
+<meta name="date" content="2020-05-11" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -255,6 +255,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7.6.3" data-path="7-nuisance.html"><a href="7-nuisance.html#boosted-trees"><i class="fa fa-check"></i><b>7.6.3</b> <code>Qbar</code>, boosted trees algorithm</a></li>
 </ul></li>
 <li class="chapter" data-level="7.7" data-path="7-nuisance.html"><a href="7-nuisance.html#nuisance-Qbar-ml-exo"><i class="fa fa-check"></i><b>7.7</b> ⚙ ☡  <code>Qbar</code>, machine learning-based algorithms</a></li>
+<li class="chapter" data-level="7.8" data-path="7-nuisance.html"><a href="7-nuisance.html#meta-learning"><i class="fa fa-check"></i><b>7.8</b> Meta-learning/super learning</a></li>
 </ul></li>
 <li class="chapter" data-level="8" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html"><i class="fa fa-check"></i><b>8</b> Two “naive” inference strategies</a><ul>
 <li class="chapter" data-level="8.1" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#why-naive"><i class="fa fa-check"></i><b>8.1</b> Why “naive”?</a></li>
@@ -498,7 +499,7 @@ renormalized <span class="math inline">\(\sqrt{n}/\sqrt{v_{n}^{c}} (\psi_{n}^{c}
 <a class="sourceLine" id="cb55-25" data-line-number="25"><span class="co">#&gt; 2 b     0.0951</span></a>
 <a class="sourceLine" id="cb55-26" data-line-number="26"><span class="co">#&gt; 3 c     0.0236</span></a></code></pre></div>
 <p>By the above chunk of code, the average of <span class="math inline">\(\sqrt{n/v_{n}^{c}} (\psi_{n}^{c} - \psi_{0})\)</span> computed across the realizations is equal to
-0.024 (see <code>bias_abc</code>). In words, the average bias of <span class="math inline">\(\psi_{n}^{c}\)</span> is of the
+0.024 (see <code>bias_abc</code>). In words, the bias of <span class="math inline">\(\psi_{n}^{c}\)</span> is of the
 same magnitude as that of <span class="math inline">\(\psi_{n}^{b}\)</span> despite the fact that the
 construction of <span class="math inline">\(\psi_{n}^{c}\)</span> hinges on the estimation of <span class="math inline">\(\Gbar_{0}\)</span> (based
 on the well-specified algorithm <span class="math inline">\(\Algo_{\Gbar,1}\)</span>).</p>

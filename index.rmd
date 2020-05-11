@@ -70,7 +70,8 @@ The   text   was  presented   at   the   [Journées  d'Étude   en   Statistique
 held in  Fréjus (France) in  October 2018 and at  the [First Summer  School in
 Statistics  and  Data  Science  for  Young  Researchers  from  French-speaking
 Africa](https://ehermellin.github.io/conf_sfds/index.html)   held   at   [AIMS
-Senegal](https://aims-senegal.org/) (MBour, Senegal) in July 2019.
+Senegal](https://aims-senegal.org/) (MBour,  Senegal) in  July 2019.  The text
+and a shorter version (in French) will be published soon [@BC20], [@BCJES20]. 
 
 __Technical details__
 

@@ -227,7 +227,7 @@
 
 \title{A Ride in Targeted Learning Territory}
 \author{David Benkeser (Emory University) \and Antoine Chambaz (Université de Paris)}
-\date{2020-05-06}
+\date{2020-05-11}
 
 \usepackage{amsthm}
 \newtheorem{theorem}{Theorem}[chapter]
@@ -566,7 +566,7 @@ The \texttt{QW} feature describes the marginal law of \(W\), that we call \(Q_{0
 \CommentTok{#>                       \})}
 \CommentTok{#>         return(rowSums(out))}
 \CommentTok{#>       \}}
-\CommentTok{#> <environment: 0xf3ca190>}
+\CommentTok{#> <environment: 0xee97318>}
 \end{Highlighting}
 \end{Shaded}
 
@@ -582,7 +582,7 @@ It appears that \(Q_{0,W}\) is a mixture of the uniform laws over \([0,1]\)
 The \texttt{Gbar} feature describes the conditional probability of action \(A = 1\)
 given \(W\). For each \(a \in \{0,1\}\), we denote \begin{align*}  \Gbar_0(W)
 &\defq \Pr_{P_0}(A  = 1 |  W), \\\ell\Gbar_0(a,W)  &\defq \Pr_{P_0}(A =  a |
-W).\end{align*} Obviously, \begin{equation*}\ell\Gbar_{0}(A,W)    \defq
+W).\end{align*} Obviously, \begin{equation*}\ell\Gbar_{0}(A,W)    =
 A\Gbar_{0}(W) + (1-A) (1-\Gbar_{0}(W)).\end{equation*}
 
 \begin{Shaded}
@@ -591,7 +591,7 @@ A\Gbar_{0}(W) + (1-A) (1-\Gbar_{0}(W)).\end{equation*}
 \CommentTok{#> function(W) \{}
 \CommentTok{#>         expit(1 + 2 * W - 4 * sqrt(abs((W - 5/12))))}
 \CommentTok{#>       \}}
-\CommentTok{#> <environment: 0xf3ca190>}
+\CommentTok{#> <environment: 0xee97318>}
 \end{Highlighting}
 \end{Shaded}
 
@@ -619,7 +619,7 @@ evaluated at \(y\) of \(Y\) given \(A\) and \(W\).
 \CommentTok{#>                      shape1 = shape1,}
 \CommentTok{#>                      shape2 = shape1 * (1 - QAW) / QAW)}
 \CommentTok{#>       \}}
-\CommentTok{#> <environment: 0xf3ca190>}
+\CommentTok{#> <environment: 0xee97318>}
 \end{Highlighting}
 \end{Shaded}
 
@@ -645,8 +645,8 @@ and \(W\).
 \CommentTok{#>              (W >= 3/4) * (W - 3/4) * 2) +}
 \CommentTok{#>           (1 - A) * (sin(4 * W^2 * pi) / 4 + 1/2) }
 \CommentTok{#>       \}}
-\CommentTok{#> <bytecode: 0x104fa668>}
-\CommentTok{#> <environment: 0xf3ca190>}
+\CommentTok{#> <bytecode: 0xff9e7d8>}
+\CommentTok{#> <environment: 0xee97318>}
 \end{Highlighting}
 \end{Shaded}
 
@@ -704,8 +704,8 @@ Finally, the \texttt{sample\_from} feature is the function called by method
 \CommentTok{#>         \}}
 \CommentTok{#>         return(obs)}
 \CommentTok{#>       \}}
-\CommentTok{#> <bytecode: 0xedf6bc0>}
-\CommentTok{#> <environment: 0xf3ca190>}
+\CommentTok{#> <bytecode: 0xe896e60>}
+\CommentTok{#> <environment: 0xee97318>}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1055,7 +1055,7 @@ minimum may fail to be achieved.)
 It is not very difficult to check (see Problem 1 below) that
 \begin{equation}\gamma_{0,a,c} =  \inf\left\{y \in ]0,1[  : \Pr_{\bbP_{0}}(Y_a
 \leq   y)   \geq   c\right\}.    \label{eq:alter-gamma-zero}\end{equation} Thus,
-\(\gamma_{0,a,c}\) can be interpreted as a covariate-adjusted \(c\)-th quantile
+\(\gamma_{0,a,c}\) can be interpreted as the \(c\)-th quantile
 reward when action \(a\) is enforced. The difference
 \begin{equation}\delta_{0,c}    \defq    \gamma_{0,1,c}   -    \gamma_{0,0,c}
 \label{eq:def-delta}\end{equation} is the \(c\)-th quantile counterpart to parameter
@@ -1089,7 +1089,7 @@ elegance, this has paramount statistical implications.
 Oftentimes, the premise of a statistical analysis is presented like this. One
 assumes that the law \(P_{0}\) of the experiment of interest belongs to a
 statistical model \begin{equation*}\{P_{\theta}     :    \theta     \in
-T\}.\end{equation*} The statistical model is identifiable, meaning that if two
+T\}\end{equation*} (where \(T\) is some index set). The statistical model is identifiable, meaning that if two
 elements \(P_{\theta}\) and \(P_{\theta'}\) coincide, then necessarily \(\theta = \theta'\). Therefore, there exists a unique \(\theta_{0} \in T\) such that
 \(P_{0} = P_{\theta_{0}}\), and one wishes to estimate
 \(\theta_{0}\).\index{identifiability}
@@ -1098,7 +1098,7 @@ For instance, each \(P_{\theta}\) could be the Gaussian law with mean \(\theta \
 \(\theta_{0}\) of \(P_{0}\). To do so, one could rely on \(n\) observations \(X_{1}\),
 \ldots, \(X_{n}\) drawn independently from \(P_{0}\). The empirical mean
 \begin{equation*}\theta_{n}       \defq      \frac{1}{n}       \sum_{i=1}^{n}
-X_{i}\end{equation*} estimates \(\theta_{0}\). If we assume that \(\Var_{P_{0}} (X_{1})\) is finite, then \(\theta_{n}\) satisfies many useful properties. In
+X_{i}\end{equation*} estimates \(\theta_{0}\). More generally, if we assume that \(\Var_{P_{0}} (X_{1})\) is finite, then \(\theta_{n}\) satisfies many useful properties. In
 particular, it can be used \protect\hyperlink{clt}{to construct confidence intervals}.
 
 Of course, the mean of a law is defined beyond the small model \(\{P_{\theta} : \theta \in \bbR\}\). Let \(\calM\) be the set of laws \(P\) on \(\bbR\) such that
@@ -1119,7 +1119,11 @@ order to estimate \(\Theta(P_{0})\), we \emph{substitute} \(P_{n}\) for \(P_{0}\
 
 Substitution-based estimators are particularly valuable notably because they,
 by construction, satisfy all the constraints to which the targeted parameter
-is subjected. Some of the estimators that we will build together are
+is subjected. For example, if \(X\) is a binary random variable and the support
+of all distributions in our model is \(\{0,1\}\), then \(\Theta\) can be
+interpreted as the probability that \(X = 1\), a quantity known to live in the
+interval \([0,1]\). A substitution estimator will also be guaranteed to fall
+into this interval. Some of the estimators that we will build together are
 substitution-based, some are not.
 
 \hypertarget{parameter-mapping}{%
@@ -1172,13 +1176,13 @@ When we ran \texttt{example(tlrider)} earlier, we created an object called
 \CommentTok{#> function(x, min = 1/10, max = 9/10)\{}
 \CommentTok{#>              stats::dunif(x, min = min, max = max)}
 \CommentTok{#>       \}}
-\CommentTok{#> <environment: 0x10837e90>}
+\CommentTok{#> <environment: 0x102ce970>}
 \CommentTok{#> }
 \CommentTok{#> $Gbar}
 \CommentTok{#> function(W) \{}
 \CommentTok{#>         sin((1 + W) * pi / 6)}
 \CommentTok{#>       \}}
-\CommentTok{#> <environment: 0x10837e90>}
+\CommentTok{#> <environment: 0x102ce970>}
 \CommentTok{#> }
 \CommentTok{#> $Qbar}
 \CommentTok{#> function(AW, h) \{}
@@ -1187,7 +1191,7 @@ When we ran \texttt{example(tlrider)} earlier, we created an object called
 \CommentTok{#>         expit( logit( A *  W + (1 - A) * W^2 ) +}
 \CommentTok{#>                h * 10 * sqrt(W) * A )}
 \CommentTok{#>       \}}
-\CommentTok{#> <environment: 0x10837e90>}
+\CommentTok{#> <environment: 0x102ce970>}
 \CommentTok{#> }
 \CommentTok{#> $qY}
 \CommentTok{#> function(obs, Qbar, shape1 = 4)\{}
@@ -1197,7 +1201,7 @@ When we ran \texttt{example(tlrider)} earlier, we created an object called
 \CommentTok{#>                       shape1 = shape1,}
 \CommentTok{#>                       shape2 = shape1 * (1 - QAW) / QAW)}
 \CommentTok{#>       \}}
-\CommentTok{#> <environment: 0x10837e90>}
+\CommentTok{#> <environment: 0x102ce970>}
 \CommentTok{#> }
 \CommentTok{#> $sample_from}
 \CommentTok{#> function(n, h) \{}
@@ -1225,7 +1229,7 @@ When we ran \texttt{example(tlrider)} earlier, we created an object called
 \CommentTok{#>         obs <- cbind(W = W, A = A, Y = Y)}
 \CommentTok{#>         return(obs)}
 \CommentTok{#>       \}}
-\CommentTok{#> <environment: 0x10837e90>}
+\CommentTok{#> <environment: 0x102ce970>}
 \NormalTok{(two_obs_another_experiment <-}\StringTok{ }\KeywordTok{sample_from}\NormalTok{(another_experiment, }\DecValTok{2}\NormalTok{, }\DataTypeTok{h =} \DecValTok{0}\NormalTok{))}
 \CommentTok{#>          W A       Y}
 \CommentTok{#> [1,] 0.101 0 0.00841}
@@ -1352,7 +1356,8 @@ might hypothesize that it will be difficult to produce stable estimators of
 \(\Psi\), and so we say that \(\Psi\) is a \emph{smooth} statistical mapping.
 
 To discuss how \(\Psi(P)\) changes for distributions that \emph{get nearer} to \(P\) in
-the model, we require a more concrete notion of \emph{getting-nearness}. The notion
+the model, we require a more concrete notion of what it means to \emph{get near} to
+a distribution in a model. The notion
 hinges on fluctuations (or fluctuating models).
 
 \hypertarget{fluctuations}{%
@@ -1414,8 +1419,8 @@ again at the \texttt{sample\_from} feature of \texttt{another\_experiment}:
 \CommentTok{#>         obs <- cbind(W = W, A = A, Y = Y)}
 \CommentTok{#>         return(obs)}
 \CommentTok{#>       \}}
-\CommentTok{#> <bytecode: 0xf3593b0>}
-\CommentTok{#> <environment: 0x10837e90>}
+\CommentTok{#> <bytecode: 0xece8348>}
+\CommentTok{#> <environment: 0x102ce970>}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1437,10 +1442,8 @@ notion Section \ref{smooth-second-pass}.
 We now have a notion of how to move through the model space \(P \in \calM\) and
 can study how the value of the parameter changes as we move away from a law
 \(P\). Above, we said that \(\Psi\) is a smooth parameter if it does not change
-``too much'' as we move towards \(P\) in any particular direction. That is, we
-should hope that \(\Psi\) is differentiable along our submodel at \(P\).
-
-This idea too is formalized in Section \ref{smooth-second-pass}. We now turn
+``abruptly'' as we move towards \(P\) in any particular direction. That is, we
+should hope that \(\Psi\) is \emph{differentiable} along our submodel at \(P\). This idea too is formalized in Section \ref{smooth-second-pass}. We now turn
 to illustrating this idea numerically.
 
 \hypertarget{numerical-illus}{%
@@ -1561,8 +1564,7 @@ that the fluctuation is \emph{in the direction} of \(s\).
 
 Fluctuations of \(P\) do not necessarily take the same form as in
 \eqref{eq:fluct}. No matter how the fluctuation is built, for our purposes the
-most important feature of the fluctuation is its local shape in a neighborhood
-of \(P\).
+most important feature of the fluctuation is its direction.
 
 \hypertarget{smoothness-and-gradients}{%
 \subsection{Smoothness and gradients}\label{smoothness-and-gradients}}
@@ -1608,10 +1610,10 @@ In general, it is possible for many gradients to exist\footnote{This may be at f
   approach \(P\). Thus, depending on the direction, \eqref{eq:derivative} may hold
   with different choices of \(D^*\).}. Yet, in the special case that the model is
 nonparametric, only a single gradient exists. The unique gradient is then
-referred to as \emph{the canonical gradient} or \emph{the efficient influence curve},
-for reasons that will be clarified in Section \ref{influence-curves}. In the
+referred to as \emph{the canonical gradient} or,
+for reasons that will be clarified in Section \ref{influence-curves}, \emph{the efficient influence curve}. In the
 more general setting, the canonical gradient may be defined as the minimizer
-of \(D\mapsto \Var_{P} (D(O))\) over the set of all gradients.
+of \(D\mapsto \Var_{P} (D(O))\) over the set of all gradients of \(\Psi\) at \(P\).
 
 It is not difficult to check that the efficient influence curve of statistical
 mapping \(\Psi\) \eqref{eq:psimap} at \(P \in \calM\) can be written as
@@ -1798,7 +1800,7 @@ As it happens, influence curves of regular\footnote{We can view \(\psi_{n}\) as 
   limit that does not depend on \(s\).} estimators are intimately related to
 gradients. In fact, if \(\psi_n\) is a regular, asymptotically linear estimator
 of \(\Psi(P)\) with influence curve \(\IC\), then it must be true that \(\Psi\) is a
-smooth at \(P\) and that \(\IC\) is a gradient of \(\Psi\) at \(P\).
+smooth parameter at \(P\) and that \(\IC\) is a gradient of \(\Psi\) at \(P\).
 
 \hypertarget{asymptotic-efficiency}{%
 \subsection{Asymptotic efficiency}\label{asymptotic-efficiency}}
@@ -1944,7 +1946,9 @@ with \(d\) a measure of discrepancy for distributions in \(\calM\). Note that
 \Psi(P_0)   =   \Psi(P)   +  \Exp_{P_0}(D^*(P)(O))   -   \Exp_P(D^*(P)(O))   -
 \Rem_{P_0}(P).  \end{equation*} The remainder term formalizes the notion that
 if \(P\) is \emph{close} to \(P_0\) (\emph{i.e.}, if \(d(P,P_0)\) is small), then the linear
-approximation of \(\Psi(P_0)\) is more accurate.
+approximation of \(\Psi(P_0)\) is more accurate. In light of
+the Euclidean perspective of Section \ref{another-Euclidean-perspective}, the
+remainder term \(\Rem_{P_0}(P)\) plays the role of the squared distance \(\|x-x_0\|^{2}\).
 
 \hypertarget{expressing-the-remainder-term-as-a-function-of-the-relevant-features}{%
 \subsection{Expressing the remainder term as a function of the relevant features}\label{expressing-the-remainder-term-as-a-function-of-the-relevant-features}}
@@ -2107,8 +2111,8 @@ observations among \(O_{1}, \ldots, O_{B}\), where \(n\) equals \texttt{B/iter},
 statistical properties of every estimation procedure by replicating it
 independently 1000 times.
 
-\hypertarget{where-we-go}{%
-\section{Where we go}\label{where-we-go}}
+\hypertarget{where-we-are-going}{%
+\section{Where we are going}\label{where-we-are-going}}
 
 The following sections explore different statistical paths to inferring
 \(\psi_{0}\) or, rather (though equivalently), \(\Psi(P_{0})\).
@@ -2165,11 +2169,13 @@ Let us introduce first the following estimator:
 \one\{A_{i}=0,Y_{i}=1\}}{\sum_{i=1}^{n}\one\{A_{i}=0\}}. \label{eq:cautionary} 
 \end{align}
 
-It estimates \begin{align*}\Phi(P_{0})    &\defq    \frac{\Exp_{P_{0}}
+Note that \(\psi_n^a\) is simply the difference in sample means between
+observations with \(A = 1\) and observations with \(A = 0\). It estimates
+\begin{align*}\Phi(P_{0}) &\defq \frac{\Exp_{P_{0}}
 (AY)}{\Exp_{P_{0}} (A)} - \frac{\Exp_{P_{0}} ((1-A)Y)}{\Exp_{P_{0}} (1-A)}\\&=
 \Exp_{P_{0}} (Y | A=1) - \Exp_{P_{0}} (Y | A=0).\end{align*}
 
-We seize this opportunity to demonstrate numerically the obvious fact that
+We seize this opportunity to demonstrate numerically that
 \(\psi_{n}^{a}\) \emph{does not} estimate \(\Psi(P_{0})\) because, in general,
 \(\Psi(P_{0})\) and \(\Phi(P_{0})\) differ. This is apparent in the following
 alternative expression of \(\Phi(P_{0})\):
@@ -2182,7 +2188,13 @@ alternative expression of \(\Phi(P_{0})\):
 Contrast the above equalities and \eqref{eq:psi-zero}. In the latter, the
 outer integral is against the marginal law of \(W\) under \(P_{0}\). In the
 former, the outer integrals are respectively against the conditional laws of
-\(W\) given \(A=1\) and \(A=0\) under \(P_{0}\).
+\(W\) given \(A=1\) and \(A=0\) under \(P_{0}\). Thus \(\Psi(P_0)\) and \(\Phi(P_0)\) will
+enjoy equality when the conditional laws of \(W\) given \(A = 1\) and \(W\) given
+\(A = 0\) both equal the marginal law of \(W\). This can sometimes be
+ensured by design, as in an experiment where \(A\) is randomly allocated to
+observations, irrespective of \(W\). However, barring this level of experimental
+control, in general the naive estimator may lead us astray in our goal of
+drawing causal inference.
 
 \hypertarget{delta-method}{%
 \section{\texorpdfstring{⚙ \gear Delta-method}{⚙ Delta-method}}\label{delta-method}}
@@ -2258,7 +2270,7 @@ computes the numerical values of \(\psi_{n}^{a}\) and \(v_{n}^{a}\) based on the
 \subsection{A simple estimator}\label{a-simple-estimator}}
 
 Let us assume for a moment that we know \(\Gbar_{0}\). This would have been the
-case indeed if \(P_{0}\) were a controlled experiment. Note that, on the
+case indeed if we had experimental control over the actions taken by observational units, as in a randomized experiment. Note that, on the
 contrary, assuming \(\Qbar_{0}\) known would be difficult to justify.
 
 \begin{Shaded}
@@ -2458,7 +2470,7 @@ features are chosen among \(Q_{0,W}\) (the marginal law of \(W\) under \(P_{0}\)
 and \(\Qbar_{0}\) (the conditional mean of \(Y\) given \(A\) and \(W\) under \(P_{0}\)).
 
 In this context, because they are not the parameter of primary interest
-(\emph{i.e.}, they are not the real-values feature \(\Psi(P_{0})\)), they are often
+(\emph{i.e.}, they are not the real-valued feature \(\Psi(P_{0})\)), they are often
 referred to as \emph{nuisance parameters} of \(P_{0}\). The unflaterring expression
 conveys the notion that their estimation is merely an intermediate step along
 our path towards an inference of the target parameter.
@@ -2581,12 +2593,12 @@ Let us take a look at \texttt{working\_model\_G\_one} for instance:
 \CommentTok{#> \{}
 \CommentTok{#>     trim_glm_fit(glm(family = binomial(), ...))}
 \CommentTok{#> \}}
-\CommentTok{#> <environment: 0xecf7498>}
+\CommentTok{#> <environment: 0xe78bd10>}
 \CommentTok{#> }
 \CommentTok{#> $formula}
 \CommentTok{#> A ~ I(W^0.5) + I(abs(W - 5/12)^0.5) + I(W^1) + I(abs(W - 5/12)^1) + }
 \CommentTok{#>     I(W^1.5) + I(abs(W - 5/12)^1.5)}
-\CommentTok{#> <environment: 0xecf7498>}
+\CommentTok{#> <environment: 0xe78bd10>}
 \CommentTok{#> }
 \CommentTok{#> $type_of_preds}
 \CommentTok{#> [1] "response"}
@@ -2612,9 +2624,9 @@ logistic (or negative binomial) loss function \(L_{a}\) given by
 
 for any function \(f : [0,1] \to [0,1]\) paired with the working model
 \begin{equation*}   \calF_{1}   \defq    \left\{f_{\theta}   :   \theta   \in
-\bbR^{5}\right\}  \end{equation*} where, for any \(\theta \in \bbR^{5}\),
-\begin{equation*}\logit  f_{\theta}  (W)  \defq \theta_{0}  +  \sum_{j=1}^{4}
-\theta_{j} W^{j/2}.\end{equation*}
+\bbR^{7}\right\}  \end{equation*} where, for any \(\theta \in \bbR^{7}\),
+\begin{equation*}\logit  f_{\theta}  (W)  \defq \theta_{0}  +  \sum_{j=1}^{3}
+\left(\theta_{j} W^{j/2} + \theta_{3+j} |W - 5/12|^{j/2}\right).\end{equation*}
 
 We acted as oracles when we specified the working model: it is
 \emph{well-specified}, \emph{i.e.}, it happens that \(\Gbar_{0}\) is the unique minimizer
@@ -2704,11 +2716,11 @@ There are built-in specifications similar to \texttt{working\_model\_G\_one}, \e
 \CommentTok{#> \{}
 \CommentTok{#>     trim_glm_fit(glm(family = binomial(), ...))}
 \CommentTok{#> \}}
-\CommentTok{#> <environment: 0xecf7498>}
+\CommentTok{#> <environment: 0xe78bd10>}
 \CommentTok{#> }
 \CommentTok{#> $formula}
 \CommentTok{#> Y ~ A * (I(W^0.5) + I(W^1) + I(W^1.5))}
-\CommentTok{#> <environment: 0xecf7498>}
+\CommentTok{#> <environment: 0xe78bd10>}
 \CommentTok{#> }
 \CommentTok{#> $type_of_preds}
 \CommentTok{#> [1] "response"}
@@ -2755,12 +2767,13 @@ cross-validation) into a more powerful machine learning-based
 learning\index{algorithm!machine~learning!super~learning} methodology is a
 popular stacking algorithm.
 
-We will elaborate further on this important topic in another forthcoming part.
-Here, we merely illustrate the concept with two specifications built-in into
-\texttt{tlrider}. Based on the \emph{\(k\)-nearest neighbors} non-parametric estimating
-methodology, the first one is discussed in the next subsection. Based on
-\emph{boosted trees}, another non-parametric estimating methodology, the second one
-is used in the exercise that follows the next subsection.
+We will elaborate further on this important topic in another forthcoming part
+and merely touch upon it in Section \ref{meta-learning}. Here, we simply
+illustrate the concept with two specifications built-in into \texttt{tlrider}. Based
+on the \emph{\(k\)-nearest neighbors} non-parametric estimating methodology, the
+first one is discussed in the next subsection. Based on \emph{boosted trees},
+another non-parametric estimating methodology, the second one is used in the
+exercise that follows the next subsection.
 
 \hypertarget{Qbar-knn-algo}{%
 \subsection{\texorpdfstring{\texttt{Qbar}, kNN algorithm}{Qbar, kNN algorithm}}\label{Qbar-knn-algo}}
@@ -2853,7 +2866,7 @@ and \(\Qbar_{0}(0,\cdot)\):
 We can compare visually the estimators \(\Qbar_{n,\text{kNN}}\),
 \(\Qbar_{n,\text{trees}} \defq \Algo_{\Qbar,\text{trees}}(P_{n})\) with its
 target \(\Qbar_0\), see Figure \ref{fig:estimate-Qbar-five}. In summary,
-\(\Qbar_{n,\text{kNN}}\) is rather good, though very versatile at the vincinity
+\(\Qbar_{n,\text{kNN}}\) is rather good, though very variable at the vincinity
 of the break points. As for \(\Qbar_{n,\text{trees}}\), it does not seem to
 capture the shape of its target.
 
@@ -2903,6 +2916,21 @@ capture the shape of its target.
   Figure \ref{fig:estimate-Qbar-five}.
 \end{enumerate}
 
+\hypertarget{meta-learning}{%
+\section{Meta-learning/super learning}\label{meta-learning}}
+
+Without a great deal of previous experience or scientific expertise, it would
+have likely been difficult for us to \emph{a priori} postulate which of the two
+above machine learning algorithms (or indeed the algorithm based on a working
+model) would perform better for estimation of \(\bar{Q}_0\). Rather than
+committing to one single algorithm, we may instead wish to resort to
+meta-learning or super learning. In this approach, one specifies a \emph{library}
+of candidate algorithms for estimating a given nuisance parameter.
+Cross-validation is used to determine an \emph{ensemble} (\emph{e.g.} convex
+combination) of the algorithms that yields the best fit to the underlying
+function. In this way, one can learn in real time which algorithms tend to
+fit the data best and shift attention towards those algorithms.
+
 \index{algorithm!machine~learning|)}
 
 \index{algorithm|)}
@@ -2944,7 +2972,7 @@ Let \(\Algo_{\Gbar}\) be an algorithm designed for the estimation of \(\Gbar_{0}
 \ell\Gbar_{n}(A,W) \defq A \Gbar_{n}(W) + (1-A) (1 - \Gbar_{n}(W)).
 \end{equation*}
 
-In light of \eqref{eq:psi-n-b}, introduce
+In light of \eqref{eq:psi-n-b}, we introduce
 
 \begin{equation*}
 \psi_{n}^{c}   \defq   \frac{1}{n}    \sum_{i=1}^{n}   \left(\frac{2A_{i}   -
@@ -3071,7 +3099,7 @@ renormalized \(\sqrt{n}/\sqrt{v_{n}^{c}} (\psi_{n}^{c} - \psi_{0})\). Finally,
 \end{Shaded}
 
 By the above chunk of code, the average of \(\sqrt{n/v_{n}^{c}} (\psi_{n}^{c} - \psi_{0})\) computed across the realizations is equal to
--0.004 (see \texttt{bias\_abc}). In words, the average bias of \(\psi_{n}^{c}\) is of the
+-0.004 (see \texttt{bias\_abc}). In words, the bias of \(\psi_{n}^{c}\) is of the
 same magnitude as that of \(\psi_{n}^{b}\) despite the fact that the
 construction of \(\psi_{n}^{c}\) hinges on the estimation of \(\Gbar_{0}\) (based
 on the well-specified algorithm \(\Algo_{\Gbar,1}\)).
@@ -3802,7 +3830,7 @@ term can degrade dramatically the behavior of the plug-in estimator
 
 Luckily, \emph{a very simple workaround} allows to circumvent the problem. Proposed
 in \citep{LeCam69} (see also \citep{Pfanzagl82} and \citep{vdV98}), the workaround merely
-consists in subtracting the random term to the initial estimator, that is, in
+consists in adding the random term to the initial estimator, that is, in
 estimating \(\Psi(P_0)\) not with \(\Psi(\Phat_n)\) but instead with
 \begin{equation}
 \psinos  \defq  \Psi(\Phat_n)  +  P_{n} D^*(\Phat_n)  =  \Psi(\Phat_n)  +
@@ -3972,8 +4000,7 @@ compare \texttt{bias\_de} with \texttt{bias\_de\_one\_step}):
 \end{Highlighting}
 \end{Shaded}
 
-What about the estimation of the asymptotic variance, and of the mean-square
-errors of the estimators?
+What about the estimation of the asymptotic variance, and of the mean squared-error of the estimators?
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4091,8 +4118,8 @@ or, at the very least,
 P_n D^*(P_{n}^*) = o_{P_0}(1/\sqrt{n}). \label{eq:solve-approx} 
 \end{equation}
 Achieving \eqref{eq:solve} is called \emph{solving the efficient influence curve
-equation}. Likewise, achieving \eqref{eq:solve-approx} is called \emph{solving
-approximately the influence curve equation}.
+equation}. Likewise, achieving \eqref{eq:solve-approx} is called
+\emph{approximately solving the influence curve equation}.
 
 If such estimators can be generated indeed, then the plug-in estimator
 \begin{equation*}     \psi_n^*    \defq     \Psi(P_{n}^{*})    =     \int
@@ -4135,7 +4162,7 @@ It thus remains to devise a strategy for ensuring that \(P_n D_2^*(P_n^*) = 0\) 
 \hypertarget{targeted-fluctuation-TMLE}{%
 \section{Targeted fluctuation}\label{targeted-fluctuation-TMLE}}
 
-Our approach to solving \eqref{eq:solve-alt}\footnote{or \eqref{eq:solve-approx-alt}.}
+Our approach to satisfying \eqref{eq:solve-alt}\footnote{or \eqref{eq:solve-approx-alt}.}
 hinges on revising our initial estimator \(\Qbar_n\) of \(\Qbar_0\). We propose a
 method for building an estimator of \(\Qbar_0\) that is ``near to'' \(\Qbar_n\), but
 is such that for any law \(P_n^*\) that is compatible with this revised
@@ -4499,7 +4526,7 @@ principles for sounder research through the better design of experimental and
 nonexperimental studies and the development of more reliable and honest
 statistical analyses. By focusing on prespecified analytic plans and
 algorithms that make realistic assumptions in more flexible nonparametric or
-semiparametric statistical models, targeted learning has been at the fore of
+semiparametric statistical models, targeted learning has been at the forefront of
 this concerted effort. Under this light, targeted learning notably consists in
 translating knowledge about the data and underlying data-generating mechanism
 into a realistic model; in expressing the research question under the form of
@@ -4983,7 +5010,7 @@ consistently then, by Slutsky's lemma, the asymptotic variance of \(\sqrt{n} (f(
 
 First, let us recall the definition of the Kullback-Leibler divergence between
 Bernoulli laws of parameters \(p,q\in]0,1[\):
-\begin{equation*}\text{KL}(p,q)  \triangleq  p \log\left(\frac{p}{q}\right)  +
+\begin{equation*}\text{KL}(p,q)  \defq  p \log\left(\frac{p}{q}\right)  +
 (1-p) \log \left(\frac{1-p}{1-q}\right).\end{equation*}
 It satisfies \(\text{KL}(p,q) \geq 0\) where the equality holds if and only if
 \(p=q\).
@@ -5052,10 +5079,10 @@ anti-conservativeness.
 \section{\texorpdfstring{☡ \stixdanger{} General analysis of plug-in estimators}{☡  General analysis of plug-in estimators}}\label{app-analysis-of-plug-in}}
 
 Recall that \(\Algo_{Q_{W}}\) is an algorithm designed for the estimation of
-\(Q_{0,W}\) (see Section \ref{nuisance-QW}) and that we denote by \(Q_{n,W} \triangleq \Algo_{Q_{W}}(P_{n})\) the output of the algorithm trained on \(P_{n}\).
+\(Q_{0,W}\) (see Section \ref{nuisance-QW}) and that we denote by \(Q_{n,W} \defq \Algo_{Q_{W}}(P_{n})\) the output of the algorithm trained on \(P_{n}\).
 Likewise, \(\Algo_{\Gbar}\) and \(\Algo_{\Qbar}\) are two generic algorithms
 designed for the estimation of \(\Gbar_{0}\) and of \(\Qbar_{0}\) (see Sections
-\ref{nuisance-Gbar} and \ref{nuisance-Qbar}), \(\Gbar_{n} \triangleq \Algo_{\Gbar}(P_{n})\) and \(\Qbar_{n} \triangleq \Algo_{\Qbar}(P_{n})\) are their
+\ref{nuisance-Gbar} and \ref{nuisance-Qbar}), \(\Gbar_{n} \defq \Algo_{\Gbar}(P_{n})\) and \(\Qbar_{n} \defq \Algo_{\Qbar}(P_{n})\) are their
 outputs once trained on \(P_{n}\).
 
 Let us now introduce \(\Phat_n\) a law in \(\calM\) such that the \(Q_{W}\), \(\Gbar\)

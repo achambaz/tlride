@@ -25,7 +25,7 @@
 <meta name="author" content="Antoine Chambaz (Université de Paris)" />
 
 
-<meta name="date" content="2020-05-07" />
+<meta name="date" content="2020-05-11" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -255,6 +255,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7.6.3" data-path="7-nuisance.html"><a href="7-nuisance.html#boosted-trees"><i class="fa fa-check"></i><b>7.6.3</b> <code>Qbar</code>, boosted trees algorithm</a></li>
 </ul></li>
 <li class="chapter" data-level="7.7" data-path="7-nuisance.html"><a href="7-nuisance.html#nuisance-Qbar-ml-exo"><i class="fa fa-check"></i><b>7.7</b> ⚙ ☡  <code>Qbar</code>, machine learning-based algorithms</a></li>
+<li class="chapter" data-level="7.8" data-path="7-nuisance.html"><a href="7-nuisance.html#meta-learning"><i class="fa fa-check"></i><b>7.8</b> Meta-learning/super learning</a></li>
 </ul></li>
 <li class="chapter" data-level="8" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html"><i class="fa fa-check"></i><b>8</b> Two “naive” inference strategies</a><ul>
 <li class="chapter" data-level="8.1" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#why-naive"><i class="fa fa-check"></i><b>8.1</b> Why “naive”?</a></li>
@@ -503,7 +504,7 @@ minimum may fail to be achieved.)</p>
 <p>It is not very difficult to check (see Problem 1 below) that
 <span class="math display" id="eq:alter-gamma-zero">\[\begin{equation}\gamma_{0,a,c} =  \inf\left\{y \in ]0,1[  : \Pr_{\bbP_{0}}(Y_a
 \leq   y)   \geq   c\right\}.    \tag{2.4}\end{equation}\]</span> Thus,
-<span class="math inline">\(\gamma_{0,a,c}\)</span> can be interpreted as a covariate-adjusted <span class="math inline">\(c\)</span>-th quantile
+<span class="math inline">\(\gamma_{0,a,c}\)</span> can be interpreted as the <span class="math inline">\(c\)</span>-th quantile
 reward when action <span class="math inline">\(a\)</span> is enforced. The difference
 <span class="math display" id="eq:def-delta">\[\begin{equation}\delta_{0,c}    \defq    \gamma_{0,1,c}   -    \gamma_{0,0,c}
 \tag{2.5}\end{equation}\]</span> is the <span class="math inline">\(c\)</span>-th quantile counterpart to parameter
@@ -529,7 +530,7 @@ elegance, this has paramount statistical implications.</p>
 <p>Oftentimes, the premise of a statistical analysis is presented like this. One
 assumes that the law <span class="math inline">\(P_{0}\)</span> of the experiment of interest belongs to a
 statistical model <span class="math display">\[\begin{equation*}\{P_{\theta}     :    \theta     \in
-T\}.\end{equation*}\]</span> The statistical model is identifiable, meaning that if two
+T\}\end{equation*}\]</span> (where <span class="math inline">\(T\)</span> is some index set). The statistical model is identifiable, meaning that if two
 elements <span class="math inline">\(P_{\theta}\)</span> and <span class="math inline">\(P_{\theta&#39;}\)</span> coincide, then necessarily <span class="math inline">\(\theta = \theta&#39;\)</span>. Therefore, there exists a unique <span class="math inline">\(\theta_{0} \in T\)</span> such that
 <span class="math inline">\(P_{0} = P_{\theta_{0}}\)</span>, and one wishes to estimate
 <span class="math inline">\(\theta_{0}\)</span>.</p>
@@ -542,8 +543,7 @@ particular, it can be used <a href="B-proofs.html#clt">to construct confidence i
 <p>Of course, the mean of a law is defined beyond the small model <span class="math inline">\(\{P_{\theta} : \theta \in \bbR\}\)</span>. Let <span class="math inline">\(\calM\)</span> be the set of laws <span class="math inline">\(P\)</span> on <span class="math inline">\(\bbR\)</span> such that
 <span class="math inline">\(\Var_{P}(X)\)</span> is finite. In particular, <span class="math inline">\(P_{0} \in \calM\)</span>. For every <span class="math inline">\(P \in \calM\)</span>, the mean <span class="math inline">\(\Exp_{P}(X)\)</span> is well defined. Thus, we can introduce the
 <em>statistical mapping</em> <span class="math inline">\(\Theta : \calM \to \bbR\)</span> given by
-<span class="math display">\[\begin{equation*}\Theta(P) \defq \Exp_{P}(X)\end{equation*}\]</span>
-(where <span class="math inline">\(T\)</span> is some index set).</p>
+<span class="math display">\[\begin{equation*}\Theta(P) \defq \Exp_{P}(X).\end{equation*}\]</span></p>
 <p>Interestingly, the empirical measure <span class="math inline">\(P_{n}\)</span><a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> is an
 element of <span class="math inline">\(\calM\)</span>. Therefore, the statistical mapping <span class="math inline">\(\Theta\)</span> can be
 evaluated at <span class="math inline">\(P_{n}\)</span>: <span class="math display">\[\begin{equation*}\Theta(P_{n})    =   \frac{1}{n}
@@ -553,7 +553,11 @@ order to estimate <span class="math inline">\(\Theta(P_{0})\)</span>, we <em>sub
 <span class="math inline">\(\Theta\)</span>.<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a></p>
 <p>Substitution-based estimators are particularly valuable notably because they,
 by construction, satisfy all the constraints to which the targeted parameter
-is subjected. Some of the estimators that we will build together are
+is subjected. For example, if <span class="math inline">\(X\)</span> is a binary random variable and the support
+of all distributions in our model is <span class="math inline">\(\{0,1\}\)</span>, then <span class="math inline">\(\Theta\)</span> can be
+interpreted as the probability that <span class="math inline">\(X = 1\)</span>, a quantity known to live in the
+interval <span class="math inline">\([0,1]\)</span>. A substitution estimator will also be guaranteed to fall
+into this interval. Some of the estimators that we will build together are
 substitution-based, some are not.</p>
 </div>
 <div id="parameter-mapping" class="section level3">
