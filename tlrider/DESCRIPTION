@@ -1,6 +1,6 @@
 Package: tlrider
 Title: A Companion Package to the Article "A Ride in Targeted Learning Territory"
-Version: 1.1.0
+Version: 1.1.1
 Authors@R: as.person(c(
   "Antoine Chambaz <antoine.chambaz@parisdescartes.fr> [aut, cre]",
   "David Benkeser <benkeser@emory.edu> [aut]"))
@@ -9,7 +9,7 @@ Depends: R (>= 3.4.0)
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Imports: bst,
     caret,
     dplyr,
