@@ -242,6 +242,6 @@ think of $\calQ(\Qbar, \Gbar)$ as a fluctuation of $\Qbar$ in the direction of
 the  second   component  $D_{2}^{*}(P)$  of  the   efficient  influence  curve
 $D^{*}(P)$ of $\Psi$ at $P$ \@ref(eq:eif).
 
-# References
+
    
    

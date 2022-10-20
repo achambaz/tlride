@@ -203,7 +203,7 @@ relevant_features$QW
 #>                       })
 #>         return(rowSums(out))
 #>       }
-#> <environment: 0x56115038ae00>
+#> <environment: 0x55d8a4b54758>
 ```
 
 It  appears that  $Q_{0,W}$ is  a  mixture of  the uniform  laws over  $[0,1]$
@@ -225,7 +225,7 @@ relevant_features$Gbar
 #> function(W) {
 #>         expit(1 + 2 * W - 4 * sqrt(abs((W - 5/12))))
 #>       }
-#> <environment: 0x56115038ae00>
+#> <environment: 0x55d8a4b54758>
 ```
 
 Note how real numbers of the form $1 + 2W - 4 * \sqrt{|W - 5/12|})$ are mapped
@@ -250,7 +250,7 @@ relevant_features$qY
 #>                      shape1 = shape1,
 #>                      shape2 = shape1 * (1 - QAW) / QAW)
 #>       }
-#> <environment: 0x56115038ae00>
+#> <environment: 0x55d8a4b54758>
 ```
 
 It appears that the  conditional law of $Y$ given $A$ and $W$  is the Beta law
@@ -273,8 +273,8 @@ relevant_features$Qbar
 #>              (W >= 3/4) * (W - 3/4) * 2) +
 #>           (1 - A) * (sin(4 * W^2 * pi) / 4 + 1/2) 
 #>       }
-#> <bytecode: 0x5611585c3d40>
-#> <environment: 0x56115038ae00>
+#> <bytecode: 0x55d8a57b16d0>
+#> <environment: 0x55d8a4b54758>
 ```
 
 We denote  $\Qbar_0(A,W) =  \Exp_{P_{0}}(Y|A,W)$ the  conditional mean  of $Y$
@@ -329,8 +329,8 @@ relevant_features$sample_from
 #>         }
 #>         return(obs)
 #>       }
-#> <bytecode: 0x561159a2efa0>
-#> <environment: 0x56115038ae00>
+#> <bytecode: 0x55d8a73a1218>
+#> <environment: 0x55d8a4b54758>
 ```
 
 We will comment  upon the `ideal` argument in the  above `sample_from` feature
@@ -366,7 +366,9 @@ features %>% select(-Qw, -Gw) %>%
   ylim(NA, 1)
 ```
 
-<img src="img/exercise:visualize-1.png" width="70%" style="display: block; margin: auto;" />
+
+
+\begin{center}\includegraphics[width=0.7\linewidth]{img/exercise:visualize-1} \end{center}
 
 2. Adapt the  above chunk of code to visualize  the marginal density $Q_{0,W}$
    and conditional probability $\Gbar_{0}$.
@@ -445,7 +447,7 @@ handled by the package.
 obs <- sample_from(my_experiment, 1e4)
 obs %>% as_tibble %>% group_by(W, A, Y) %>%
   summarize(how_many = n(), .groups = "drop")
-#> # A tibble: 8 × 4
+#> # A tibble: 8 x 4
 #>       W     A     Y how_many
 #>   <int> <int> <int>    <int>
 #> 1     0     0     0      841
@@ -454,23 +456,23 @@ obs %>% as_tibble %>% group_by(W, A, Y) %>%
 #> 4     0     1     1      497
 #> 5     1     0     0      370
 #> 6     1     0     1     2668
-#> # … with 2 more rows
+#> # ... with 2 more rows
 obs %>% as_tibble %>% 
   summarize("P(W=1)" = mean(W))
-#> # A tibble: 1 × 1
+#> # A tibble: 1 x 1
 #>   `P(W=1)`
 #>      <dbl>
 #> 1    0.752
 obs %>% as_tibble %>% group_by(W) %>%
   summarize("P(A=1|W)" = mean(A))
-#> # A tibble: 2 × 2
+#> # A tibble: 2 x 2
 #>       W `P(A=1|W)`
 #>   <int>      <dbl>
 #> 1     0      0.307
 #> 2     1      0.596
 obs %>% as_tibble %>% group_by(W, A) %>%
   summarize("P(Y=1|A,W)" = mean(Y), .groups = "drop")
-#> # A tibble: 4 × 3
+#> # A tibble: 4 x 3
 #>       W     A `P(Y=1|A,W)`
 #>   <int> <int>        <dbl>
 #> 1     0     0        0.510
@@ -534,10 +536,14 @@ dagify(
   ggdag(text = TRUE, use_labels = "label") + theme_dag_grey()
 ```
 
-<div class="figure" style="text-align: center">
-<img src="img/DAG-1.png" alt="(ref:DAG)" width="70%" />
-<p class="caption">(\#fig:DAG)(ref:DAG)</p>
-</div>
+\begin{figure}
+
+{\centering \includegraphics[width=0.7\linewidth]{img/DAG-1} 
+
+}
+
+\caption{(ref:DAG)}(\#fig:DAG)
+\end{figure}
 
 In words, the experiment unfolds like this (see also Section \@ref(npsem)):
 
@@ -766,13 +772,13 @@ reveal(another_experiment)
 #> function(x, min = 1/10, max = 9/10){
 #>              stats::dunif(x, min = min, max = max)
 #>       }
-#> <environment: 0x56115878c6d8>
+#> <environment: 0x55d8a59c3748>
 #> 
 #> $Gbar
 #> function(W) {
 #>         sin((1 + W) * pi / 6)
 #>       }
-#> <environment: 0x56115878c6d8>
+#> <environment: 0x55d8a59c3748>
 #> 
 #> $Qbar
 #> function(AW, h) {
@@ -781,7 +787,7 @@ reveal(another_experiment)
 #>         expit( logit( A *  W + (1 - A) * W^2 ) +
 #>                h * 10 * sqrt(W) * A )
 #>       }
-#> <environment: 0x56115878c6d8>
+#> <environment: 0x55d8a59c3748>
 #> 
 #> $qY
 #> function(obs, Qbar, shape1 = 4){
@@ -791,7 +797,7 @@ reveal(another_experiment)
 #>                       shape1 = shape1,
 #>                       shape2 = shape1 * (1 - QAW) / QAW)
 #>       }
-#> <environment: 0x56115878c6d8>
+#> <environment: 0x55d8a59c3748>
 #> 
 #> $sample_from
 #> function(n, h) {
@@ -819,7 +825,7 @@ reveal(another_experiment)
 #>         obs <- cbind(W = W, A = A, Y = Y)
 #>         return(obs)
 #>       }
-#> <environment: 0x56115878c6d8>
+#> <environment: 0x55d8a59c3748>
 (two_obs_another_experiment <- sample_from(another_experiment, 2, h = 0))
 #>          W A     Y
 #> [1,] 0.720 1 0.372
@@ -999,8 +1005,8 @@ reveal(another_experiment)$sample_from
 #>         obs <- cbind(W = W, A = A, Y = Y)
 #>         return(obs)
 #>       }
-#> <bytecode: 0x56115cf79c38>
-#> <environment: 0x56115878c6d8>
+#> <bytecode: 0x55d8a8d8bd10>
+#> <environment: 0x55d8a59c3748>
 ```
 
 Let us call $\Pi_{h} \in \calM$  the law encoded by `another_experiment` for a
@@ -1055,10 +1061,14 @@ ggplot() +
   labs(x = "h", y = expression(Psi(Pi[h]))) 
 ```
 
-<div class="figure" style="text-align: center">
-<img src="img/psi-approx-psi-one-1.png" alt="(ref:psi-approx-psi-one)" width="70%" />
-<p class="caption">(\#fig:psi-approx-psi-one)(ref:psi-approx-psi-one)</p>
-</div>
+\begin{figure}
+
+{\centering \includegraphics[width=0.7\linewidth]{img/psi-approx-psi-one-1} 
+
+}
+
+\caption{(ref:psi-approx-psi-one)}(\#fig:psi-approx-psi-one)
+\end{figure}
 
 The red curve represents the function $h \mapsto \Psi(\Pi_{h})$. The blue line
 represents the tangent to the previous curve at $h=0$, which indeed appears to
@@ -1233,10 +1243,14 @@ crossing(w = seq(0, 1, length.out = 2e2),
   labs(fill = expression(paste(D^"*", (P[0])(w,a,y))))
 ```
 
-<div class="figure" style="text-align: center">
-<img src="img/eic-three-1.png" alt="(ref:eic-three)" width="80%" />
-<p class="caption">(\#fig:eic-three)(ref:eic-three)</p>
-</div>
+\begin{figure}
+
+{\centering \includegraphics[width=0.8\linewidth]{img/eic-three-1} 
+
+}
+
+\caption{(ref:eic-three)}(\#fig:eic-three)
+\end{figure}
 
 ## A fresh look at `another_experiment` {#revisiting}
 
@@ -1776,7 +1790,7 @@ For instance,
 
 ```r
 (compute_irrelevant_estimator(head(obs, 1e3)))
-#> # A tibble: 1 × 2
+#> # A tibble: 1 x 2
 #>   psi_n  sig_n
 #>   <dbl>  <dbl>
 #> 1 0.126 0.0181
@@ -1850,7 +1864,7 @@ instance,
 
 ```r
 (compute_iptw(head(obs, 1e3), Gbar))
-#> # A tibble: 1 × 2
+#> # A tibble: 1 x 2
 #>   psi_n  sig_n
 #>   <dbl>  <dbl>
 #> 1 0.167 0.0533
@@ -1900,7 +1914,7 @@ psi_hat_ab <- obs %>% as_tibble  %>%
   unnest(estimates) %>% select(-obs)
 
 (psi_hat_ab)
-#> # A tibble: 2,000 × 4
+#> # A tibble: 2,000 x 4
 #>      id type   psi_n  sig_n
 #>   <dbl> <chr>  <dbl>  <dbl>
 #> 1     0 a     0.140  0.0174
@@ -1909,14 +1923,14 @@ psi_hat_ab <- obs %>% as_tibble  %>%
 #> 4     1 b     0.138  0.0541
 #> 5     2 a     0.107  0.0172
 #> 6     2 b     0.0744 0.0553
-#> # … with 1,994 more rows
+#> # ... with 1,994 more rows
 
 psi_hat_ab <- psi_hat_ab %>% 
   group_by(id) %>%
   mutate(clt = (psi_n - psi_zero) / sig_n)
 
 (psi_hat_ab)
-#> # A tibble: 2,000 × 5
+#> # A tibble: 2,000 x 5
 #> # Groups:   id [1,000]
 #>      id type   psi_n  sig_n    clt
 #>   <dbl> <chr>  <dbl>  <dbl>  <dbl>
@@ -1926,11 +1940,11 @@ psi_hat_ab <- psi_hat_ab %>%
 #> 4     1 b     0.138  0.0541  1.01 
 #> 5     2 a     0.107  0.0172  1.38 
 #> 6     2 b     0.0744 0.0553 -0.159
-#> # … with 1,994 more rows
+#> # ... with 1,994 more rows
 
 (bias_ab <- psi_hat_ab %>%
    group_by(type) %>% summarize(bias = mean(clt), .groups = "drop"))
-#> # A tibble: 2 × 2
+#> # A tibble: 2 x 2
 #>   type    bias
 #>   <chr>  <dbl>
 #> 1 a     1.39  
@@ -1952,10 +1966,14 @@ fig_bias_ab +
                         (psi[n]^{list(a, b)} - psi[0]))))
 ```
 
-<div class="figure" style="text-align: center">
-<img src="img/known-Gbar-one-b-1.png" alt="(ref:known-Gbar-one-b)" width="70%" />
-<p class="caption">(\#fig:known-Gbar-one-b)(ref:known-Gbar-one-b)</p>
-</div>
+\begin{figure}
+
+{\centering \includegraphics[width=0.7\linewidth]{img/known-Gbar-one-b-1} 
+
+}
+
+\caption{(ref:known-Gbar-one-b)}(\#fig:known-Gbar-one-b)
+\end{figure}
 
 By   the  above   chunk   of  code,   the   averages  of   $\sqrt{n/v_{n}^{a}}
 (\psi_{n}^{a} - \psi_{0})$ and  $\sqrt{n/v_{n}^{b}} (\psi_{n}^{b} - \psi_{0})$
@@ -2051,10 +2069,14 @@ ggplot() +
   stat_function(fun = get_feature(experiment, "QW"), col = "red")
 ```
 
-<div class="figure" style="text-align: center">
-<img src="img/estimate-QW-two-1.png" alt="(ref:estimate-QW-two)" width="70%" />
-<p class="caption">(\#fig:estimate-QW-two)(ref:estimate-QW-two)</p>
-</div>
+\begin{figure}
+
+{\centering \includegraphics[width=0.7\linewidth]{img/estimate-QW-two-1} 
+
+}
+
+\caption{(ref:estimate-QW-two)}(\#fig:estimate-QW-two)
+\end{figure}
 
 Note that all the $W$s sampled from `QW_hat` fall in the set $\{W_{1}, \ldots,
 W_{n}\}$ of  observed $W$s in `obs`  (an obvious fact given  the definition of
@@ -2098,12 +2120,12 @@ working_model_G_one
 #> {
 #>     trim_glm_fit(glm(family = binomial(), ...))
 #> }
-#> <environment: 0x56115606af08>
+#> <environment: 0x55d8a00b8520>
 #> 
 #> $formula
 #> A ~ I(W^0.5) + I(abs(W - 5/12)^0.5) + I(W^1) + I(abs(W - 5/12)^1) + 
 #>     I(W^1.5) + I(abs(W - 5/12)^1.5)
-#> <environment: 0x56115606af08>
+#> <environment: 0x55d8a00b8520>
 #> 
 #> $type_of_preds
 #> [1] "response"
@@ -2188,10 +2210,14 @@ tibble(w = seq(0, 1, length.out = 1e3)) %>%
   ylim(NA, 1)
 ```
 
-<div class="figure" style="text-align: center">
-<img src="img/estimate-Gbar-three-1.png" alt="(ref:estimate-Gbar-three)" width="70%" />
-<p class="caption">(\#fig:estimate-Gbar-three)(ref:estimate-Gbar-three)</p>
-</div>
+\begin{figure}
+
+{\centering \includegraphics[width=0.7\linewidth]{img/estimate-Gbar-three-1} 
+
+}
+
+\caption{(ref:estimate-Gbar-three)}(\#fig:estimate-Gbar-three)
+\end{figure}
 
 ## &#9881; \gear `Qbar`, working model-based algorithms {#nuisance-Qbar-wm}
 
@@ -2212,11 +2238,11 @@ working_model_Q_one
 #> {
 #>     trim_glm_fit(glm(family = binomial(), ...))
 #> }
-#> <environment: 0x56115606af08>
+#> <environment: 0x55d8a00b8520>
 #> 
 #> $formula
 #> Y ~ A * (I(W^0.5) + I(W^1) + I(W^1.5))
-#> <environment: 0x56115606af08>
+#> <environment: 0x55d8a00b8520>
 #> 
 #> $type_of_preds
 #> [1] "response"
@@ -2373,10 +2399,14 @@ fig %>%
   facet_wrap(~ a)
 ```
 
-<div class="figure" style="text-align: center">
-<img src="img/estimate-Qbar-five-1.png" alt="(ref:estimate-Qbar-five)" width="70%" />
-<p class="caption">(\#fig:estimate-Qbar-five)(ref:estimate-Qbar-five)</p>
-</div>
+\begin{figure}
+
+{\centering \includegraphics[width=0.7\linewidth]{img/estimate-Qbar-five-1} 
+
+}
+
+\caption{(ref:estimate-Qbar-five)}(\#fig:estimate-Qbar-five)
+\end{figure}
 
 ## &#9881; \gear &#9761; \stixdanger{} `Qbar`, machine learning-based algorithms {#nuisance-Qbar-ml-exo}
 
@@ -2561,7 +2591,7 @@ psi_hat_abc <-
 
 (bias_abc <- psi_hat_abc %>%
    group_by(type) %>% summarize(bias = mean(clt), .groups = "drop"))
-#> # A tibble: 3 × 2
+#> # A tibble: 3 x 2
 #>   type      bias
 #>   <chr>    <dbl>
 #> 1 a      1.39   
@@ -2595,10 +2625,14 @@ fig_bias_ab +
                         (psi[n]^{list(a, b, c)} - psi[0]))))
 ```
 
-<div class="figure" style="text-align: center">
-<img src="img/unknown-Gbar-three-1.png" alt="(ref:unknown-Gbar-three)" width="70%" />
-<p class="caption">(\#fig:unknown-Gbar-three)(ref:unknown-Gbar-three)</p>
-</div>
+\begin{figure}
+
+{\centering \includegraphics[width=0.7\linewidth]{img/unknown-Gbar-three-1} 
+
+}
+
+\caption{(ref:unknown-Gbar-three)}(\#fig:unknown-Gbar-three)
+\end{figure}
 
 (ref:unknown-Gbar-four) Quantile-quantile plot of the standard normal law against the empirical laws of three estimators of $\psi_{0}$, one of them misconceived (a), one assuming that $\Gbar_{0}$ is known (b) and one that hinges on the estimation of $\Gbar_{0}$ (c).  Built based on 1000 independent realizations of each estimator.
 
@@ -2609,10 +2643,14 @@ ggplot(psi_hat_abc, aes(sample = clt, fill = type, colour = type)) +
   geom_qq(alpha = 1)
 ```
 
-<div class="figure" style="text-align: center">
-<img src="img/unknown-Gbar-four-1.png" alt="(ref:unknown-Gbar-four)" width="70%" />
-<p class="caption">(\#fig:unknown-Gbar-four)(ref:unknown-Gbar-four)</p>
-</div>
+\begin{figure}
+
+{\centering \includegraphics[width=0.7\linewidth]{img/unknown-Gbar-four-1} 
+
+}
+
+\caption{(ref:unknown-Gbar-four)}(\#fig:unknown-Gbar-four)
+\end{figure}
 
 Figures \@ref(fig:unknown-Gbar-three) and \@ref(fig:unknown-Gbar-four) confirm
 that $\psi_{n}^{c}$ behaves almost as well as $\psi_{n}^{b}$ in terms of bias --- but
@@ -2669,10 +2707,14 @@ fig_bias_ab +
                         (psi[n]^{list(a, b, c)} - psi[0]))))
 ```
 
-<div class="figure" style="text-align: center">
-<img src="img/unknown-Gbar-seven-1.png" alt="(ref:unknown-Gbar-seven)" width="70%" />
-<p class="caption">(\#fig:unknown-Gbar-seven)(ref:unknown-Gbar-seven)</p>
-</div>
+\begin{figure}
+
+{\centering \includegraphics[width=0.7\linewidth]{img/unknown-Gbar-seven-1} 
+
+}
+
+\caption{(ref:unknown-Gbar-seven)}(\#fig:unknown-Gbar-seven)
+\end{figure}
 
 **Workaround.**  In  a  real  world   data-analysis,  one  could  correct  the
 estimation of the asymptotic variance of $\sqrt{n} (\psi_{n}^{c} - \psi_{0})$.
@@ -2810,12 +2852,12 @@ simple as running the following chunk of code:
 
 ```r
 (compute_gcomp(QW_hat, wrapper(Qbar_hat_kknn, FALSE), 1e3))
-#> # A tibble: 1 × 2
+#> # A tibble: 1 x 2
 #>   psi_n   sig_n
 #>   <dbl>   <dbl>
 #> 1 0.101 0.00306
 (compute_gcomp(QW_hat, wrapper(Qbar_hat_d, FALSE), 1e3))
-#> # A tibble: 1 × 2
+#> # A tibble: 1 x 2
 #>   psi_n   sig_n
 #>   <dbl>   <dbl>
 #> 1 0.109 0.00215
@@ -2960,7 +3002,7 @@ psi_hat_de <- learned_features_fixed_sample_size %>%
 (bias_de <- psi_hat_de %>%
    group_by(type, auto_renormalization) %>%
    summarize(bias = mean(clt), .groups = "drop"))
-#> # A tibble: 4 × 3
+#> # A tibble: 4 x 3
 #>   type  auto_renormalization  bias
 #>   <chr> <lgl>                <dbl>
 #> 1 d     FALSE                0.234
@@ -2989,10 +3031,14 @@ fig +
                         (psi[n]^{list(d, e)} - psi[0]))))
 ```
 
-<div class="figure" style="text-align: center">
-<img src="img/estimating-Qbar-one-bis-1.png" alt="(ref:estimating-Qbar-one-bis)" width="70%" />
-<p class="caption">(\#fig:estimating-Qbar-one-bis)(ref:estimating-Qbar-one-bis)</p>
-</div>
+\begin{figure}
+
+{\centering \includegraphics[width=0.7\linewidth]{img/estimating-Qbar-one-bis-1} 
+
+}
+
+\caption{(ref:estimating-Qbar-one-bis)}(\#fig:estimating-Qbar-one-bis)
+\end{figure}
 
 
  
@@ -3180,10 +3226,14 @@ root_n_bias %>% filter(auto_renormalization) %>%
        y = bquote(paste(sqrt(n) * (psi[n]^{list(d, e)} - psi[0]))))
 ```
 
-<div class="figure" style="text-align: center">
-<img src="img/estimating-Qbar-four-1.png" alt="(ref:estimating-Qbar-four)" width="70%" />
-<p class="caption">(\#fig:estimating-Qbar-four)(ref:estimating-Qbar-four)</p>
-</div>
+\begin{figure}
+
+{\centering \includegraphics[width=0.7\linewidth]{img/estimating-Qbar-four-1} 
+
+}
+
+\caption{(ref:estimating-Qbar-four)}(\#fig:estimating-Qbar-four)
+\end{figure}
 
 On  the one  hand, root-$n$  bias for  $\psi_{n}^{e}$ tends  to decrease  from
 sample size  1000 to  5000 where it  tends to be  small in
@@ -3320,7 +3370,7 @@ $P_{0}$ (see Section \@ref(nuisance-QW)), then applied the one-step correction:
 
 ```r
 (psin_kknn <- compute_gcomp(QW_hat, wrapper(Qbar_hat_kknn, FALSE), 1e3))
-#> # A tibble: 1 × 2
+#> # A tibble: 1 x 2
 #>   psi_n   sig_n
 #>   <dbl>   <dbl>
 #> 1 0.101 0.00306
@@ -3328,7 +3378,7 @@ $P_{0}$ (see Section \@ref(nuisance-QW)), then applied the one-step correction:
                                            wrapper(Gbar_hat, FALSE),
                                            wrapper(Qbar_hat_kknn, FALSE),
                                            psin_kknn$psi_n)) 
-#> # A tibble: 1 × 3
+#> # A tibble: 1 x 3
 #>    psi_n  sig_n    crit_n
 #>    <dbl>  <dbl>     <dbl>
 #> 1 0.0999 0.0171 -0.000633
@@ -3386,7 +3436,7 @@ psi_hat_de_one_step <- learned_features_fixed_sample_size %>%
 (bias_de_one_step <- psi_hat_de_one_step %>%
    group_by(type, auto_renormalization) %>%
    summarize(bias = mean(clt)) %>% ungroup)
-#> # A tibble: 4 × 3
+#> # A tibble: 4 x 3
 #>   type       auto_renormalization     bias
 #>   <chr>      <lgl>                   <dbl>
 #> 1 d_one_step FALSE                -0.0142 
@@ -3415,10 +3465,14 @@ fig +
                         (psi[n]^{list(d, e, os)} - psi[0]))))
 ```
 
-<div class="figure" style="text-align: center">
-<img src="img/one-step-one-1.png" alt="(ref:one-step-one)" width="70%" />
-<p class="caption">(\#fig:one-step-one)(ref:one-step-one)</p>
-</div>
+\begin{figure}
+
+{\centering \includegraphics[width=0.7\linewidth]{img/one-step-one-1} 
+
+}
+
+\caption{(ref:one-step-one)}(\#fig:one-step-one)
+\end{figure}
  
 It  seems that  the  one-step  correction performs  quite  well (in  particular,
 compare `bias_de` with `bias_de_one_step`):
@@ -3428,7 +3482,7 @@ compare `bias_de` with `bias_de_one_step`):
 bind_rows(bias_de, bias_de_one_step) %>%
   filter(!auto_renormalization) %>%
   arrange(type)
-#> # A tibble: 4 × 3
+#> # A tibble: 4 x 3
 #>   type       auto_renormalization    bias
 #>   <chr>      <lgl>                  <dbl>
 #> 1 d          FALSE                 0.234 
@@ -3449,7 +3503,7 @@ psi_hat_de %>%
             se = sd(psi_n),
             mse = mean((psi_n - psi_zero)^2) * n()) %>%
   arrange(type)
-#> # A tibble: 4 × 4
+#> # A tibble: 4 x 4
 #>   type            sd     se   mse
 #>   <chr>        <dbl>  <dbl> <dbl>
 #> 1 d          0.00206 0.0171 0.309
@@ -3700,10 +3754,14 @@ tibble(w = seq(0, 1, length.out = 1e3)) %>%
   facet_wrap(~ a)
 ```
 
-<div class="figure" style="text-align: center">
-<img src="img/fluctuation-1.png" alt="(ref:fluctuation)" width="70%" />
-<p class="caption">(\#fig:fluctuation)(ref:fluctuation)</p>
-</div>
+\begin{figure}
+
+{\centering \includegraphics[width=0.7\linewidth]{img/fluctuation-1} 
+
+}
+
+\caption{(ref:fluctuation)}(\#fig:fluctuation)
+\end{figure}
 
 
 ### &#9881; \gear More on fluctuations {#exo-fluct}
@@ -3791,10 +3849,14 @@ risk %>% enframe %>%
                         labels = labels))
 ```
 
-<div class="figure" style="text-align: center">
-<img src="img/grid-search-1.png" alt="(ref:grid-search)" width="70%" />
-<p class="caption">(\#fig:grid-search)(ref:grid-search)</p>
-</div>
+\begin{figure}
+
+{\centering \includegraphics[width=0.7\linewidth]{img/grid-search-1} 
+
+}
+
+\caption{(ref:grid-search)}(\#fig:grid-search)
+\end{figure}
 
 (ref:grid-search) Representing the evolution of the empirical risk function as $h$ ranges over a grid of values. One sees that the risk at $h=0$ (*i.e.*, the risk of $\Qbar_{n}$) is larger that the minimal risk, achieved at $h \approx$ -0.003 (which must be close to that of the optimal $\Qbar_{n,h_{n}}$).
 
@@ -3988,19 +4050,19 @@ targeting step and presents the resulting estimator:
 
 ```r
 (psin_kknn)
-#> # A tibble: 1 × 2
+#> # A tibble: 1 x 2
 #>   psi_n   sig_n
 #>   <dbl>   <dbl>
 #> 1 0.101 0.00306
 (psin_kknn_os)
-#> # A tibble: 1 × 3
+#> # A tibble: 1 x 3
 #>    psi_n  sig_n    crit_n
 #>    <dbl>  <dbl>     <dbl>
 #> 1 0.0999 0.0171 -0.000633
 (psin_kknn_tmle <- apply_targeting_step(head(obs, 1e3),
                                         wrapper(Gbar_hat, FALSE),
                                         wrapper(Qbar_hat_kknn, FALSE)))
-#> # A tibble: 1 × 3
+#> # A tibble: 1 x 3
 #>    psi_n  sig_n    crit_n
 #>    <dbl>  <dbl>     <dbl>
 #> 1 0.0999 0.0171 -2.05e-17
@@ -4058,10 +4120,14 @@ rbind(t(psi_trees_epsilon), t(psi_kknn_epsilon)) %>% as_tibble %>%
        y = bquote(Psi(P[list(n,h)]^o)))
 ```
 
-<div class="figure" style="text-align: center">
-<img src="img/exo-tmle-1.png" alt="(ref:exo-tmle)" width="70%" />
-<p class="caption">(\#fig:exo-tmle)(ref:exo-tmle)</p>
-</div>
+\begin{figure}
+
+{\centering \includegraphics[width=0.7\linewidth]{img/exo-tmle-1} 
+
+}
+
+\caption{(ref:exo-tmle)}(\#fig:exo-tmle)
+\end{figure}
 
 3. Discuss the fact that  the colored curves in Figure \@ref(fig:exo-tmle)
    look like segments.
@@ -4114,7 +4180,7 @@ psi_tmle <- learned_features_fixed_sample_size %>%
 (bias_tmle <- psi_tmle %>%
    group_by(type, auto_renormalization) %>%
    summarize(bias = mean(clt)) %>% ungroup)
-#> # A tibble: 4 × 3
+#> # A tibble: 4 x 3
 #>   type       auto_renormalization     bias
 #>   <chr>      <lgl>                   <dbl>
 #> 1 d_targeted FALSE                -0.0147 
@@ -4143,10 +4209,14 @@ fig +
                         (psi[n]^{"*"} - psi[0]))))
 ```
 
-<div class="figure" style="text-align: center">
-<img src="img/tmle-1.png" alt="(ref:tmle)" width="70%" />
-<p class="caption">(\#fig:tmle)(ref:tmle)</p>
-</div>
+\begin{figure}
+
+{\centering \includegraphics[width=0.7\linewidth]{img/tmle-1} 
+
+}
+
+\caption{(ref:tmle)}(\#fig:tmle)
+\end{figure}
 
 We see that the step of targeting is as promised: the bias of the resulting
 estimators is minimized relative to the naive  estimators. Comparing 
