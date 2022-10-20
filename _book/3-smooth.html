@@ -6,12 +6,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Section 3 Smoothness | A Ride in Targeted Learning Territory</title>
   <meta name="description" content="A ride in targeted learning territory is a gentle introduction to the filed of targeted learning. It weaves together two main threads, one theoretical and the other computational. It uses tlrider, a companion R package built specifically for this project." />
-  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.29 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Section 3 Smoothness | A Ride in Targeted Learning Territory" />
   <meta property="og:type" content="book" />
-  
-  <meta property="og:image" content="cover.jpg" />
+  <meta property="og:image" content="/cover.jpg" />
   <meta property="og:description" content="A ride in targeted learning territory is a gentle introduction to the filed of targeted learning. It weaves together two main threads, one theoretical and the other computational. It uses tlrider, a companion R package built specifically for this project." />
   <meta name="github-repo" content="achambaz/tlride" />
 
@@ -19,13 +18,13 @@
   <meta name="twitter:title" content="Section 3 Smoothness | A Ride in Targeted Learning Territory" />
   
   <meta name="twitter:description" content="A ride in targeted learning territory is a gentle introduction to the filed of targeted learning. It weaves together two main threads, one theoretical and the other computational. It uses tlrider, a companion R package built specifically for this project." />
-  <meta name="twitter:image" content="cover.jpg" />
+  <meta name="twitter:image" content="/cover.jpg" />
 
 <meta name="author" content="David Benkeser (Emory University)" />
 <meta name="author" content="Antoine Chambaz (Université de Paris)" />
 
 
-<meta name="date" content="2020-05-11" />
+<meta name="date" content="2022-10-20" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -34,7 +33,8 @@
   <link rel="shortcut icon" href="favicon.png" type="image/x-icon" />
 <link rel="prev" href="2-parameter.html"/>
 <link rel="next" href="4-double-robustness.html"/>
-<script src="assets/jquery-2.2.3/jquery.min.js"></script>
+<script src="assets/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="assets/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="assets/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="assets/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -50,7 +50,9 @@
 
 
 
-
+<link href="assets/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="assets/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="assets/anchor-sections-1.1.0/anchor-sections.js"></script>
 <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
   CommonHTML: {
@@ -76,26 +78,28 @@ src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-
 -->
 
 
+
 <style type="text/css">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(data-line-number);
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
     position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
+    border: none; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
@@ -104,9 +108,9 @@ pre.numberSource a.sourceLine::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {  }
+  {   }
 @media screen {
-a.sourceLine::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
@@ -139,6 +143,29 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="tlride.css" type="text/css" />
 </head>
 
@@ -157,13 +184,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="divider"></li>
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a></li>
 <li class="part"><span><b>I On the road</b></span></li>
-<li class="chapter" data-level="1" data-path="1-a-ride.html"><a href="1-a-ride.html"><i class="fa fa-check"></i><b>1</b> A ride</a><ul>
-<li class="chapter" data-level="1.1" data-path="1-a-ride.html"><a href="1-a-ride.html#introduction"><i class="fa fa-check"></i><b>1.1</b> Introduction</a><ul>
+<li class="chapter" data-level="1" data-path="1-a-ride.html"><a href="1-a-ride.html"><i class="fa fa-check"></i><b>1</b> A ride</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="1-a-ride.html"><a href="1-a-ride.html#introduction"><i class="fa fa-check"></i><b>1.1</b> Introduction</a>
+<ul>
 <li class="chapter" data-level="1.1.1" data-path="1-a-ride.html"><a href="1-a-ride.html#causal-story"><i class="fa fa-check"></i><b>1.1.1</b> A causal story</a></li>
 <li class="chapter" data-level="1.1.2" data-path="1-a-ride.html"><a href="1-a-ride.html#tlrider-package"><i class="fa fa-check"></i><b>1.1.2</b> The <code>tlrider</code> package</a></li>
 <li class="chapter" data-level="1.1.3" data-path="1-a-ride.html"><a href="1-a-ride.html#discuss"><i class="fa fa-check"></i><b>1.1.3</b> What we will discuss</a></li>
 </ul></li>
-<li class="chapter" data-level="1.2" data-path="1-a-ride.html"><a href="1-a-ride.html#simulation-study"><i class="fa fa-check"></i><b>1.2</b> A simulation study</a><ul>
+<li class="chapter" data-level="1.2" data-path="1-a-ride.html"><a href="1-a-ride.html#simulation-study"><i class="fa fa-check"></i><b>1.2</b> A simulation study</a>
+<ul>
 <li class="chapter" data-level="1.2.1" data-path="1-a-ride.html"><a href="1-a-ride.html#reproducible-experiment"><i class="fa fa-check"></i><b>1.2.1</b> Reproducible experiment as a law</a></li>
 <li class="chapter" data-level="1.2.2" data-path="1-a-ride.html"><a href="1-a-ride.html#synthetic-experiment"><i class="fa fa-check"></i><b>1.2.2</b> A synthetic reproducible experiment</a></li>
 <li class="chapter" data-level="1.2.3" data-path="1-a-ride.html"><a href="1-a-ride.html#revealing-experiment"><i class="fa fa-check"></i><b>1.2.3</b> Revealing <code>experiment</code></a></li>
@@ -171,85 +201,103 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="1.3" data-path="1-a-ride.html"><a href="1-a-ride.html#exo-visualization"><i class="fa fa-check"></i><b>1.3</b> ⚙ Visualization</a></li>
 <li class="chapter" data-level="1.4" data-path="1-a-ride.html"><a href="1-a-ride.html#exo-make-own-experiment"><i class="fa fa-check"></i><b>1.4</b> ⚙ Make your own experiment</a></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="2-parameter.html"><a href="2-parameter.html"><i class="fa fa-check"></i><b>2</b> The parameter of interest</a><ul>
-<li class="chapter" data-level="2.1" data-path="2-parameter.html"><a href="2-parameter.html#parameter-first-pass"><i class="fa fa-check"></i><b>2.1</b> The parameter of interest</a><ul>
+<li class="chapter" data-level="2" data-path="2-parameter.html"><a href="2-parameter.html"><i class="fa fa-check"></i><b>2</b> The parameter of interest</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="2-parameter.html"><a href="2-parameter.html#parameter-first-pass"><i class="fa fa-check"></i><b>2.1</b> The parameter of interest</a>
+<ul>
 <li class="chapter" data-level="2.1.1" data-path="2-parameter.html"><a href="2-parameter.html#definition"><i class="fa fa-check"></i><b>2.1.1</b> Definition</a></li>
 <li class="chapter" data-level="2.1.2" data-path="2-parameter.html"><a href="2-parameter.html#causal-interpretation"><i class="fa fa-check"></i><b>2.1.2</b> A causal interpretation</a></li>
 <li class="chapter" data-level="2.1.3" data-path="2-parameter.html"><a href="2-parameter.html#causal-computation"><i class="fa fa-check"></i><b>2.1.3</b> A causal computation</a></li>
 </ul></li>
 <li class="chapter" data-level="2.2" data-path="2-parameter.html"><a href="2-parameter.html#exo-alternative-parameter-first-pass"><i class="fa fa-check"></i><b>2.2</b> ⚙ An alternative parameter of interest</a></li>
-<li class="chapter" data-level="2.3" data-path="2-parameter.html"><a href="2-parameter.html#parameter-second-pass"><i class="fa fa-check"></i><b>2.3</b> The statistical mapping of interest</a><ul>
+<li class="chapter" data-level="2.3" data-path="2-parameter.html"><a href="2-parameter.html#parameter-second-pass"><i class="fa fa-check"></i><b>2.3</b> The statistical mapping of interest</a>
+<ul>
 <li class="chapter" data-level="2.3.1" data-path="2-parameter.html"><a href="2-parameter.html#opening"><i class="fa fa-check"></i><b>2.3.1</b> Opening discussion</a></li>
 <li class="chapter" data-level="2.3.2" data-path="2-parameter.html"><a href="2-parameter.html#parameter-mapping"><i class="fa fa-check"></i><b>2.3.2</b> The parameter as the value of a statistical mapping at the experiment</a></li>
 <li class="chapter" data-level="2.3.3" data-path="2-parameter.html"><a href="2-parameter.html#value-another-experiment"><i class="fa fa-check"></i><b>2.3.3</b> The value of the statistical mapping at another experiment</a></li>
 </ul></li>
 <li class="chapter" data-level="2.4" data-path="2-parameter.html"><a href="2-parameter.html#exo-alternative-parameter-second-pass"><i class="fa fa-check"></i><b>2.4</b> ⚙ Alternative statistical mapping</a></li>
-<li class="chapter" data-level="2.5" data-path="2-parameter.html"><a href="2-parameter.html#parameter-third-pass"><i class="fa fa-check"></i><b>2.5</b> Representations</a><ul>
+<li class="chapter" data-level="2.5" data-path="2-parameter.html"><a href="2-parameter.html#parameter-third-pass"><i class="fa fa-check"></i><b>2.5</b> Representations</a>
+<ul>
 <li class="chapter" data-level="2.5.1" data-path="2-parameter.html"><a href="2-parameter.html#yet-another"><i class="fa fa-check"></i><b>2.5.1</b> Yet another representation</a></li>
 <li class="chapter" data-level="2.5.2" data-path="2-parameter.html"><a href="2-parameter.html#rep-to-est"><i class="fa fa-check"></i><b>2.5.2</b> From representations to estimation strategies</a></li>
 </ul></li>
 <li class="chapter" data-level="2.6" data-path="2-parameter.html"><a href="2-parameter.html#exo-alternative-parameter-third-pass"><i class="fa fa-check"></i><b>2.6</b> ⚙ Alternative representation</a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="3-smooth.html"><a href="3-smooth.html"><i class="fa fa-check"></i><b>3</b> Smoothness</a><ul>
-<li class="chapter" data-level="3.1" data-path="3-smooth.html"><a href="3-smooth.html#smooth-first-pass"><i class="fa fa-check"></i><b>3.1</b> Fluctuating smoothly</a><ul>
+<li class="chapter" data-level="3" data-path="3-smooth.html"><a href="3-smooth.html"><i class="fa fa-check"></i><b>3</b> Smoothness</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="3-smooth.html"><a href="3-smooth.html#smooth-first-pass"><i class="fa fa-check"></i><b>3.1</b> Fluctuating smoothly</a>
+<ul>
 <li class="chapter" data-level="3.1.1" data-path="3-smooth.html"><a href="3-smooth.html#fluctuations"><i class="fa fa-check"></i><b>3.1.1</b> The <code>another_experiment</code> fluctuation</a></li>
 <li class="chapter" data-level="3.1.2" data-path="3-smooth.html"><a href="3-smooth.html#numerical-illus"><i class="fa fa-check"></i><b>3.1.2</b> Numerical illustration</a></li>
 </ul></li>
 <li class="chapter" data-level="3.2" data-path="3-smooth.html"><a href="3-smooth.html#exo-yet-another-experiment"><i class="fa fa-check"></i><b>3.2</b> ⚙ Yet another experiment</a></li>
-<li class="chapter" data-level="3.3" data-path="3-smooth.html"><a href="3-smooth.html#smooth-second-pass"><i class="fa fa-check"></i><b>3.3</b> ☡  More on fluctuations and smoothness</a><ul>
+<li class="chapter" data-level="3.3" data-path="3-smooth.html"><a href="3-smooth.html#smooth-second-pass"><i class="fa fa-check"></i><b>3.3</b> ☡  More on fluctuations and smoothness</a>
+<ul>
 <li class="chapter" data-level="3.3.1" data-path="3-smooth.html"><a href="3-smooth.html#smooth-second-pass-fluctuations"><i class="fa fa-check"></i><b>3.3.1</b> Fluctuations</a></li>
 <li class="chapter" data-level="3.3.2" data-path="3-smooth.html"><a href="3-smooth.html#smoothness-and-gradients"><i class="fa fa-check"></i><b>3.3.2</b> Smoothness and gradients</a></li>
 <li class="chapter" data-level="3.3.3" data-path="3-smooth.html"><a href="3-smooth.html#Euclidean-perspective"><i class="fa fa-check"></i><b>3.3.3</b> A Euclidean perspective</a></li>
 <li class="chapter" data-level="3.3.4" data-path="3-smooth.html"><a href="3-smooth.html#canonical-gradient"><i class="fa fa-check"></i><b>3.3.4</b> The canonical gradient</a></li>
 </ul></li>
-<li class="chapter" data-level="3.4" data-path="3-smooth.html"><a href="3-smooth.html#revisiting"><i class="fa fa-check"></i><b>3.4</b> A fresh look at <code>another_experiment</code></a><ul>
+<li class="chapter" data-level="3.4" data-path="3-smooth.html"><a href="3-smooth.html#revisiting"><i class="fa fa-check"></i><b>3.4</b> A fresh look at <code>another_experiment</code></a>
+<ul>
 <li class="chapter" data-level="3.4.1" data-path="3-smooth.html"><a href="3-smooth.html#deriving-the-efficient-influence-curve"><i class="fa fa-check"></i><b>3.4.1</b> Deriving the efficient influence curve</a></li>
 <li class="chapter" data-level="3.4.2" data-path="3-smooth.html"><a href="3-smooth.html#numerical-validation"><i class="fa fa-check"></i><b>3.4.2</b> Numerical validation</a></li>
 </ul></li>
-<li class="chapter" data-level="3.5" data-path="3-smooth.html"><a href="3-smooth.html#influence-curves"><i class="fa fa-check"></i><b>3.5</b> ☡  Asymptotic linearity and statistical efficiency</a><ul>
+<li class="chapter" data-level="3.5" data-path="3-smooth.html"><a href="3-smooth.html#influence-curves"><i class="fa fa-check"></i><b>3.5</b> ☡  Asymptotic linearity and statistical efficiency</a>
+<ul>
 <li class="chapter" data-level="3.5.1" data-path="3-smooth.html"><a href="3-smooth.html#asymptotic-linearity"><i class="fa fa-check"></i><b>3.5.1</b> Asymptotic linearity</a></li>
 <li class="chapter" data-level="3.5.2" data-path="3-smooth.html"><a href="3-smooth.html#influence-curves-and-gradients"><i class="fa fa-check"></i><b>3.5.2</b> Influence curves and gradients</a></li>
 <li class="chapter" data-level="3.5.3" data-path="3-smooth.html"><a href="3-smooth.html#asymptotic-efficiency"><i class="fa fa-check"></i><b>3.5.3</b> Asymptotic efficiency</a></li>
 </ul></li>
 <li class="chapter" data-level="3.6" data-path="3-smooth.html"><a href="3-smooth.html#exo-cramer-rao"><i class="fa fa-check"></i><b>3.6</b> ⚙ Cramér-Rao bounds</a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="4-double-robustness.html"><a href="4-double-robustness.html"><i class="fa fa-check"></i><b>4</b> Double-robustness</a><ul>
-<li class="chapter" data-level="4.1" data-path="4-double-robustness.html"><a href="4-double-robustness.html#linear-approximation"><i class="fa fa-check"></i><b>4.1</b> Linear approximations of parameters</a><ul>
+<li class="chapter" data-level="4" data-path="4-double-robustness.html"><a href="4-double-robustness.html"><i class="fa fa-check"></i><b>4</b> Double-robustness</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="4-double-robustness.html"><a href="4-double-robustness.html#linear-approximation"><i class="fa fa-check"></i><b>4.1</b> Linear approximations of parameters</a>
+<ul>
 <li class="chapter" data-level="4.1.1" data-path="4-double-robustness.html"><a href="4-double-robustness.html#from-gradients-to-estimators"><i class="fa fa-check"></i><b>4.1.1</b> From gradients to estimators</a></li>
 <li class="chapter" data-level="4.1.2" data-path="4-double-robustness.html"><a href="4-double-robustness.html#another-Euclidean-perspective"><i class="fa fa-check"></i><b>4.1.2</b> A Euclidean perspective</a></li>
 <li class="chapter" data-level="4.1.3" data-path="4-double-robustness.html"><a href="4-double-robustness.html#the-remainder-term"><i class="fa fa-check"></i><b>4.1.3</b> The remainder term</a></li>
 <li class="chapter" data-level="4.1.4" data-path="4-double-robustness.html"><a href="4-double-robustness.html#expressing-the-remainder-term-as-a-function-of-the-relevant-features"><i class="fa fa-check"></i><b>4.1.4</b> Expressing the remainder term as a function of the relevant features</a></li>
 </ul></li>
 <li class="chapter" data-level="4.2" data-path="4-double-robustness.html"><a href="4-double-robustness.html#exo-remainder-term"><i class="fa fa-check"></i><b>4.2</b> ⚙ The remainder term</a></li>
-<li class="chapter" data-level="4.3" data-path="4-double-robustness.html"><a href="4-double-robustness.html#def-double-robustness"><i class="fa fa-check"></i><b>4.3</b> ☡  Double-robustness</a><ul>
+<li class="chapter" data-level="4.3" data-path="4-double-robustness.html"><a href="4-double-robustness.html#def-double-robustness"><i class="fa fa-check"></i><b>4.3</b> ☡  Double-robustness</a>
+<ul>
 <li class="chapter" data-level="4.3.1" data-path="4-double-robustness.html"><a href="4-double-robustness.html#the-key-property"><i class="fa fa-check"></i><b>4.3.1</b> The key property</a></li>
 <li class="chapter" data-level="4.3.2" data-path="4-double-robustness.html"><a href="4-double-robustness.html#direct-consequence"><i class="fa fa-check"></i><b>4.3.2</b> Its direct consequence</a></li>
 </ul></li>
 <li class="chapter" data-level="4.4" data-path="4-double-robustness.html"><a href="4-double-robustness.html#exo-double-robustness"><i class="fa fa-check"></i><b>4.4</b> ⚙ Double-robustness</a></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="5-inference.html"><a href="5-inference.html"><i class="fa fa-check"></i><b>5</b> Inference</a><ul>
+<li class="chapter" data-level="5" data-path="5-inference.html"><a href="5-inference.html"><i class="fa fa-check"></i><b>5</b> Inference</a>
+<ul>
 <li class="chapter" data-level="5.1" data-path="5-inference.html"><a href="5-inference.html#where-we-stand"><i class="fa fa-check"></i><b>5.1</b> Where we stand</a></li>
 <li class="chapter" data-level="5.2" data-path="5-inference.html"><a href="5-inference.html#where-we-are-going"><i class="fa fa-check"></i><b>5.2</b> Where we are going</a></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html"><i class="fa fa-check"></i><b>6</b> A simple inference strategy</a><ul>
+<li class="chapter" data-level="6" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html"><i class="fa fa-check"></i><b>6</b> A simple inference strategy</a>
+<ul>
 <li class="chapter" data-level="6.1" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#a-cautionary-detour"><i class="fa fa-check"></i><b>6.1</b> A cautionary detour</a></li>
 <li class="chapter" data-level="6.2" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#delta-method"><i class="fa fa-check"></i><b>6.2</b> ⚙ Delta-method</a></li>
-<li class="chapter" data-level="6.3" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#known-gbar-first-pass"><i class="fa fa-check"></i><b>6.3</b> IPTW estimator assuming the mechanism of action known</a><ul>
+<li class="chapter" data-level="6.3" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#known-gbar-first-pass"><i class="fa fa-check"></i><b>6.3</b> IPTW estimator assuming the mechanism of action known</a>
+<ul>
 <li class="chapter" data-level="6.3.1" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#a-simple-estimator"><i class="fa fa-check"></i><b>6.3.1</b> A simple estimator</a></li>
 <li class="chapter" data-level="6.3.2" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#elementary-statistical-properties"><i class="fa fa-check"></i><b>6.3.2</b> Elementary statistical properties</a></li>
 <li class="chapter" data-level="6.3.3" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#empirical-inves-IPTW"><i class="fa fa-check"></i><b>6.3.3</b> Empirical investigation</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="7" data-path="7-nuisance.html"><a href="7-nuisance.html"><i class="fa fa-check"></i><b>7</b> Nuisance parameters</a><ul>
+<li class="chapter" data-level="7" data-path="7-nuisance.html"><a href="7-nuisance.html"><i class="fa fa-check"></i><b>7</b> Nuisance parameters</a>
+<ul>
 <li class="chapter" data-level="7.1" data-path="7-nuisance.html"><a href="7-nuisance.html#anatomy"><i class="fa fa-check"></i><b>7.1</b> Anatomy of an expression</a></li>
 <li class="chapter" data-level="7.2" data-path="7-nuisance.html"><a href="7-nuisance.html#an-algorithmic-stance"><i class="fa fa-check"></i><b>7.2</b> An algorithmic stance</a></li>
 <li class="chapter" data-level="7.3" data-path="7-nuisance.html"><a href="7-nuisance.html#nuisance-QW"><i class="fa fa-check"></i><b>7.3</b> <code>QW</code></a></li>
-<li class="chapter" data-level="7.4" data-path="7-nuisance.html"><a href="7-nuisance.html#nuisance-Gbar"><i class="fa fa-check"></i><b>7.4</b> <code>Gbar</code></a><ul>
+<li class="chapter" data-level="7.4" data-path="7-nuisance.html"><a href="7-nuisance.html#nuisance-Gbar"><i class="fa fa-check"></i><b>7.4</b> <code>Gbar</code></a>
+<ul>
 <li class="chapter" data-level="7.4.1" data-path="7-nuisance.html"><a href="7-nuisance.html#logis-loss"><i class="fa fa-check"></i><b>7.4.1</b> Working model-based algorithms</a></li>
 <li class="chapter" data-level="7.4.2" data-path="7-nuisance.html"><a href="7-nuisance.html#algo-Gbar-one"><i class="fa fa-check"></i><b>7.4.2</b> Visualization</a></li>
 </ul></li>
 <li class="chapter" data-level="7.5" data-path="7-nuisance.html"><a href="7-nuisance.html#nuisance-Qbar-wm"><i class="fa fa-check"></i><b>7.5</b> ⚙ <code>Qbar</code>, working model-based algorithms</a></li>
-<li class="chapter" data-level="7.6" data-path="7-nuisance.html"><a href="7-nuisance.html#nuisance-Qbar"><i class="fa fa-check"></i><b>7.6</b> <code>Qbar</code></a><ul>
+<li class="chapter" data-level="7.6" data-path="7-nuisance.html"><a href="7-nuisance.html#nuisance-Qbar"><i class="fa fa-check"></i><b>7.6</b> <code>Qbar</code></a>
+<ul>
 <li class="chapter" data-level="7.6.1" data-path="7-nuisance.html"><a href="7-nuisance.html#qbar-machine-learning-based-algorithms"><i class="fa fa-check"></i><b>7.6.1</b> <code>Qbar</code>, machine learning-based algorithms</a></li>
 <li class="chapter" data-level="7.6.2" data-path="7-nuisance.html"><a href="7-nuisance.html#Qbar-knn-algo"><i class="fa fa-check"></i><b>7.6.2</b> <code>Qbar</code>, kNN algorithm</a></li>
 <li class="chapter" data-level="7.6.3" data-path="7-nuisance.html"><a href="7-nuisance.html#boosted-trees"><i class="fa fa-check"></i><b>7.6.3</b> <code>Qbar</code>, boosted trees algorithm</a></li>
@@ -257,15 +305,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7.7" data-path="7-nuisance.html"><a href="7-nuisance.html#nuisance-Qbar-ml-exo"><i class="fa fa-check"></i><b>7.7</b> ⚙ ☡  <code>Qbar</code>, machine learning-based algorithms</a></li>
 <li class="chapter" data-level="7.8" data-path="7-nuisance.html"><a href="7-nuisance.html#meta-learning"><i class="fa fa-check"></i><b>7.8</b> Meta-learning/super learning</a></li>
 </ul></li>
-<li class="chapter" data-level="8" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html"><i class="fa fa-check"></i><b>8</b> Two “naive” inference strategies</a><ul>
-<li class="chapter" data-level="8.1" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#why-naive"><i class="fa fa-check"></i><b>8.1</b> Why “naive”?</a></li>
-<li class="chapter" data-level="8.2" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#known-gbar-second-pass"><i class="fa fa-check"></i><b>8.2</b> IPTW estimator</a><ul>
+<li class="chapter" data-level="8" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html"><i class="fa fa-check"></i><b>8</b> Two “naive” inference strategies</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#why-naive"><i class="fa fa-check"></i><b>8.1</b> Why “naive?”</a></li>
+<li class="chapter" data-level="8.2" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#known-gbar-second-pass"><i class="fa fa-check"></i><b>8.2</b> IPTW estimator</a>
+<ul>
 <li class="chapter" data-level="8.2.1" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#unknown-gbar-constr"><i class="fa fa-check"></i><b>8.2.1</b> Construction and computation</a></li>
 <li class="chapter" data-level="8.2.2" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#elementary-stat-prop-iptw"><i class="fa fa-check"></i><b>8.2.2</b> Elementary statistical properties</a></li>
 <li class="chapter" data-level="8.2.3" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#empirical-inves-IPTW-bis"><i class="fa fa-check"></i><b>8.2.3</b> Empirical investigation</a></li>
 </ul></li>
 <li class="chapter" data-level="8.3" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#exo-a-nice-title"><i class="fa fa-check"></i><b>8.3</b> ⚙ Investigating further the IPTW inference strategy</a></li>
-<li class="chapter" data-level="8.4" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#Gcomp-estimator"><i class="fa fa-check"></i><b>8.4</b> G-computation estimator</a><ul>
+<li class="chapter" data-level="8.4" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#Gcomp-estimator"><i class="fa fa-check"></i><b>8.4</b> G-computation estimator</a>
+<ul>
 <li class="chapter" data-level="8.4.1" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#Gcomp-construction"><i class="fa fa-check"></i><b>8.4.1</b> Construction and computation</a></li>
 <li class="chapter" data-level="8.4.2" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#elementary-statistical-properties-1"><i class="fa fa-check"></i><b>8.4.2</b> Elementary statistical properties</a></li>
 <li class="chapter" data-level="8.4.3" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#empirical-inves-Gcomp"><i class="fa fa-check"></i><b>8.4.3</b> Empirical investigation, fixed sample size</a></li>
@@ -273,19 +324,23 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="8.5" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#exo-plug-in-estimate"><i class="fa fa-check"></i><b>8.5</b> ⚙ Investigating further the G-computation estimation strategy</a></li>
 </ul></li>
-<li class="chapter" data-level="9" data-path="9-one-step.html"><a href="9-one-step.html"><i class="fa fa-check"></i><b>9</b> One-step correction</a><ul>
+<li class="chapter" data-level="9" data-path="9-one-step.html"><a href="9-one-step.html"><i class="fa fa-check"></i><b>9</b> One-step correction</a>
+<ul>
 <li class="chapter" data-level="9.1" data-path="9-one-step.html"><a href="9-one-step.html#analysis-of-plug-in"><i class="fa fa-check"></i><b>9.1</b> ☡  General analysis of plug-in estimators</a></li>
 <li class="chapter" data-level="9.2" data-path="9-one-step.html"><a href="9-one-step.html#huber-one-step"><i class="fa fa-check"></i><b>9.2</b> One-step correction</a></li>
 <li class="chapter" data-level="9.3" data-path="9-one-step.html"><a href="9-one-step.html#empirical-inves-one-step"><i class="fa fa-check"></i><b>9.3</b> Empirical investigation</a></li>
 <li class="chapter" data-level="9.4" data-path="9-one-step.html"><a href="9-one-step.html#exo-one-step"><i class="fa fa-check"></i><b>9.4</b> ⚙ Investigating further the one-step correction methodology</a></li>
 </ul></li>
-<li class="chapter" data-level="10" data-path="10-TMLE.html"><a href="10-TMLE.html"><i class="fa fa-check"></i><b>10</b> Targeted minimum loss-based estimation</a><ul>
-<li class="chapter" data-level="10.1" data-path="10-TMLE.html"><a href="10-TMLE.html#TMLE-motivations"><i class="fa fa-check"></i><b>10.1</b> Motivations</a><ul>
+<li class="chapter" data-level="10" data-path="10-TMLE.html"><a href="10-TMLE.html"><i class="fa fa-check"></i><b>10</b> Targeted minimum loss-based estimation</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="10-TMLE.html"><a href="10-TMLE.html#TMLE-motivations"><i class="fa fa-check"></i><b>10.1</b> Motivations</a>
+<ul>
 <li class="chapter" data-level="10.1.1" data-path="10-TMLE.html"><a href="10-TMLE.html#falling-outside-the-parameter-space"><i class="fa fa-check"></i><b>10.1.1</b> Falling outside the parameter space</a></li>
 <li class="chapter" data-level="10.1.2" data-path="10-TMLE.html"><a href="10-TMLE.html#eic-equation"><i class="fa fa-check"></i><b>10.1.2</b> The influence curve equation</a></li>
 <li class="chapter" data-level="10.1.3" data-path="10-TMLE.html"><a href="10-TMLE.html#basic-fact"><i class="fa fa-check"></i><b>10.1.3</b> A basic fact on the influence curve equation</a></li>
 </ul></li>
-<li class="chapter" data-level="10.2" data-path="10-TMLE.html"><a href="10-TMLE.html#targeted-fluctuation-TMLE"><i class="fa fa-check"></i><b>10.2</b> Targeted fluctuation</a><ul>
+<li class="chapter" data-level="10.2" data-path="10-TMLE.html"><a href="10-TMLE.html#targeted-fluctuation-TMLE"><i class="fa fa-check"></i><b>10.2</b> Targeted fluctuation</a>
+<ul>
 <li class="chapter" data-level="10.2.1" data-path="10-TMLE.html"><a href="10-TMLE.html#fluctuating-indirectly"><i class="fa fa-check"></i><b>10.2.1</b> ☡  Fluctuating indirectly</a></li>
 <li class="chapter" data-level="10.2.2" data-path="10-TMLE.html"><a href="10-TMLE.html#fluct-direct"><i class="fa fa-check"></i><b>10.2.2</b> Fluctuating directly</a></li>
 <li class="chapter" data-level="10.2.3" data-path="10-TMLE.html"><a href="10-TMLE.html#exo-fluct"><i class="fa fa-check"></i><b>10.2.3</b> ⚙ More on fluctuations</a></li>
@@ -294,7 +349,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="10.2.6" data-path="10-TMLE.html"><a href="10-TMLE.html#exo-tmle-flucs"><i class="fa fa-check"></i><b>10.2.6</b> ⚙ Alternative fluctuation</a></li>
 </ul></li>
 <li class="chapter" data-level="10.3" data-path="10-TMLE.html"><a href="10-TMLE.html#summary-and-perspectives"><i class="fa fa-check"></i><b>10.3</b> Summary and perspectives</a></li>
-<li class="chapter" data-level="10.4" data-path="10-TMLE.html"><a href="10-TMLE.html#empirical-inves-tmle"><i class="fa fa-check"></i><b>10.4</b> Empirical investigation</a><ul>
+<li class="chapter" data-level="10.4" data-path="10-TMLE.html"><a href="10-TMLE.html#empirical-inves-tmle"><i class="fa fa-check"></i><b>10.4</b> Empirical investigation</a>
+<ul>
 <li class="chapter" data-level="10.4.1" data-path="10-TMLE.html"><a href="10-TMLE.html#empirical-inves-tmle-first"><i class="fa fa-check"></i><b>10.4.1</b> A first numerical application</a></li>
 <li class="chapter" data-level="10.4.2" data-path="10-TMLE.html"><a href="10-TMLE.html#exo-tmle"><i class="fa fa-check"></i><b>10.4.2</b> ⚙ A computational exploration</a></li>
 <li class="chapter" data-level="10.4.3" data-path="10-TMLE.html"><a href="10-TMLE.html#empirical-investigation"><i class="fa fa-check"></i><b>10.4.3</b> Empirical investigation</a></li>
@@ -303,10 +359,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="11" data-path="11-closing-words.html"><a href="11-closing-words.html"><i class="fa fa-check"></i><b>11</b> Closing words</a></li>
 <li class="appendix"><span><b>Appendix</b></span></li>
 <li class="chapter" data-level="A" data-path="A-notation.html"><a href="A-notation.html"><i class="fa fa-check"></i><b>A</b> Notation</a></li>
-<li class="chapter" data-level="B" data-path="B-proofs.html"><a href="B-proofs.html"><i class="fa fa-check"></i><b>B</b> Basic results and their proofs</a><ul>
+<li class="chapter" data-level="B" data-path="B-proofs.html"><a href="B-proofs.html"><i class="fa fa-check"></i><b>B</b> Basic results and their proofs</a>
+<ul>
 <li class="chapter" data-level="B.1" data-path="B-proofs.html"><a href="B-proofs.html#npsem"><i class="fa fa-check"></i><b>B.1</b> NPSEM</a></li>
 <li class="chapter" data-level="B.2" data-path="B-proofs.html"><a href="B-proofs.html#identification"><i class="fa fa-check"></i><b>B.2</b> Identification</a></li>
-<li class="chapter" data-level="B.3" data-path="B-proofs.html"><a href="B-proofs.html#confidence-interval"><i class="fa fa-check"></i><b>B.3</b> Building a confidence interval</a><ul>
+<li class="chapter" data-level="B.3" data-path="B-proofs.html"><a href="B-proofs.html#confidence-interval"><i class="fa fa-check"></i><b>B.3</b> Building a confidence interval</a>
+<ul>
 <li class="chapter" data-level="B.3.1" data-path="B-proofs.html"><a href="B-proofs.html#clt"><i class="fa fa-check"></i><b>B.3.1</b> CLT &amp; Slutsky’s lemma</a></li>
 <li class="chapter" data-level="B.3.2" data-path="B-proofs.html"><a href="B-proofs.html#order"><i class="fa fa-check"></i><b>B.3.2</b> CLT and order statistics</a></li>
 </ul></li>
@@ -314,17 +372,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="B.5" data-path="B-proofs.html"><a href="B-proofs.html#prop-delta-method"><i class="fa fa-check"></i><b>B.5</b> The delta-method</a></li>
 <li class="chapter" data-level="B.6" data-path="B-proofs.html"><a href="B-proofs.html#oracle-logistic-risk"><i class="fa fa-check"></i><b>B.6</b> The oracle logistic risk</a></li>
 </ul></li>
-<li class="chapter" data-level="C" data-path="C-more-proofs.html"><a href="C-more-proofs.html"><i class="fa fa-check"></i><b>C</b> More results and their proofs</a><ul>
-<li class="chapter" data-level="C.1" data-path="C-more-proofs.html"><a href="C-more-proofs.html#estimation-of-the-asymptotic-variance-of-an-estimator"><i class="fa fa-check"></i><b>C.1</b> Estimation of the asymptotic variance of an estimator</a><ul>
+<li class="chapter" data-level="C" data-path="C-more-proofs.html"><a href="C-more-proofs.html"><i class="fa fa-check"></i><b>C</b> More results and their proofs</a>
+<ul>
+<li class="chapter" data-level="C.1" data-path="C-more-proofs.html"><a href="C-more-proofs.html#estimation-of-the-asymptotic-variance-of-an-estimator"><i class="fa fa-check"></i><b>C.1</b> Estimation of the asymptotic variance of an estimator</a>
+<ul>
 <li class="chapter" data-level="C.1.1" data-path="C-more-proofs.html"><a href="C-more-proofs.html#iptw-est-var"><i class="fa fa-check"></i><b>C.1.1</b> IPTW estimator based on a well-specified model</a></li>
 <li class="chapter" data-level="C.1.2" data-path="C-more-proofs.html"><a href="C-more-proofs.html#gcomp-est-var"><i class="fa fa-check"></i><b>C.1.2</b> G-computation estimator based on a well-specified model</a></li>
 </ul></li>
-<li class="chapter" data-level="C.2" data-path="C-more-proofs.html"><a href="C-more-proofs.html#app-analysis-of-plug-in"><i class="fa fa-check"></i><b>C.2</b> ☡  General analysis of plug-in estimators</a><ul>
+<li class="chapter" data-level="C.2" data-path="C-more-proofs.html"><a href="C-more-proofs.html#app-analysis-of-plug-in"><i class="fa fa-check"></i><b>C.2</b> ☡  General analysis of plug-in estimators</a>
+<ul>
 <li class="chapter" data-level="C.2.1" data-path="C-more-proofs.html"><a href="C-more-proofs.html#app-analysis-of-plug-in-main"><i class="fa fa-check"></i><b>C.2.1</b> Main analysis</a></li>
 <li class="chapter" data-level="C.2.2" data-path="C-more-proofs.html"><a href="C-more-proofs.html#estimation-of-the-asymptotic-variance"><i class="fa fa-check"></i><b>C.2.2</b> Estimation of the asymptotic variance</a></li>
 </ul></li>
 <li class="chapter" data-level="C.3" data-path="C-more-proofs.html"><a href="C-more-proofs.html#asymp-neglig-remain"><i class="fa fa-check"></i><b>C.3</b> Asymptotic negligibility of the remainder term</a></li>
-<li class="chapter" data-level="C.4" data-path="C-more-proofs.html"><a href="C-more-proofs.html#analysis-TMLE"><i class="fa fa-check"></i><b>C.4</b> Analysis of targeted estimators</a><ul>
+<li class="chapter" data-level="C.4" data-path="C-more-proofs.html"><a href="C-more-proofs.html#analysis-TMLE"><i class="fa fa-check"></i><b>C.4</b> Analysis of targeted estimators</a>
+<ul>
 <li class="chapter" data-level="C.4.1" data-path="C-more-proofs.html"><a href="C-more-proofs.html#basic-eic-eq"><i class="fa fa-check"></i><b>C.4.1</b> A basic fact on the influence curve equation</a></li>
 <li class="chapter" data-level="C.4.2" data-path="C-more-proofs.html"><a href="C-more-proofs.html#fluct-reg"><i class="fa fa-check"></i><b>C.4.2</b> Fluctuation of the regression function along the fluctuation of a law</a></li>
 <li class="chapter" data-level="C.4.3" data-path="C-more-proofs.html"><a href="C-more-proofs.html#fluct-score"><i class="fa fa-check"></i><b>C.4.3</b> Computing the score of a fluctuation of the regression function</a></li>
@@ -375,10 +437,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 \(\DeclareMathOperator{\logit}{logit}\)
 \(\DeclareMathOperator{\Rem}{Rem}\)
 \(\DeclareMathOperator{\Var}{Var}\)
-<div id="smooth" class="section level1">
-<h1><span class="header-section-number">Section 3</span> Smoothness</h1>
-<div id="smooth-first-pass" class="section level2">
-<h2><span class="header-section-number">3.1</span> Fluctuating smoothly</h2>
+<div id="smooth" class="section level1 hasAnchor" number="3">
+<h1><span class="header-section-number">Section 3</span> Smoothness<a href="3-smooth.html#smooth" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="smooth-first-pass" class="section level2 hasAnchor" number="3.1">
+<h2><span class="header-section-number">3.1</span> Fluctuating smoothly<a href="3-smooth.html#smooth-first-pass" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Within our view of the target parameter as a statistical mapping evaluated at
 the law of the experiment, it is natural to inquire of properties this
 functional enjoys. For example, we may be interested in asking how the value
@@ -391,57 +453,57 @@ might hypothesize that it will be difficult to produce stable estimators of
 the model, we require a more concrete notion of what it means to <em>get near</em> to
 a distribution in a model. The notion
 hinges on fluctuations (or fluctuating models).</p>
-<div id="fluctuations" class="section level3">
-<h3><span class="header-section-number">3.1.1</span> The <code>another_experiment</code> fluctuation</h3>
+<div id="fluctuations" class="section level3 hasAnchor" number="3.1.1">
+<h3><span class="header-section-number">3.1.1</span> The <code>another_experiment</code> fluctuation<a href="3-smooth.html#fluctuations" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>In Section <a href="2-parameter.html#value-another-experiment">2.3.3</a>, we discussed the nature of the
 object called <code>another_experiment</code> that was created when we ran
 <code>example(tlrider)</code>:</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1">another_experiment</a>
-<a class="sourceLine" id="cb24-2" data-line-number="2"><span class="co">#&gt; A law for (W,A,Y) in [0,1] x {0,1} x [0,1].</span></a>
-<a class="sourceLine" id="cb24-3" data-line-number="3"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb24-4" data-line-number="4"><span class="co">#&gt; If the law is fully characterized, you can use method</span></a>
-<a class="sourceLine" id="cb24-5" data-line-number="5"><span class="co">#&gt; &#39;sample_from&#39; to sample from it.</span></a>
-<a class="sourceLine" id="cb24-6" data-line-number="6"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb24-7" data-line-number="7"><span class="co">#&gt; If you built the law, or if you are an _oracle_, you can also</span></a>
-<a class="sourceLine" id="cb24-8" data-line-number="8"><span class="co">#&gt; use methods &#39;reveal&#39; to reveal its relevant features (QW, Gbar,</span></a>
-<a class="sourceLine" id="cb24-9" data-line-number="9"><span class="co">#&gt; Qbar, qY -- see &#39;?reveal&#39;), and &#39;alter&#39; to change some of them.</span></a>
-<a class="sourceLine" id="cb24-10" data-line-number="10"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb24-11" data-line-number="11"><span class="co">#&gt; If all its relevant features are characterized, you can use</span></a>
-<a class="sourceLine" id="cb24-12" data-line-number="12"><span class="co">#&gt; methods &#39;evaluate_psi&#39; to obtain the value of &#39;Psi&#39; at this law</span></a>
-<a class="sourceLine" id="cb24-13" data-line-number="13"><span class="co">#&gt; (see &#39;?evaluate_psi&#39;) and &#39;evaluate_eic&#39; to obtain the efficient</span></a>
-<a class="sourceLine" id="cb24-14" data-line-number="14"><span class="co">#&gt; influence curve of &#39;Psi&#39; at this law (see &#39;?evaluate_eic&#39;).</span></a></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="3-smooth.html#cb24-1" aria-hidden="true" tabindex="-1"></a>another_experiment</span>
+<span id="cb24-2"><a href="3-smooth.html#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; A law for (W,A,Y) in [0,1] x {0,1} x [0,1].</span></span>
+<span id="cb24-3"><a href="3-smooth.html#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb24-4"><a href="3-smooth.html#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; If the law is fully characterized, you can use method</span></span>
+<span id="cb24-5"><a href="3-smooth.html#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &#39;sample_from&#39; to sample from it.</span></span>
+<span id="cb24-6"><a href="3-smooth.html#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb24-7"><a href="3-smooth.html#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; If you built the law, or if you are an _oracle_, you can also</span></span>
+<span id="cb24-8"><a href="3-smooth.html#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; use methods &#39;reveal&#39; to reveal its relevant features (QW, Gbar,</span></span>
+<span id="cb24-9"><a href="3-smooth.html#cb24-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Qbar, qY -- see &#39;?reveal&#39;), and &#39;alter&#39; to change some of them.</span></span>
+<span id="cb24-10"><a href="3-smooth.html#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb24-11"><a href="3-smooth.html#cb24-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; If all its relevant features are characterized, you can use</span></span>
+<span id="cb24-12"><a href="3-smooth.html#cb24-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; methods &#39;evaluate_psi&#39; to obtain the value of &#39;Psi&#39; at this law</span></span>
+<span id="cb24-13"><a href="3-smooth.html#cb24-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; (see &#39;?evaluate_psi&#39;) and &#39;evaluate_eic&#39; to obtain the efficient</span></span>
+<span id="cb24-14"><a href="3-smooth.html#cb24-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; influence curve of &#39;Psi&#39; at this law (see &#39;?evaluate_eic&#39;).</span></span></code></pre></div>
 <p>The message is a little misleading. Indeed, <code>another_experiment</code> is not <em>a</em>
 law but, rather, a <em>collection</em> of laws indexed by a real-valued parameter
 <code>h</code>. This oracular statement (we built the object!) is evident when one looks
 again at the <code>sample_from</code> feature of <code>another_experiment</code>:</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1"><span class="kw">reveal</span>(another_experiment)<span class="op">$</span>sample_from</a>
-<a class="sourceLine" id="cb25-2" data-line-number="2"><span class="co">#&gt; function(n, h) {</span></a>
-<a class="sourceLine" id="cb25-3" data-line-number="3"><span class="co">#&gt;         ## preliminary</span></a>
-<a class="sourceLine" id="cb25-4" data-line-number="4"><span class="co">#&gt;         n &lt;- R.utils::Arguments$getInteger(n, c(1, Inf))</span></a>
-<a class="sourceLine" id="cb25-5" data-line-number="5"><span class="co">#&gt;         h &lt;- R.utils::Arguments$getNumeric(h)</span></a>
-<a class="sourceLine" id="cb25-6" data-line-number="6"><span class="co">#&gt;         ## ## &#39;Gbar&#39; and &#39;Qbar&#39; factors</span></a>
-<a class="sourceLine" id="cb25-7" data-line-number="7"><span class="co">#&gt;         Gbar &lt;- another_experiment$.Gbar</span></a>
-<a class="sourceLine" id="cb25-8" data-line-number="8"><span class="co">#&gt;         Qbar &lt;- another_experiment$.Qbar</span></a>
-<a class="sourceLine" id="cb25-9" data-line-number="9"><span class="co">#&gt;         ## sampling</span></a>
-<a class="sourceLine" id="cb25-10" data-line-number="10"><span class="co">#&gt;         ## ## context</span></a>
-<a class="sourceLine" id="cb25-11" data-line-number="11"><span class="co">#&gt;         params &lt;- formals(another_experiment$.QW)</span></a>
-<a class="sourceLine" id="cb25-12" data-line-number="12"><span class="co">#&gt;         W &lt;- stats::runif(n, min = eval(params$min),</span></a>
-<a class="sourceLine" id="cb25-13" data-line-number="13"><span class="co">#&gt;                    max = eval(params$max))</span></a>
-<a class="sourceLine" id="cb25-14" data-line-number="14"><span class="co">#&gt;         ## ## action undertaken</span></a>
-<a class="sourceLine" id="cb25-15" data-line-number="15"><span class="co">#&gt;         A &lt;- stats::rbinom(n, size = 1, prob = Gbar(W))</span></a>
-<a class="sourceLine" id="cb25-16" data-line-number="16"><span class="co">#&gt;         ## ## reward</span></a>
-<a class="sourceLine" id="cb25-17" data-line-number="17"><span class="co">#&gt;         params &lt;- formals(another_experiment$.qY)</span></a>
-<a class="sourceLine" id="cb25-18" data-line-number="18"><span class="co">#&gt;         shape1 &lt;- eval(params$shape1)</span></a>
-<a class="sourceLine" id="cb25-19" data-line-number="19"><span class="co">#&gt;         QAW &lt;- Qbar(cbind(A = A, W = W), h = h)</span></a>
-<a class="sourceLine" id="cb25-20" data-line-number="20"><span class="co">#&gt;         Y &lt;- stats::rbeta(n,</span></a>
-<a class="sourceLine" id="cb25-21" data-line-number="21"><span class="co">#&gt;                           shape1 = shape1,</span></a>
-<a class="sourceLine" id="cb25-22" data-line-number="22"><span class="co">#&gt;                           shape2 = shape1 * (1 - QAW) / QAW)</span></a>
-<a class="sourceLine" id="cb25-23" data-line-number="23"><span class="co">#&gt;         ## ## observation</span></a>
-<a class="sourceLine" id="cb25-24" data-line-number="24"><span class="co">#&gt;         obs &lt;- cbind(W = W, A = A, Y = Y)</span></a>
-<a class="sourceLine" id="cb25-25" data-line-number="25"><span class="co">#&gt;         return(obs)</span></a>
-<a class="sourceLine" id="cb25-26" data-line-number="26"><span class="co">#&gt;       }</span></a>
-<a class="sourceLine" id="cb25-27" data-line-number="27"><span class="co">#&gt; &lt;bytecode: 0xa23ec20&gt;</span></a>
-<a class="sourceLine" id="cb25-28" data-line-number="28"><span class="co">#&gt; &lt;environment: 0x1153d6d8&gt;</span></a></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="3-smooth.html#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">reveal</span>(another_experiment)<span class="sc">$</span>sample_from</span>
+<span id="cb25-2"><a href="3-smooth.html#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; function(n, h) {</span></span>
+<span id="cb25-3"><a href="3-smooth.html#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         ## preliminary</span></span>
+<span id="cb25-4"><a href="3-smooth.html#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         n &lt;- R.utils::Arguments$getInteger(n, c(1, Inf))</span></span>
+<span id="cb25-5"><a href="3-smooth.html#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         h &lt;- R.utils::Arguments$getNumeric(h)</span></span>
+<span id="cb25-6"><a href="3-smooth.html#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         ## ## &#39;Gbar&#39; and &#39;Qbar&#39; factors</span></span>
+<span id="cb25-7"><a href="3-smooth.html#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         Gbar &lt;- another_experiment$.Gbar</span></span>
+<span id="cb25-8"><a href="3-smooth.html#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         Qbar &lt;- another_experiment$.Qbar</span></span>
+<span id="cb25-9"><a href="3-smooth.html#cb25-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         ## sampling</span></span>
+<span id="cb25-10"><a href="3-smooth.html#cb25-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         ## ## context</span></span>
+<span id="cb25-11"><a href="3-smooth.html#cb25-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         params &lt;- formals(another_experiment$.QW)</span></span>
+<span id="cb25-12"><a href="3-smooth.html#cb25-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         W &lt;- stats::runif(n, min = eval(params$min),</span></span>
+<span id="cb25-13"><a href="3-smooth.html#cb25-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                    max = eval(params$max))</span></span>
+<span id="cb25-14"><a href="3-smooth.html#cb25-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         ## ## action undertaken</span></span>
+<span id="cb25-15"><a href="3-smooth.html#cb25-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         A &lt;- stats::rbinom(n, size = 1, prob = Gbar(W))</span></span>
+<span id="cb25-16"><a href="3-smooth.html#cb25-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         ## ## reward</span></span>
+<span id="cb25-17"><a href="3-smooth.html#cb25-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         params &lt;- formals(another_experiment$.qY)</span></span>
+<span id="cb25-18"><a href="3-smooth.html#cb25-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         shape1 &lt;- eval(params$shape1)</span></span>
+<span id="cb25-19"><a href="3-smooth.html#cb25-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         QAW &lt;- Qbar(cbind(A = A, W = W), h = h)</span></span>
+<span id="cb25-20"><a href="3-smooth.html#cb25-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         Y &lt;- stats::rbeta(n,</span></span>
+<span id="cb25-21"><a href="3-smooth.html#cb25-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                           shape1 = shape1,</span></span>
+<span id="cb25-22"><a href="3-smooth.html#cb25-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                           shape2 = shape1 * (1 - QAW) / QAW)</span></span>
+<span id="cb25-23"><a href="3-smooth.html#cb25-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         ## ## observation</span></span>
+<span id="cb25-24"><a href="3-smooth.html#cb25-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         obs &lt;- cbind(W = W, A = A, Y = Y)</span></span>
+<span id="cb25-25"><a href="3-smooth.html#cb25-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         return(obs)</span></span>
+<span id="cb25-26"><a href="3-smooth.html#cb25-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       }</span></span>
+<span id="cb25-27"><a href="3-smooth.html#cb25-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &lt;bytecode: 0x56115cf79c38&gt;</span></span>
+<span id="cb25-28"><a href="3-smooth.html#cb25-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &lt;environment: 0x56115878c6d8&gt;</span></span></code></pre></div>
 <p>Let us call <span class="math inline">\(\Pi_{h} \in \calM\)</span> the law encoded by <code>another_experiment</code> for a
 given <code>h</code> taken in <span class="math inline">\(]-1,1[\)</span>. Note that <span class="math display">\[\begin{equation*}\calP  \defq
 \{\Pi_h : h \in ]-1,1[\}\end{equation*}\]</span> defines a collection of laws, <em>i.e.</em>,
@@ -461,30 +523,30 @@ can study how the value of the parameter changes as we move away from a law
 should hope that <span class="math inline">\(\Psi\)</span> is <em>differentiable</em> along our submodel at <span class="math inline">\(P\)</span>. This idea too is formalized in Section <a href="3-smooth.html#smooth-second-pass">3.3</a>. We now turn
 to illustrating this idea numerically.</p>
 </div>
-<div id="numerical-illus" class="section level3">
-<h3><span class="header-section-number">3.1.2</span> Numerical illustration</h3>
+<div id="numerical-illus" class="section level3 hasAnchor" number="3.1.2">
+<h3><span class="header-section-number">3.1.2</span> Numerical illustration<a href="3-smooth.html#numerical-illus" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>The code below evaluates how the parameter changes for laws in <span class="math inline">\(\calP\)</span>, and
 approximates the derivative of the parameter along the submodel <span class="math inline">\(\calP\)</span> at
 <span class="math inline">\(\Pi_0\)</span>. Recall that the numerical value of <span class="math inline">\(\Psi(\Pi_{0})\)</span> has already been
 computed and is stored in object <code>psi_Pi_zero</code>.</p>
 
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1">approx &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dt">length.out =</span> <span class="fl">1e2</span>)</a>
-<a class="sourceLine" id="cb26-2" data-line-number="2">psi_Pi_h &lt;-<span class="st"> </span><span class="kw">sapply</span>(approx, <span class="cf">function</span>(t) {</a>
-<a class="sourceLine" id="cb26-3" data-line-number="3">  <span class="kw">evaluate_psi</span>(another_experiment, <span class="dt">h =</span> t)</a>
-<a class="sourceLine" id="cb26-4" data-line-number="4">})</a>
-<a class="sourceLine" id="cb26-5" data-line-number="5">slope_approx &lt;-<span class="st"> </span>(psi_Pi_h <span class="op">-</span><span class="st"> </span>psi_Pi_zero) <span class="op">/</span><span class="st"> </span>approx</a>
-<a class="sourceLine" id="cb26-6" data-line-number="6">slope_approx &lt;-<span class="st"> </span>slope_approx[<span class="kw">min</span>(<span class="kw">which</span>(approx <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>))]</a>
-<a class="sourceLine" id="cb26-7" data-line-number="7"><span class="kw">ggplot</span>() <span class="op">+</span></a>
-<a class="sourceLine" id="cb26-8" data-line-number="8"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> <span class="kw">data.frame</span>(<span class="dt">x =</span> approx, <span class="dt">y =</span> psi_Pi_h), <span class="kw">aes</span>(x, y),</a>
-<a class="sourceLine" id="cb26-9" data-line-number="9">             <span class="dt">color =</span> <span class="st">&quot;#CC6666&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb26-10" data-line-number="10"><span class="st">  </span><span class="kw">geom_segment</span>(<span class="kw">aes</span>(<span class="dt">x =</span> <span class="dv">-1</span>, <span class="dt">y =</span> psi_Pi_zero <span class="op">-</span><span class="st"> </span>slope_approx,</a>
-<a class="sourceLine" id="cb26-11" data-line-number="11">                   <span class="dt">xend =</span> <span class="dv">1</span>, <span class="dt">yend =</span> psi_Pi_zero <span class="op">+</span><span class="st"> </span>slope_approx),</a>
-<a class="sourceLine" id="cb26-12" data-line-number="12">               <span class="dt">arrow =</span> <span class="kw">arrow</span>(<span class="dt">length =</span> <span class="kw">unit</span>(<span class="fl">0.03</span>, <span class="st">&quot;npc&quot;</span>)),</a>
-<a class="sourceLine" id="cb26-13" data-line-number="13">               <span class="dt">color =</span> <span class="st">&quot;#9999CC&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb26-14" data-line-number="14"><span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="dv">0</span>, <span class="dt">color =</span> <span class="st">&quot;#66CC99&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb26-15" data-line-number="15"><span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> psi_Pi_zero, <span class="dt">color =</span> <span class="st">&quot;#66CC99&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb26-16" data-line-number="16"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;h&quot;</span>, <span class="dt">y =</span> <span class="kw">expression</span>(<span class="kw">Psi</span>(Pi[h]))) </a></code></pre></div>
-<div class="figure" style="text-align: center"><span id="fig:psi-approx-psi-one"></span>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="3-smooth.html#cb26-1" aria-hidden="true" tabindex="-1"></a>approx <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="at">length.out =</span> <span class="fl">1e2</span>)</span>
+<span id="cb26-2"><a href="3-smooth.html#cb26-2" aria-hidden="true" tabindex="-1"></a>psi_Pi_h <span class="ot">&lt;-</span> <span class="fu">sapply</span>(approx, <span class="cf">function</span>(t) {</span>
+<span id="cb26-3"><a href="3-smooth.html#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">evaluate_psi</span>(another_experiment, <span class="at">h =</span> t)</span>
+<span id="cb26-4"><a href="3-smooth.html#cb26-4" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb26-5"><a href="3-smooth.html#cb26-5" aria-hidden="true" tabindex="-1"></a>slope_approx <span class="ot">&lt;-</span> (psi_Pi_h <span class="sc">-</span> psi_Pi_zero) <span class="sc">/</span> approx</span>
+<span id="cb26-6"><a href="3-smooth.html#cb26-6" aria-hidden="true" tabindex="-1"></a>slope_approx <span class="ot">&lt;-</span> slope_approx[<span class="fu">min</span>(<span class="fu">which</span>(approx <span class="sc">&gt;</span> <span class="dv">0</span>))]</span>
+<span id="cb26-7"><a href="3-smooth.html#cb26-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb26-8"><a href="3-smooth.html#cb26-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> <span class="fu">data.frame</span>(<span class="at">x =</span> approx, <span class="at">y =</span> psi_Pi_h), <span class="fu">aes</span>(x, y),</span>
+<span id="cb26-9"><a href="3-smooth.html#cb26-9" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">&quot;#CC6666&quot;</span>) <span class="sc">+</span></span>
+<span id="cb26-10"><a href="3-smooth.html#cb26-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">y =</span> psi_Pi_zero <span class="sc">-</span> slope_approx,</span>
+<span id="cb26-11"><a href="3-smooth.html#cb26-11" aria-hidden="true" tabindex="-1"></a>                   <span class="at">xend =</span> <span class="dv">1</span>, <span class="at">yend =</span> psi_Pi_zero <span class="sc">+</span> slope_approx),</span>
+<span id="cb26-12"><a href="3-smooth.html#cb26-12" aria-hidden="true" tabindex="-1"></a>               <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.03</span>, <span class="st">&quot;npc&quot;</span>)),</span>
+<span id="cb26-13"><a href="3-smooth.html#cb26-13" aria-hidden="true" tabindex="-1"></a>               <span class="at">color =</span> <span class="st">&quot;#9999CC&quot;</span>) <span class="sc">+</span></span>
+<span id="cb26-14"><a href="3-smooth.html#cb26-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">&quot;#66CC99&quot;</span>) <span class="sc">+</span></span>
+<span id="cb26-15"><a href="3-smooth.html#cb26-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> psi_Pi_zero, <span class="at">color =</span> <span class="st">&quot;#66CC99&quot;</span>) <span class="sc">+</span></span>
+<span id="cb26-16"><a href="3-smooth.html#cb26-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;h&quot;</span>, <span class="at">y =</span> <span class="fu">expression</span>(<span class="fu">Psi</span>(Pi[h]))) </span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:psi-approx-psi-one"></span>
 <img src="img/psi-approx-psi-one-1.png" alt="Evolution of statistical mapping \(\Psi\) along fluctuation \(\{\Pi_{h} : h \in H\}\)." width="70%" />
 <p class="caption">
 Figure 3.1: Evolution of statistical mapping <span class="math inline">\(\Psi\)</span> along fluctuation <span class="math inline">\(\{\Pi_{h} : h \in H\}\)</span>.
@@ -496,24 +558,24 @@ be differentiable around <span class="math inline">\(h=0\)</span>. In Section <a
 closed-form expression for the slope of the blue curve.</p>
 </div>
 </div>
-<div id="exo-yet-another-experiment" class="section level2">
-<h2><span class="header-section-number">3.2</span> ⚙ Yet another experiment</h2>
+<div id="exo-yet-another-experiment" class="section level2 hasAnchor" number="3.2">
+<h2><span class="header-section-number">3.2</span> ⚙ Yet another experiment<a href="3-smooth.html#exo-yet-another-experiment" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <ol style="list-style-type: decimal">
 <li><p>Adapt the code from Problem 1 in Section <a href="1-a-ride.html#exo-visualization">1.3</a> to
 visualize <span class="math inline">\(w \mapsto \Exp_{\Pi_h}(Y | A = 1, W = w)\)</span>, <span class="math inline">\(w \mapsto \Exp_{\Pi_h}(Y | A = 0, W=w)\)</span>, and <span class="math inline">\(w \mapsto \Exp_{\Pi_h}(Y | A = 1, W=w) - \Exp_{\Pi_h}(Y | A = 0, W=w)\)</span>, for <span class="math inline">\(h \in \{-1/2, 0, 1/2\}\)</span>.</p></li>
 <li><p>Run the following chunk of code.</p></li>
 </ol>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1">yet_another_experiment &lt;-<span class="st"> </span><span class="kw">copy</span>(another_experiment)</a>
-<a class="sourceLine" id="cb27-2" data-line-number="2"><span class="kw">alter</span>(yet_another_experiment,</a>
-<a class="sourceLine" id="cb27-3" data-line-number="3">      <span class="dt">Qbar =</span> <span class="cf">function</span>(AW, h){</a>
-<a class="sourceLine" id="cb27-4" data-line-number="4">        A &lt;-<span class="st"> </span>AW[, <span class="st">&quot;A&quot;</span>]</a>
-<a class="sourceLine" id="cb27-5" data-line-number="5">        W &lt;-<span class="st"> </span>AW[, <span class="st">&quot;W&quot;</span>]</a>
-<a class="sourceLine" id="cb27-6" data-line-number="6">        <span class="kw">expit</span>( <span class="kw">logit</span>( A <span class="op">*</span><span class="st"> </span>W <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>A) <span class="op">*</span><span class="st"> </span>W<span class="op">^</span><span class="dv">2</span> ) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb27-7" data-line-number="7"><span class="st">               </span>h <span class="op">*</span><span class="st"> </span>(<span class="dv">2</span><span class="op">*</span>A <span class="op">-</span><span class="st"> </span><span class="dv">1</span>) <span class="op">/</span><span class="st"> </span><span class="kw">ifelse</span>(A <span class="op">==</span><span class="st"> </span><span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb27-8" data-line-number="8">                                      <span class="kw">sin</span>((<span class="dv">1</span> <span class="op">+</span><span class="st"> </span>W) <span class="op">*</span><span class="st"> </span>pi <span class="op">/</span><span class="st"> </span><span class="dv">6</span>), </a>
-<a class="sourceLine" id="cb27-9" data-line-number="9">                                      <span class="dv">1</span> <span class="op">-</span><span class="st"> </span><span class="kw">sin</span>((<span class="dv">1</span> <span class="op">+</span><span class="st"> </span>W) <span class="op">*</span><span class="st"> </span>pi <span class="op">/</span><span class="st"> </span><span class="dv">6</span>)) <span class="op">*</span></a>
-<a class="sourceLine" id="cb27-10" data-line-number="10"><span class="st">               </span>(Y <span class="op">-</span><span class="st"> </span>A <span class="op">*</span><span class="st"> </span>W <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>A) <span class="op">*</span><span class="st"> </span>W<span class="op">^</span><span class="dv">2</span>))</a>
-<a class="sourceLine" id="cb27-11" data-line-number="11">      })</a></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="3-smooth.html#cb27-1" aria-hidden="true" tabindex="-1"></a>yet_another_experiment <span class="ot">&lt;-</span> <span class="fu">copy</span>(another_experiment)</span>
+<span id="cb27-2"><a href="3-smooth.html#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">alter</span>(yet_another_experiment,</span>
+<span id="cb27-3"><a href="3-smooth.html#cb27-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">Qbar =</span> <span class="cf">function</span>(AW, h){</span>
+<span id="cb27-4"><a href="3-smooth.html#cb27-4" aria-hidden="true" tabindex="-1"></a>        A <span class="ot">&lt;-</span> AW[, <span class="st">&quot;A&quot;</span>]</span>
+<span id="cb27-5"><a href="3-smooth.html#cb27-5" aria-hidden="true" tabindex="-1"></a>        W <span class="ot">&lt;-</span> AW[, <span class="st">&quot;W&quot;</span>]</span>
+<span id="cb27-6"><a href="3-smooth.html#cb27-6" aria-hidden="true" tabindex="-1"></a>        <span class="fu">expit</span>( <span class="fu">logit</span>( A <span class="sc">*</span> W <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">-</span> A) <span class="sc">*</span> W<span class="sc">^</span><span class="dv">2</span> ) <span class="sc">+</span> </span>
+<span id="cb27-7"><a href="3-smooth.html#cb27-7" aria-hidden="true" tabindex="-1"></a>               h <span class="sc">*</span> (<span class="dv">2</span><span class="sc">*</span>A <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">/</span> <span class="fu">ifelse</span>(A <span class="sc">==</span> <span class="dv">1</span>,</span>
+<span id="cb27-8"><a href="3-smooth.html#cb27-8" aria-hidden="true" tabindex="-1"></a>                                      <span class="fu">sin</span>((<span class="dv">1</span> <span class="sc">+</span> W) <span class="sc">*</span> pi <span class="sc">/</span> <span class="dv">6</span>), </span>
+<span id="cb27-9"><a href="3-smooth.html#cb27-9" aria-hidden="true" tabindex="-1"></a>                                      <span class="dv">1</span> <span class="sc">-</span> <span class="fu">sin</span>((<span class="dv">1</span> <span class="sc">+</span> W) <span class="sc">*</span> pi <span class="sc">/</span> <span class="dv">6</span>)) <span class="sc">*</span></span>
+<span id="cb27-10"><a href="3-smooth.html#cb27-10" aria-hidden="true" tabindex="-1"></a>               (Y <span class="sc">-</span> A <span class="sc">*</span> W <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">-</span> A) <span class="sc">*</span> W<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb27-11"><a href="3-smooth.html#cb27-11" aria-hidden="true" tabindex="-1"></a>      })</span></code></pre></div>
 <ol start="3" style="list-style-type: decimal">
 <li><p>Justify that <code>yet_another_fluctuation</code> characterizes another fluctuation of
 <span class="math inline">\(\Pi_{0}\)</span>. Comment upon the similarities and differences between <span class="math inline">\(\{\Pi_{h} : h \in ]-1,1[\}\)</span> and <span class="math inline">\(\{\Pi_{h}&#39; : h \in ]-1,1[\}\)</span>.</p></li>
@@ -524,10 +586,10 @@ how does the behavior of the target parameter around <span class="math inline">\
 laws <span class="math inline">\(\Pi_0\)</span> and <span class="math inline">\(\Pi_0&#39;\)</span>?</p></li>
 </ol>
 </div>
-<div id="smooth-second-pass" class="section level2">
-<h2><span class="header-section-number">3.3</span> ☡  More on fluctuations and smoothness</h2>
-<div id="smooth-second-pass-fluctuations" class="section level3">
-<h3><span class="header-section-number">3.3.1</span> Fluctuations</h3>
+<div id="smooth-second-pass" class="section level2 hasAnchor" number="3.3">
+<h2><span class="header-section-number">3.3</span> ☡  More on fluctuations and smoothness<a href="3-smooth.html#smooth-second-pass" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="smooth-second-pass-fluctuations" class="section level3 hasAnchor" number="3.3.1">
+<h3><span class="header-section-number">3.3.1</span> Fluctuations<a href="3-smooth.html#smooth-second-pass-fluctuations" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Let us now formally define what it means for statistical mapping <span class="math inline">\(\Psi\)</span> to be
 smooth at every <span class="math inline">\(P \in \calM\)</span>. Let <span class="math inline">\(H\)</span> be the interval <span class="math inline">\(]-1/M,M[\)</span>. For every
 <span class="math inline">\(h \in H\)</span>, we can define a law <span class="math inline">\(P_{h} \in \calM\)</span> by setting <span class="math inline">\(P_{h} \ll P\)</span><a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a> and
@@ -549,8 +611,8 @@ that the fluctuation is <em>in the direction</em> of <span class="math inline">\
 <a href="3-smooth.html#eq:fluct">(3.1)</a>. No matter how the fluctuation is built, for our purposes the
 most important feature of the fluctuation is its direction.</p>
 </div>
-<div id="smoothness-and-gradients" class="section level3">
-<h3><span class="header-section-number">3.3.2</span> Smoothness and gradients</h3>
+<div id="smoothness-and-gradients" class="section level3 hasAnchor" number="3.3.2">
+<h3><span class="header-section-number">3.3.2</span> Smoothness and gradients<a href="3-smooth.html#smoothness-and-gradients" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>We are now prepared to provide a formal definition of smoothness of
 statistical mappings. We say that a statistical mapping <span class="math inline">\(\Psi\)</span> is <em>smooth</em> at
 every <span class="math inline">\(P \in \calM\)</span> if for each <span class="math inline">\(P \in \calM\)</span>, there exists a (measurable)
@@ -562,8 +624,8 @@ function <span class="math inline">\(D^{*}(P) : \calO \to \bbR\)</span> such tha
 The object <span class="math inline">\(D^*(P)\)</span> in <a href="3-smooth.html#eq:derivative">(3.3)</a> is called a
 gradient of <span class="math inline">\(\Psi\)</span> at <span class="math inline">\(P\)</span>.<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a></p>
 </div>
-<div id="Euclidean-perspective" class="section level3">
-<h3><span class="header-section-number">3.3.3</span> A Euclidean perspective</h3>
+<div id="Euclidean-perspective" class="section level3 hasAnchor" number="3.3.3">
+<h3><span class="header-section-number">3.3.3</span> A Euclidean perspective<a href="3-smooth.html#Euclidean-perspective" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>This terminology has a direct parallel to directional derivatives in the
 calculus of Euclidean geometry. Recall that if <span class="math inline">\(f\)</span> is a differentiable
 mapping from <span class="math inline">\(\bbR^p\)</span> to <span class="math inline">\(\bbR\)</span>, then the directional derivative of <span class="math inline">\(f\)</span> at <em>a
@@ -577,8 +639,8 @@ function <span class="math inline">\(\Psi\)</span>, the score <span class="math 
 we approach the point, and the gradient describes the change in the function’s
 value at the point.</p>
 </div>
-<div id="canonical-gradient" class="section level3">
-<h3><span class="header-section-number">3.3.4</span> The canonical gradient</h3>
+<div id="canonical-gradient" class="section level3 hasAnchor" number="3.3.4">
+<h3><span class="header-section-number">3.3.4</span> The canonical gradient<a href="3-smooth.html#canonical-gradient" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>In general, it is possible for many gradients to exist<a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a>. Yet, in the special case that the model is
 nonparametric, only a single gradient exists. The unique gradient is then
 referred to as <em>the canonical gradient</em> or,
@@ -596,27 +658,27 @@ law described by an object of class <code>LAW</code>. It is called <code>evaluat
 instance, the next chunk of code evaluates the efficient influence curve
 <span class="math inline">\(D^{*}(P_{0})\)</span> of <span class="math inline">\(\Psi\)</span> <a href="2-parameter.html#eq:psimap">(2.6)</a> at <span class="math inline">\(P_{0} \in \calM\)</span> that is
 characterized by <code>experiment</code>:</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" data-line-number="1">eic_experiment &lt;-<span class="st"> </span><span class="kw">evaluate_eic</span>(experiment)</a></code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="3-smooth.html#cb28-1" aria-hidden="true" tabindex="-1"></a>eic_experiment <span class="ot">&lt;-</span> <span class="fu">evaluate_eic</span>(experiment)</span></code></pre></div>
 <p>The efficient influence curve <span class="math inline">\(D^{*}(P_{0})\)</span> is a function from <span class="math inline">\(\calO\)</span> to
 <span class="math inline">\(\bbR\)</span>. As such, it can be evaluated at the five independent observations
 drawn from <span class="math inline">\(P_{0}\)</span> in Section <a href="1-a-ride.html#synthetic-experiment">1.2.2</a>. This is what the
 next chunk of code does:</p>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1">(<span class="kw">eic_experiment</span>(five_obs))</a>
-<a class="sourceLine" id="cb29-2" data-line-number="2"><span class="co">#&gt; [1]  0.260  0.161 -0.387 -0.186  0.110</span></a></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="3-smooth.html#cb29-1" aria-hidden="true" tabindex="-1"></a>(<span class="fu">eic_experiment</span>(five_obs))</span>
+<span id="cb29-2"><a href="3-smooth.html#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] -0.0241 -0.0283  0.1829  0.0374 -0.0463</span></span></code></pre></div>
 <p>Finally, the efficient influence curve can be visualized as two images that
 represent <span class="math inline">\((w,y) \mapsto D^{*}(P_{0})(w,a,y)\)</span> for <span class="math inline">\(a = 0,1\)</span>, respectively:</p>
 
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1"><span class="kw">crossing</span>(<span class="dt">w =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dt">length.out =</span> <span class="fl">2e2</span>),</a>
-<a class="sourceLine" id="cb30-2" data-line-number="2">     <span class="dt">a =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">1</span>),</a>
-<a class="sourceLine" id="cb30-3" data-line-number="3">     <span class="dt">y =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dt">length.out =</span> <span class="fl">2e2</span>)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb30-4" data-line-number="4"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">eic =</span> <span class="kw">eic_experiment</span>(<span class="kw">cbind</span>(<span class="dt">Y=</span>y,<span class="dt">A=</span>a,<span class="dt">W=</span>w))) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb30-5" data-line-number="5"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> w, <span class="dt">y =</span> y, <span class="dt">fill =</span> eic)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb30-6" data-line-number="6"><span class="st">  </span><span class="kw">geom_raster</span>(<span class="dt">interpolate =</span> <span class="ot">TRUE</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb30-7" data-line-number="7"><span class="st">  </span><span class="kw">geom_contour</span>(<span class="kw">aes</span>(<span class="dt">z =</span> eic), <span class="dt">color =</span> <span class="st">&quot;white&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb30-8" data-line-number="8"><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span><span class="st"> </span>a, <span class="dt">nrow =</span> <span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb30-9" data-line-number="9">             <span class="dt">labeller =</span> <span class="kw">as_labeller</span>(<span class="kw">c</span>(<span class="st">`</span><span class="dt">0</span><span class="st">`</span> =<span class="st"> &quot;a = 0&quot;</span>, <span class="st">`</span><span class="dt">1</span><span class="st">`</span> =<span class="st"> &quot;a = 1&quot;</span>))) <span class="op">+</span></a>
-<a class="sourceLine" id="cb30-10" data-line-number="10"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">fill =</span> <span class="kw">expression</span>(<span class="kw">paste</span>(D<span class="op">^</span><span class="st">&quot;*&quot;</span>, (P[<span class="dv">0</span>])(w,a,y))))</a></code></pre></div>
-<div class="figure" style="text-align: center"><span id="fig:eic-three"></span>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="3-smooth.html#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">crossing</span>(<span class="at">w =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="at">length.out =</span> <span class="fl">2e2</span>),</span>
+<span id="cb30-2"><a href="3-smooth.html#cb30-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">a =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>),</span>
+<span id="cb30-3"><a href="3-smooth.html#cb30-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">y =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="at">length.out =</span> <span class="fl">2e2</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb30-4"><a href="3-smooth.html#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">eic =</span> <span class="fu">eic_experiment</span>(<span class="fu">cbind</span>(<span class="at">Y=</span>y,<span class="at">A=</span>a,<span class="at">W=</span>w))) <span class="sc">%&gt;%</span></span>
+<span id="cb30-5"><a href="3-smooth.html#cb30-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> w, <span class="at">y =</span> y, <span class="at">fill =</span> eic)) <span class="sc">+</span></span>
+<span id="cb30-6"><a href="3-smooth.html#cb30-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_raster</span>(<span class="at">interpolate =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb30-7"><a href="3-smooth.html#cb30-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_contour</span>(<span class="fu">aes</span>(<span class="at">z =</span> eic), <span class="at">color =</span> <span class="st">&quot;white&quot;</span>) <span class="sc">+</span></span>
+<span id="cb30-8"><a href="3-smooth.html#cb30-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> a, <span class="at">nrow =</span> <span class="dv">1</span>,</span>
+<span id="cb30-9"><a href="3-smooth.html#cb30-9" aria-hidden="true" tabindex="-1"></a>             <span class="at">labeller =</span> <span class="fu">as_labeller</span>(<span class="fu">c</span>(<span class="st">`</span><span class="at">0</span><span class="st">`</span> <span class="ot">=</span> <span class="st">&quot;a = 0&quot;</span>, <span class="st">`</span><span class="at">1</span><span class="st">`</span> <span class="ot">=</span> <span class="st">&quot;a = 1&quot;</span>))) <span class="sc">+</span></span>
+<span id="cb30-10"><a href="3-smooth.html#cb30-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">fill =</span> <span class="fu">expression</span>(<span class="fu">paste</span>(D<span class="sc">^</span><span class="st">&quot;*&quot;</span>, (P[<span class="dv">0</span>])(w,a,y))))</span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:eic-three"></span>
 <img src="img/eic-three-1.png" alt="Visualizing the efficient influence curve \(D^{*}(P_{0})\) of \(\Psi\) (2.6) at \(P_{0}\), the law described by experiment." width="80%" />
 <p class="caption">
 Figure 3.2: Visualizing the efficient influence curve <span class="math inline">\(D^{*}(P_{0})\)</span> of <span class="math inline">\(\Psi\)</span> <a href="2-parameter.html#eq:psimap">(2.6)</a> at <span class="math inline">\(P_{0}\)</span>, the law described by <code>experiment</code>.
@@ -624,11 +686,11 @@ Figure 3.2: Visualizing the efficient influence curve <span class="math inline">
 </div>
 </div>
 </div>
-<div id="revisiting" class="section level2">
-<h2><span class="header-section-number">3.4</span> A fresh look at <code>another_experiment</code></h2>
+<div id="revisiting" class="section level2 hasAnchor" number="3.4">
+<h2><span class="header-section-number">3.4</span> A fresh look at <code>another_experiment</code><a href="3-smooth.html#revisiting" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>We can give a fresh look at Section <a href="3-smooth.html#numerical-illus">3.1.2</a> now.</p>
-<div id="deriving-the-efficient-influence-curve" class="section level3">
-<h3><span class="header-section-number">3.4.1</span> Deriving the efficient influence curve</h3>
+<div id="deriving-the-efficient-influence-curve" class="section level3 hasAnchor" number="3.4.1">
+<h3><span class="header-section-number">3.4.1</span> Deriving the efficient influence curve<a href="3-smooth.html#deriving-the-efficient-influence-curve" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>It is not difficult (though cumbersome) to verify that, up to a constant,
 <span class="math inline">\(\{\Pi_{h} : h \in [-1,1]\}\)</span> is a fluctuation of <span class="math inline">\(\Pi_{0}\)</span> in the direction
 (in the sense of <a href="3-smooth.html#eq:fluct">(3.1)</a>) of</p>
@@ -646,52 +708,52 @@ equal to</p>
 <p>Since <span class="math inline">\(D^{*}(\Pi_{0})\)</span> is centered under <span class="math inline">\(\Pi_{0}\)</span>, knowing <span class="math inline">\(\sigma_{0}\)</span> up
 to a constant is not problematic.</p>
 </div>
-<div id="numerical-validation" class="section level3">
-<h3><span class="header-section-number">3.4.2</span> Numerical validation</h3>
+<div id="numerical-validation" class="section level3 hasAnchor" number="3.4.2">
+<h3><span class="header-section-number">3.4.2</span> Numerical validation<a href="3-smooth.html#numerical-validation" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>In the following code, we check the above fact numerically. When we ran
 <code>example(tlrider)</code>, we created a function <code>sigma0</code>. The function implements
 <span class="math inline">\(\sigma_{0}\)</span> defined in <a href="3-smooth.html#eq:sigma0">(3.5)</a>:</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1">sigma0</a>
-<a class="sourceLine" id="cb31-2" data-line-number="2"><span class="co">#&gt; function(obs, law = another_experiment) {</span></a>
-<a class="sourceLine" id="cb31-3" data-line-number="3"><span class="co">#&gt;   ## preliminary</span></a>
-<a class="sourceLine" id="cb31-4" data-line-number="4"><span class="co">#&gt;   Qbar &lt;- get_feature(law, &quot;Qbar&quot;, h = 0)</span></a>
-<a class="sourceLine" id="cb31-5" data-line-number="5"><span class="co">#&gt;   QAW &lt;- Qbar(obs[, c(&quot;A&quot;, &quot;W&quot;)])</span></a>
-<a class="sourceLine" id="cb31-6" data-line-number="6"><span class="co">#&gt;   params &lt;- formals(get_feature(law, &quot;qY&quot;, h = 0))</span></a>
-<a class="sourceLine" id="cb31-7" data-line-number="7"><span class="co">#&gt;   shape1 &lt;- eval(params$shape1)</span></a>
-<a class="sourceLine" id="cb31-8" data-line-number="8"><span class="co">#&gt;   ## computations</span></a>
-<a class="sourceLine" id="cb31-9" data-line-number="9"><span class="co">#&gt;   betaAW &lt;- shape1 * (1 - QAW) / QAW</span></a>
-<a class="sourceLine" id="cb31-10" data-line-number="10"><span class="co">#&gt;   out &lt;- log(1 - obs[, &quot;Y&quot;])</span></a>
-<a class="sourceLine" id="cb31-11" data-line-number="11"><span class="co">#&gt;   for (int in 1:shape1) {</span></a>
-<a class="sourceLine" id="cb31-12" data-line-number="12"><span class="co">#&gt;     out &lt;- out + 1/(int - 1 + betaAW)</span></a>
-<a class="sourceLine" id="cb31-13" data-line-number="13"><span class="co">#&gt;   }</span></a>
-<a class="sourceLine" id="cb31-14" data-line-number="14"><span class="co">#&gt;   out &lt;- - out * shape1 * (1 - QAW) / QAW *</span></a>
-<a class="sourceLine" id="cb31-15" data-line-number="15"><span class="co">#&gt;            10 * sqrt(obs[, &quot;W&quot;]) * obs[, &quot;A&quot;]</span></a>
-<a class="sourceLine" id="cb31-16" data-line-number="16"><span class="co">#&gt;   ## no need to center given how we will use it</span></a>
-<a class="sourceLine" id="cb31-17" data-line-number="17"><span class="co">#&gt;   return(out)</span></a>
-<a class="sourceLine" id="cb31-18" data-line-number="18"><span class="co">#&gt;  }</span></a></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="3-smooth.html#cb31-1" aria-hidden="true" tabindex="-1"></a>sigma0</span>
+<span id="cb31-2"><a href="3-smooth.html#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; function(obs, law = another_experiment) {</span></span>
+<span id="cb31-3"><a href="3-smooth.html#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   ## preliminary</span></span>
+<span id="cb31-4"><a href="3-smooth.html#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Qbar &lt;- get_feature(law, &quot;Qbar&quot;, h = 0)</span></span>
+<span id="cb31-5"><a href="3-smooth.html#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   QAW &lt;- Qbar(obs[, c(&quot;A&quot;, &quot;W&quot;)])</span></span>
+<span id="cb31-6"><a href="3-smooth.html#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   params &lt;- formals(get_feature(law, &quot;qY&quot;, h = 0))</span></span>
+<span id="cb31-7"><a href="3-smooth.html#cb31-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   shape1 &lt;- eval(params$shape1)</span></span>
+<span id="cb31-8"><a href="3-smooth.html#cb31-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   ## computations</span></span>
+<span id="cb31-9"><a href="3-smooth.html#cb31-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   betaAW &lt;- shape1 * (1 - QAW) / QAW</span></span>
+<span id="cb31-10"><a href="3-smooth.html#cb31-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   out &lt;- log(1 - obs[, &quot;Y&quot;])</span></span>
+<span id="cb31-11"><a href="3-smooth.html#cb31-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   for (int in 1:shape1) {</span></span>
+<span id="cb31-12"><a href="3-smooth.html#cb31-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     out &lt;- out + 1/(int - 1 + betaAW)</span></span>
+<span id="cb31-13"><a href="3-smooth.html#cb31-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   }</span></span>
+<span id="cb31-14"><a href="3-smooth.html#cb31-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   out &lt;- - out * shape1 * (1 - QAW) / QAW *</span></span>
+<span id="cb31-15"><a href="3-smooth.html#cb31-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;            10 * sqrt(obs[, &quot;W&quot;]) * obs[, &quot;A&quot;]</span></span>
+<span id="cb31-16"><a href="3-smooth.html#cb31-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   ## no need to center given how we will use it</span></span>
+<span id="cb31-17"><a href="3-smooth.html#cb31-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   return(out)</span></span>
+<span id="cb31-18"><a href="3-smooth.html#cb31-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  }</span></span></code></pre></div>
 <p>The next chunk of code approximates
 <a href="3-smooth.html#eq:slope-Pi">(3.6)</a> pointwise and with a confidence interval of asymptotic
 level 95%:</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" data-line-number="1">eic_another_experiment &lt;-<span class="st"> </span><span class="kw">evaluate_eic</span>(another_experiment, <span class="dt">h =</span> <span class="dv">0</span>)</a>
-<a class="sourceLine" id="cb32-2" data-line-number="2">obs_another_experiment &lt;-<span class="st"> </span><span class="kw">sample_from</span>(another_experiment, B, <span class="dt">h =</span> <span class="dv">0</span>)</a>
-<a class="sourceLine" id="cb32-3" data-line-number="3">vars &lt;-<span class="st"> </span><span class="kw">eic_another_experiment</span>(obs_another_experiment) <span class="op">*</span></a>
-<a class="sourceLine" id="cb32-4" data-line-number="4"><span class="st">  </span><span class="kw">sigma0</span>(obs_another_experiment)</a>
-<a class="sourceLine" id="cb32-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb32-6" data-line-number="6">sd_hat &lt;-<span class="st"> </span><span class="kw">sd</span>(vars)</a>
-<a class="sourceLine" id="cb32-7" data-line-number="7">(slope_hat &lt;-<span class="st"> </span><span class="kw">mean</span>(vars))</a>
-<a class="sourceLine" id="cb32-8" data-line-number="8"><span class="co">#&gt; [1] 1.35</span></a>
-<a class="sourceLine" id="cb32-9" data-line-number="9">(slope_CI &lt;-<span class="st"> </span>slope_hat <span class="op">+</span><span class="st"> </span><span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>) <span class="op">*</span></a>
-<a class="sourceLine" id="cb32-10" data-line-number="10"><span class="st">   </span><span class="kw">qnorm</span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>alpha <span class="op">/</span><span class="st"> </span><span class="dv">2</span>) <span class="op">*</span><span class="st"> </span>sd_hat <span class="op">/</span><span class="st"> </span><span class="kw">sqrt</span>(B))</a>
-<a class="sourceLine" id="cb32-11" data-line-number="11"><span class="co">#&gt; [1] 1.35 1.36</span></a></code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="3-smooth.html#cb32-1" aria-hidden="true" tabindex="-1"></a>eic_another_experiment <span class="ot">&lt;-</span> <span class="fu">evaluate_eic</span>(another_experiment, <span class="at">h =</span> <span class="dv">0</span>)</span>
+<span id="cb32-2"><a href="3-smooth.html#cb32-2" aria-hidden="true" tabindex="-1"></a>obs_another_experiment <span class="ot">&lt;-</span> <span class="fu">sample_from</span>(another_experiment, B, <span class="at">h =</span> <span class="dv">0</span>)</span>
+<span id="cb32-3"><a href="3-smooth.html#cb32-3" aria-hidden="true" tabindex="-1"></a>vars <span class="ot">&lt;-</span> <span class="fu">eic_another_experiment</span>(obs_another_experiment) <span class="sc">*</span></span>
+<span id="cb32-4"><a href="3-smooth.html#cb32-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sigma0</span>(obs_another_experiment)</span>
+<span id="cb32-5"><a href="3-smooth.html#cb32-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-6"><a href="3-smooth.html#cb32-6" aria-hidden="true" tabindex="-1"></a>sd_hat <span class="ot">&lt;-</span> <span class="fu">sd</span>(vars)</span>
+<span id="cb32-7"><a href="3-smooth.html#cb32-7" aria-hidden="true" tabindex="-1"></a>(slope_hat <span class="ot">&lt;-</span> <span class="fu">mean</span>(vars))</span>
+<span id="cb32-8"><a href="3-smooth.html#cb32-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 1.35</span></span>
+<span id="cb32-9"><a href="3-smooth.html#cb32-9" aria-hidden="true" tabindex="-1"></a>(slope_CI <span class="ot">&lt;-</span> slope_hat <span class="sc">+</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">*</span></span>
+<span id="cb32-10"><a href="3-smooth.html#cb32-10" aria-hidden="true" tabindex="-1"></a>   <span class="fu">qnorm</span>(<span class="dv">1</span> <span class="sc">-</span> alpha <span class="sc">/</span> <span class="dv">2</span>) <span class="sc">*</span> sd_hat <span class="sc">/</span> <span class="fu">sqrt</span>(B))</span>
+<span id="cb32-11"><a href="3-smooth.html#cb32-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 1.35 1.36</span></span></code></pre></div>
 <p>Equal to 1.349 (rounded to three decimal places —
 hereafter, all rounding will be to three decimal places as well), the first
 numerical approximation <code>slope_approx</code> is not too off!</p>
 </div>
 </div>
-<div id="influence-curves" class="section level2">
-<h2><span class="header-section-number">3.5</span> ☡  Asymptotic linearity and statistical efficiency</h2>
-<div id="asymptotic-linearity" class="section level3">
-<h3><span class="header-section-number">3.5.1</span> Asymptotic linearity</h3>
+<div id="influence-curves" class="section level2 hasAnchor" number="3.5">
+<h2><span class="header-section-number">3.5</span> ☡  Asymptotic linearity and statistical efficiency<a href="3-smooth.html#influence-curves" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="asymptotic-linearity" class="section level3 hasAnchor" number="3.5.1">
+<h3><span class="header-section-number">3.5.1</span> Asymptotic linearity<a href="3-smooth.html#asymptotic-linearity" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Suppose that <span class="math inline">\(O_{1}, \ldots, O_{n}\)</span> are drawn independently from <span class="math inline">\(P\in \calM\)</span>. If an estimator <span class="math inline">\(\psi_n\)</span> of <span class="math inline">\(\Psi(P)\)</span> can be written as</p>
 <p><span class="math display" id="eq:asymptotic-lin">\[\begin{equation} 
 \psi_n  =  \Psi(P) +  \frac{1}{n}\sum_{i=1}^n  \IC(O_i)  +
@@ -710,15 +772,15 @@ o_P(1) \tag{3.8}
 independent), <span class="math inline">\(\sqrt{n} (\psi_n - \Psi(P))\)</span> converges in law to a centered
 Gaussian distribution with variance <span class="math inline">\(\Var_P(\IC(O))\)</span>.</p>
 </div>
-<div id="influence-curves-and-gradients" class="section level3">
-<h3><span class="header-section-number">3.5.2</span> Influence curves and gradients</h3>
+<div id="influence-curves-and-gradients" class="section level3 hasAnchor" number="3.5.2">
+<h3><span class="header-section-number">3.5.2</span> Influence curves and gradients<a href="3-smooth.html#influence-curves-and-gradients" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>As it happens, influence curves of regular<a href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a> estimators are intimately related to
 gradients. In fact, if <span class="math inline">\(\psi_n\)</span> is a regular, asymptotically linear estimator
 of <span class="math inline">\(\Psi(P)\)</span> with influence curve <span class="math inline">\(\IC\)</span>, then it must be true that <span class="math inline">\(\Psi\)</span> is a
 smooth parameter at <span class="math inline">\(P\)</span> and that <span class="math inline">\(\IC\)</span> is a gradient of <span class="math inline">\(\Psi\)</span> at <span class="math inline">\(P\)</span>.</p>
 </div>
-<div id="asymptotic-efficiency" class="section level3">
-<h3><span class="header-section-number">3.5.3</span> Asymptotic efficiency</h3>
+<div id="asymptotic-efficiency" class="section level3 hasAnchor" number="3.5.3">
+<h3><span class="header-section-number">3.5.3</span> Asymptotic efficiency<a href="3-smooth.html#asymptotic-efficiency" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Now recall that, in Section <a href="3-smooth.html#canonical-gradient">3.3.4</a>, we defined the
 canonical gradient as the minimizer of <span class="math inline">\(D \mapsto \Var_{P}(D(O))\)</span> over the set
 of all gradients. Therefore, if <span class="math inline">\(\psi_{n}\)</span> is a regular, asymptotically linear
@@ -737,21 +799,21 @@ the canonical gradient is the influence curve of an asymptotically efficient
 estimator, it is often referred to as the <em>efficient influence curve</em>.</p>
 </div>
 </div>
-<div id="exo-cramer-rao" class="section level2">
-<h2><span class="header-section-number">3.6</span> ⚙ Cramér-Rao bounds</h2>
+<div id="exo-cramer-rao" class="section level2 hasAnchor" number="3.6">
+<h2><span class="header-section-number">3.6</span> ⚙ Cramér-Rao bounds<a href="3-smooth.html#exo-cramer-rao" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <ol style="list-style-type: decimal">
 <li>What does the following chunk do?</li>
 </ol>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" data-line-number="1">obs &lt;-<span class="st"> </span><span class="kw">sample_from</span>(experiment, B)</a>
-<a class="sourceLine" id="cb33-2" data-line-number="2">(cramer_rao_hat &lt;-<span class="st"> </span><span class="kw">var</span>(<span class="kw">eic_experiment</span>(obs)))</a>
-<a class="sourceLine" id="cb33-3" data-line-number="3"><span class="co">#&gt; [1] 0.287</span></a></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="3-smooth.html#cb33-1" aria-hidden="true" tabindex="-1"></a>obs <span class="ot">&lt;-</span> <span class="fu">sample_from</span>(experiment, B)</span>
+<span id="cb33-2"><a href="3-smooth.html#cb33-2" aria-hidden="true" tabindex="-1"></a>(cramer_rao_hat <span class="ot">&lt;-</span> <span class="fu">var</span>(<span class="fu">eic_experiment</span>(obs)))</span>
+<span id="cb33-3"><a href="3-smooth.html#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.287</span></span></code></pre></div>
 <ol start="2" style="list-style-type: decimal">
 <li>Same question about this one.</li>
 </ol>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" data-line-number="1">obs_another_experiment &lt;-<span class="st"> </span><span class="kw">sample_from</span>(another_experiment, B, <span class="dt">h =</span> <span class="dv">0</span>)</a>
-<a class="sourceLine" id="cb34-2" data-line-number="2">(cramer_rao_Pi_zero_hat &lt;-</a>
-<a class="sourceLine" id="cb34-3" data-line-number="3"><span class="st">   </span><span class="kw">var</span>(<span class="kw">eic_another_experiment</span>(obs_another_experiment)))</a>
-<a class="sourceLine" id="cb34-4" data-line-number="4"><span class="co">#&gt; [1] 0.098</span></a></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="3-smooth.html#cb34-1" aria-hidden="true" tabindex="-1"></a>obs_another_experiment <span class="ot">&lt;-</span> <span class="fu">sample_from</span>(another_experiment, B, <span class="at">h =</span> <span class="dv">0</span>)</span>
+<span id="cb34-2"><a href="3-smooth.html#cb34-2" aria-hidden="true" tabindex="-1"></a>(cramer_rao_Pi_zero_hat <span class="ot">&lt;-</span></span>
+<span id="cb34-3"><a href="3-smooth.html#cb34-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">var</span>(<span class="fu">eic_another_experiment</span>(obs_another_experiment)))</span>
+<span id="cb34-4"><a href="3-smooth.html#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.0946</span></span></code></pre></div>
 <ol start="3" style="list-style-type: decimal">
 <li><p>With a large independent sample drawn from <span class="math inline">\(\Psi(P_0)\)</span> (or <span class="math inline">\(\Psi(\Pi_0)\)</span>),
 is it possible to construct a regular estimator <span class="math inline">\(\psi_{n}\)</span> of <span class="math inline">\(\Psi(P_0)\)</span>
@@ -763,6 +825,34 @@ compute a ratio.)</p></li>
 </ol>
 </div>
 </div>
+<div class="footnotes">
+<hr />
+<ol start="5">
+<li id="fn5"><p>That is, <span class="math inline">\(P_{h}\)</span> is dominated by <span class="math inline">\(P\)</span>: if an event <span class="math inline">\(A\)</span> satisfies <span class="math inline">\(P(A) = 0\)</span>, then necessarily <span class="math inline">\(P_{h} (A) = 0\)</span> too. Because <span class="math inline">\(P_{h} \ll P\)</span>, the law
+<span class="math inline">\(P_{h}\)</span> has a density with respect to <span class="math inline">\(P\)</span>, meaning that there exists a
+(measurable) function <span class="math inline">\(f\)</span> such that <span class="math inline">\(P_{h}(A) = \int_{o \in A} f(o) dP(o)\)</span> for
+any event <span class="math inline">\(A\)</span>. The function is often denoted <span class="math inline">\(dP_{h}/dP\)</span>.<a href="3-smooth.html#fnref5" class="footnote-back">↩︎</a></p></li>
+<li id="fn6"><p>Interestingly, if a fluctuation <span class="math inline">\(\{P_{h} : h \in H\}\)</span> satisfies <a href="3-smooth.html#eq:score">(3.2)</a> for a direction <span class="math inline">\(s\)</span> such that <span class="math inline">\(s\neq 0\)</span>,
+<span class="math inline">\(\Exp_{P}(s(O)) = 0\)</span> and <span class="math inline">\(\Var_{P} (s(O)) &lt; \infty\)</span>, then <span class="math inline">\(h \mapsto \Psi(P_{h})\)</span> is still differentiable at <span class="math inline">\(h=0\)</span> with a derivative equal to
+<a href="3-smooth.html#eq:derivative">(3.3)</a> beyond fluctuations of the form <a href="3-smooth.html#eq:fluct">(3.1)</a>.<a href="3-smooth.html#fnref6" class="footnote-back">↩︎</a></p></li>
+<li id="fn7"><p>This may be at first
+surprising given the parallel drawn in Section <a href="3-smooth.html#Euclidean-perspective">3.3.3</a> to
+Euclidean geometry. However, it is important to remember that the model
+dictates fluctuations of <span class="math inline">\(P\)</span> that are valid submodels with respect to the full
+model. In turn, this determines the possible directions from which we may
+approach <span class="math inline">\(P\)</span>. Thus, depending on the direction, <a href="3-smooth.html#eq:derivative">(3.3)</a> may hold
+with different choices of <span class="math inline">\(D^*\)</span>.<a href="3-smooth.html#fnref7" class="footnote-back">↩︎</a></p></li>
+<li id="fn8"><p>We can view <span class="math inline">\(\psi_{n}\)</span> as the by
+product of an algorithm <span class="math inline">\(\Psihat\)</span> trained on independent
+observations <span class="math inline">\(O_{1}, \ldots, O_{n}\)</span> drawn from <span class="math inline">\(P\)</span>. We say that the estimator
+is regular at <span class="math inline">\(P\)</span> if, for any direction <span class="math inline">\(s\neq 0\)</span> such that <span class="math inline">\(\Exp_{P} (s(O)) = 0\)</span> and <span class="math inline">\(\Var_{P} (s(O)) &lt; \infty\)</span> and fluctuation <span class="math inline">\(\{P_{h} : h \in H\}\)</span>
+satisfying <a href="3-smooth.html#eq:score">(3.2)</a>, the estimator <span class="math inline">\(\psi_{n,1/\sqrt{n}}\)</span> of
+<span class="math inline">\(\Psi(P_{1/\sqrt{n}})\)</span> obtained by training <span class="math inline">\(\Psihat\)</span> on independent
+observations <span class="math inline">\(O_{1}\)</span>, , <span class="math inline">\(O_{n}\)</span> drawn from <span class="math inline">\(P_{1/\sqrt{n}}\)</span> is such that
+<span class="math inline">\(\sqrt{n} (\psi_{n,1/\sqrt{n}} - \Psi(P_{1/\sqrt{n}}))\)</span> converges in law to a
+limit that does not depend on <span class="math inline">\(s\)</span>.<a href="3-smooth.html#fnref8" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
             </section>
 
           </div>
@@ -773,7 +863,6 @@ compute a ratio.)</p></li>
     </div>
   </div>
 <script src="assets/gitbook-2.6.7/js/app.min.js"></script>
-<script src="assets/gitbook-2.6.7/js/lunr.js"></script>
 <script src="assets/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="assets/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="assets/gitbook-2.6.7/js/plugin-sharing.js"></script>
@@ -803,6 +892,10 @@ gitbook.start({
 "text": null
 },
 "download": ["tlride-book.pdf"],
+"search": {
+"engine": "fuse",
+"options": null
+},
 "toc": {
 "collapse": "section",
 "scroll_hightlight": true,
@@ -828,7 +921,7 @@ gitbook.start({
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:")
       if (/^https?:/.test(src))
         src = src.replace(/^https?:/, '');

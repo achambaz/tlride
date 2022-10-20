@@ -1,5 +1,6 @@
 
 
+
 # (PART) On the road {-}
 
 # A ride
@@ -43,15 +44,15 @@ running the following code:
 devtools::install_github("achambaz/tlride/tlrider")
 ```
 
-The version used in this document is 1.1.0.
+The version used in this document is 1.1.1.
 
 Additional packages are also required, including `tidyverse` [@r4ds], `caret`
 [@caret] and `ggdag`  [@ggdag]. Assuming that these are installed  too, we can
 run the next chunk of code:
 
 
+
 ```r
-set.seed(3141516) ## because reproducibility matters...
 library(tidyverse)
 library(caret)
 library(ggdag)
@@ -157,11 +158,11 @@ times, independently:
 ```r
 (five_obs <- sample_from(experiment, n = 5))
 #>          W A     Y
-#> [1,] 0.429 1 0.981
-#> [2,] 0.454 1 0.855
-#> [3,] 0.377 0 0.836
-#> [4,] 0.461 1 0.582
-#> [5,] 0.419 1 0.878
+#> [1,] 0.393 1 0.789
+#> [2,] 0.399 1 0.782
+#> [3,] 0.373 1 0.942
+#> [4,] 0.371 1 0.838
+#> [5,] 0.372 1 0.779
 ```
 ### Revealing `experiment` {#revealing-experiment}
 
@@ -202,7 +203,7 @@ relevant_features$QW
 #>                       })
 #>         return(rowSums(out))
 #>       }
-#> <environment: 0x103715d8>
+#> <environment: 0x56115038ae00>
 ```
 
 It  appears that  $Q_{0,W}$ is  a  mixture of  the uniform  laws over  $[0,1]$
@@ -224,7 +225,7 @@ relevant_features$Gbar
 #> function(W) {
 #>         expit(1 + 2 * W - 4 * sqrt(abs((W - 5/12))))
 #>       }
-#> <environment: 0x103715d8>
+#> <environment: 0x56115038ae00>
 ```
 
 Note how real numbers of the form $1 + 2W - 4 * \sqrt{|W - 5/12|})$ are mapped
@@ -249,7 +250,7 @@ relevant_features$qY
 #>                      shape1 = shape1,
 #>                      shape2 = shape1 * (1 - QAW) / QAW)
 #>       }
-#> <environment: 0x103715d8>
+#> <environment: 0x56115038ae00>
 ```
 
 It appears that the  conditional law of $Y$ given $A$ and $W$  is the Beta law
@@ -272,8 +273,8 @@ relevant_features$Qbar
 #>              (W >= 3/4) * (W - 3/4) * 2) +
 #>           (1 - A) * (sin(4 * W^2 * pi) / 4 + 1/2) 
 #>       }
-#> <bytecode: 0x11210630>
-#> <environment: 0x103715d8>
+#> <bytecode: 0x5611585c3d40>
+#> <environment: 0x56115038ae00>
 ```
 
 We denote  $\Qbar_0(A,W) =  \Exp_{P_{0}}(Y|A,W)$ the  conditional mean  of $Y$
@@ -328,8 +329,8 @@ relevant_features$sample_from
 #>         }
 #>         return(obs)
 #>       }
-#> <bytecode: 0x1014f568>
-#> <environment: 0x103715d8>
+#> <bytecode: 0x561159a2efa0>
+#> <environment: 0x56115038ae00>
 ```
 
 We will comment  upon the `ideal` argument in the  above `sample_from` feature
@@ -382,12 +383,11 @@ You can easily make your own experiment.
 ```r
 my_experiment <- LAW() ## creates an object of class 'LAW'
 alter(my_experiment,   ## characterize its relevant features
-      QW = function(W) {
-        out <- rep_len(0, length(W))
-        out[W == 0] <- 1/4
-        out[W == 1] <- 3/4
-        return(out)
-      },
+      QW = tribble(
+        ~value, ~weight,
+        0, 1/4, ## the probabilities must...
+        1, 3/4  ## ... sum up to 1
+      ),
       Gbar = function(W) {
         out <- rep_len(0, length(W))
         out[W == 0] <- 1/3
@@ -415,13 +415,17 @@ alter(my_experiment,   ## characterize its relevant features
         Gbar <- my_experiment$.Gbar
         Qbar <- my_experiment$.Qbar
         ## sampling
-        W <- rbinom(n, size = 1, prob = QW(1))
+        W <- rbinom(n, size = 1, prob = QW$weight[QW$value == 1])
         A <- rbinom(n, size = 1, prob = Gbar(W))
         AW <- cbind(W = W, A = A)
         Y <- rbinom(n, size = 1, Qbar(AW))
         return(cbind(AW, Y = Y))
       })
 ```
+Note that  the `QW` feature of  `my_experiment` is a `tibble`,  contrary to the
+`QW` feature  of `experiment` which is  a `function`.  The former  describes a
+discrete law  and the  latter is  a density. Those  are the  two configurations
+handled by the package. 
 
 3. What does the next chunk do?
 
@@ -429,8 +433,8 @@ alter(my_experiment,   ## characterize its relevant features
 ```r
 (sample_from(my_experiment, 3))
 #>      W A Y
-#> [1,] 0 0 1
-#> [2,] 1 1 1
+#> [1,] 0 1 1
+#> [2,] 1 0 1
 #> [3,] 1 0 1
 ```
 
@@ -440,26 +444,39 @@ alter(my_experiment,   ## characterize its relevant features
 ```r
 obs <- sample_from(my_experiment, 1e4)
 obs %>% as_tibble %>% group_by(W, A, Y) %>%
-  summarize(how_many = n()) %>% ungroup
-#> # A tibble: 8 x 4
+  summarize(how_many = n(), .groups = "drop")
+#> # A tibble: 8 × 4
 #>       W     A     Y how_many
 #>   <int> <int> <int>    <int>
-#> 1     0     0     0      826
-#> 2     0     0     1      808
-#> 3     0     1     0      285
-#> 4     0     1     1      556
-#> 5     1     0     0      419
-#> 6     1     0     1     2665
+#> 1     0     0     0      841
+#> 2     0     0     1      876
+#> 3     0     1     0      264
+#> 4     0     1     1      497
+#> 5     1     0     0      370
+#> 6     1     0     1     2668
 #> # … with 2 more rows
+obs %>% as_tibble %>% 
+  summarize("P(W=1)" = mean(W))
+#> # A tibble: 1 × 1
+#>   `P(W=1)`
+#>      <dbl>
+#> 1    0.752
+obs %>% as_tibble %>% group_by(W) %>%
+  summarize("P(A=1|W)" = mean(A))
+#> # A tibble: 2 × 2
+#>       W `P(A=1|W)`
+#>   <int>      <dbl>
+#> 1     0      0.307
+#> 2     1      0.596
 obs %>% as_tibble %>% group_by(W, A) %>%
-  summarize(prob = mean(Y)) %>% ungroup
-#> # A tibble: 4 x 3
-#>       W     A  prob
-#>   <int> <int> <dbl>
-#> 1     0     0 0.494
-#> 2     0     1 0.661
-#> 3     1     0 0.864
-#> 4     1     1 0.798
+  summarize("P(Y=1|A,W)" = mean(Y), .groups = "drop")
+#> # A tibble: 4 × 3
+#>       W     A `P(Y=1|A,W)`
+#>   <int> <int>        <dbl>
+#> 1     0     0        0.510
+#> 2     0     1        0.653
+#> 3     1     0        0.878
+#> 4     1     1        0.806
 ```
 
 5. Now, make your own experiment.
@@ -579,7 +596,7 @@ approximate value.
 B <- 1e6
 ideal_obs <- sample_from(experiment, B, ideal = TRUE)
 (psi_approx <- mean(ideal_obs[, "Yone"] - ideal_obs[, "Yzero"]))
-#> [1] 0.0831
+#> [1] 0.0829
 ```
 
 The object  `psi_approx` contains  an approximation to  $\psi_0$ based  on `B`
@@ -595,7 +612,7 @@ sd_approx <- sd(ideal_obs[, "Yone"] - ideal_obs[, "Yzero"])
 alpha <- 0.05
 (psi_approx_CI <- psi_approx + c(-1, 1) *
    qnorm(1 - alpha / 2) * sd_approx / sqrt(B))
-#> [1] 0.0822 0.0860
+#> [1] 0.0823 0.0835
 ```
 
 We note that the interpretation of this confidence interval is that in 95\% of 
@@ -749,13 +766,13 @@ reveal(another_experiment)
 #> function(x, min = 1/10, max = 9/10){
 #>              stats::dunif(x, min = min, max = max)
 #>       }
-#> <environment: 0x1153d6d8>
+#> <environment: 0x56115878c6d8>
 #> 
 #> $Gbar
 #> function(W) {
 #>         sin((1 + W) * pi / 6)
 #>       }
-#> <environment: 0x1153d6d8>
+#> <environment: 0x56115878c6d8>
 #> 
 #> $Qbar
 #> function(AW, h) {
@@ -764,7 +781,7 @@ reveal(another_experiment)
 #>         expit( logit( A *  W + (1 - A) * W^2 ) +
 #>                h * 10 * sqrt(W) * A )
 #>       }
-#> <environment: 0x1153d6d8>
+#> <environment: 0x56115878c6d8>
 #> 
 #> $qY
 #> function(obs, Qbar, shape1 = 4){
@@ -774,7 +791,7 @@ reveal(another_experiment)
 #>                       shape1 = shape1,
 #>                       shape2 = shape1 * (1 - QAW) / QAW)
 #>       }
-#> <environment: 0x1153d6d8>
+#> <environment: 0x56115878c6d8>
 #> 
 #> $sample_from
 #> function(n, h) {
@@ -802,11 +819,11 @@ reveal(another_experiment)
 #>         obs <- cbind(W = W, A = A, Y = Y)
 #>         return(obs)
 #>       }
-#> <environment: 0x1153d6d8>
+#> <environment: 0x56115878c6d8>
 (two_obs_another_experiment <- sample_from(another_experiment, 2, h = 0))
 #>          W A     Y
-#> [1,] 0.585 1 0.507
-#> [2,] 0.347 1 0.345
+#> [1,] 0.720 1 0.372
+#> [2,] 0.616 1 0.670
 ```
 By taking an  oracular look at the output  of `reveal(another_experiment)`, we
 discover that  the law $\Pi_{0}  \in \calM$  encoded by default  (*i.e.*, with
@@ -982,8 +999,8 @@ reveal(another_experiment)$sample_from
 #>         obs <- cbind(W = W, A = A, Y = Y)
 #>         return(obs)
 #>       }
-#> <bytecode: 0xa23ec20>
-#> <environment: 0x1153d6d8>
+#> <bytecode: 0x56115cf79c38>
+#> <environment: 0x56115878c6d8>
 ```
 
 Let us call $\Pi_{h} \in \calM$  the law encoded by `another_experiment` for a
@@ -1194,7 +1211,7 @@ next chunk of code does:
 
 ```r
 (eic_experiment(five_obs))
-#> [1]  0.260  0.161 -0.387 -0.186  0.110
+#> [1] -0.0241 -0.0283  0.1829  0.0374 -0.0463
 ```
 
 Finally, the  efficient influence curve can  be visualized as two  images that
@@ -1383,7 +1400,7 @@ obs <- sample_from(experiment, B)
 obs_another_experiment <- sample_from(another_experiment, B, h = 0)
 (cramer_rao_Pi_zero_hat <-
    var(eic_another_experiment(obs_another_experiment)))
-#> [1] 0.098
+#> [1] 0.0946
 ```
 
 3. With a large independent sample drawn from $\Psi(P_0)$ (or $\Psi(\Pi_0)$),
@@ -1618,8 +1635,8 @@ and  the  observations  are  stored  in  `obs`  that  we  created  in  Section
 iter <- 1e3
 ```
 
-Equal to 1 million, the sample size `B` is very large. We will in fact
-use  1000 disjoint  subsamples  composed  of $n$  independent
+Equal to 1000 thousands, the sample  size `B` is very large.  We will in
+fact use 1000 disjoint  subsamples composed of $n$ independent
 observations among $O_{1}, \ldots, O_{B}$,  where $n$ equals `B/iter`, *i.e.*,
 1000.   We will  thus be  in a  position to  investigate the
 statistical  properties  of  every  estimation  procedure  by  replicating  it
@@ -1759,10 +1776,10 @@ For instance,
 
 ```r
 (compute_irrelevant_estimator(head(obs, 1e3)))
-#> # A tibble: 1 x 2
-#>    psi_n  sig_n
-#>    <dbl>  <dbl>
-#> 1 0.0937 0.0172
+#> # A tibble: 1 × 2
+#>   psi_n  sig_n
+#>   <dbl>  <dbl>
+#> 1 0.126 0.0181
 ```
 
 computes the numerical values of $\psi_{n}^{a}$ and $v_{n}^{a}$ based on the 
@@ -1833,24 +1850,24 @@ instance,
 
 ```r
 (compute_iptw(head(obs, 1e3), Gbar))
-#> # A tibble: 1 x 2
-#>    psi_n  sig_n
-#>    <dbl>  <dbl>
-#> 1 0.0595 0.0556
+#> # A tibble: 1 × 2
+#>   psi_n  sig_n
+#>   <dbl>  <dbl>
+#> 1 0.167 0.0533
 ```
 
 computes the numerical values of $\psi_{n}^{b}$ and $v_{n}^{b}$ based
 upon the  1000 first observations contained in `obs`.
 
-The next chunk of code investigates the empirical behaviors of estimators
+The  next chunk  of code  investigates the  empirical behaviors  of estimators
 $\psi_{n}^{a}$ and  $\psi_{n}^{b}$. As explained in  Section \@ref(inference),
-we first make `iter`  data sets out of the `obs` data  set (second line), then
+we first make 1000 data sets out of the `obs` data set (second line), then
 build the estimators on each of them (fourth and fifth lines). After the first
 series of  commands the object  `psi_hat_ab`, a `tibble`, contains  2000
 rows and  four columns.  For each  smaller data set (identified  by its `id`),
 two    rows    contain   the    values    of    either   $\psi_{n}^{a}$    and
 $\sqrt{v_{n}^{a}}/\sqrt{n}$  (if  `type`  equals `a`)  or  $\psi_{n}^{b}$  and
-$\sqrt{v_{n}^{b}}/\sqrt{n}$ (if  `type` equals `b`).
+$\sqrt{v_{n}^{b}}/\sqrt{n}$ (if `type` equals `b`).
 
 After  the second  series of  commands, the  object `psi_hat_ab`  contains, in
 addition,  the values  of  the  recentered (with  respect  to $\psi_{0}$)  and
@@ -1868,7 +1885,7 @@ comparing kernel  density estimators of the  law of estimators gone  through a
 renormalization  procedure with  the  standard normal  density,  as in  Figure
 \@ref(fig:known-Gbar-one-b) below. 
 
-(ref:known-Gbar-one-b) Kernel density estimators of the law of two estimators of $\psi_{0}$ (recentered with respect to $\psi_{0}$, and renormalized), one of them misconceived (a), the other assuming that $\Gbar_{0}$ is known (b). Built based on `iter` independent realizations of each estimator.
+(ref:known-Gbar-one-b) Kernel density estimators of the law of two estimators of $\psi_{0}$ (recentered with respect to $\psi_{0}$, and renormalized), one of them misconceived (a), the other assuming that $\Gbar_{0}$ is known (b). Built based on 1000 independent realizations of each estimator.
 
 
 ```r
@@ -1883,15 +1900,15 @@ psi_hat_ab <- obs %>% as_tibble  %>%
   unnest(estimates) %>% select(-obs)
 
 (psi_hat_ab)
-#> # A tibble: 2,000 x 4
+#> # A tibble: 2,000 × 4
 #>      id type   psi_n  sig_n
 #>   <dbl> <chr>  <dbl>  <dbl>
-#> 1     0 a     0.168  0.0540
-#> 2     0 b     0.374  0.155 
-#> 3     1 a     0.155  0.0452
-#> 4     1 b     0.231  0.172 
-#> 5     2 a     0.0952 0.0515
-#> 6     2 b     0.147  0.170 
+#> 1     0 a     0.140  0.0174
+#> 2     0 b     0.0772 0.0546
+#> 3     1 a     0.107  0.0169
+#> 4     1 b     0.138  0.0541
+#> 5     2 a     0.107  0.0172
+#> 6     2 b     0.0744 0.0553
 #> # … with 1,994 more rows
 
 psi_hat_ab <- psi_hat_ab %>% 
@@ -1899,25 +1916,25 @@ psi_hat_ab <- psi_hat_ab %>%
   mutate(clt = (psi_n - psi_zero) / sig_n)
 
 (psi_hat_ab)
-#> # A tibble: 2,000 x 5
+#> # A tibble: 2,000 × 5
 #> # Groups:   id [1,000]
-#>      id type   psi_n  sig_n   clt
-#>   <dbl> <chr>  <dbl>  <dbl> <dbl>
-#> 1     0 a     0.168  0.0540 1.58 
-#> 2     0 b     0.374  0.155  1.87 
-#> 3     1 a     0.155  0.0452 1.58 
-#> 4     1 b     0.231  0.172  0.864
-#> 5     2 a     0.0952 0.0515 0.234
-#> 6     2 b     0.147  0.170  0.374
+#>      id type   psi_n  sig_n    clt
+#>   <dbl> <chr>  <dbl>  <dbl>  <dbl>
+#> 1     0 a     0.140  0.0174  3.23 
+#> 2     0 b     0.0772 0.0546 -0.109
+#> 3     1 a     0.107  0.0169  1.40 
+#> 4     1 b     0.138  0.0541  1.01 
+#> 5     2 a     0.107  0.0172  1.38 
+#> 6     2 b     0.0744 0.0553 -0.159
 #> # … with 1,994 more rows
 
 (bias_ab <- psi_hat_ab %>%
-   group_by(type) %>% summarise(bias = mean(clt)))
-#> # A tibble: 2 x 2
+   group_by(type) %>% summarize(bias = mean(clt), .groups = "drop"))
+#> # A tibble: 2 × 2
 #>   type    bias
 #>   <chr>  <dbl>
-#> 1 a     0.456 
-#> 2 b     0.0951
+#> 1 a     1.39  
+#> 2 b     0.0241
 
 fig_bias_ab <- ggplot() +
   geom_line(aes(x = x, y = y), 
@@ -1943,8 +1960,8 @@ fig_bias_ab +
 By   the  above   chunk   of  code,   the   averages  of   $\sqrt{n/v_{n}^{a}}
 (\psi_{n}^{a} - \psi_{0})$ and  $\sqrt{n/v_{n}^{b}} (\psi_{n}^{b} - \psi_{0})$
 computed across the realizations of  the two estimators are respectively equal
-to 0.456 and 
-0.095 (see `bias_ab`).  Interpreted as amounts of bias, those two
+to 1.387 and 
+0.024 (see `bias_ab`).  Interpreted as amounts of bias, those two
 quantities    are     represented    by     vertical    lines     in    Figure
 \@ref(fig:known-Gbar-one-b). The red and blue bell-shaped curves represent the
 empirical laws  of $\psi_{n}^{a}$ and $\psi_{n}^{b}$  (recentered with respect
@@ -2081,12 +2098,12 @@ working_model_G_one
 #> {
 #>     trim_glm_fit(glm(family = binomial(), ...))
 #> }
-#> <environment: 0xf614e38>
+#> <environment: 0x56115606af08>
 #> 
 #> $formula
 #> A ~ I(W^0.5) + I(abs(W - 5/12)^0.5) + I(W^1) + I(abs(W - 5/12)^1) + 
 #>     I(W^1.5) + I(abs(W - 5/12)^1.5)
-#> <environment: 0xf614e38>
+#> <environment: 0x56115606af08>
 #> 
 #> $type_of_preds
 #> [1] "response"
@@ -2195,11 +2212,11 @@ working_model_Q_one
 #> {
 #>     trim_glm_fit(glm(family = binomial(), ...))
 #> }
-#> <environment: 0xf614e38>
+#> <environment: 0x56115606af08>
 #> 
 #> $formula
 #> Y ~ A * (I(W^0.5) + I(W^1) + I(W^1.5))
-#> <environment: 0xf614e38>
+#> <environment: 0x56115606af08>
 #> 
 #> $type_of_preds
 #> [1] "response"
@@ -2321,14 +2338,14 @@ Qbar_hat_trees <- estimate_Qbar(head(obs, 1e3),
 Qbar_hat_trees %>% filter(a == "one") %>% pull(fit) %>%
   capture.output %>% tail(3) %>% str_wrap(width = 60) %>% cat
 #> RMSE was used to select the optimal model using the smallest
-#> value. The final values used for the model were mstop = 20,
-#> maxdepth = 1 and nu = 0.2.
+#> value. The final values used for the model were mstop = 30,
+#> maxdepth = 2 and nu = 0.2.
                                                              
 Qbar_hat_trees %>% filter(a == "zero") %>% pull(fit) %>%
   capture.output %>% tail(3) %>% str_wrap(width = 60) %>% cat
 #> RMSE was used to select the optimal model using the smallest
-#> value. The final values used for the model were mstop = 10,
-#> maxdepth = 1 and nu = 0.2.
+#> value. The final values used for the model were mstop = 30,
+#> maxdepth = 1 and nu = 0.1.
 ```
  
 We can compare visually the estimators $\Qbar_{n,\text{kNN}}$,
@@ -2451,7 +2468,7 @@ observations stored  in `obs`,  using the true  feature $\Gbar_{0}$  stored in
 ```r
 Gbar_hat <- estimate_Gbar(head(obs, 1e3), working_model_G_one)
 compute_iptw(head(obs, 1e3), wrapper(Gbar_hat)) %>% pull(psi_n)
-#> [1] 0.0707
+#> [1] 0.104
 ```
 
 implements  *(i)* the  estimation of  $\Gbar_{0}$ with  $\Gbar_{n}$/`Gbar_hat`
@@ -2503,11 +2520,11 @@ that the resulting estimator $\psi_{n}^{c}$ be even consistent.
 Let  us compute  $\psi_{n}^{c}$ on  the same  `iter =  ` 1000 independent
 samples  of  independent  observations  drawn   from  $P_{0}$  as  in  Section
 \@ref(known-gbar-first-pass).  As  explained in Sections  \@ref(inference) and
-\@ref(empirical-inves-IPTW), we first  make `iter` data sets out  of the `obs`
+\@ref(empirical-inves-IPTW), we first make 1000 data sets out of the `obs`
 data set (third line), then train  algorithm $\Algo_{\Gbar,1}$ on each of them
 (fifth  to seventh  lines).  After  the first  series of  commands the  object
-`learned_features_fixed_sample_size`, a `tibble`, contains 1000 rows and
-three columns.  
+`learned_features_fixed_sample_size`, a  `tibble`, contains 1000  rows and
+three columns.
 
 We  created `learned_features_fixed_sample_size`  to store  the estimators  of
 $\Gbar_{0}$ for future  use. We will at  a later stage enrich  the object, for
@@ -2543,28 +2560,28 @@ psi_hat_abc <-
   full_join(psi_hat_ab)
 
 (bias_abc <- psi_hat_abc %>%
-   group_by(type) %>% summarise(bias = mean(clt)))
-#> # A tibble: 3 x 2
-#>   type    bias
-#>   <chr>  <dbl>
-#> 1 a     0.456 
-#> 2 b     0.0951
-#> 3 c     0.0236
+   group_by(type) %>% summarize(bias = mean(clt), .groups = "drop"))
+#> # A tibble: 3 × 2
+#>   type      bias
+#>   <chr>    <dbl>
+#> 1 a      1.39   
+#> 2 b      0.0241 
+#> 3 c     -0.00454
 ```
 
 By the above chunk of code, the average of $\sqrt{n/v_{n}^{c}} (\psi_{n}^{c} -
 \psi_{0})$ computed across the realizations is equal to 
-0.024 (see  `bias_abc`). In words, the  bias of $\psi_{n}^{c}$  is of the
-same  magnitude  as   that  of  $\psi_{n}^{b}$  despite  the   fact  that  the
-construction of $\psi_{n}^{c}$ hinges on  the estimation of $\Gbar_{0}$ (based
-on the well-specified algorithm $\Algo_{\Gbar,1}$).
+-0.005 (see `bias_abc`).  In words, the
+bias of $\psi_{n}^{c}$ is even smaller than that of $\psi_{n}^{b}$ despite the
+fact  that the  construction of  $\psi_{n}^{c}$  hinges on  the estimation  of
+$\Gbar_{0}$ (based on the well-specified algorithm $\Algo_{\Gbar,1}$).
 
 We represent the empirical laws of the recentered (with respect to $\psi_{0}$)
 and renormalized $\psi_{n}^{a}$, $\psi_{n}^{b}$  and $\psi_{n}^{c}$ in Figures
 \@ref(fig:unknown-Gbar-three)     (kernel      density     estimators)     and
 \@ref(fig:unknown-Gbar-four) (quantile-quantile plots).
  
-(ref:unknown-Gbar-three) Kernel density estimators of the law of three estimators of $\psi_{0}$ (recentered with respect to $\psi_{0}$, and renormalized), one of them misconceived (a), one assuming that $\Gbar_{0}$ is known (b) and one that hinges on the estimation of $\Gbar_{0}$ (c).  The present figure includes Figure \@ref(fig:known-Gbar-one-b) (but the colors differ). Built based on `iter` independent realizations of each estimator.
+(ref:unknown-Gbar-three) Kernel density estimators of the law of three estimators of $\psi_{0}$ (recentered with respect to $\psi_{0}$, and renormalized), one of them misconceived (a), one assuming that $\Gbar_{0}$ is known (b) and one that hinges on the estimation of $\Gbar_{0}$ (c).  The present figure includes Figure \@ref(fig:known-Gbar-one-b) (but the colors differ). Built based on 1000 independent realizations of each estimator.
  
 
 ```r
@@ -2583,7 +2600,7 @@ fig_bias_ab +
 <p class="caption">(\#fig:unknown-Gbar-three)(ref:unknown-Gbar-three)</p>
 </div>
 
-(ref:unknown-Gbar-four) Quantile-quantile plot of the standard normal law against the empirical laws of three estimators of $\psi_{0}$, one of them misconceived (a), one assuming that $\Gbar_{0}$ is known (b) and one that hinges on the estimation of $\Gbar_{0}$ (c).  Built based on `iter` independent realizations of each estimator.
+(ref:unknown-Gbar-four) Quantile-quantile plot of the standard normal law against the empirical laws of three estimators of $\psi_{0}$, one of them misconceived (a), one assuming that $\Gbar_{0}$ is known (b) and one that hinges on the estimation of $\Gbar_{0}$ (c).  Built based on 1000 independent realizations of each estimator.
 
 
 ```r
@@ -2598,7 +2615,7 @@ ggplot(psi_hat_abc, aes(sample = clt, fill = type, colour = type)) +
 </div>
 
 Figures \@ref(fig:unknown-Gbar-three) and \@ref(fig:unknown-Gbar-four) confirm
-that $\psi_{n}^{c}$ behaves as well as $\psi_{n}^{b}$ in terms of bias --- but
+that $\psi_{n}^{c}$ behaves almost as well as $\psi_{n}^{b}$ in terms of bias --- but
 remember that we  acted as oracles when we chose  the well-specified algorithm
 $\Algo_{\Gbar,1}$. They  also corroborate  that $v_{n}^{c}$, the  estimator of
 the  asymptotic   variance  of   $\sqrt{n}  (\psi_{n}^{c}  -   \psi_{0})$,  is
@@ -2606,41 +2623,41 @@ conservative: for  instance, the corresponding  bell-shaped blue curve  is too
 much concentrated around its axis of symmetry. 
 
 The actual asymptotic variance of  $\sqrt{n} (\psi_{n}^{c} - \psi_{0})$ can be
-estimated  with the  empirical  variance  of the  `iter`  replications of  the
+estimated with the empirical variance of the 1000 replications of the
 construction   of  $\psi_{n}^{c}$.
 
 
 ```r
 (emp_sig_n <- psi_hat_abc %>% filter(type == "c") %>%
    summarize(sd(psi_n)) %>% pull)
-#> [1] 0.589
+#> [1] 0.0172
 (summ_sig_n <- psi_hat_abc %>% filter(type == "c") %>% select(sig_n) %>%
    summary)
-#>      sig_n      
-#>  Min.   :0.142  
-#>  1st Qu.:0.172  
-#>  Median :0.182  
-#>  Mean   :0.206  
-#>  3rd Qu.:0.197  
-#>  Max.   :1.086
+#>      sig_n       
+#>  Min.   :0.0517  
+#>  1st Qu.:0.0549  
+#>  Median :0.0559  
+#>  Mean   :0.0560  
+#>  3rd Qu.:0.0570  
+#>  Max.   :0.0623
 ```
 
 
 
 The empirical standard deviation is approximately 
-0.35  times smaller  than the  average
+3.254  times smaller  than the  average
 *estimated*  standard   deviation.  The  estimator  is   conservative  indeed!
 Furthermore, note  the better fit with  the density of the  standard normal
 density    of  the  kernel  density estimator  of  the  law  of  $\sqrt{n}
 (\psi_{n}^{c} - \psi_{0})$ **renormalized with** `emp_sig_n`.
 
-(ref:unknown-Gbar-seven) Kernel density estimators of the law of three estimators of $\psi_{0}$ (recentered with respect to $\psi_{0}$, and renormalized), one of them misconceived (a), one assuming that $\Gbar_{0}$ is known (b) and one that hinges on the estimation of $\Gbar_{0}$ **and an estimator of the asymptotic variance computed across the replications** (c). The present figure includes Figure \@ref(fig:known-Gbar-one-b) (but the colors differ) and it should be compared to Figure \@ref(fig:unknown-Gbar-four). Built based on `iter` independent realizations of each estimator.
+(ref:unknown-Gbar-seven) Kernel density estimators of the law of three estimators of $\psi_{0}$ (recentered with respect to $\psi_{0}$, and renormalized), one of them misconceived (a), one assuming that $\Gbar_{0}$ is known (b) and one that hinges on the estimation of $\Gbar_{0}$ **and an estimator of the asymptotic variance computed across the replications** (c). The present figure includes Figure \@ref(fig:known-Gbar-one-b) (but the colors differ) and it should be compared to Figure \@ref(fig:unknown-Gbar-four). Built based on 1000 independent realizations of each estimator.
 
 
 
 ```r
 clt_c <- psi_hat_abc %>% filter(type == "c") %>%
-  mutate(clt = clt * sig_n /  emp_sig_n)
+  mutate(clt = clt * sig_n / emp_sig_n)
 
 fig_bias_ab +
   geom_density(aes(clt, fill = type, colour = type), clt_c, alpha = 0.1) +
@@ -2678,7 +2695,7 @@ $\psi_{n}^{b}$ and  its companion  quantities, construct  confidence intervals
 for  $\psi_{0}$ of  (asymptotic)  level  $95\%$, and  check  if the  empirical
 coverage is satisfactory.  Note that if  the coverage was exactly $95\%$, then
 the number of confidence intervals  that would contain $\psi_{0}$ would follow
-a binomial  law with parameters  `iter` and  `0.95`, and recall  that function
+a binomial law  with parameters 1000 and `0.95`,  and recall that function
 `binom.test` performs  an exact  test of  a simple  null hypothesis  about the
 probability of success  in a Bernoulli experiment against  its three one-sided
 and two-sided alternatives.
@@ -2793,15 +2810,15 @@ simple as running the following chunk of code:
 
 ```r
 (compute_gcomp(QW_hat, wrapper(Qbar_hat_kknn, FALSE), 1e3))
-#> # A tibble: 1 x 2
-#>    psi_n   sig_n
-#>    <dbl>   <dbl>
-#> 1 0.0730 0.00260
+#> # A tibble: 1 × 2
+#>   psi_n   sig_n
+#>   <dbl>   <dbl>
+#> 1 0.101 0.00306
 (compute_gcomp(QW_hat, wrapper(Qbar_hat_d, FALSE), 1e3))
-#> # A tibble: 1 x 2
-#>    psi_n   sig_n
-#>    <dbl>   <dbl>
-#> 1 0.0742 0.00215
+#> # A tibble: 1 × 2
+#>   psi_n   sig_n
+#>   <dbl>   <dbl>
+#> 1 0.109 0.00215
 ```
 
 
@@ -2901,9 +2918,7 @@ replications of  $\psi_{n}^{d}$ and $\psi_{n}^{e}$  (`auto_renormalization` is
 
 
 
-(ref:estimating-Qbar-one-bis) Kernel density estimators of the law of two G-computation estimators of $\psi_{0}$ (recentered with respect to $\psi_{0}$, and renormalized).  The estimators respectively hinge on algorithms $\Algo_{\Qbar,1}$ (d) and $\Algo_{\Qbar,\text{kNN}}$ (e) to estimate $\Qbar_{0}$.  Two renormalization schemes are considered, either based on an estimator of the asymptotic variance (right) or on the empirical variance computed across the `iter` independent replications of the estimators (left). We emphasize that the $x$-axis ranges differ starkly between the left and right plots.
-
-
+(ref:estimating-Qbar-one-bis) Kernel density estimators of the law of two G-computation estimators of $\psi_{0}$ (recentered with respect to $\psi_{0}$, and renormalized).  The estimators respectively hinge on algorithms $\Algo_{\Qbar,1}$ (d) and $\Algo_{\Qbar,\text{kNN}}$ (e) to estimate $\Qbar_{0}$.  Two renormalization schemes are considered, either based on an estimator of the asymptotic variance (right) or on the empirical variance computed across the 1000 independent replications of the estimators (left). We emphasize that the $x$-axis ranges differ  between the left and right plots.
 
 
 
@@ -2944,14 +2959,14 @@ psi_hat_de <- learned_features_fixed_sample_size %>%
 
 (bias_de <- psi_hat_de %>%
    group_by(type, auto_renormalization) %>%
-   summarize(bias = mean(clt)) %>% ungroup)
-#> # A tibble: 4 x 3
-#>   type  auto_renormalization   bias
-#>   <chr> <lgl>                 <dbl>
-#> 1 d     FALSE                0.0530
-#> 2 d     TRUE                 0.0886
-#> 3 e     FALSE                0.251 
-#> 4 e     TRUE                 9.89
+   summarize(bias = mean(clt), .groups = "drop"))
+#> # A tibble: 4 × 3
+#>   type  auto_renormalization  bias
+#>   <chr> <lgl>                <dbl>
+#> 1 d     FALSE                0.234
+#> 2 d     TRUE                 2.04 
+#> 3 e     FALSE                0.107
+#> 4 e     TRUE                 0.626
 
 fig <- ggplot() +
   geom_line(aes(x = x, y = y), 
@@ -2981,25 +2996,19 @@ fig +
 
 
  
-We represent the empirical laws of the recentered (with respect to $\psi_{0}$)
-and    renormalized    $\psi_{n}^{d}$    and    $\psi_{n}^{e}$    in    Figure
-\@ref(fig:estimating-Qbar-one-bis)    (kernel   density    estimators).    Two
-renormalization schemes  are considered, either  based on an estimator  of the
-asymptotic variance  (left) or on  the empirical variance computed  across the
-`iter` independent replications of the  estimators (right).  We emphasize that
-the $x$-axis ranges differ starkly between the left and right plots.
+We represent the empirical laws of the recentered (with respect to $\psi_{0}$) and renormalized $\psi_{n}^{d}$ and $\psi_{n}^{e}$ in Figure \@ref(fig:estimating-Qbar-one-bis) (kernel density estimators).  Two renormalization schemes are considered, either based on an estimator of the asymptotic variance (left) or on the empirical variance computed across the 1000 independent replications of the estimators (right).  We emphasize that the $x$-axis ranges differ between the left and right plots.
 
 
 Two  important  comments   are  in  order.   First,  on  the   one  hand,  the
 G-computation estimator  $\psi_{n}^{d}$ is biased. Specifically,  by the above
 chunk of code, the averages  of $\sqrt{n/v_{n}^{d}} (\psi_{n}^{d} - \psi_{0})$
 and  $\sqrt{n/v_{n}^{d*}}  (\psi_{n}^{d}  -  \psi_{0})$  computed  across  the
-realizations are equal to 0.089 and 0.053 (see `bias_de`).   On  the other  hand, the  G-computation
+realizations are equal to 2.038 and 0.234 (see `bias_de`).   On  the other  hand, the  G-computation
 estimator   $\psi_{n}^{e}$  is   biased   too,  though   slightly  less   than
 $\psi_{n}^{d}$.  Specifically,  by the  above chunk of  code, the  averages of
 $\sqrt{n/v_{n}^{e}}   (\psi_{n}^{e}   -    \psi_{0})$   and   $\sqrt{n/v^{e*}}
 (\psi_{n}^{e} - \psi_{0})$ computed across the realizations are equal to 
-9.892 and 0.251 (see
+0.626 and 0.107 (see
 `bias_de`). We  can provide an oracular  explanation. Estimator $\psi_{n}^{d}$
 suffers     from    the     poor    approximation     of    $\Qbar_{0}$     by
 $\Algo_{\Qbar,1}(P_{n})$, a  result of  the algorithm's  mis-specification. As
@@ -3024,7 +3033,7 @@ the rate of convergence of  $\Algo_{\Qbar,\text{kNN}}(P_{n})$ to its limit may
 be slower than root-$n$, invalidating a central limit theorem.
  
 How do  the estimated variances  of $\psi_{n}^{d}$ and  $\psi_{n}^{e}$ compare
-with their empirical counterparts (computed  across the `iter` replications of
+with their empirical counterparts (computed across the 1000 replications of
 the construction of the two  estimators)?
 
 
@@ -3033,23 +3042,23 @@ the construction of the two  estimators)?
 (psi_hat_de %>% ungroup %>%
    filter(type == "d" & auto_renormalization) %>% pull(sig_n) %>% summary)
 #>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-#> 0.00041 0.00304 0.00391 0.00392 0.00484 0.01015
+#> 0.00019 0.00169 0.00205 0.00206 0.00241 0.00369
 ## psi_n^e
 (psi_hat_de %>% ungroup %>%
    filter(type == "e" & auto_renormalization) %>% pull(sig_n) %>% summary)
 #>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-#> 0.00039 0.00124 0.00165 0.00206 0.00260 0.00986
+#> 0.00170 0.00261 0.00287 0.00288 0.00314 0.00421
 ```
 
 
 
 
 The empirical standard deviation of $\psi_{n}^{d}$ is approximately 
-13.669 times larger than the average *estimated*
+8.307 times larger than the average *estimated*
 standard deviation.  The estimator  is anti-conservative indeed! 
 
 As for the empirical standard deviation of $\psi_{n}^{e}$, it is approximately 
-26.169 times larger than the average *estimated*
+5.962 times larger than the average *estimated*
 standard deviation. 
 
 ### &#9761; \stixdanger{} Empirical investigation, varying sample size {#empirical-inves-Gcomp-varying}
@@ -3058,7 +3067,7 @@ standard deviation.
  
 
 ```r
-sample_size <- c(5e3, 15e3)
+sample_size <- c(2500, 5000) # 5e3, 15e3
 block_size <- sum(sample_size)
 
 
@@ -3069,10 +3078,10 @@ learned_features_varying_sample_size <- obs %>% as_tibble %>%
 ```
 
 First, we cut the  data set into independent sub-data sets  of sample size $n$
-in $\{$5000, 1.5\times 10^{4}$\}$.  Second, we infer $\psi_{0}$ as shown two chunks
-earlier.  We thus obtain 5 independent realizations
-of each estimator derived on  data sets of 2, increasing
-sample sizes.
+in $\{$ 2500, 5000 $\}$.  Second, we infer $\psi_{0}$
+as shown  two chunks  earlier.  We  thus obtain  133
+independent  realizations  of  each  estimator  derived on  data  sets  of  `r
+length(sample_size)`, increasing sample sizes.
 
 
 ```r
@@ -3120,7 +3129,6 @@ include the  realizations of the  estimators derived earlier and  contained in
 `root_n_bias`, a small price to pay in this context).
 
 (ref:estimating-Qbar-four) Evolution of root-$n$ times bias versus sample size for two G-computation estimators of $\psi_{0}$. The estimators respectively hinge on algorithms $\Algo_{\Qbar,1}$ (d) and $\Algo_{\Qbar,\text{kNN}}$ (e) to estimate $\Qbar_{0}$.  Big dots represent the average biases and vertical lines represent twice the standard error.
-
 
 ```r
 root_n_bias <- learned_features_fixed_sample_size %>%
@@ -3177,14 +3185,14 @@ root_n_bias %>% filter(auto_renormalization) %>%
 <p class="caption">(\#fig:estimating-Qbar-four)(ref:estimating-Qbar-four)</p>
 </div>
 
-Root-$n$ bias for $\psi_{n}^{d}$ (red lines  and points) is positive and tends
-to increase from sample size 1000 to 5000 and from 
-5000 to 1.5\times 10^{4}.  Moreover, root-$n$ bias tends to be
-larger for $\psi_{n}^{d}$ than for  $\psi_{n}^{e}$. In addition, root-$n$ bias
-for $\psi_{n}^{e}$ tends to increase from sample size 1000 to 
-1.5\times 10^{4}, where it tends to be positive too.^[We use the expression
-``tend to''  because controlling for  multiple testing makes it  impossible to
-make a firm statement.]  
+On  the one  hand, root-$n$  bias for  $\psi_{n}^{e}$ tends  to decrease  from
+sample size  1000 to  5000 where it  tends to be  small in
+average.^[We  use  the  expression  ``tend to  be''  because  controlling  for
+multiple testing makes  it impossible to make a firm  statement.] On the other
+hand, root-$n$ bias for $\psi_{n}^{d}$ (red  lines and points) is positive and
+tends to increase  from sample size 1000 to  2500 and from
+2500 to 5000.   Overall, root-$n$ bias tends to be
+larger for $\psi_{n}^{d}$ than for $\psi_{n}^{e}$.
 
 In essence, we observe that the bias does not vanish faster than root-$n$. For
 $\psi_{n}^{d}$,  this is  because  $\Algo_{\Qbar,1}$ is  mis-specified and  we
@@ -3312,18 +3320,18 @@ $P_{0}$ (see Section \@ref(nuisance-QW)), then applied the one-step correction:
 
 ```r
 (psin_kknn <- compute_gcomp(QW_hat, wrapper(Qbar_hat_kknn, FALSE), 1e3))
-#> # A tibble: 1 x 2
-#>    psi_n   sig_n
-#>    <dbl>   <dbl>
-#> 1 0.0730 0.00260
+#> # A tibble: 1 × 2
+#>   psi_n   sig_n
+#>   <dbl>   <dbl>
+#> 1 0.101 0.00306
 (psin_kknn_os <- apply_one_step_correction(head(obs, 1e3),
                                            wrapper(Gbar_hat, FALSE),
                                            wrapper(Qbar_hat_kknn, FALSE),
                                            psin_kknn$psi_n)) 
-#> # A tibble: 1 x 3
-#>    psi_n  sig_n   crit_n
-#>    <dbl>  <dbl>    <dbl>
-#> 1 0.0695 0.0169 -0.00354
+#> # A tibble: 1 × 3
+#>    psi_n  sig_n    crit_n
+#>    <dbl>  <dbl>     <dbl>
+#> 1 0.0999 0.0171 -0.000633
 ```
 
 In the  call to `apply_one_step_correction` we  provide *(i)* the data  set at
@@ -3341,7 +3349,7 @@ the one-step  correction to the estimators  $\psi_{n}^{d}$ and $\psi_{n}^{e}$,
 namely, thus we merely have to call the function `apply_one_step_correction`.
 
 
-(ref:one-step-one) Kernel density estimators of the law of two one-step-G-computation estimators of $\psi_{0}$ (recentered with respect to $\psi_{0}$, and renormalized).  The estimators respectively hinge on algorithms $\Algo_{\Qbar,1}$ (d) and $\Algo_{\Qbar,\text{kNN}}$ (e) to estimate $\Qbar_{0}$, and on one-step correction.  Two renormalization schemes are considered, either based on an estimator of the asymptotic variance (left) or on the empirical variance computed across the `iter` independent replications of the estimators (right).  We emphasize that the $x$-axis ranges differ between the left and right plots.
+(ref:one-step-one) Kernel density estimators of the law of two one-step-G-computation estimators of $\psi_{0}$ (recentered with respect to $\psi_{0}$, and renormalized).  The estimators respectively hinge on algorithms $\Algo_{\Qbar,1}$ (d) and $\Algo_{\Qbar,\text{kNN}}$ (e) to estimate $\Qbar_{0}$, and on one-step correction.  Two renormalization schemes are considered, either based on an estimator of the asymptotic variance (left) or on the empirical variance computed across the 1000 independent replications of the estimators (right).  We emphasize that the $x$-axis ranges differ between the left and right plots.
 
 
 
@@ -3378,13 +3386,13 @@ psi_hat_de_one_step <- learned_features_fixed_sample_size %>%
 (bias_de_one_step <- psi_hat_de_one_step %>%
    group_by(type, auto_renormalization) %>%
    summarize(bias = mean(clt)) %>% ungroup)
-#> # A tibble: 4 x 3
-#>   type       auto_renormalization    bias
-#>   <chr>      <lgl>                  <dbl>
-#> 1 d_one_step FALSE                 0.0279
-#> 2 d_one_step TRUE                 -0.0437
-#> 3 e_one_step FALSE                -0.0226
-#> 4 e_one_step TRUE                  0.0499
+#> # A tibble: 4 × 3
+#>   type       auto_renormalization     bias
+#>   <chr>      <lgl>                   <dbl>
+#> 1 d_one_step FALSE                -0.0142 
+#> 2 d_one_step TRUE                 -0.0307 
+#> 3 e_one_step FALSE                 0.0126 
+#> 4 e_one_step TRUE                 -0.00460
 
 fig <- ggplot() +
   geom_line(aes(x = x, y = y), 
@@ -3412,7 +3420,7 @@ fig +
 <p class="caption">(\#fig:one-step-one)(ref:one-step-one)</p>
 </div>
  
-It  seems that  the  one-step  correction performs  qui  well (in  particular,
+It  seems that  the  one-step  correction performs  quite  well (in  particular,
 compare `bias_de` with `bias_de_one_step`):
 
 
@@ -3420,13 +3428,13 @@ compare `bias_de` with `bias_de_one_step`):
 bind_rows(bias_de, bias_de_one_step) %>%
   filter(!auto_renormalization) %>%
   arrange(type)
-#> # A tibble: 4 x 3
+#> # A tibble: 4 × 3
 #>   type       auto_renormalization    bias
 #>   <chr>      <lgl>                  <dbl>
-#> 1 d          FALSE                 0.0530
-#> 2 d_one_step FALSE                 0.0279
-#> 3 e          FALSE                 0.251 
-#> 4 e_one_step FALSE                -0.0226
+#> 1 d          FALSE                 0.234 
+#> 2 d_one_step FALSE                -0.0142
+#> 3 e          FALSE                 0.107 
+#> 4 e_one_step FALSE                 0.0126
 ```
 
 What about the estimation of the asymptotic variance, and of the mean squared-error of the estimators?
@@ -3441,22 +3449,22 @@ psi_hat_de %>%
             se = sd(psi_n),
             mse = mean((psi_n - psi_zero)^2) * n()) %>%
   arrange(type)
-#> # A tibble: 4 x 4
-#>   type             sd       se     mse
-#>   <chr>         <dbl>    <dbl>   <dbl>
-#> 1 d          3.92e- 3 5.36e- 2 2.88e 0
-#> 2 d_one_step 1.77e+12 5.46e+12 2.98e28
-#> 3 e          2.06e- 3 5.40e- 2 3.09e 0
-#> 4 e_one_step 1.76e+12 4.22e+12 1.78e28
+#> # A tibble: 4 × 4
+#>   type            sd     se   mse
+#>   <chr>        <dbl>  <dbl> <dbl>
+#> 1 d          0.00206 0.0171 0.309
+#> 2 d_one_step 0.0173  0.0171 0.291
+#> 3 e          0.00288 0.0172 0.298
+#> 4 e_one_step 0.0166  0.0175 0.305
 ```
 
 The  `sd`  (*estimator*  of  the   asymptotic  standard  deviation)  and  `se`
 (*empirical* standard deviation) entries are  similar. This indicates that the
 inference of the  asymptotic variance of the one-step estimators  based on the
 influence curve is rather accurate for  both the `d`- and `e`-variants that we
-implemented.  As for  the mean square error, it is  diminished by the one-step
-update for both  types `d` and `e`, the `e_one_step`  estimator exhibiting the
-smallest mean square error.
+implemented.  As for  the mean square error, it is  made respectively slightly
+smaller  or bigger  or  by the  one-step  update  for type  `d`  and `e`,  the
+`d_one_step` estimator exhibiting the smallest mean square error.
 
 ## &#9881; \gear Investigating further the one-step correction methodology {#exo-one-step}
 
@@ -3788,10 +3796,10 @@ risk %>% enframe %>%
 <p class="caption">(\#fig:grid-search)(ref:grid-search)</p>
 </div>
 
-(ref:grid-search) Representing the evolution of the empirical risk function as $h$ ranges over a grid of values. One sees that the risk at $h=0$ (*i.e.*, the risk of $\Qbar_{n}$) is larger that the minimal risk, achieved at $h \approx$ -0.007 (which must be close to that of the optimal $\Qbar_{n,h_{n}}$).
+(ref:grid-search) Representing the evolution of the empirical risk function as $h$ ranges over a grid of values. One sees that the risk at $h=0$ (*i.e.*, the risk of $\Qbar_{n}$) is larger that the minimal risk, achieved at $h \approx$ -0.003 (which must be close to that of the optimal $\Qbar_{n,h_{n}}$).
 
 Figure \@ref(fig:grid-search) reveals  how moving away slightly  from $h=0$ to
-the  left (*i.e.*,  to  $h_{n}$ equal  to  -0.007,
+the  left (*i.e.*,  to  $h_{n}$ equal  to  -0.003,
 rounded to three decimal places) entails a decrease of the empirical risk. The
 gain is modest at  the scale of the empirical risk,  but considerable in terms
 of inference, as we explain below.
@@ -3980,22 +3988,22 @@ targeting step and presents the resulting estimator:
 
 ```r
 (psin_kknn)
-#> # A tibble: 1 x 2
-#>    psi_n   sig_n
-#>    <dbl>   <dbl>
-#> 1 0.0730 0.00260
+#> # A tibble: 1 × 2
+#>   psi_n   sig_n
+#>   <dbl>   <dbl>
+#> 1 0.101 0.00306
 (psin_kknn_os)
-#> # A tibble: 1 x 3
-#>    psi_n  sig_n   crit_n
-#>    <dbl>  <dbl>    <dbl>
-#> 1 0.0695 0.0169 -0.00354
+#> # A tibble: 1 × 3
+#>    psi_n  sig_n    crit_n
+#>    <dbl>  <dbl>     <dbl>
+#> 1 0.0999 0.0171 -0.000633
 (psin_kknn_tmle <- apply_targeting_step(head(obs, 1e3),
                                         wrapper(Gbar_hat, FALSE),
                                         wrapper(Qbar_hat_kknn, FALSE)))
-#> # A tibble: 1 x 3
-#>    psi_n  sig_n   crit_n
-#>    <dbl>  <dbl>    <dbl>
-#> 1 0.0695 0.0169 -1.13e-9
+#> # A tibble: 1 × 3
+#>    psi_n  sig_n    crit_n
+#>    <dbl>  <dbl>     <dbl>
+#> 1 0.0999 0.0171 -2.05e-17
 ```
 
 In the  call to `apply_targeting_step` we  provide *(i)* the data  set at hand
@@ -4072,7 +4080,7 @@ estimators $\psi_{n}^{d}$ and $\psi_{n}^{e}$, thus  we merely have to call the
 function `apply_targeting_step`.
 
 
-(ref:tmle) Kernel density estimators of the law of two targeted estimators of $\psi_{0}$ (recentered with respect to $\psi_{0}$, and renormalized).  The estimators respectively hinge on algorithms $\Algo_{\Qbar,1}$ (d) and $\Algo_{\Qbar,\text{kNN}}$ (e) to estimate $\Qbar_{0}$, and on a targeting step.  Two renormalization schemes are considered, either based on an estimator of the asymptotic variance (left) or on the empirical variance computed across the `iter` independent replications of the estimators (right).  We emphasize that the $x$-axis ranges differ between the left and right plots.
+(ref:tmle) Kernel density estimators of the law of two targeted estimators of $\psi_{0}$ (recentered with respect to $\psi_{0}$, and renormalized).  The estimators respectively hinge on algorithms $\Algo_{\Qbar,1}$ (d) and $\Algo_{\Qbar,\text{kNN}}$ (e) to estimate $\Qbar_{0}$, and on a targeting step.  Two renormalization schemes are considered, either based on an estimator of the asymptotic variance (left) or on the empirical variance computed across the 1000 independent replications of the estimators (right).  We emphasize that the $x$-axis ranges differ between the left and right plots.
 
 
 ```r
@@ -4106,13 +4114,13 @@ psi_tmle <- learned_features_fixed_sample_size %>%
 (bias_tmle <- psi_tmle %>%
    group_by(type, auto_renormalization) %>%
    summarize(bias = mean(clt)) %>% ungroup)
-#> # A tibble: 4 x 3
-#>   type       auto_renormalization    bias
-#>   <chr>      <lgl>                  <dbl>
-#> 1 d_targeted FALSE                 0.0186
-#> 2 d_targeted TRUE                 -0.0494
-#> 3 e_targeted FALSE                 0.102 
-#> 4 e_targeted TRUE                  0.0365
+#> # A tibble: 4 × 3
+#>   type       auto_renormalization     bias
+#>   <chr>      <lgl>                   <dbl>
+#> 1 d_targeted FALSE                -0.0147 
+#> 2 d_targeted TRUE                 -0.0313 
+#> 3 e_targeted FALSE                 0.0132 
+#> 4 e_targeted TRUE                 -0.00407
 
 fig <- ggplot() +
   geom_line(aes(x = x, y = y), 
@@ -4164,103 +4172,3 @@ developed to provide researchers with new tools for utilizing these methods.
 
 # (APPENDIX) Appendix {-}
 
-
-
-
-<!--
-
-```r
-## xgboost based on trees
-xgb_tree_algo <- list(
-  algo = function(dat, ...) {
-    caret::train(Y ~ I(10*A) + W,
-                 data = dat,
-                 method = "xgbTree",
-                 trControl = control,
-                 tuneGrid = grid,
-                 verbose = FALSE)  
-  },
-  type_of_preds = "response"
-)
-attr(xgb_tree_algo, "ML") <- TRUE
-xgb_tree_grid <- expand.grid(nrounds = 350,
-                             max_depth = c(4, 6),
-                             eta = c(0.05, 0.1),
-                             gamma = 0.01,
-                             colsample_bytree = 0.75,
-                             subsample = 0.5,
-                             min_child_weight = 0)
-
-## nonparametric kernel smoothing regression
-npreg <- list(
-  label = "Kernel regression",
-  type = "Regression",
-  library = "np",
-  parameters = data.frame(parameter =
-                            c("subsample", "regtype",
-                              "ckertype", "ckerorder"), 
-                          class = c("integer", "character",
-                                    "character", "integer"), 
-                          label = c("#subsample", "regtype",
-                                    "ckertype", "ckerorder")),
-  grid = function(x, y, len = NULL, search = "grid") {
-    if (!identical(search, "grid")) {
-      stop("No random search implemented.\n")
-    } else {
-      out <- expand.grid(subsample = c(50, 100),
-                         regtype = c("lc", "ll"),
-                         ckertype =
-                           c("gaussian",
-                             "epanechnikov",
-                             "uniform"),
-                         ckerorder = seq(2, 8, 2))
-    } 
-    return(out)
-  },
-  fit = function(x, y, wts, param, lev, last, classProbs, ...) {
-    ny <- length(y)
-    if (ny > param$subsample) {
-      ## otherwise far too slow for what we intend to do here...
-      keep <- sample.int(ny, param$subsample)
-      x <- x[keep, ]
-      y <- y[keep]
-    }
-    bw <- np::npregbw(xdat = as.data.frame(x), ydat = y,
-                      regtype = param$regtype,
-                      ckertype = param$ckertype,
-                      ckerorder = param$ckerorder,
-                      remin = FALSE, ftol = 0.01, tol = 0.01,
-                      ...)
-    np::npreg(bw)
-  },
-  predict = function (modelFit, newdata, preProc = NULL, submodels = NULL) {
-    if (!is.data.frame(newdata)) {
-      newdata <- as.data.frame(newdata)
-    }
-    np:::predict.npregression(modelFit, se.fit = FALSE, newdata)
-  },
-  sort = function(x) {
-    x[order(x$regtype, x$ckerorder), ]
-  },
-  loop = NULL, prob = NULL, levels = NULL
-)
-
-npreg_algo <- list(
-  algo = function(dat, ...) {
-    caret::train(working_model_Q_one$formula,
-                 data = dat,
-                 method = npreg, # no quotes!
-                 verbose = FALSE,
-                 ...)
-  },
-  type_of_preds = "response"
-)
-attr(npreg_algo, "ML") <- TRUE
-npreg_grid <- data.frame(subsample = 100,
-                         regtype = "lc",
-                         ckertype = "gaussian",
-                         ckerorder = 4,
-                         stringsAsFactors = FALSE)
-```-->
-
-```

@@ -44,17 +44,21 @@ assumptions:
 
 
 
-\BeginKnitrBlock{proposition}\iffalse{-91-73-100-101-110-116-105-102-105-99-97-116-105-111-110-93-}\fi{}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-2"><strong>(\#prp:unnamed-chunk-2)  \iffalse (Identification) \fi{} </strong></span>Under  the  above assumptions,  it  holds  that \begin{equation*}  \psi_{0}  =
+::: {.proposition #unnamed-chunk-2 name="Identification"}
+Under  the  above assumptions,  it  holds  that \begin{equation*}  \psi_{0}  =
 \Exp_{\bbP_{0}}   \left(Y_{1}   -   Y_{0}\right)  =   \Exp_{\bbP_{0}}(Y_1)   -
-\Exp_{\bbP_{0}}(Y_0). \end{equation*}</div>\EndKnitrBlock{proposition}
+\Exp_{\bbP_{0}}(Y_0). \end{equation*}
+:::
 
-\BeginKnitrBlock{proof}<div class="proof">\iffalse{} <span class="proof"><em>Proof. </em></span>  \fi{}Set arbitrarily $a  \in \{0,1\}$.  By the randomization assumption  on the one
+::: {.proof}
+Set arbitrarily $a  \in \{0,1\}$.  By the randomization assumption  on the one
 hand (second  equality) and by  the consistency and positivity  assumptions on
 the   other   hand   (third    equality),   it   holds   that   \begin{align*}
 \Exp_{\bbP_0}(Y_a) &=  \int \Exp_{\bbP_0}(Y_a \mid  W = w) dQ_{0,W}(w)  = \int
 \Exp_{\bbP_0}(Y_a \mid A = a, W =  w) dQ_{0,W}(w) \\ &= \int \Exp_{P_0}(Y \mid
 A =  a, W = w)  dQ_{0,W}(w) = \int \Qbar_0(a,W)  dQ_{0,W}(w). \end{align*} The
-stated result easily follows.</div>\EndKnitrBlock{proof}
+stated result easily follows.
+:::
 
 **Remark.** The positivity assumption is needed  for $\Exp_{P_0}(Y \mid A = a,
 W) \defq \Qbar_{0}(a,W)$ to be well-defined.
@@ -77,9 +81,11 @@ $\sigma^{2}$ then, by Slutsky's lemma, $\sqrt{n}/\sigma_{n} (\bar{X}_{n} - m)$
 converges in law  to the standard normal law.  The  empirical variance $n^{-1}
 \sum_{i=1}^{n}(X_{i} - \bar{X}_{n})^{2}$ is such an estimator. 
 
-\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-4"><strong>(\#prp:unnamed-chunk-4) </strong></span>Under   the  above   assumptions,   \begin{equation*}  \left[\bar{X}_{n}   \pm
+::: {.proposition #unnamed-chunk-4}
+Under   the  above   assumptions,   \begin{equation*}  \left[\bar{X}_{n}   \pm
 \Phi^{-1}(1-\alpha)  \frac{\sigma_{n}}{\sqrt{n}}\right]  \end{equation*} is  a
-confidence interval for $m$ with asymptotic level $(1-2\alpha)$.</div>\EndKnitrBlock{proposition}
+confidence interval for $m$ with asymptotic level $(1-2\alpha)$.
+:::
     
 ### CLT and order statistics {#order}
 
@@ -90,8 +96,10 @@ $F$. Set $p \in ]0,1[$ and, assuming that  $n$ is large, find $k\geq 1$ and $l
 \begin{equation*}    \frac{l}{n}     \approx    p     +    \Phi^{-1}(1-\alpha)
 \sqrt{\frac{p(1-p)}{n}}.  \end{equation*} 
 
-\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-5"><strong>(\#prp:unnamed-chunk-5) </strong></span>Under the above assumptions, $[X_{(k)},X_{(l)}]$  is a confidence interval for
-$F^{-1}(p)$ with asymptotic level $1 - 2\alpha$.</div>\EndKnitrBlock{proposition}
+::: {.proposition #unnamed-chunk-5}
+Under the above assumptions, $[X_{(k)},X_{(l)}]$  is a confidence interval for
+$F^{-1}(p)$ with asymptotic level $1 - 2\alpha$.
+:::
 
 ## Another representation of the parameter of interest {#another-rep}
 
@@ -118,14 +126,16 @@ Let  $f$  be a  map  from  $\Theta \subset  \bbR^{p}$  to  $\bbR^{q}$ that  is
 differentiable at $\theta\in \Theta$. Let $X_{n}$ be a random vector taking its
 values in $\Theta$.
 
-\BeginKnitrBlock{proposition}<div class="proposition"><span class="proposition" id="prp:unnamed-chunk-6"><strong>(\#prp:unnamed-chunk-6) </strong></span>If $\sqrt{n} (X_{n} - \theta)$ converges in  law to the Gaussian law with mean
+::: {.proposition #unnamed-chunk-6}
+If $\sqrt{n} (X_{n} - \theta)$ converges in  law to the Gaussian law with mean
 $\mu$ and covariance  matrix $\Sigma$, then $\sqrt{n}  (f(X_{n}) - f(\theta))$
 converge in  law to the Gaussian  law with mean $\nabla  f(\theta) \times \mu$
 and  covariance   matrix  $\nabla   f(\theta)  \times  \Sigma   \times  \nabla
 f(\theta)^{\top}$.    In   addition,   if  $\Sigma_{n}$   estimates   $\Sigma$
 consistently then,  by Slutsky's lemma,  the asymptotic variance  of $\sqrt{n}
 (f(X_{n}) - f(\theta))$ is consistently estimated with $\nabla f(X_{n}) \times
-\Sigma_{n} \times \nabla f(X_{n})^{\top}$.</div>\EndKnitrBlock{proposition}
+\Sigma_{n} \times \nabla f(X_{n})^{\top}$.
+:::
 
 
 ## The oracle logistic risk {#oracle-logistic-risk}

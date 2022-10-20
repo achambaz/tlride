@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>B Basic results and their proofs | A Ride in Targeted Learning Territory</title>
+  <title>Page not found | A Ride in Targeted Learning Territory</title>
   <meta name="description" content="A ride in targeted learning territory is a gentle introduction to the filed of targeted learning. It weaves together two main threads, one theoretical and the other computational. It uses tlrider, a companion R package built specifically for this project." />
   <meta name="generator" content="bookdown 0.29 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="B Basic results and their proofs | A Ride in Targeted Learning Territory" />
+  <meta property="og:title" content="Page not found | A Ride in Targeted Learning Territory" />
   <meta property="og:type" content="book" />
   <meta property="og:image" content="/cover.jpg" />
   <meta property="og:description" content="A ride in targeted learning territory is a gentle introduction to the filed of targeted learning. It weaves together two main threads, one theoretical and the other computational. It uses tlrider, a companion R package built specifically for this project." />
   <meta name="github-repo" content="achambaz/tlride" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="B Basic results and their proofs | A Ride in Targeted Learning Territory" />
+  <meta name="twitter:title" content="Page not found | A Ride in Targeted Learning Territory" />
   
   <meta name="twitter:description" content="A ride in targeted learning territory is a gentle introduction to the filed of targeted learning. It weaves together two main threads, one theoretical and the other computational. It uses tlrider, a companion R package built specifically for this project." />
   <meta name="twitter:image" content="/cover.jpg" />
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   <link rel="shortcut icon" href="favicon.png" type="image/x-icon" />
-<link rel="prev" href="A-notation.html"/>
-<link rel="next" href="C-more-proofs.html"/>
+
+
 <script src="assets/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="assets/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -437,158 +437,19 @@ div.csl-indent {
 \(\DeclareMathOperator{\logit}{logit}\)
 \(\DeclareMathOperator{\Rem}{Rem}\)
 \(\DeclareMathOperator{\Var}{Var}\)
-<div id="proofs" class="section level1 hasAnchor" number="13">
-<h1><span class="header-section-number">B</span> Basic results and their proofs<a href="B-proofs.html#proofs" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<div id="npsem" class="section level2 hasAnchor" number="13.1">
-<h2><span class="header-section-number">B.1</span> NPSEM<a href="B-proofs.html#npsem" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>The experiment can also be summarized by a <em>nonparametric system of structural
-equations</em>: for some deterministic functions <span class="math inline">\(f_w\)</span>, <span class="math inline">\(f_a\)</span>, <span class="math inline">\(f_y\)</span> and
-independent sources of randomness <span class="math inline">\(U_w\)</span>, <span class="math inline">\(U_a\)</span>, <span class="math inline">\(U_y\)</span>,</p>
-<ol style="list-style-type: decimal">
-<li><p>sample the context where the counterfactual rewards will be generated, the
-action will be undertaken and the actual reward will be obtained, <span class="math inline">\(W = f_{w}(U_w)\)</span>;</p></li>
-<li><p>sample the two counterfactual rewards of the two actions that can be
-undertaken, <span class="math inline">\(Y_{0} = f_{y}(0, W, U_y)\)</span> and <span class="math inline">\(Y_{1} = f_{y}(1, W, U_y)\)</span>;</p></li>
-<li><p>sample which action is carried out in the given context, <span class="math inline">\(A = f_{a} (W, U_a)\)</span>;</p></li>
-<li><p>define the corresponding reward, <span class="math inline">\(Y = A Y_{1} + (1-A) Y_{0}\)</span>;</p></li>
-<li><p>summarize the course of the experiment with the observation <span class="math inline">\(O = (W, A, Y)\)</span>, thus concealing <span class="math inline">\(Y_{0}\)</span> and <span class="math inline">\(Y_{1}\)</span>.</p></li>
-</ol>
-</div>
-<div id="identification" class="section level2 hasAnchor" number="13.2">
-<h2><span class="header-section-number">B.2</span> Identification<a href="B-proofs.html#identification" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Let <span class="math inline">\(\bbP_{0}\)</span> be an experiment that generates <span class="math inline">\(\bbO \defq (W, Y_{0}, Y_{1}, A, Y)\)</span>. We think of <span class="math inline">\(W\)</span> as the context where an action is undertaken, of
-<span class="math inline">\(Y_{0}\)</span> and <span class="math inline">\(Y_{1}\)</span> as the counterfactual (potential) rewards that actions
-<span class="math inline">\(a=0\)</span> and <span class="math inline">\(a=1\)</span> would entail, of <span class="math inline">\(A\)</span> as the action carried out, and of <span class="math inline">\(Y\)</span> as
-the reward received in response to action <span class="math inline">\(A\)</span>. Consider the following
-assumptions:</p>
-<ol style="list-style-type: decimal">
-<li><p><strong>Randomization</strong>: under <span class="math inline">\(\bbP_{0}\)</span>, the counterfactual rewards
-<span class="math inline">\(Y_0\)</span>, <span class="math inline">\(Y_1\)</span> and action <span class="math inline">\(A\)</span> are conditionally independent given <span class="math inline">\(W\)</span>, <em>i.e.</em>,
-<span class="math inline">\(Y_a \perp A \mid W\)</span> for <span class="math inline">\(a=0,1\)</span>.</p></li>
-<li><p><strong>Consistency</strong>: under <span class="math inline">\(\bbP_{0}\)</span>, if action <span class="math inline">\(A\)</span> is undertaken then reward
-<span class="math inline">\(Y_{A}\)</span> is received, <em>i.e.</em>, <span class="math inline">\(Y = Y_{A}\)</span> (or <span class="math inline">\(Y=Y_{a}\)</span> given that <span class="math inline">\(A=a\)</span>).</p></li>
-<li><p><strong>Positivity</strong>: under <span class="math inline">\(\bbP_{0}\)</span>, both actions <span class="math inline">\(a=0\)</span> and <span class="math inline">\(a=1\)</span> have
-(<span class="math inline">\(\bbP_{0}\)</span>-almost surely) a positive probability to be undertaken given
-<span class="math inline">\(W\)</span>, <em>i.e.</em>, <span class="math inline">\(\Pr_{\bbP_0}(\ell\Gbar_0(a,W) &gt; 0) = 1\)</span> for <span class="math inline">\(a=0,1\)</span>.</p></li>
-</ol>
-<div class="proposition">
-<p><span id="prp:unnamed-chunk-2" class="proposition"><strong>Proposition B.1  (Identification) </strong></span>Under the above assumptions, it holds that <span class="math display">\[\begin{equation*}  \psi_{0}  =
-\Exp_{\bbP_{0}}   \left(Y_{1}   -   Y_{0}\right)  =   \Exp_{\bbP_{0}}(Y_1)   -
-\Exp_{\bbP_{0}}(Y_0). \end{equation*}\]</span></p>
-</div>
-<div class="proof">
-<p><span id="unlabeled-div-1" class="proof"><em>Proof</em>. </span>Set arbitrarily <span class="math inline">\(a \in \{0,1\}\)</span>. By the randomization assumption on the one
-hand (second equality) and by the consistency and positivity assumptions on
-the other hand (third equality), it holds that <span class="math display">\[\begin{align*}
-\Exp_{\bbP_0}(Y_a) &amp;=  \int \Exp_{\bbP_0}(Y_a \mid  W = w) dQ_{0,W}(w)  = \int
-\Exp_{\bbP_0}(Y_a \mid A = a, W =  w) dQ_{0,W}(w) \\ &amp;= \int \Exp_{P_0}(Y \mid
-A =  a, W = w)  dQ_{0,W}(w) = \int \Qbar_0(a,W)  dQ_{0,W}(w). \end{align*}\]</span> The
-stated result easily follows.</p>
-</div>
-<p><strong>Remark.</strong> The positivity assumption is needed for <span class="math inline">\(\Exp_{P_0}(Y \mid A = a, W) \defq \Qbar_{0}(a,W)\)</span> to be well-defined.</p>
-</div>
-<div id="confidence-interval" class="section level2 hasAnchor" number="13.3">
-<h2><span class="header-section-number">B.3</span> Building a confidence interval<a href="B-proofs.html#confidence-interval" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Let <span class="math inline">\(\Phi\)</span> be the standard normal distribution function. Let <span class="math inline">\(X_{1}\)</span>,
-<span class="math inline">\(\ldots\)</span>, <span class="math inline">\(X_{n}\)</span> be independently drawn from a given law.</p>
-<div id="clt" class="section level3 hasAnchor" number="13.3.1">
-<h3><span class="header-section-number">B.3.1</span> CLT &amp; Slutsky’s lemma<a href="B-proofs.html#clt" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>Assume that <span class="math inline">\(\sigma^{2} \defq \Var(X_{1})\)</span> is finite. Let <span class="math inline">\(m \defq \Exp(X_{1})\)</span> be the mean of <span class="math inline">\(X_{1}\)</span> and <span class="math inline">\(\bar{X}_{n} \defq n^{-1} \sum_{i=1}^{n} X_{i}\)</span> be the empirical mean. By the central limit theorem
-(CLT), it holds that <span class="math inline">\(\sqrt{n} (\bar{X}_{n} - m)\)</span> converges in law as <span class="math inline">\(n\)</span>
-grows to the centered Gaussian law with variance <span class="math inline">\(\sigma^{2}\)</span>.</p>
-<p>Moreover, if <span class="math inline">\(\sigma_{n}^{2}\)</span> is a (positive) consistent estimator of
-<span class="math inline">\(\sigma^{2}\)</span> then, by Slutsky’s lemma, <span class="math inline">\(\sqrt{n}/\sigma_{n} (\bar{X}_{n} - m)\)</span>
-converges in law to the standard normal law. The empirical variance <span class="math inline">\(n^{-1} \sum_{i=1}^{n}(X_{i} - \bar{X}_{n})^{2}\)</span> is such an estimator.</p>
-<div class="proposition">
-<p><span id="prp:unnamed-chunk-4" class="proposition"><strong>Proposition B.2  </strong></span>Under the above assumptions, <span class="math display">\[\begin{equation*}  \left[\bar{X}_{n}   \pm
-\Phi^{-1}(1-\alpha)  \frac{\sigma_{n}}{\sqrt{n}}\right]  \end{equation*}\]</span> is a
-confidence interval for <span class="math inline">\(m\)</span> with asymptotic level <span class="math inline">\((1-2\alpha)\)</span>.</p>
-</div>
-</div>
-<div id="order" class="section level3 hasAnchor" number="13.3.2">
-<h3><span class="header-section-number">B.3.2</span> CLT and order statistics<a href="B-proofs.html#order" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>Suppose that the law of <span class="math inline">\(X_{1}\)</span> admits a continuous distribution function
-<span class="math inline">\(F\)</span>. Set <span class="math inline">\(p \in ]0,1[\)</span> and, assuming that <span class="math inline">\(n\)</span> is large, find <span class="math inline">\(k\geq 1\)</span> and <span class="math inline">\(l \geq 1\)</span> such that <span class="math display">\[\begin{equation*}   \frac{k}{n}   \approx    p   -
-\Phi^{-1}(1-\alpha)      \sqrt{\frac{p(1-p)}{n}}      \end{equation*}\]</span> and
-<span class="math display">\[\begin{equation*}    \frac{l}{n}     \approx    p     +    \Phi^{-1}(1-\alpha)
-\sqrt{\frac{p(1-p)}{n}}.  \end{equation*}\]</span></p>
-<div class="proposition">
-<p><span id="prp:unnamed-chunk-5" class="proposition"><strong>Proposition B.3  </strong></span>Under the above assumptions, <span class="math inline">\([X_{(k)},X_{(l)}]\)</span> is a confidence interval for
-<span class="math inline">\(F^{-1}(p)\)</span> with asymptotic level <span class="math inline">\(1 - 2\alpha\)</span>.</p>
-</div>
-</div>
-</div>
-<div id="another-rep" class="section level2 hasAnchor" number="13.4">
-<h2><span class="header-section-number">B.4</span> Another representation of the parameter of interest<a href="B-proofs.html#another-rep" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>For notational simplicitiy, note that <span class="math inline">\((2a-1)\)</span> equals 1 if <span class="math inline">\(a=1\)</span> and <span class="math inline">\(-1\)</span> if
-<span class="math inline">\(a=0\)</span>. Now, for each <span class="math inline">\(a = 0,1\)</span>, <span class="math display">\[\begin{align*}
-\Exp_{P_{0}}\left(\frac{\one\{A    =    a\}Y}{\ell\Gbar_{0}(a,W)}\right)    &amp;=
-\Exp_{P_{0}}\left(\Exp_{P_{0}}\left(\frac{\one\{A  = a\}Y}{\ell\Gbar_{0}(a,W)}
-\middle|  A,  W  \right)   \right)  \\  &amp;=  \Exp_{P_{0}}\left(\frac{\one\{A  =
-a\}}{\ell\Gbar_{0}(a,W)}      \Qbar_{0}(A,      W)     \right)      \\      &amp;=
-\Exp_{P_{0}}\left(\frac{\one\{A   =    a\}}{\ell\Gbar_{0}(a,W)}   \Qbar_{0}(a,
-W)\right)    \\    &amp;=   \Exp_{P_{0}}\left(\Exp_{P_{0}}\left(\frac{\one\{A    =
-a\}}{\ell\Gbar_{0}(a,W)}  \Qbar_{0}(a, W)  \middle|  W \right)  \right) \\&amp;  =
-\Exp_{P_{0}}\left(\frac{\ell\Gbar_{0}(a,W)}{\ell\Gbar_{0}(a,W)}   \Qbar_{0}(a,
-W)  \middle| W  \right) \\&amp;  =  \Exp_{P_{0}} \left(  \Qbar_{0}(a, W)  \right),
-\end{align*}\]</span> where the first, fourth and sixth equalities follow from the
-tower rule<a href="#fn25" class="footnote-ref" id="fnref25"><sup>25</sup></a>, and
-the second and fifth hold by definition of the conditional expectation. This
-completes the proof.</p>
-</div>
-<div id="prop-delta-method" class="section level2 hasAnchor" number="13.5">
-<h2><span class="header-section-number">B.5</span> The delta-method<a href="B-proofs.html#prop-delta-method" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Let <span class="math inline">\(f\)</span> be a map from <span class="math inline">\(\Theta \subset \bbR^{p}\)</span> to <span class="math inline">\(\bbR^{q}\)</span> that is
-differentiable at <span class="math inline">\(\theta\in \Theta\)</span>. Let <span class="math inline">\(X_{n}\)</span> be a random vector taking its
-values in <span class="math inline">\(\Theta\)</span>.</p>
-<div class="proposition">
-<p><span id="prp:unnamed-chunk-6" class="proposition"><strong>Proposition B.4  </strong></span>If <span class="math inline">\(\sqrt{n} (X_{n} - \theta)\)</span> converges in law to the Gaussian law with mean
-<span class="math inline">\(\mu\)</span> and covariance matrix <span class="math inline">\(\Sigma\)</span>, then <span class="math inline">\(\sqrt{n} (f(X_{n}) - f(\theta))\)</span>
-converge in law to the Gaussian law with mean <span class="math inline">\(\nabla f(\theta) \times \mu\)</span>
-and covariance matrix <span class="math inline">\(\nabla f(\theta) \times \Sigma \times \nabla f(\theta)^{\top}\)</span>. In addition, if <span class="math inline">\(\Sigma_{n}\)</span> estimates <span class="math inline">\(\Sigma\)</span>
-consistently then, by Slutsky’s lemma, the asymptotic variance of <span class="math inline">\(\sqrt{n} (f(X_{n}) - f(\theta))\)</span> is consistently estimated with <span class="math inline">\(\nabla f(X_{n}) \times \Sigma_{n} \times \nabla f(X_{n})^{\top}\)</span>.</p>
-</div>
-</div>
-<div id="oracle-logistic-risk" class="section level2 hasAnchor" number="13.6">
-<h2><span class="header-section-number">B.6</span> The oracle logistic risk<a href="B-proofs.html#oracle-logistic-risk" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>First, let us recall the definition of the Kullback-Leibler divergence between
-Bernoulli laws of parameters <span class="math inline">\(p,q\in]0,1[\)</span>:
-<span class="math display">\[\begin{equation*}\text{KL}(p,q)  \defq  p \log\left(\frac{p}{q}\right)  +
-(1-p) \log \left(\frac{1-p}{1-q}\right).\end{equation*}\]</span>
-It satisfies <span class="math inline">\(\text{KL}(p,q) \geq 0\)</span> where the equality holds if and only if
-<span class="math inline">\(p=q\)</span>.</p>
-<p>Let <span class="math inline">\(f:[0,1] \times \{0,1\} \times [0,1] \to [0,1]\)</span> be a (measurable)
-function. Applying the tower rule shows that the oracle logistic risk
-satisfies
-<span class="math display" id="eq:KL">\[\begin{align} 
-\Exp_{P_{0}}  \left(L_{y}   (f)(O)\right)&amp;=\Exp_{P_{0}}  \left(-\Qbar_{0}(A,W)
-\log   f(A,W)   -   \left(1   -  \Qbar_{0}   (A,W)\right)   \log   \left(1   -
-f(A,W)\right)\right)\notag\\&amp;=\Exp_{P_{0}}
-\left(\text{KL}\left(\Qbar_{0}(A,W),           f(A,W)\right)\right)          +
-\text{constant},\tag{B.1} 
-\end{align}\]</span>
-where the above constant equals <span class="math display">\[\begin{equation*} -\Exp_{P_{0}}\left(\Qbar_{0}(A,W) \log \Qbar_{0}(A,W) - \left(1 - \Qbar_{0} (A,W)\right) \log \left(1 - \Qbar_{0,W}(A,W)\right)\right).  \end{equation*}\]</span></p>
-<p>In light of <a href="B-proofs.html#eq:KL">(B.1)</a>, <span class="math inline">\(\Qbar_{0}\)</span> minimizes <span class="math inline">\(f \mapsto \Exp_{P_{0}} \left(L_{y} (f)(O)\right)\)</span> over the set of (measurable) functions mapping
-<span class="math inline">\([0,1] \times \{0,1\} \times [0,1]\)</span> to <span class="math inline">\([0,1]\)</span>. Moreover, as an average of
-measures of discrepancy, <span class="math inline">\(\Exp_{P_{0}} \left(L_{y} (f)(O)\right)\)</span> is also a
-measure of discrepancy.</p>
-
-</div>
-</div>
-<div class="footnotes">
-<hr />
-<ol start="25">
-<li id="fn25"><p>For any random variable <span class="math inline">\((U,V)\)</span> such that <span class="math inline">\(\Exp(U|V)\)</span> and
-<span class="math inline">\(\Exp(U)\)</span> are well defined, it holds that <span class="math inline">\(\Exp(\Exp(U|V)) = \Exp(U)\)</span>.<a href="B-proofs.html#fnref25" class="footnote-back">↩︎</a></p></li>
-</ol>
+<div id="page-not-found" class="section level1">
+<h1>Page not found</h1>
+<p>The page you requested cannot be found (perhaps it was moved or renamed).</p>
+<p>You may want to try searching to find the page's new location, or use
+the table of contents to find the page you are looking for.</p>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="A-notation.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="C-more-proofs.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+
+
     </div>
   </div>
 <script src="assets/gitbook-2.6.7/js/app.min.js"></script>
