@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>A Ride in Targeted Learning Territory</title>
+  <meta name="description" content="A ride in targeted learning territory is a gentle introduction to the filed of targeted learning. It weaves together two main threads, one theoretical and the other computational. It uses tlrider, a companion R package built specifically for this project." />
+  <meta name="generator" content="bookdown 0.29 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="A Ride in Targeted Learning Territory" />
+  <meta property="og:type" content="book" />
+  <meta property="og:image" content="/cover.jpg" />
+  <meta property="og:description" content="A ride in targeted learning territory is a gentle introduction to the filed of targeted learning. It weaves together two main threads, one theoretical and the other computational. It uses tlrider, a companion R package built specifically for this project." />
+  <meta name="github-repo" content="achambaz/tlride" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="A Ride in Targeted Learning Territory" />
+  
+  <meta name="twitter:description" content="A ride in targeted learning territory is a gentle introduction to the filed of targeted learning. It weaves together two main threads, one theoretical and the other computational. It uses tlrider, a companion R package built specifically for this project." />
+  <meta name="twitter:image" content="/cover.jpg" />
+
+<meta name="author" content="David Benkeser (Emory University)" />
+<meta name="author" content="Antoine Chambaz (Université de Paris)" />
+
+
+<meta name="date" content="2022-10-20" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  <link rel="shortcut icon" href="favicon.png" type="image/x-icon" />
+
+<link rel="next" href="1-a-ride.html"/>
+<script src="assets/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="assets/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="assets/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="assets/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="assets/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+  CommonHTML: {
+    scale: 90,
+    linebreaks: {
+      automatic: true
+    }
+  },
+  SVG: {
+    linebreaks: {
+      automatic: true
+    }
+  }, 
+  displayAlign: "left"
+  });
+</script>
+<script type="text/javascript"
+	src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async>
+</script><!-- see also '_output.yaml'
+src="https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"
+src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML" 
+src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"
+-->
+
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="tlride.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><strong><a href="https://achambaz.github.io/tlride/">TLRIDE</a></strong></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a></li>
+<li class="part"><span><b>I On the road</b></span></li>
+<li class="chapter" data-level="1" data-path="1-a-ride.html"><a href="1-a-ride.html"><i class="fa fa-check"></i><b>1</b> A ride</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="1-a-ride.html"><a href="1-a-ride.html#introduction"><i class="fa fa-check"></i><b>1.1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="1.1.1" data-path="1-a-ride.html"><a href="1-a-ride.html#causal-story"><i class="fa fa-check"></i><b>1.1.1</b> A causal story</a></li>
+<li class="chapter" data-level="1.1.2" data-path="1-a-ride.html"><a href="1-a-ride.html#tlrider-package"><i class="fa fa-check"></i><b>1.1.2</b> The <code>tlrider</code> package</a></li>
+<li class="chapter" data-level="1.1.3" data-path="1-a-ride.html"><a href="1-a-ride.html#discuss"><i class="fa fa-check"></i><b>1.1.3</b> What we will discuss</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="1-a-ride.html"><a href="1-a-ride.html#simulation-study"><i class="fa fa-check"></i><b>1.2</b> A simulation study</a>
+<ul>
+<li class="chapter" data-level="1.2.1" data-path="1-a-ride.html"><a href="1-a-ride.html#reproducible-experiment"><i class="fa fa-check"></i><b>1.2.1</b> Reproducible experiment as a law</a></li>
+<li class="chapter" data-level="1.2.2" data-path="1-a-ride.html"><a href="1-a-ride.html#synthetic-experiment"><i class="fa fa-check"></i><b>1.2.2</b> A synthetic reproducible experiment</a></li>
+<li class="chapter" data-level="1.2.3" data-path="1-a-ride.html"><a href="1-a-ride.html#revealing-experiment"><i class="fa fa-check"></i><b>1.2.3</b> Revealing <code>experiment</code></a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="1-a-ride.html"><a href="1-a-ride.html#exo-visualization"><i class="fa fa-check"></i><b>1.3</b> ⚙ Visualization</a></li>
+<li class="chapter" data-level="1.4" data-path="1-a-ride.html"><a href="1-a-ride.html#exo-make-own-experiment"><i class="fa fa-check"></i><b>1.4</b> ⚙ Make your own experiment</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="2-parameter.html"><a href="2-parameter.html"><i class="fa fa-check"></i><b>2</b> The parameter of interest</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="2-parameter.html"><a href="2-parameter.html#parameter-first-pass"><i class="fa fa-check"></i><b>2.1</b> The parameter of interest</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="2-parameter.html"><a href="2-parameter.html#definition"><i class="fa fa-check"></i><b>2.1.1</b> Definition</a></li>
+<li class="chapter" data-level="2.1.2" data-path="2-parameter.html"><a href="2-parameter.html#causal-interpretation"><i class="fa fa-check"></i><b>2.1.2</b> A causal interpretation</a></li>
+<li class="chapter" data-level="2.1.3" data-path="2-parameter.html"><a href="2-parameter.html#causal-computation"><i class="fa fa-check"></i><b>2.1.3</b> A causal computation</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="2-parameter.html"><a href="2-parameter.html#exo-alternative-parameter-first-pass"><i class="fa fa-check"></i><b>2.2</b> ⚙ An alternative parameter of interest</a></li>
+<li class="chapter" data-level="2.3" data-path="2-parameter.html"><a href="2-parameter.html#parameter-second-pass"><i class="fa fa-check"></i><b>2.3</b> The statistical mapping of interest</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="2-parameter.html"><a href="2-parameter.html#opening"><i class="fa fa-check"></i><b>2.3.1</b> Opening discussion</a></li>
+<li class="chapter" data-level="2.3.2" data-path="2-parameter.html"><a href="2-parameter.html#parameter-mapping"><i class="fa fa-check"></i><b>2.3.2</b> The parameter as the value of a statistical mapping at the experiment</a></li>
+<li class="chapter" data-level="2.3.3" data-path="2-parameter.html"><a href="2-parameter.html#value-another-experiment"><i class="fa fa-check"></i><b>2.3.3</b> The value of the statistical mapping at another experiment</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="2-parameter.html"><a href="2-parameter.html#exo-alternative-parameter-second-pass"><i class="fa fa-check"></i><b>2.4</b> ⚙ Alternative statistical mapping</a></li>
+<li class="chapter" data-level="2.5" data-path="2-parameter.html"><a href="2-parameter.html#parameter-third-pass"><i class="fa fa-check"></i><b>2.5</b> Representations</a>
+<ul>
+<li class="chapter" data-level="2.5.1" data-path="2-parameter.html"><a href="2-parameter.html#yet-another"><i class="fa fa-check"></i><b>2.5.1</b> Yet another representation</a></li>
+<li class="chapter" data-level="2.5.2" data-path="2-parameter.html"><a href="2-parameter.html#rep-to-est"><i class="fa fa-check"></i><b>2.5.2</b> From representations to estimation strategies</a></li>
+</ul></li>
+<li class="chapter" data-level="2.6" data-path="2-parameter.html"><a href="2-parameter.html#exo-alternative-parameter-third-pass"><i class="fa fa-check"></i><b>2.6</b> ⚙ Alternative representation</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="3-smooth.html"><a href="3-smooth.html"><i class="fa fa-check"></i><b>3</b> Smoothness</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="3-smooth.html"><a href="3-smooth.html#smooth-first-pass"><i class="fa fa-check"></i><b>3.1</b> Fluctuating smoothly</a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="3-smooth.html"><a href="3-smooth.html#fluctuations"><i class="fa fa-check"></i><b>3.1.1</b> The <code>another_experiment</code> fluctuation</a></li>
+<li class="chapter" data-level="3.1.2" data-path="3-smooth.html"><a href="3-smooth.html#numerical-illus"><i class="fa fa-check"></i><b>3.1.2</b> Numerical illustration</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="3-smooth.html"><a href="3-smooth.html#exo-yet-another-experiment"><i class="fa fa-check"></i><b>3.2</b> ⚙ Yet another experiment</a></li>
+<li class="chapter" data-level="3.3" data-path="3-smooth.html"><a href="3-smooth.html#smooth-second-pass"><i class="fa fa-check"></i><b>3.3</b> ☡  More on fluctuations and smoothness</a>
+<ul>
+<li class="chapter" data-level="3.3.1" data-path="3-smooth.html"><a href="3-smooth.html#smooth-second-pass-fluctuations"><i class="fa fa-check"></i><b>3.3.1</b> Fluctuations</a></li>
+<li class="chapter" data-level="3.3.2" data-path="3-smooth.html"><a href="3-smooth.html#smoothness-and-gradients"><i class="fa fa-check"></i><b>3.3.2</b> Smoothness and gradients</a></li>
+<li class="chapter" data-level="3.3.3" data-path="3-smooth.html"><a href="3-smooth.html#Euclidean-perspective"><i class="fa fa-check"></i><b>3.3.3</b> A Euclidean perspective</a></li>
+<li class="chapter" data-level="3.3.4" data-path="3-smooth.html"><a href="3-smooth.html#canonical-gradient"><i class="fa fa-check"></i><b>3.3.4</b> The canonical gradient</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="3-smooth.html"><a href="3-smooth.html#revisiting"><i class="fa fa-check"></i><b>3.4</b> A fresh look at <code>another_experiment</code></a>
+<ul>
+<li class="chapter" data-level="3.4.1" data-path="3-smooth.html"><a href="3-smooth.html#deriving-the-efficient-influence-curve"><i class="fa fa-check"></i><b>3.4.1</b> Deriving the efficient influence curve</a></li>
+<li class="chapter" data-level="3.4.2" data-path="3-smooth.html"><a href="3-smooth.html#numerical-validation"><i class="fa fa-check"></i><b>3.4.2</b> Numerical validation</a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="3-smooth.html"><a href="3-smooth.html#influence-curves"><i class="fa fa-check"></i><b>3.5</b> ☡  Asymptotic linearity and statistical efficiency</a>
+<ul>
+<li class="chapter" data-level="3.5.1" data-path="3-smooth.html"><a href="3-smooth.html#asymptotic-linearity"><i class="fa fa-check"></i><b>3.5.1</b> Asymptotic linearity</a></li>
+<li class="chapter" data-level="3.5.2" data-path="3-smooth.html"><a href="3-smooth.html#influence-curves-and-gradients"><i class="fa fa-check"></i><b>3.5.2</b> Influence curves and gradients</a></li>
+<li class="chapter" data-level="3.5.3" data-path="3-smooth.html"><a href="3-smooth.html#asymptotic-efficiency"><i class="fa fa-check"></i><b>3.5.3</b> Asymptotic efficiency</a></li>
+</ul></li>
+<li class="chapter" data-level="3.6" data-path="3-smooth.html"><a href="3-smooth.html#exo-cramer-rao"><i class="fa fa-check"></i><b>3.6</b> ⚙ Cramér-Rao bounds</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="4-double-robustness.html"><a href="4-double-robustness.html"><i class="fa fa-check"></i><b>4</b> Double-robustness</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="4-double-robustness.html"><a href="4-double-robustness.html#linear-approximation"><i class="fa fa-check"></i><b>4.1</b> Linear approximations of parameters</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="4-double-robustness.html"><a href="4-double-robustness.html#from-gradients-to-estimators"><i class="fa fa-check"></i><b>4.1.1</b> From gradients to estimators</a></li>
+<li class="chapter" data-level="4.1.2" data-path="4-double-robustness.html"><a href="4-double-robustness.html#another-Euclidean-perspective"><i class="fa fa-check"></i><b>4.1.2</b> A Euclidean perspective</a></li>
+<li class="chapter" data-level="4.1.3" data-path="4-double-robustness.html"><a href="4-double-robustness.html#the-remainder-term"><i class="fa fa-check"></i><b>4.1.3</b> The remainder term</a></li>
+<li class="chapter" data-level="4.1.4" data-path="4-double-robustness.html"><a href="4-double-robustness.html#expressing-the-remainder-term-as-a-function-of-the-relevant-features"><i class="fa fa-check"></i><b>4.1.4</b> Expressing the remainder term as a function of the relevant features</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="4-double-robustness.html"><a href="4-double-robustness.html#exo-remainder-term"><i class="fa fa-check"></i><b>4.2</b> ⚙ The remainder term</a></li>
+<li class="chapter" data-level="4.3" data-path="4-double-robustness.html"><a href="4-double-robustness.html#def-double-robustness"><i class="fa fa-check"></i><b>4.3</b> ☡  Double-robustness</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="4-double-robustness.html"><a href="4-double-robustness.html#the-key-property"><i class="fa fa-check"></i><b>4.3.1</b> The key property</a></li>
+<li class="chapter" data-level="4.3.2" data-path="4-double-robustness.html"><a href="4-double-robustness.html#direct-consequence"><i class="fa fa-check"></i><b>4.3.2</b> Its direct consequence</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="4-double-robustness.html"><a href="4-double-robustness.html#exo-double-robustness"><i class="fa fa-check"></i><b>4.4</b> ⚙ Double-robustness</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="5-inference.html"><a href="5-inference.html"><i class="fa fa-check"></i><b>5</b> Inference</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="5-inference.html"><a href="5-inference.html#where-we-stand"><i class="fa fa-check"></i><b>5.1</b> Where we stand</a></li>
+<li class="chapter" data-level="5.2" data-path="5-inference.html"><a href="5-inference.html#where-we-are-going"><i class="fa fa-check"></i><b>5.2</b> Where we are going</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html"><i class="fa fa-check"></i><b>6</b> A simple inference strategy</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#a-cautionary-detour"><i class="fa fa-check"></i><b>6.1</b> A cautionary detour</a></li>
+<li class="chapter" data-level="6.2" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#delta-method"><i class="fa fa-check"></i><b>6.2</b> ⚙ Delta-method</a></li>
+<li class="chapter" data-level="6.3" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#known-gbar-first-pass"><i class="fa fa-check"></i><b>6.3</b> IPTW estimator assuming the mechanism of action known</a>
+<ul>
+<li class="chapter" data-level="6.3.1" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#a-simple-estimator"><i class="fa fa-check"></i><b>6.3.1</b> A simple estimator</a></li>
+<li class="chapter" data-level="6.3.2" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#elementary-statistical-properties"><i class="fa fa-check"></i><b>6.3.2</b> Elementary statistical properties</a></li>
+<li class="chapter" data-level="6.3.3" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#empirical-inves-IPTW"><i class="fa fa-check"></i><b>6.3.3</b> Empirical investigation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="7-nuisance.html"><a href="7-nuisance.html"><i class="fa fa-check"></i><b>7</b> Nuisance parameters</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="7-nuisance.html"><a href="7-nuisance.html#anatomy"><i class="fa fa-check"></i><b>7.1</b> Anatomy of an expression</a></li>
+<li class="chapter" data-level="7.2" data-path="7-nuisance.html"><a href="7-nuisance.html#an-algorithmic-stance"><i class="fa fa-check"></i><b>7.2</b> An algorithmic stance</a></li>
+<li class="chapter" data-level="7.3" data-path="7-nuisance.html"><a href="7-nuisance.html#nuisance-QW"><i class="fa fa-check"></i><b>7.3</b> <code>QW</code></a></li>
+<li class="chapter" data-level="7.4" data-path="7-nuisance.html"><a href="7-nuisance.html#nuisance-Gbar"><i class="fa fa-check"></i><b>7.4</b> <code>Gbar</code></a>
+<ul>
+<li class="chapter" data-level="7.4.1" data-path="7-nuisance.html"><a href="7-nuisance.html#logis-loss"><i class="fa fa-check"></i><b>7.4.1</b> Working model-based algorithms</a></li>
+<li class="chapter" data-level="7.4.2" data-path="7-nuisance.html"><a href="7-nuisance.html#algo-Gbar-one"><i class="fa fa-check"></i><b>7.4.2</b> Visualization</a></li>
+</ul></li>
+<li class="chapter" data-level="7.5" data-path="7-nuisance.html"><a href="7-nuisance.html#nuisance-Qbar-wm"><i class="fa fa-check"></i><b>7.5</b> ⚙ <code>Qbar</code>, working model-based algorithms</a></li>
+<li class="chapter" data-level="7.6" data-path="7-nuisance.html"><a href="7-nuisance.html#nuisance-Qbar"><i class="fa fa-check"></i><b>7.6</b> <code>Qbar</code></a>
+<ul>
+<li class="chapter" data-level="7.6.1" data-path="7-nuisance.html"><a href="7-nuisance.html#qbar-machine-learning-based-algorithms"><i class="fa fa-check"></i><b>7.6.1</b> <code>Qbar</code>, machine learning-based algorithms</a></li>
+<li class="chapter" data-level="7.6.2" data-path="7-nuisance.html"><a href="7-nuisance.html#Qbar-knn-algo"><i class="fa fa-check"></i><b>7.6.2</b> <code>Qbar</code>, kNN algorithm</a></li>
+<li class="chapter" data-level="7.6.3" data-path="7-nuisance.html"><a href="7-nuisance.html#boosted-trees"><i class="fa fa-check"></i><b>7.6.3</b> <code>Qbar</code>, boosted trees algorithm</a></li>
+</ul></li>
+<li class="chapter" data-level="7.7" data-path="7-nuisance.html"><a href="7-nuisance.html#nuisance-Qbar-ml-exo"><i class="fa fa-check"></i><b>7.7</b> ⚙ ☡  <code>Qbar</code>, machine learning-based algorithms</a></li>
+<li class="chapter" data-level="7.8" data-path="7-nuisance.html"><a href="7-nuisance.html#meta-learning"><i class="fa fa-check"></i><b>7.8</b> Meta-learning/super learning</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html"><i class="fa fa-check"></i><b>8</b> Two “naive” inference strategies</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#why-naive"><i class="fa fa-check"></i><b>8.1</b> Why “naive?”</a></li>
+<li class="chapter" data-level="8.2" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#known-gbar-second-pass"><i class="fa fa-check"></i><b>8.2</b> IPTW estimator</a>
+<ul>
+<li class="chapter" data-level="8.2.1" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#unknown-gbar-constr"><i class="fa fa-check"></i><b>8.2.1</b> Construction and computation</a></li>
+<li class="chapter" data-level="8.2.2" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#elementary-stat-prop-iptw"><i class="fa fa-check"></i><b>8.2.2</b> Elementary statistical properties</a></li>
+<li class="chapter" data-level="8.2.3" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#empirical-inves-IPTW-bis"><i class="fa fa-check"></i><b>8.2.3</b> Empirical investigation</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#exo-a-nice-title"><i class="fa fa-check"></i><b>8.3</b> ⚙ Investigating further the IPTW inference strategy</a></li>
+<li class="chapter" data-level="8.4" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#Gcomp-estimator"><i class="fa fa-check"></i><b>8.4</b> G-computation estimator</a>
+<ul>
+<li class="chapter" data-level="8.4.1" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#Gcomp-construction"><i class="fa fa-check"></i><b>8.4.1</b> Construction and computation</a></li>
+<li class="chapter" data-level="8.4.2" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#elementary-statistical-properties-1"><i class="fa fa-check"></i><b>8.4.2</b> Elementary statistical properties</a></li>
+<li class="chapter" data-level="8.4.3" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#empirical-inves-Gcomp"><i class="fa fa-check"></i><b>8.4.3</b> Empirical investigation, fixed sample size</a></li>
+<li class="chapter" data-level="8.4.4" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#empirical-inves-Gcomp-varying"><i class="fa fa-check"></i><b>8.4.4</b> ☡  Empirical investigation, varying sample size</a></li>
+</ul></li>
+<li class="chapter" data-level="8.5" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#exo-plug-in-estimate"><i class="fa fa-check"></i><b>8.5</b> ⚙ Investigating further the G-computation estimation strategy</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="9-one-step.html"><a href="9-one-step.html"><i class="fa fa-check"></i><b>9</b> One-step correction</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="9-one-step.html"><a href="9-one-step.html#analysis-of-plug-in"><i class="fa fa-check"></i><b>9.1</b> ☡  General analysis of plug-in estimators</a></li>
+<li class="chapter" data-level="9.2" data-path="9-one-step.html"><a href="9-one-step.html#huber-one-step"><i class="fa fa-check"></i><b>9.2</b> One-step correction</a></li>
+<li class="chapter" data-level="9.3" data-path="9-one-step.html"><a href="9-one-step.html#empirical-inves-one-step"><i class="fa fa-check"></i><b>9.3</b> Empirical investigation</a></li>
+<li class="chapter" data-level="9.4" data-path="9-one-step.html"><a href="9-one-step.html#exo-one-step"><i class="fa fa-check"></i><b>9.4</b> ⚙ Investigating further the one-step correction methodology</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="10-TMLE.html"><a href="10-TMLE.html"><i class="fa fa-check"></i><b>10</b> Targeted minimum loss-based estimation</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="10-TMLE.html"><a href="10-TMLE.html#TMLE-motivations"><i class="fa fa-check"></i><b>10.1</b> Motivations</a>
+<ul>
+<li class="chapter" data-level="10.1.1" data-path="10-TMLE.html"><a href="10-TMLE.html#falling-outside-the-parameter-space"><i class="fa fa-check"></i><b>10.1.1</b> Falling outside the parameter space</a></li>
+<li class="chapter" data-level="10.1.2" data-path="10-TMLE.html"><a href="10-TMLE.html#eic-equation"><i class="fa fa-check"></i><b>10.1.2</b> The influence curve equation</a></li>
+<li class="chapter" data-level="10.1.3" data-path="10-TMLE.html"><a href="10-TMLE.html#basic-fact"><i class="fa fa-check"></i><b>10.1.3</b> A basic fact on the influence curve equation</a></li>
+</ul></li>
+<li class="chapter" data-level="10.2" data-path="10-TMLE.html"><a href="10-TMLE.html#targeted-fluctuation-TMLE"><i class="fa fa-check"></i><b>10.2</b> Targeted fluctuation</a>
+<ul>
+<li class="chapter" data-level="10.2.1" data-path="10-TMLE.html"><a href="10-TMLE.html#fluctuating-indirectly"><i class="fa fa-check"></i><b>10.2.1</b> ☡  Fluctuating indirectly</a></li>
+<li class="chapter" data-level="10.2.2" data-path="10-TMLE.html"><a href="10-TMLE.html#fluct-direct"><i class="fa fa-check"></i><b>10.2.2</b> Fluctuating directly</a></li>
+<li class="chapter" data-level="10.2.3" data-path="10-TMLE.html"><a href="10-TMLE.html#exo-fluct"><i class="fa fa-check"></i><b>10.2.3</b> ⚙ More on fluctuations</a></li>
+<li class="chapter" data-level="10.2.4" data-path="10-TMLE.html"><a href="10-TMLE.html#roaming"><i class="fa fa-check"></i><b>10.2.4</b> Targeted roaming of a fluctuation</a></li>
+<li class="chapter" data-level="10.2.5" data-path="10-TMLE.html"><a href="10-TMLE.html#fluct-justification"><i class="fa fa-check"></i><b>10.2.5</b> Justifying the form of the fluctutation</a></li>
+<li class="chapter" data-level="10.2.6" data-path="10-TMLE.html"><a href="10-TMLE.html#exo-tmle-flucs"><i class="fa fa-check"></i><b>10.2.6</b> ⚙ Alternative fluctuation</a></li>
+</ul></li>
+<li class="chapter" data-level="10.3" data-path="10-TMLE.html"><a href="10-TMLE.html#summary-and-perspectives"><i class="fa fa-check"></i><b>10.3</b> Summary and perspectives</a></li>
+<li class="chapter" data-level="10.4" data-path="10-TMLE.html"><a href="10-TMLE.html#empirical-inves-tmle"><i class="fa fa-check"></i><b>10.4</b> Empirical investigation</a>
+<ul>
+<li class="chapter" data-level="10.4.1" data-path="10-TMLE.html"><a href="10-TMLE.html#empirical-inves-tmle-first"><i class="fa fa-check"></i><b>10.4.1</b> A first numerical application</a></li>
+<li class="chapter" data-level="10.4.2" data-path="10-TMLE.html"><a href="10-TMLE.html#exo-tmle"><i class="fa fa-check"></i><b>10.4.2</b> ⚙ A computational exploration</a></li>
+<li class="chapter" data-level="10.4.3" data-path="10-TMLE.html"><a href="10-TMLE.html#empirical-investigation"><i class="fa fa-check"></i><b>10.4.3</b> Empirical investigation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="11-closing-words.html"><a href="11-closing-words.html"><i class="fa fa-check"></i><b>11</b> Closing words</a></li>
+<li class="appendix"><span><b>Appendix</b></span></li>
+<li class="chapter" data-level="A" data-path="A-notation.html"><a href="A-notation.html"><i class="fa fa-check"></i><b>A</b> Notation</a></li>
+<li class="chapter" data-level="B" data-path="B-proofs.html"><a href="B-proofs.html"><i class="fa fa-check"></i><b>B</b> Basic results and their proofs</a>
+<ul>
+<li class="chapter" data-level="B.1" data-path="B-proofs.html"><a href="B-proofs.html#npsem"><i class="fa fa-check"></i><b>B.1</b> NPSEM</a></li>
+<li class="chapter" data-level="B.2" data-path="B-proofs.html"><a href="B-proofs.html#identification"><i class="fa fa-check"></i><b>B.2</b> Identification</a></li>
+<li class="chapter" data-level="B.3" data-path="B-proofs.html"><a href="B-proofs.html#confidence-interval"><i class="fa fa-check"></i><b>B.3</b> Building a confidence interval</a>
+<ul>
+<li class="chapter" data-level="B.3.1" data-path="B-proofs.html"><a href="B-proofs.html#clt"><i class="fa fa-check"></i><b>B.3.1</b> CLT &amp; Slutsky’s lemma</a></li>
+<li class="chapter" data-level="B.3.2" data-path="B-proofs.html"><a href="B-proofs.html#order"><i class="fa fa-check"></i><b>B.3.2</b> CLT and order statistics</a></li>
+</ul></li>
+<li class="chapter" data-level="B.4" data-path="B-proofs.html"><a href="B-proofs.html#another-rep"><i class="fa fa-check"></i><b>B.4</b> Another representation of the parameter of interest</a></li>
+<li class="chapter" data-level="B.5" data-path="B-proofs.html"><a href="B-proofs.html#prop-delta-method"><i class="fa fa-check"></i><b>B.5</b> The delta-method</a></li>
+<li class="chapter" data-level="B.6" data-path="B-proofs.html"><a href="B-proofs.html#oracle-logistic-risk"><i class="fa fa-check"></i><b>B.6</b> The oracle logistic risk</a></li>
+</ul></li>
+<li class="chapter" data-level="C" data-path="C-more-proofs.html"><a href="C-more-proofs.html"><i class="fa fa-check"></i><b>C</b> More results and their proofs</a>
+<ul>
+<li class="chapter" data-level="C.1" data-path="C-more-proofs.html"><a href="C-more-proofs.html#estimation-of-the-asymptotic-variance-of-an-estimator"><i class="fa fa-check"></i><b>C.1</b> Estimation of the asymptotic variance of an estimator</a>
+<ul>
+<li class="chapter" data-level="C.1.1" data-path="C-more-proofs.html"><a href="C-more-proofs.html#iptw-est-var"><i class="fa fa-check"></i><b>C.1.1</b> IPTW estimator based on a well-specified model</a></li>
+<li class="chapter" data-level="C.1.2" data-path="C-more-proofs.html"><a href="C-more-proofs.html#gcomp-est-var"><i class="fa fa-check"></i><b>C.1.2</b> G-computation estimator based on a well-specified model</a></li>
+</ul></li>
+<li class="chapter" data-level="C.2" data-path="C-more-proofs.html"><a href="C-more-proofs.html#app-analysis-of-plug-in"><i class="fa fa-check"></i><b>C.2</b> ☡  General analysis of plug-in estimators</a>
+<ul>
+<li class="chapter" data-level="C.2.1" data-path="C-more-proofs.html"><a href="C-more-proofs.html#app-analysis-of-plug-in-main"><i class="fa fa-check"></i><b>C.2.1</b> Main analysis</a></li>
+<li class="chapter" data-level="C.2.2" data-path="C-more-proofs.html"><a href="C-more-proofs.html#estimation-of-the-asymptotic-variance"><i class="fa fa-check"></i><b>C.2.2</b> Estimation of the asymptotic variance</a></li>
+</ul></li>
+<li class="chapter" data-level="C.3" data-path="C-more-proofs.html"><a href="C-more-proofs.html#asymp-neglig-remain"><i class="fa fa-check"></i><b>C.3</b> Asymptotic negligibility of the remainder term</a></li>
+<li class="chapter" data-level="C.4" data-path="C-more-proofs.html"><a href="C-more-proofs.html#analysis-TMLE"><i class="fa fa-check"></i><b>C.4</b> Analysis of targeted estimators</a>
+<ul>
+<li class="chapter" data-level="C.4.1" data-path="C-more-proofs.html"><a href="C-more-proofs.html#basic-eic-eq"><i class="fa fa-check"></i><b>C.4.1</b> A basic fact on the influence curve equation</a></li>
+<li class="chapter" data-level="C.4.2" data-path="C-more-proofs.html"><a href="C-more-proofs.html#fluct-reg"><i class="fa fa-check"></i><b>C.4.2</b> Fluctuation of the regression function along the fluctuation of a law</a></li>
+<li class="chapter" data-level="C.4.3" data-path="C-more-proofs.html"><a href="C-more-proofs.html#fluct-score"><i class="fa fa-check"></i><b>C.4.3</b> Computing the score of a fluctuation of the regression function</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="D" data-path="D-references.html"><a href="D-references.html"><i class="fa fa-check"></i><b>D</b> References</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">A Ride in Targeted Learning Territory</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+\(\newcommand{\bbO}{\mathbb{O}}\)
+\(\newcommand{\bbD}{\mathbb{D}}\)
+\(\newcommand{\bbP}{\mathbb{P}}\)
+\(\newcommand{\bbR}{\mathbb{R}}\)
+\(\newcommand{\Algo}{\widehat{\mathcal{A}}}\)
+\(\newcommand{\Algora}{\widetilde{\mathcal{A}}}\)
+\(\newcommand{\calF}{\mathcal{F}}\)
+\(\newcommand{\calM}{\mathcal{M}}\)
+\(\newcommand{\calP}{\mathcal{P}}\)
+\(\newcommand{\calO}{\mathcal{O}}\)
+\(\newcommand{\calQ}{\mathcal{Q}}\)
+\(\newcommand{\defq}{\doteq}\)
+\(\newcommand{\Exp}{\textrm{E}}\)
+\(\newcommand{\IC}{\textrm{IC}}\)
+\(\newcommand{\Gbar}{\bar{G}}\)
+\(\newcommand{\one}{\textbf{1}}\)
+\(\newcommand{\psinos}{\psi_{n}^{\textrm{os}}}\)
+\(\renewcommand{\Pr}{\textrm{Pr}}\)
+\(\newcommand{\Phat}{P^{\circ}}\)
+\(\newcommand{\Psihat}{\widehat{\Psi}}\)
+\(\newcommand{\Qbar}{\bar{Q}}\)
+\(\newcommand{\tcg}[1]{\textcolor{olive}{#1}}\)
+\(\DeclareMathOperator{\Dirac}{Dirac}\)
+\(\DeclareMathOperator{\expit}{expit}\)
+\(\DeclareMathOperator{\logit}{logit}\)
+\(\DeclareMathOperator{\Rem}{Rem}\)
+\(\DeclareMathOperator{\Var}{Var}\)
+<div id="header">
+<h1 class="title">A Ride in Targeted Learning Territory</h1>
+<p class="author"><em>David Benkeser (Emory University)</em></p>
+<p class="author"><em>Antoine Chambaz (Université de Paris)</em></p>
+<p class="date"><em>2022-10-20</em></p>
+</div>
+<div id="welcome" class="section level1 unnumbered hasAnchor">
+<h1>Welcome<a href="index.html#welcome" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>This is either the website or the text called <strong>“A Ride in Targeted Learning
+Territory”</strong>. In the former case, the text can be dowloaded by clicking on the
+dedicated button in the top part of the webpage. In the latter case, the
+website can be browsed at
+<a href="https://achambaz.github.io/tlride/">https://achambaz.github.io/tlride/</a>.</p>
+<p><img src="cover.jpg" width="70%" style="display: block; margin: auto;" /></p>
+<div class="center">
+<p>
+Long Mendocino Drive (detail, <a href="https://www.lianasteinmetz.com/">Liana Steinmetz</a>)
+</p>
+</div>
+<p><strong>Organization</strong></p>
+<p>The text takes the form of a series of brief sections. The main sections
+combine theoretical and computational developments. The code is written in the
+programming language <a href="https://www.r-project.org"><code>R</code></a> <span class="citation">(R Core Team 2019)</span>. <code>R</code> is widely
+used among statisticians and data scientists to develop statistical software
+and data analysis.</p>
+<p>Regularly, a section is inserted that proposes exercises. Each such section
+is indicated by the <span style="color:red">⚙</span> symbol. The
+symbol <span style="color:red">☡</span>  also indicates
+those sections of which the content is more involved.</p>
+<p><strong>Overview</strong></p>
+<p>After a short introduction, we present the reproducible experiment that will
+play a central role throughout the text. Then, we introduce the main parameter
+of interest. We comment upon some of its properties that are useful from a
+statistical perspective. This paves the way to the presentation of several
+estimators that are increasingly more powerful statistically. The discussion
+takes us into <em>targeted learning territory</em>.</p>
+<p><strong>Audience</strong></p>
+<p>The text might be of interest to students in statistics and machine
+learning. It might also serve as a gentle introduction to targeted learning in
+both its theoretical and computational aspects before delving deeper into the
+literature <span class="citation">(Laan and Rose 2011)</span>, <span class="citation">(Laan and Rose 2018)</span>.</p>
+<p>The text was presented at the <a href="https://www.sfds.asso.fr/fr/group/activites_et_parrainages/608-journees_detude_en_statistique/">Journées d’Étude en Statistique
+2018</a>
+held in Fréjus (France) in October 2018 and at the <a href="https://ehermellin.github.io/conf_sfds/index.html">First Summer School in
+Statistics and Data Science for Young Researchers from French-speaking
+Africa</a> held at <a href="https://aims-senegal.org/">AIMS
+Senegal</a> (MBour, Senegal) in July 2019. The text
+and a shorter version (in French) will be published soon <span class="citation">(Benkeser and Chambaz 2020a)</span>, <span class="citation">(Benkeser and Chambaz 2020b)</span>.</p>
+<p><strong>Technical details</strong></p>
+<p>The text is written in <a href="https://rmarkdown.rstudio.com"><code>RMarkdown</code></a>
+with <a href="https://bookdown.org"><code>bookdown</code></a>. Assuming that
+the <a href="https://yihui.name/knitr/"><code>knitr</code></a> package is installed, you can
+retrieve all the <code>R</code> code by cloning this <a href="https://github.com/achambaz/tlride"><code>github</code>
+repository</a> then running</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="index.html#cb1-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">purl</span>(<span class="st">&quot;abcd.Rmd&quot;</span>)</span></code></pre></div>
+<!--It is automatically rebuilt from
+[source](https://github.com/achambaz/tlride)                                by
+[travis](http://travis-ci.org/).-->
+
+</div>
+
+
+
+            </section>
+
+          </div>
+        </div>
+      </div>
+
+<a href="1-a-ride.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="assets/gitbook-2.6.7/js/app.min.js"></script>
+<script src="assets/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="assets/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": null,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["tlride-book.pdf"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "section",
+"scroll_hightlight": true,
+"toolbar": {
+"position": "static"
+},
+"edit": null,
+"download": "pdf",
+"search": true,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+}
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

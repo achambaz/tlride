@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Section 1 A ride | A Ride in Targeted Learning Territory</title>
+  <meta name="description" content="A ride in targeted learning territory is a gentle introduction to the filed of targeted learning. It weaves together two main threads, one theoretical and the other computational. It uses tlrider, a companion R package built specifically for this project." />
+  <meta name="generator" content="bookdown 0.29 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Section 1 A ride | A Ride in Targeted Learning Territory" />
+  <meta property="og:type" content="book" />
+  <meta property="og:image" content="/cover.jpg" />
+  <meta property="og:description" content="A ride in targeted learning territory is a gentle introduction to the filed of targeted learning. It weaves together two main threads, one theoretical and the other computational. It uses tlrider, a companion R package built specifically for this project." />
+  <meta name="github-repo" content="achambaz/tlride" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Section 1 A ride | A Ride in Targeted Learning Territory" />
+  
+  <meta name="twitter:description" content="A ride in targeted learning territory is a gentle introduction to the filed of targeted learning. It weaves together two main threads, one theoretical and the other computational. It uses tlrider, a companion R package built specifically for this project." />
+  <meta name="twitter:image" content="/cover.jpg" />
+
+<meta name="author" content="David Benkeser (Emory University)" />
+<meta name="author" content="Antoine Chambaz (Université de Paris)" />
+
+
+<meta name="date" content="2022-10-20" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  <link rel="shortcut icon" href="favicon.png" type="image/x-icon" />
+<link rel="prev" href="index.html"/>
+<link rel="next" href="2-parameter.html"/>
+<script src="assets/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="assets/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="assets/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="assets/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="assets/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+  CommonHTML: {
+    scale: 90,
+    linebreaks: {
+      automatic: true
+    }
+  },
+  SVG: {
+    linebreaks: {
+      automatic: true
+    }
+  }, 
+  displayAlign: "left"
+  });
+</script>
+<script type="text/javascript"
+	src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async>
+</script><!-- see also '_output.yaml'
+src="https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"
+src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML" 
+src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"
+-->
+
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="tlride.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><strong><a href="https://achambaz.github.io/tlride/">TLRIDE</a></strong></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a></li>
+<li class="part"><span><b>I On the road</b></span></li>
+<li class="chapter" data-level="1" data-path="1-a-ride.html"><a href="1-a-ride.html"><i class="fa fa-check"></i><b>1</b> A ride</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="1-a-ride.html"><a href="1-a-ride.html#introduction"><i class="fa fa-check"></i><b>1.1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="1.1.1" data-path="1-a-ride.html"><a href="1-a-ride.html#causal-story"><i class="fa fa-check"></i><b>1.1.1</b> A causal story</a></li>
+<li class="chapter" data-level="1.1.2" data-path="1-a-ride.html"><a href="1-a-ride.html#tlrider-package"><i class="fa fa-check"></i><b>1.1.2</b> The <code>tlrider</code> package</a></li>
+<li class="chapter" data-level="1.1.3" data-path="1-a-ride.html"><a href="1-a-ride.html#discuss"><i class="fa fa-check"></i><b>1.1.3</b> What we will discuss</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="1-a-ride.html"><a href="1-a-ride.html#simulation-study"><i class="fa fa-check"></i><b>1.2</b> A simulation study</a>
+<ul>
+<li class="chapter" data-level="1.2.1" data-path="1-a-ride.html"><a href="1-a-ride.html#reproducible-experiment"><i class="fa fa-check"></i><b>1.2.1</b> Reproducible experiment as a law</a></li>
+<li class="chapter" data-level="1.2.2" data-path="1-a-ride.html"><a href="1-a-ride.html#synthetic-experiment"><i class="fa fa-check"></i><b>1.2.2</b> A synthetic reproducible experiment</a></li>
+<li class="chapter" data-level="1.2.3" data-path="1-a-ride.html"><a href="1-a-ride.html#revealing-experiment"><i class="fa fa-check"></i><b>1.2.3</b> Revealing <code>experiment</code></a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="1-a-ride.html"><a href="1-a-ride.html#exo-visualization"><i class="fa fa-check"></i><b>1.3</b> ⚙ Visualization</a></li>
+<li class="chapter" data-level="1.4" data-path="1-a-ride.html"><a href="1-a-ride.html#exo-make-own-experiment"><i class="fa fa-check"></i><b>1.4</b> ⚙ Make your own experiment</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="2-parameter.html"><a href="2-parameter.html"><i class="fa fa-check"></i><b>2</b> The parameter of interest</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="2-parameter.html"><a href="2-parameter.html#parameter-first-pass"><i class="fa fa-check"></i><b>2.1</b> The parameter of interest</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="2-parameter.html"><a href="2-parameter.html#definition"><i class="fa fa-check"></i><b>2.1.1</b> Definition</a></li>
+<li class="chapter" data-level="2.1.2" data-path="2-parameter.html"><a href="2-parameter.html#causal-interpretation"><i class="fa fa-check"></i><b>2.1.2</b> A causal interpretation</a></li>
+<li class="chapter" data-level="2.1.3" data-path="2-parameter.html"><a href="2-parameter.html#causal-computation"><i class="fa fa-check"></i><b>2.1.3</b> A causal computation</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="2-parameter.html"><a href="2-parameter.html#exo-alternative-parameter-first-pass"><i class="fa fa-check"></i><b>2.2</b> ⚙ An alternative parameter of interest</a></li>
+<li class="chapter" data-level="2.3" data-path="2-parameter.html"><a href="2-parameter.html#parameter-second-pass"><i class="fa fa-check"></i><b>2.3</b> The statistical mapping of interest</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="2-parameter.html"><a href="2-parameter.html#opening"><i class="fa fa-check"></i><b>2.3.1</b> Opening discussion</a></li>
+<li class="chapter" data-level="2.3.2" data-path="2-parameter.html"><a href="2-parameter.html#parameter-mapping"><i class="fa fa-check"></i><b>2.3.2</b> The parameter as the value of a statistical mapping at the experiment</a></li>
+<li class="chapter" data-level="2.3.3" data-path="2-parameter.html"><a href="2-parameter.html#value-another-experiment"><i class="fa fa-check"></i><b>2.3.3</b> The value of the statistical mapping at another experiment</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="2-parameter.html"><a href="2-parameter.html#exo-alternative-parameter-second-pass"><i class="fa fa-check"></i><b>2.4</b> ⚙ Alternative statistical mapping</a></li>
+<li class="chapter" data-level="2.5" data-path="2-parameter.html"><a href="2-parameter.html#parameter-third-pass"><i class="fa fa-check"></i><b>2.5</b> Representations</a>
+<ul>
+<li class="chapter" data-level="2.5.1" data-path="2-parameter.html"><a href="2-parameter.html#yet-another"><i class="fa fa-check"></i><b>2.5.1</b> Yet another representation</a></li>
+<li class="chapter" data-level="2.5.2" data-path="2-parameter.html"><a href="2-parameter.html#rep-to-est"><i class="fa fa-check"></i><b>2.5.2</b> From representations to estimation strategies</a></li>
+</ul></li>
+<li class="chapter" data-level="2.6" data-path="2-parameter.html"><a href="2-parameter.html#exo-alternative-parameter-third-pass"><i class="fa fa-check"></i><b>2.6</b> ⚙ Alternative representation</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="3-smooth.html"><a href="3-smooth.html"><i class="fa fa-check"></i><b>3</b> Smoothness</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="3-smooth.html"><a href="3-smooth.html#smooth-first-pass"><i class="fa fa-check"></i><b>3.1</b> Fluctuating smoothly</a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="3-smooth.html"><a href="3-smooth.html#fluctuations"><i class="fa fa-check"></i><b>3.1.1</b> The <code>another_experiment</code> fluctuation</a></li>
+<li class="chapter" data-level="3.1.2" data-path="3-smooth.html"><a href="3-smooth.html#numerical-illus"><i class="fa fa-check"></i><b>3.1.2</b> Numerical illustration</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="3-smooth.html"><a href="3-smooth.html#exo-yet-another-experiment"><i class="fa fa-check"></i><b>3.2</b> ⚙ Yet another experiment</a></li>
+<li class="chapter" data-level="3.3" data-path="3-smooth.html"><a href="3-smooth.html#smooth-second-pass"><i class="fa fa-check"></i><b>3.3</b> ☡  More on fluctuations and smoothness</a>
+<ul>
+<li class="chapter" data-level="3.3.1" data-path="3-smooth.html"><a href="3-smooth.html#smooth-second-pass-fluctuations"><i class="fa fa-check"></i><b>3.3.1</b> Fluctuations</a></li>
+<li class="chapter" data-level="3.3.2" data-path="3-smooth.html"><a href="3-smooth.html#smoothness-and-gradients"><i class="fa fa-check"></i><b>3.3.2</b> Smoothness and gradients</a></li>
+<li class="chapter" data-level="3.3.3" data-path="3-smooth.html"><a href="3-smooth.html#Euclidean-perspective"><i class="fa fa-check"></i><b>3.3.3</b> A Euclidean perspective</a></li>
+<li class="chapter" data-level="3.3.4" data-path="3-smooth.html"><a href="3-smooth.html#canonical-gradient"><i class="fa fa-check"></i><b>3.3.4</b> The canonical gradient</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="3-smooth.html"><a href="3-smooth.html#revisiting"><i class="fa fa-check"></i><b>3.4</b> A fresh look at <code>another_experiment</code></a>
+<ul>
+<li class="chapter" data-level="3.4.1" data-path="3-smooth.html"><a href="3-smooth.html#deriving-the-efficient-influence-curve"><i class="fa fa-check"></i><b>3.4.1</b> Deriving the efficient influence curve</a></li>
+<li class="chapter" data-level="3.4.2" data-path="3-smooth.html"><a href="3-smooth.html#numerical-validation"><i class="fa fa-check"></i><b>3.4.2</b> Numerical validation</a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="3-smooth.html"><a href="3-smooth.html#influence-curves"><i class="fa fa-check"></i><b>3.5</b> ☡  Asymptotic linearity and statistical efficiency</a>
+<ul>
+<li class="chapter" data-level="3.5.1" data-path="3-smooth.html"><a href="3-smooth.html#asymptotic-linearity"><i class="fa fa-check"></i><b>3.5.1</b> Asymptotic linearity</a></li>
+<li class="chapter" data-level="3.5.2" data-path="3-smooth.html"><a href="3-smooth.html#influence-curves-and-gradients"><i class="fa fa-check"></i><b>3.5.2</b> Influence curves and gradients</a></li>
+<li class="chapter" data-level="3.5.3" data-path="3-smooth.html"><a href="3-smooth.html#asymptotic-efficiency"><i class="fa fa-check"></i><b>3.5.3</b> Asymptotic efficiency</a></li>
+</ul></li>
+<li class="chapter" data-level="3.6" data-path="3-smooth.html"><a href="3-smooth.html#exo-cramer-rao"><i class="fa fa-check"></i><b>3.6</b> ⚙ Cramér-Rao bounds</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="4-double-robustness.html"><a href="4-double-robustness.html"><i class="fa fa-check"></i><b>4</b> Double-robustness</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="4-double-robustness.html"><a href="4-double-robustness.html#linear-approximation"><i class="fa fa-check"></i><b>4.1</b> Linear approximations of parameters</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="4-double-robustness.html"><a href="4-double-robustness.html#from-gradients-to-estimators"><i class="fa fa-check"></i><b>4.1.1</b> From gradients to estimators</a></li>
+<li class="chapter" data-level="4.1.2" data-path="4-double-robustness.html"><a href="4-double-robustness.html#another-Euclidean-perspective"><i class="fa fa-check"></i><b>4.1.2</b> A Euclidean perspective</a></li>
+<li class="chapter" data-level="4.1.3" data-path="4-double-robustness.html"><a href="4-double-robustness.html#the-remainder-term"><i class="fa fa-check"></i><b>4.1.3</b> The remainder term</a></li>
+<li class="chapter" data-level="4.1.4" data-path="4-double-robustness.html"><a href="4-double-robustness.html#expressing-the-remainder-term-as-a-function-of-the-relevant-features"><i class="fa fa-check"></i><b>4.1.4</b> Expressing the remainder term as a function of the relevant features</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="4-double-robustness.html"><a href="4-double-robustness.html#exo-remainder-term"><i class="fa fa-check"></i><b>4.2</b> ⚙ The remainder term</a></li>
+<li class="chapter" data-level="4.3" data-path="4-double-robustness.html"><a href="4-double-robustness.html#def-double-robustness"><i class="fa fa-check"></i><b>4.3</b> ☡  Double-robustness</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="4-double-robustness.html"><a href="4-double-robustness.html#the-key-property"><i class="fa fa-check"></i><b>4.3.1</b> The key property</a></li>
+<li class="chapter" data-level="4.3.2" data-path="4-double-robustness.html"><a href="4-double-robustness.html#direct-consequence"><i class="fa fa-check"></i><b>4.3.2</b> Its direct consequence</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="4-double-robustness.html"><a href="4-double-robustness.html#exo-double-robustness"><i class="fa fa-check"></i><b>4.4</b> ⚙ Double-robustness</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="5-inference.html"><a href="5-inference.html"><i class="fa fa-check"></i><b>5</b> Inference</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="5-inference.html"><a href="5-inference.html#where-we-stand"><i class="fa fa-check"></i><b>5.1</b> Where we stand</a></li>
+<li class="chapter" data-level="5.2" data-path="5-inference.html"><a href="5-inference.html#where-we-are-going"><i class="fa fa-check"></i><b>5.2</b> Where we are going</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html"><i class="fa fa-check"></i><b>6</b> A simple inference strategy</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#a-cautionary-detour"><i class="fa fa-check"></i><b>6.1</b> A cautionary detour</a></li>
+<li class="chapter" data-level="6.2" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#delta-method"><i class="fa fa-check"></i><b>6.2</b> ⚙ Delta-method</a></li>
+<li class="chapter" data-level="6.3" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#known-gbar-first-pass"><i class="fa fa-check"></i><b>6.3</b> IPTW estimator assuming the mechanism of action known</a>
+<ul>
+<li class="chapter" data-level="6.3.1" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#a-simple-estimator"><i class="fa fa-check"></i><b>6.3.1</b> A simple estimator</a></li>
+<li class="chapter" data-level="6.3.2" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#elementary-statistical-properties"><i class="fa fa-check"></i><b>6.3.2</b> Elementary statistical properties</a></li>
+<li class="chapter" data-level="6.3.3" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#empirical-inves-IPTW"><i class="fa fa-check"></i><b>6.3.3</b> Empirical investigation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="7-nuisance.html"><a href="7-nuisance.html"><i class="fa fa-check"></i><b>7</b> Nuisance parameters</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="7-nuisance.html"><a href="7-nuisance.html#anatomy"><i class="fa fa-check"></i><b>7.1</b> Anatomy of an expression</a></li>
+<li class="chapter" data-level="7.2" data-path="7-nuisance.html"><a href="7-nuisance.html#an-algorithmic-stance"><i class="fa fa-check"></i><b>7.2</b> An algorithmic stance</a></li>
+<li class="chapter" data-level="7.3" data-path="7-nuisance.html"><a href="7-nuisance.html#nuisance-QW"><i class="fa fa-check"></i><b>7.3</b> <code>QW</code></a></li>
+<li class="chapter" data-level="7.4" data-path="7-nuisance.html"><a href="7-nuisance.html#nuisance-Gbar"><i class="fa fa-check"></i><b>7.4</b> <code>Gbar</code></a>
+<ul>
+<li class="chapter" data-level="7.4.1" data-path="7-nuisance.html"><a href="7-nuisance.html#logis-loss"><i class="fa fa-check"></i><b>7.4.1</b> Working model-based algorithms</a></li>
+<li class="chapter" data-level="7.4.2" data-path="7-nuisance.html"><a href="7-nuisance.html#algo-Gbar-one"><i class="fa fa-check"></i><b>7.4.2</b> Visualization</a></li>
+</ul></li>
+<li class="chapter" data-level="7.5" data-path="7-nuisance.html"><a href="7-nuisance.html#nuisance-Qbar-wm"><i class="fa fa-check"></i><b>7.5</b> ⚙ <code>Qbar</code>, working model-based algorithms</a></li>
+<li class="chapter" data-level="7.6" data-path="7-nuisance.html"><a href="7-nuisance.html#nuisance-Qbar"><i class="fa fa-check"></i><b>7.6</b> <code>Qbar</code></a>
+<ul>
+<li class="chapter" data-level="7.6.1" data-path="7-nuisance.html"><a href="7-nuisance.html#qbar-machine-learning-based-algorithms"><i class="fa fa-check"></i><b>7.6.1</b> <code>Qbar</code>, machine learning-based algorithms</a></li>
+<li class="chapter" data-level="7.6.2" data-path="7-nuisance.html"><a href="7-nuisance.html#Qbar-knn-algo"><i class="fa fa-check"></i><b>7.6.2</b> <code>Qbar</code>, kNN algorithm</a></li>
+<li class="chapter" data-level="7.6.3" data-path="7-nuisance.html"><a href="7-nuisance.html#boosted-trees"><i class="fa fa-check"></i><b>7.6.3</b> <code>Qbar</code>, boosted trees algorithm</a></li>
+</ul></li>
+<li class="chapter" data-level="7.7" data-path="7-nuisance.html"><a href="7-nuisance.html#nuisance-Qbar-ml-exo"><i class="fa fa-check"></i><b>7.7</b> ⚙ ☡  <code>Qbar</code>, machine learning-based algorithms</a></li>
+<li class="chapter" data-level="7.8" data-path="7-nuisance.html"><a href="7-nuisance.html#meta-learning"><i class="fa fa-check"></i><b>7.8</b> Meta-learning/super learning</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html"><i class="fa fa-check"></i><b>8</b> Two “naive” inference strategies</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#why-naive"><i class="fa fa-check"></i><b>8.1</b> Why “naive?”</a></li>
+<li class="chapter" data-level="8.2" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#known-gbar-second-pass"><i class="fa fa-check"></i><b>8.2</b> IPTW estimator</a>
+<ul>
+<li class="chapter" data-level="8.2.1" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#unknown-gbar-constr"><i class="fa fa-check"></i><b>8.2.1</b> Construction and computation</a></li>
+<li class="chapter" data-level="8.2.2" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#elementary-stat-prop-iptw"><i class="fa fa-check"></i><b>8.2.2</b> Elementary statistical properties</a></li>
+<li class="chapter" data-level="8.2.3" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#empirical-inves-IPTW-bis"><i class="fa fa-check"></i><b>8.2.3</b> Empirical investigation</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#exo-a-nice-title"><i class="fa fa-check"></i><b>8.3</b> ⚙ Investigating further the IPTW inference strategy</a></li>
+<li class="chapter" data-level="8.4" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#Gcomp-estimator"><i class="fa fa-check"></i><b>8.4</b> G-computation estimator</a>
+<ul>
+<li class="chapter" data-level="8.4.1" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#Gcomp-construction"><i class="fa fa-check"></i><b>8.4.1</b> Construction and computation</a></li>
+<li class="chapter" data-level="8.4.2" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#elementary-statistical-properties-1"><i class="fa fa-check"></i><b>8.4.2</b> Elementary statistical properties</a></li>
+<li class="chapter" data-level="8.4.3" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#empirical-inves-Gcomp"><i class="fa fa-check"></i><b>8.4.3</b> Empirical investigation, fixed sample size</a></li>
+<li class="chapter" data-level="8.4.4" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#empirical-inves-Gcomp-varying"><i class="fa fa-check"></i><b>8.4.4</b> ☡  Empirical investigation, varying sample size</a></li>
+</ul></li>
+<li class="chapter" data-level="8.5" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#exo-plug-in-estimate"><i class="fa fa-check"></i><b>8.5</b> ⚙ Investigating further the G-computation estimation strategy</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="9-one-step.html"><a href="9-one-step.html"><i class="fa fa-check"></i><b>9</b> One-step correction</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="9-one-step.html"><a href="9-one-step.html#analysis-of-plug-in"><i class="fa fa-check"></i><b>9.1</b> ☡  General analysis of plug-in estimators</a></li>
+<li class="chapter" data-level="9.2" data-path="9-one-step.html"><a href="9-one-step.html#huber-one-step"><i class="fa fa-check"></i><b>9.2</b> One-step correction</a></li>
+<li class="chapter" data-level="9.3" data-path="9-one-step.html"><a href="9-one-step.html#empirical-inves-one-step"><i class="fa fa-check"></i><b>9.3</b> Empirical investigation</a></li>
+<li class="chapter" data-level="9.4" data-path="9-one-step.html"><a href="9-one-step.html#exo-one-step"><i class="fa fa-check"></i><b>9.4</b> ⚙ Investigating further the one-step correction methodology</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="10-TMLE.html"><a href="10-TMLE.html"><i class="fa fa-check"></i><b>10</b> Targeted minimum loss-based estimation</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="10-TMLE.html"><a href="10-TMLE.html#TMLE-motivations"><i class="fa fa-check"></i><b>10.1</b> Motivations</a>
+<ul>
+<li class="chapter" data-level="10.1.1" data-path="10-TMLE.html"><a href="10-TMLE.html#falling-outside-the-parameter-space"><i class="fa fa-check"></i><b>10.1.1</b> Falling outside the parameter space</a></li>
+<li class="chapter" data-level="10.1.2" data-path="10-TMLE.html"><a href="10-TMLE.html#eic-equation"><i class="fa fa-check"></i><b>10.1.2</b> The influence curve equation</a></li>
+<li class="chapter" data-level="10.1.3" data-path="10-TMLE.html"><a href="10-TMLE.html#basic-fact"><i class="fa fa-check"></i><b>10.1.3</b> A basic fact on the influence curve equation</a></li>
+</ul></li>
+<li class="chapter" data-level="10.2" data-path="10-TMLE.html"><a href="10-TMLE.html#targeted-fluctuation-TMLE"><i class="fa fa-check"></i><b>10.2</b> Targeted fluctuation</a>
+<ul>
+<li class="chapter" data-level="10.2.1" data-path="10-TMLE.html"><a href="10-TMLE.html#fluctuating-indirectly"><i class="fa fa-check"></i><b>10.2.1</b> ☡  Fluctuating indirectly</a></li>
+<li class="chapter" data-level="10.2.2" data-path="10-TMLE.html"><a href="10-TMLE.html#fluct-direct"><i class="fa fa-check"></i><b>10.2.2</b> Fluctuating directly</a></li>
+<li class="chapter" data-level="10.2.3" data-path="10-TMLE.html"><a href="10-TMLE.html#exo-fluct"><i class="fa fa-check"></i><b>10.2.3</b> ⚙ More on fluctuations</a></li>
+<li class="chapter" data-level="10.2.4" data-path="10-TMLE.html"><a href="10-TMLE.html#roaming"><i class="fa fa-check"></i><b>10.2.4</b> Targeted roaming of a fluctuation</a></li>
+<li class="chapter" data-level="10.2.5" data-path="10-TMLE.html"><a href="10-TMLE.html#fluct-justification"><i class="fa fa-check"></i><b>10.2.5</b> Justifying the form of the fluctutation</a></li>
+<li class="chapter" data-level="10.2.6" data-path="10-TMLE.html"><a href="10-TMLE.html#exo-tmle-flucs"><i class="fa fa-check"></i><b>10.2.6</b> ⚙ Alternative fluctuation</a></li>
+</ul></li>
+<li class="chapter" data-level="10.3" data-path="10-TMLE.html"><a href="10-TMLE.html#summary-and-perspectives"><i class="fa fa-check"></i><b>10.3</b> Summary and perspectives</a></li>
+<li class="chapter" data-level="10.4" data-path="10-TMLE.html"><a href="10-TMLE.html#empirical-inves-tmle"><i class="fa fa-check"></i><b>10.4</b> Empirical investigation</a>
+<ul>
+<li class="chapter" data-level="10.4.1" data-path="10-TMLE.html"><a href="10-TMLE.html#empirical-inves-tmle-first"><i class="fa fa-check"></i><b>10.4.1</b> A first numerical application</a></li>
+<li class="chapter" data-level="10.4.2" data-path="10-TMLE.html"><a href="10-TMLE.html#exo-tmle"><i class="fa fa-check"></i><b>10.4.2</b> ⚙ A computational exploration</a></li>
+<li class="chapter" data-level="10.4.3" data-path="10-TMLE.html"><a href="10-TMLE.html#empirical-investigation"><i class="fa fa-check"></i><b>10.4.3</b> Empirical investigation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="11-closing-words.html"><a href="11-closing-words.html"><i class="fa fa-check"></i><b>11</b> Closing words</a></li>
+<li class="appendix"><span><b>Appendix</b></span></li>
+<li class="chapter" data-level="A" data-path="A-notation.html"><a href="A-notation.html"><i class="fa fa-check"></i><b>A</b> Notation</a></li>
+<li class="chapter" data-level="B" data-path="B-proofs.html"><a href="B-proofs.html"><i class="fa fa-check"></i><b>B</b> Basic results and their proofs</a>
+<ul>
+<li class="chapter" data-level="B.1" data-path="B-proofs.html"><a href="B-proofs.html#npsem"><i class="fa fa-check"></i><b>B.1</b> NPSEM</a></li>
+<li class="chapter" data-level="B.2" data-path="B-proofs.html"><a href="B-proofs.html#identification"><i class="fa fa-check"></i><b>B.2</b> Identification</a></li>
+<li class="chapter" data-level="B.3" data-path="B-proofs.html"><a href="B-proofs.html#confidence-interval"><i class="fa fa-check"></i><b>B.3</b> Building a confidence interval</a>
+<ul>
+<li class="chapter" data-level="B.3.1" data-path="B-proofs.html"><a href="B-proofs.html#clt"><i class="fa fa-check"></i><b>B.3.1</b> CLT &amp; Slutsky’s lemma</a></li>
+<li class="chapter" data-level="B.3.2" data-path="B-proofs.html"><a href="B-proofs.html#order"><i class="fa fa-check"></i><b>B.3.2</b> CLT and order statistics</a></li>
+</ul></li>
+<li class="chapter" data-level="B.4" data-path="B-proofs.html"><a href="B-proofs.html#another-rep"><i class="fa fa-check"></i><b>B.4</b> Another representation of the parameter of interest</a></li>
+<li class="chapter" data-level="B.5" data-path="B-proofs.html"><a href="B-proofs.html#prop-delta-method"><i class="fa fa-check"></i><b>B.5</b> The delta-method</a></li>
+<li class="chapter" data-level="B.6" data-path="B-proofs.html"><a href="B-proofs.html#oracle-logistic-risk"><i class="fa fa-check"></i><b>B.6</b> The oracle logistic risk</a></li>
+</ul></li>
+<li class="chapter" data-level="C" data-path="C-more-proofs.html"><a href="C-more-proofs.html"><i class="fa fa-check"></i><b>C</b> More results and their proofs</a>
+<ul>
+<li class="chapter" data-level="C.1" data-path="C-more-proofs.html"><a href="C-more-proofs.html#estimation-of-the-asymptotic-variance-of-an-estimator"><i class="fa fa-check"></i><b>C.1</b> Estimation of the asymptotic variance of an estimator</a>
+<ul>
+<li class="chapter" data-level="C.1.1" data-path="C-more-proofs.html"><a href="C-more-proofs.html#iptw-est-var"><i class="fa fa-check"></i><b>C.1.1</b> IPTW estimator based on a well-specified model</a></li>
+<li class="chapter" data-level="C.1.2" data-path="C-more-proofs.html"><a href="C-more-proofs.html#gcomp-est-var"><i class="fa fa-check"></i><b>C.1.2</b> G-computation estimator based on a well-specified model</a></li>
+</ul></li>
+<li class="chapter" data-level="C.2" data-path="C-more-proofs.html"><a href="C-more-proofs.html#app-analysis-of-plug-in"><i class="fa fa-check"></i><b>C.2</b> ☡  General analysis of plug-in estimators</a>
+<ul>
+<li class="chapter" data-level="C.2.1" data-path="C-more-proofs.html"><a href="C-more-proofs.html#app-analysis-of-plug-in-main"><i class="fa fa-check"></i><b>C.2.1</b> Main analysis</a></li>
+<li class="chapter" data-level="C.2.2" data-path="C-more-proofs.html"><a href="C-more-proofs.html#estimation-of-the-asymptotic-variance"><i class="fa fa-check"></i><b>C.2.2</b> Estimation of the asymptotic variance</a></li>
+</ul></li>
+<li class="chapter" data-level="C.3" data-path="C-more-proofs.html"><a href="C-more-proofs.html#asymp-neglig-remain"><i class="fa fa-check"></i><b>C.3</b> Asymptotic negligibility of the remainder term</a></li>
+<li class="chapter" data-level="C.4" data-path="C-more-proofs.html"><a href="C-more-proofs.html#analysis-TMLE"><i class="fa fa-check"></i><b>C.4</b> Analysis of targeted estimators</a>
+<ul>
+<li class="chapter" data-level="C.4.1" data-path="C-more-proofs.html"><a href="C-more-proofs.html#basic-eic-eq"><i class="fa fa-check"></i><b>C.4.1</b> A basic fact on the influence curve equation</a></li>
+<li class="chapter" data-level="C.4.2" data-path="C-more-proofs.html"><a href="C-more-proofs.html#fluct-reg"><i class="fa fa-check"></i><b>C.4.2</b> Fluctuation of the regression function along the fluctuation of a law</a></li>
+<li class="chapter" data-level="C.4.3" data-path="C-more-proofs.html"><a href="C-more-proofs.html#fluct-score"><i class="fa fa-check"></i><b>C.4.3</b> Computing the score of a fluctuation of the regression function</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="D" data-path="D-references.html"><a href="D-references.html"><i class="fa fa-check"></i><b>D</b> References</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">A Ride in Targeted Learning Territory</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+\(\newcommand{\bbO}{\mathbb{O}}\)
+\(\newcommand{\bbD}{\mathbb{D}}\)
+\(\newcommand{\bbP}{\mathbb{P}}\)
+\(\newcommand{\bbR}{\mathbb{R}}\)
+\(\newcommand{\Algo}{\widehat{\mathcal{A}}}\)
+\(\newcommand{\Algora}{\widetilde{\mathcal{A}}}\)
+\(\newcommand{\calF}{\mathcal{F}}\)
+\(\newcommand{\calM}{\mathcal{M}}\)
+\(\newcommand{\calP}{\mathcal{P}}\)
+\(\newcommand{\calO}{\mathcal{O}}\)
+\(\newcommand{\calQ}{\mathcal{Q}}\)
+\(\newcommand{\defq}{\doteq}\)
+\(\newcommand{\Exp}{\textrm{E}}\)
+\(\newcommand{\IC}{\textrm{IC}}\)
+\(\newcommand{\Gbar}{\bar{G}}\)
+\(\newcommand{\one}{\textbf{1}}\)
+\(\newcommand{\psinos}{\psi_{n}^{\textrm{os}}}\)
+\(\renewcommand{\Pr}{\textrm{Pr}}\)
+\(\newcommand{\Phat}{P^{\circ}}\)
+\(\newcommand{\Psihat}{\widehat{\Psi}}\)
+\(\newcommand{\Qbar}{\bar{Q}}\)
+\(\newcommand{\tcg}[1]{\textcolor{olive}{#1}}\)
+\(\DeclareMathOperator{\Dirac}{Dirac}\)
+\(\DeclareMathOperator{\expit}{expit}\)
+\(\DeclareMathOperator{\logit}{logit}\)
+\(\DeclareMathOperator{\Rem}{Rem}\)
+\(\DeclareMathOperator{\Var}{Var}\)
+<div id="a-ride" class="section level1 hasAnchor" number="1">
+<h1><span class="header-section-number">Section 1</span> A ride<a href="1-a-ride.html#a-ride" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="introduction" class="section level2 hasAnchor" number="1.1">
+<h2><span class="header-section-number">1.1</span> Introduction<a href="1-a-ride.html#introduction" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Our ambition is to present a gentle introduction to the field of targeted
+learning. As an example, we consider statistical inference on a simple causal
+quantity that is ubiquitous in the causal literature. We use this exemplar
+parameter to introduce key concepts that can be applied to more complicated
+problems. The introduction weaves together two main threads, one theoretical
+and the other computational.</p>
+<div id="causal-story" class="section level3 hasAnchor" number="1.1.1">
+<h3><span class="header-section-number">1.1.1</span> A causal story<a href="1-a-ride.html#causal-story" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>We focus on a causal story where a random reward (a real number between 0 and
+1) is given based on an action undertaken (one among two) and the random
+context where the action is performed (summarized by a real number between 0
+and 1). The causal quantity of interest is the average difference of the two
+counterfactual rewards. This is a story as old as time. Should we take the red
+pill or the blue pill? Should we show our customers advertisement A or
+advertisement B? Should we require individuals to undergo cancer screening? At
+their core, each of these questions is asking what action should be taken to
+maximize a “reward.”</p>
+<p>We will build several estimators and discuss their respective merits,
+theoretically and computationally. The construction of the most involved
+estimator will unfold in <em>targeted learning territory</em>, at the frontier of
+machine learning and semiparametrics, the statistical theory of inference
+based on semiparametric models.</p>
+</div>
+<div id="tlrider-package" class="section level3 hasAnchor" number="1.1.2">
+<h3><span class="header-section-number">1.1.2</span> The <code>tlrider</code> package<a href="1-a-ride.html#tlrider-package" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The computational illustrations will be developed based on the companion
+package <code>tlrider</code>. The package can be installed by
+running the following code:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="1-a-ride.html#cb2-1" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;achambaz/tlride/tlrider&quot;</span>)</span></code></pre></div>
+<p>The version used in this document is 1.1.1.</p>
+<p>Additional packages are also required, including <code>tidyverse</code> <span class="citation">(Wickham and Grolemund 2016)</span>, <code>caret</code>
+<span class="citation">(Kuhn 2020)</span> and <code>ggdag</code> <span class="citation">(Barrett 2018)</span>. Assuming that these are installed too, we can
+run the next chunk of code:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="1-a-ride.html#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb3-2"><a href="1-a-ride.html#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(caret)</span>
+<span id="cb3-3"><a href="1-a-ride.html#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggdag)</span>
+<span id="cb3-4"><a href="1-a-ride.html#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tlrider)</span></code></pre></div>
+</div>
+<div id="discuss" class="section level3 hasAnchor" number="1.1.3">
+<h3><span class="header-section-number">1.1.3</span> What we will discuss<a href="1-a-ride.html#discuss" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>To begin, we discuss the nature of the parameter of interest, viewing it as
+the value of a statistical mapping evaluated at the law of the data (Section
+<a href="2-parameter.html#parameter">2</a>), with an emphasis on the smoothness and double-robustness
+properties inherited from the mapping (Sections <a href="3-smooth.html#smooth">3</a> and
+<a href="4-double-robustness.html#double-robustness">4</a>). We then turn to the estimation of the parameter of
+interest. We first introduce and comment upon a simple inference strategy
+assuming provisionally that a relevant feature of the law of the data is known
+to us (Section <a href="6-simple-strategy.html#simple-strategy">6</a>). Second, we present the notion of
+nuisance parameters and adopt an algorithmic stance on their estimation
+(Section <a href="7-nuisance.html#nuisance">7</a>). Third, we introduce and comment upon two “naive”
+inference strategies (Section <a href="8-naive-estimators.html#naive-estimators">8</a>), the one-step
+correction procedure (Section <a href="9-one-step.html#one-step">9</a>) and, finally, the targeted
+minimum loss estimation procedure tailored to the inference of the parameter
+of main interest. In the appendix, we collect our notation (Section
+<a href="A-notation.html#notation">A</a>), and present some results that are used in the main text and
+their proofs (Sections <a href="B-proofs.html#proofs">B</a> and <a href="C-more-proofs.html#more-proofs">C</a>).</p>
+</div>
+</div>
+<div id="simulation-study" class="section level2 hasAnchor" number="1.2">
+<h2><span class="header-section-number">1.2</span> A simulation study<a href="1-a-ride.html#simulation-study" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="reproducible-experiment" class="section level3 hasAnchor" number="1.2.1">
+<h3><span class="header-section-number">1.2.1</span> Reproducible experiment as a law<a href="1-a-ride.html#reproducible-experiment" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>We are interested in a reproducible experiment. Every time this experiment is
+run, it generates an observation that we call <span class="math inline">\(O\)</span>. We view <span class="math inline">\(O\)</span> as a random
+variable drawn from <em>the law of the experiment</em> that we denote by <span class="math inline">\(P_{0}\)</span>.</p>
+<p>We view <span class="math inline">\(P_{0}\)</span> as an element of <em>the model</em> <span class="math inline">\(\calM\)</span>. The model is a
+collection of laws. In particular, the model contains all laws that we think
+may plausibly describe the law of the experiment. Thus, the choice of model
+is based on our scientific knowledge of the experiment. The more we know about
+the experiment, the smaller is <span class="math inline">\(\calM\)</span>. In all our examples, we use large
+models that reflect a lack of knowledge about many aspects of the experiment.</p>
+</div>
+<div id="synthetic-experiment" class="section level3 hasAnchor" number="1.2.2">
+<h3><span class="header-section-number">1.2.2</span> A synthetic reproducible experiment<a href="1-a-ride.html#synthetic-experiment" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Instead of considering a real-life reproducible experiment, we focus for
+pedagogical purposes on a <em>synthetic</em> reproducible experiment. Thus we can
+from now on take on two different roles: that of an <em>oracle</em> knowing
+completely the nature of the experiment, and that of a <em>statistician</em> eager to
+know more about the experiment by observing some of its outputs.</p>
+<p>Let us run the example built into the <code>tlrider</code> package:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="1-a-ride.html#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">example</span>(tlrider)</span></code></pre></div>
+<p>A few objects have been defined:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="1-a-ride.html#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span>()</span>
+<span id="cb5-2"><a href="1-a-ride.html#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;another_experiment&quot; &quot;experiment&quot;         &quot;expit&quot;             </span></span>
+<span id="cb5-3"><a href="1-a-ride.html#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [4] &quot;filter&quot;             &quot;logit&quot;              &quot;sigma0&quot;</span></span></code></pre></div>
+<p>The function <code>expit</code> implements the link function <span class="math inline">\(\expit : \bbR \to ]0,1[\)</span> given
+by <span class="math inline">\(\expit(x) \defq (1 + e^{-x})^{-1}\)</span>. The function <code>logit</code> implements its
+inverse function <span class="math inline">\(\logit : ]0,1[ \to \bbR\)</span> given by <span class="math inline">\(\logit(p) \defq \log [p/(1-p)]\)</span>.</p>
+<p>Let us take a look at <code>experiment</code>:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="1-a-ride.html#cb6-1" aria-hidden="true" tabindex="-1"></a>experiment</span>
+<span id="cb6-2"><a href="1-a-ride.html#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; A law for (W,A,Y) in [0,1] x {0,1} x [0,1].</span></span>
+<span id="cb6-3"><a href="1-a-ride.html#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-4"><a href="1-a-ride.html#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; If the law is fully characterized, you can use method</span></span>
+<span id="cb6-5"><a href="1-a-ride.html#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &#39;sample_from&#39; to sample from it.</span></span>
+<span id="cb6-6"><a href="1-a-ride.html#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-7"><a href="1-a-ride.html#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; If you built the law, or if you are an _oracle_, you can also</span></span>
+<span id="cb6-8"><a href="1-a-ride.html#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; use methods &#39;reveal&#39; to reveal its relevant features (QW, Gbar,</span></span>
+<span id="cb6-9"><a href="1-a-ride.html#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Qbar, qY -- see &#39;?reveal&#39;), and &#39;alter&#39; to change some of them.</span></span>
+<span id="cb6-10"><a href="1-a-ride.html#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-11"><a href="1-a-ride.html#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; If all its relevant features are characterized, you can use</span></span>
+<span id="cb6-12"><a href="1-a-ride.html#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; methods &#39;evaluate_psi&#39; to obtain the value of &#39;Psi&#39; at this law</span></span>
+<span id="cb6-13"><a href="1-a-ride.html#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; (see &#39;?evaluate_psi&#39;) and &#39;evaluate_eic&#39; to obtain the efficient</span></span>
+<span id="cb6-14"><a href="1-a-ride.html#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; influence curve of &#39;Psi&#39; at this law (see &#39;?evaluate_eic&#39;).</span></span></code></pre></div>
+<p>The law <span class="math inline">\(P_{0}\)</span> of the synthetic experiment <code>experiment</code> built by us generates
+a generic observation <span class="math inline">\(O\)</span> that decomposes as <span class="math display">\[\begin{equation*} O \defq (W, A,
+Y) \in [0,1] \times \{0,1\} \times [0,1].  \end{equation*}\]</span> We interpret <span class="math inline">\(W\)</span> as
+a real valued summary measure of a random context where an action <span class="math inline">\(A\)</span> chosen
+among two is undertaken, leading to a real valued reward <span class="math inline">\(Y\)</span>.</p>
+<p>We can sample from the experiment (simply run <code>?sample_from</code> to see the man
+page of method <code>sample_from</code>). The next chunk of code runs the experiment five
+times, independently:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="1-a-ride.html#cb7-1" aria-hidden="true" tabindex="-1"></a>(five_obs <span class="ot">&lt;-</span> <span class="fu">sample_from</span>(experiment, <span class="at">n =</span> <span class="dv">5</span>))</span>
+<span id="cb7-2"><a href="1-a-ride.html#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;          W A     Y</span></span>
+<span id="cb7-3"><a href="1-a-ride.html#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,] 0.393 1 0.789</span></span>
+<span id="cb7-4"><a href="1-a-ride.html#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2,] 0.399 1 0.782</span></span>
+<span id="cb7-5"><a href="1-a-ride.html#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [3,] 0.373 1 0.942</span></span>
+<span id="cb7-6"><a href="1-a-ride.html#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [4,] 0.371 1 0.838</span></span>
+<span id="cb7-7"><a href="1-a-ride.html#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [5,] 0.372 1 0.779</span></span></code></pre></div>
+</div>
+<div id="revealing-experiment" class="section level3 hasAnchor" number="1.2.3">
+<h3><span class="header-section-number">1.2.3</span> Revealing <code>experiment</code><a href="1-a-ride.html#revealing-experiment" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Acting as oracles, we can peek into <code>experiment</code> and <em>reveal</em> a selection of
+relevant features (simply run <code>?reveal</code> to see the man page of method
+<code>reveal</code>). Made by us, the selection exhibits features that will play an
+important role in the text.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="1-a-ride.html#cb8-1" aria-hidden="true" tabindex="-1"></a>relevant_features <span class="ot">&lt;-</span> <span class="fu">reveal</span>(experiment)</span>
+<span id="cb8-2"><a href="1-a-ride.html#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(relevant_features)</span>
+<span id="cb8-3"><a href="1-a-ride.html#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;QW&quot;          &quot;Gbar&quot;        &quot;Qbar&quot;        &quot;qY&quot;          &quot;sample_from&quot;</span></span></code></pre></div>
+<p>We have an oracular knowledge of <code>experiment</code> and can thus comment upon the
+features of <span class="math inline">\(P_{0}\)</span> revealed in <code>relevant_features</code>.</p>
+<div id="qw" class="section level4 unnumbered hasAnchor">
+<h4><code>QW</code><a href="1-a-ride.html#qw" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>The <code>QW</code> feature describes the marginal law of <span class="math inline">\(W\)</span>, that we call <span class="math inline">\(Q_{0,W}\)</span>.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="1-a-ride.html#cb9-1" aria-hidden="true" tabindex="-1"></a>relevant_features<span class="sc">$</span>QW</span>
+<span id="cb9-2"><a href="1-a-ride.html#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; function(W,</span></span>
+<span id="cb9-3"><a href="1-a-ride.html#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                     mixture_weights = c(1/10, 9/10, 0),</span></span>
+<span id="cb9-4"><a href="1-a-ride.html#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                     mins = c(0, 11/30, 0),</span></span>
+<span id="cb9-5"><a href="1-a-ride.html#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                     maxs = c(1, 14/30, 1)) {</span></span>
+<span id="cb9-6"><a href="1-a-ride.html#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         out &lt;- sapply(1:length(mixture_weights),</span></span>
+<span id="cb9-7"><a href="1-a-ride.html#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                       function(ii){</span></span>
+<span id="cb9-8"><a href="1-a-ride.html#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                         mixture_weights[ii] *</span></span>
+<span id="cb9-9"><a href="1-a-ride.html#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                           stats::dunif(W,</span></span>
+<span id="cb9-10"><a href="1-a-ride.html#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                                        min = mins[ii],</span></span>
+<span id="cb9-11"><a href="1-a-ride.html#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                                        max = maxs[ii])</span></span>
+<span id="cb9-12"><a href="1-a-ride.html#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                       })</span></span>
+<span id="cb9-13"><a href="1-a-ride.html#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         return(rowSums(out))</span></span>
+<span id="cb9-14"><a href="1-a-ride.html#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       }</span></span>
+<span id="cb9-15"><a href="1-a-ride.html#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &lt;environment: 0x56115038ae00&gt;</span></span></code></pre></div>
+<p>It appears that <span class="math inline">\(Q_{0,W}\)</span> is a mixture of the uniform laws over <span class="math inline">\([0,1]\)</span>
+(weight <span class="math inline">\(1/10\)</span>) and <span class="math inline">\([11/30,14/30]\)</span> (weight <span class="math inline">\(9/10\)</span>).<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a></p>
+</div>
+<div id="gbar" class="section level4 unnumbered hasAnchor">
+<h4><code>Gbar</code><a href="1-a-ride.html#gbar" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>The <code>Gbar</code> feature describes the conditional probability of action <span class="math inline">\(A = 1\)</span>
+given <span class="math inline">\(W\)</span>. For each <span class="math inline">\(a \in \{0,1\}\)</span>, we denote <span class="math display">\[\begin{align*}  \Gbar_0(W)
+&amp;\defq \Pr_{P_0}(A  = 1 |  W), \\\ell\Gbar_0(a,W)  &amp;\defq \Pr_{P_0}(A =  a |
+W).\end{align*}\]</span> Obviously, <span class="math display">\[\begin{equation*}\ell\Gbar_{0}(A,W)    =
+A\Gbar_{0}(W) + (1-A) (1-\Gbar_{0}(W)).\end{equation*}\]</span></p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="1-a-ride.html#cb10-1" aria-hidden="true" tabindex="-1"></a>relevant_features<span class="sc">$</span>Gbar</span>
+<span id="cb10-2"><a href="1-a-ride.html#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; function(W) {</span></span>
+<span id="cb10-3"><a href="1-a-ride.html#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         expit(1 + 2 * W - 4 * sqrt(abs((W - 5/12))))</span></span>
+<span id="cb10-4"><a href="1-a-ride.html#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       }</span></span>
+<span id="cb10-5"><a href="1-a-ride.html#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &lt;environment: 0x56115038ae00&gt;</span></span></code></pre></div>
+<p>Note how real numbers of the form <span class="math inline">\(1 + 2W - 4 * \sqrt{|W - 5/12|})\)</span> are mapped
+into the interval <span class="math inline">\([0,1]\)</span> by the <span class="math inline">\(\expit\)</span> link function. We refer the reader
+to Figure <a href="7-nuisance.html#fig:estimate-Gbar-three">7.2</a> for a visualization of <span class="math inline">\(\Gbar_{0}\)</span>.</p>
+</div>
+<div id="qy" class="section level4 unnumbered hasAnchor">
+<h4><code>qY</code><a href="1-a-ride.html#qy" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>The <code>qY</code> feature describes the conditional density of <span class="math inline">\(Y\)</span> given <span class="math inline">\(A\)</span> and <span class="math inline">\(W\)</span>.
+For each <span class="math inline">\(y\in ]0,1[\)</span>, we denote by <span class="math inline">\(q_{0,Y}(y, A, W)\)</span> the conditional density
+evaluated at <span class="math inline">\(y\)</span> of <span class="math inline">\(Y\)</span> given <span class="math inline">\(A\)</span> and <span class="math inline">\(W\)</span>.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="1-a-ride.html#cb11-1" aria-hidden="true" tabindex="-1"></a>relevant_features<span class="sc">$</span>qY</span>
+<span id="cb11-2"><a href="1-a-ride.html#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; function(obs, Qbar, shape10 = 2, shape11 = 3){</span></span>
+<span id="cb11-3"><a href="1-a-ride.html#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         A &lt;- obs[, &quot;A&quot;]</span></span>
+<span id="cb11-4"><a href="1-a-ride.html#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         AW &lt;- obs[, c(&quot;A&quot;, &quot;W&quot;)]</span></span>
+<span id="cb11-5"><a href="1-a-ride.html#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         QAW &lt;- Qbar(AW)</span></span>
+<span id="cb11-6"><a href="1-a-ride.html#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         shape1 &lt;- ifelse(A == 0, shape10, shape11)</span></span>
+<span id="cb11-7"><a href="1-a-ride.html#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         stats::dbeta(Y,</span></span>
+<span id="cb11-8"><a href="1-a-ride.html#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                      shape1 = shape1,</span></span>
+<span id="cb11-9"><a href="1-a-ride.html#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                      shape2 = shape1 * (1 - QAW) / QAW)</span></span>
+<span id="cb11-10"><a href="1-a-ride.html#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       }</span></span>
+<span id="cb11-11"><a href="1-a-ride.html#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &lt;environment: 0x56115038ae00&gt;</span></span></code></pre></div>
+<p>It appears that the conditional law of <span class="math inline">\(Y\)</span> given <span class="math inline">\(A\)</span> and <span class="math inline">\(W\)</span> is the Beta law
+with conditional mean and variance characterized by the <code>Qbar</code> feature of
+<code>experiment</code> (see below) and the <code>shape10</code> and <code>shape11</code> parameters.</p>
+</div>
+<div id="qbar" class="section level4 unnumbered hasAnchor">
+<h4><code>Qbar</code><a href="1-a-ride.html#qbar" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>As for the <code>Qbar</code> feature, it describes the conditional mean of <span class="math inline">\(Y\)</span> given <span class="math inline">\(A\)</span>
+and <span class="math inline">\(W\)</span>.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="1-a-ride.html#cb12-1" aria-hidden="true" tabindex="-1"></a>relevant_features<span class="sc">$</span>Qbar</span>
+<span id="cb12-2"><a href="1-a-ride.html#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; function(AW) {</span></span>
+<span id="cb12-3"><a href="1-a-ride.html#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         A &lt;- AW[, &quot;A&quot;]</span></span>
+<span id="cb12-4"><a href="1-a-ride.html#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         W &lt;- AW[, &quot;W&quot;]</span></span>
+<span id="cb12-5"><a href="1-a-ride.html#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         A * (cos((-1/2 + W) * pi) * 2/5 + 1/5 +</span></span>
+<span id="cb12-6"><a href="1-a-ride.html#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;              (1/3 &lt;= W &amp; W &lt;= 1/2) / 5 +</span></span>
+<span id="cb12-7"><a href="1-a-ride.html#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;              (W &gt;= 3/4) * (W - 3/4) * 2) +</span></span>
+<span id="cb12-8"><a href="1-a-ride.html#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;           (1 - A) * (sin(4 * W^2 * pi) / 4 + 1/2) </span></span>
+<span id="cb12-9"><a href="1-a-ride.html#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       }</span></span>
+<span id="cb12-10"><a href="1-a-ride.html#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &lt;bytecode: 0x5611585c3d40&gt;</span></span>
+<span id="cb12-11"><a href="1-a-ride.html#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &lt;environment: 0x56115038ae00&gt;</span></span></code></pre></div>
+<p>We denote <span class="math inline">\(\Qbar_0(A,W) = \Exp_{P_{0}}(Y|A,W)\)</span> the conditional mean of <span class="math inline">\(Y\)</span>
+given <span class="math inline">\(A\)</span> and <span class="math inline">\(W\)</span>. Note how <span class="math inline">\(\Qbar_0(A,W)\)</span> does depend heavily on <span class="math inline">\(A\)</span> and
+<span class="math inline">\(W\)</span>. We refer the reader to Section <a href="1-a-ride.html#exo-visualization">1.3</a> for a
+visualization of <span class="math inline">\(\Qbar_{0}\)</span>.</p>
+</div>
+<div id="sample_from" class="section level4 unnumbered hasAnchor">
+<h4><code>sample_from</code><a href="1-a-ride.html#sample_from" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Finally, the <code>sample_from</code> feature is the function called by method
+<code>sample_from</code> when it is applied to an object of class <code>LAW</code>, like
+<code>experiment</code>.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="1-a-ride.html#cb13-1" aria-hidden="true" tabindex="-1"></a>relevant_features<span class="sc">$</span>sample_from</span>
+<span id="cb13-2"><a href="1-a-ride.html#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; function(n, ideal = FALSE) {</span></span>
+<span id="cb13-3"><a href="1-a-ride.html#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         ## preliminary</span></span>
+<span id="cb13-4"><a href="1-a-ride.html#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         n &lt;- R.utils::Arguments$getInteger(n, c(1, Inf))</span></span>
+<span id="cb13-5"><a href="1-a-ride.html#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         ideal &lt;- R.utils::Arguments$getLogical(ideal)</span></span>
+<span id="cb13-6"><a href="1-a-ride.html#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         ## ## &#39;Gbar&#39; and &#39;Qbar&#39; factors</span></span>
+<span id="cb13-7"><a href="1-a-ride.html#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         Gbar &lt;- experiment$.Gbar</span></span>
+<span id="cb13-8"><a href="1-a-ride.html#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         Qbar &lt;- experiment$.Qbar</span></span>
+<span id="cb13-9"><a href="1-a-ride.html#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         ## sampling</span></span>
+<span id="cb13-10"><a href="1-a-ride.html#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         ## ## context</span></span>
+<span id="cb13-11"><a href="1-a-ride.html#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         params &lt;- formals(experiment$.QW)</span></span>
+<span id="cb13-12"><a href="1-a-ride.html#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         mixture_weights &lt;- eval(params$mixture_weights)</span></span>
+<span id="cb13-13"><a href="1-a-ride.html#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         mins &lt;- eval(params$mins)</span></span>
+<span id="cb13-14"><a href="1-a-ride.html#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         maxs &lt;- eval(params$maxs)</span></span>
+<span id="cb13-15"><a href="1-a-ride.html#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         W &lt;- sample_from_mixture_of_uniforms(n, mixture_weights,</span></span>
+<span id="cb13-16"><a href="1-a-ride.html#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                                              mins, maxs)</span></span>
+<span id="cb13-17"><a href="1-a-ride.html#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         ## ## counterfactual rewards</span></span>
+<span id="cb13-18"><a href="1-a-ride.html#cb13-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         zeroW &lt;- cbind(A = 0, W)</span></span>
+<span id="cb13-19"><a href="1-a-ride.html#cb13-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         oneW &lt;- cbind(A = 1, W)</span></span>
+<span id="cb13-20"><a href="1-a-ride.html#cb13-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         Qbar_zeroW &lt;- Qbar(zeroW)</span></span>
+<span id="cb13-21"><a href="1-a-ride.html#cb13-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         Qbar_oneW &lt;- Qbar(oneW)</span></span>
+<span id="cb13-22"><a href="1-a-ride.html#cb13-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         Yzero &lt;- stats::rbeta(n,</span></span>
+<span id="cb13-23"><a href="1-a-ride.html#cb13-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                               shape1 = 2,</span></span>
+<span id="cb13-24"><a href="1-a-ride.html#cb13-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                               shape2 = 2 * (1 - Qbar_zeroW) / Qbar_zeroW)</span></span>
+<span id="cb13-25"><a href="1-a-ride.html#cb13-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         Yone &lt;- stats::rbeta(n,</span></span>
+<span id="cb13-26"><a href="1-a-ride.html#cb13-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                              shape1 = 3,</span></span>
+<span id="cb13-27"><a href="1-a-ride.html#cb13-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                              shape2 = 3 * (1 - Qbar_oneW) / Qbar_oneW)</span></span>
+<span id="cb13-28"><a href="1-a-ride.html#cb13-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         ## ## action undertaken</span></span>
+<span id="cb13-29"><a href="1-a-ride.html#cb13-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         A &lt;- stats::rbinom(n, size = 1, prob = Gbar(W))</span></span>
+<span id="cb13-30"><a href="1-a-ride.html#cb13-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         ## ## actual reward</span></span>
+<span id="cb13-31"><a href="1-a-ride.html#cb13-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         Y &lt;- A * Yone + (1 - A) * Yzero</span></span>
+<span id="cb13-32"><a href="1-a-ride.html#cb13-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         ## ## observation</span></span>
+<span id="cb13-33"><a href="1-a-ride.html#cb13-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         if (ideal) {</span></span>
+<span id="cb13-34"><a href="1-a-ride.html#cb13-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;           obs &lt;- cbind(W = W, Yzero = Yzero, Yone = Yone, A = A, Y = Y)</span></span>
+<span id="cb13-35"><a href="1-a-ride.html#cb13-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         } else {</span></span>
+<span id="cb13-36"><a href="1-a-ride.html#cb13-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;           obs &lt;- cbind(W = W, A = A, Y = Y)</span></span>
+<span id="cb13-37"><a href="1-a-ride.html#cb13-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         }</span></span>
+<span id="cb13-38"><a href="1-a-ride.html#cb13-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         return(obs)</span></span>
+<span id="cb13-39"><a href="1-a-ride.html#cb13-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       }</span></span>
+<span id="cb13-40"><a href="1-a-ride.html#cb13-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &lt;bytecode: 0x561159a2efa0&gt;</span></span>
+<span id="cb13-41"><a href="1-a-ride.html#cb13-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &lt;environment: 0x56115038ae00&gt;</span></span></code></pre></div>
+<p>We will comment upon the <code>ideal</code> argument in the above <code>sample_from</code> feature
+in Section <a href="2-parameter.html#parameter-first-pass">2.1</a>.</p>
+</div>
+</div>
+</div>
+<div id="exo-visualization" class="section level2 hasAnchor" number="1.3">
+<h2><span class="header-section-number">1.3</span> ⚙ Visualization<a href="1-a-ride.html#exo-visualization" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<ol style="list-style-type: decimal">
+<li>Run the following chunk of code. It visualizes the conditional mean
+<span class="math inline">\(\Qbar_{0}\)</span>.</li>
+</ol>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="1-a-ride.html#cb14-1" aria-hidden="true" tabindex="-1"></a>Gbar <span class="ot">&lt;-</span> relevant_features<span class="sc">$</span>Gbar</span>
+<span id="cb14-2"><a href="1-a-ride.html#cb14-2" aria-hidden="true" tabindex="-1"></a>Qbar <span class="ot">&lt;-</span> relevant_features<span class="sc">$</span>Qbar</span>
+<span id="cb14-3"><a href="1-a-ride.html#cb14-3" aria-hidden="true" tabindex="-1"></a>QW <span class="ot">&lt;-</span> relevant_features<span class="sc">$</span>QW</span>
+<span id="cb14-4"><a href="1-a-ride.html#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="1-a-ride.html#cb14-5" aria-hidden="true" tabindex="-1"></a>features <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">w =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="at">length.out =</span> <span class="fl">1e3</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb14-6"><a href="1-a-ride.html#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Qw =</span> <span class="fu">QW</span>(w),</span>
+<span id="cb14-7"><a href="1-a-ride.html#cb14-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">Gw =</span> <span class="fu">Gbar</span>(w),</span>
+<span id="cb14-8"><a href="1-a-ride.html#cb14-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">Q1w =</span> <span class="fu">Qbar</span>(<span class="fu">cbind</span>(<span class="at">A =</span> <span class="dv">1</span>, <span class="at">W =</span> w)),</span>
+<span id="cb14-9"><a href="1-a-ride.html#cb14-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">Q0w =</span> <span class="fu">Qbar</span>(<span class="fu">cbind</span>(<span class="at">A =</span> <span class="dv">0</span>, <span class="at">W =</span> w)),</span>
+<span id="cb14-10"><a href="1-a-ride.html#cb14-10" aria-hidden="true" tabindex="-1"></a>         <span class="at">blip_Qw =</span> Q1w <span class="sc">-</span> Q0w)</span>
+<span id="cb14-11"><a href="1-a-ride.html#cb14-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-12"><a href="1-a-ride.html#cb14-12" aria-hidden="true" tabindex="-1"></a>features <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span>Qw, <span class="sc">-</span>Gw) <span class="sc">%&gt;%</span></span>
+<span id="cb14-13"><a href="1-a-ride.html#cb14-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="st">&quot;Q(1,.)&quot;</span> <span class="ot">=</span> Q1w,</span>
+<span id="cb14-14"><a href="1-a-ride.html#cb14-14" aria-hidden="true" tabindex="-1"></a>         <span class="st">&quot;Q(0,.)&quot;</span> <span class="ot">=</span> Q0w,</span>
+<span id="cb14-15"><a href="1-a-ride.html#cb14-15" aria-hidden="true" tabindex="-1"></a>         <span class="st">&quot;Q(1,.) - Q(0,.)&quot;</span> <span class="ot">=</span> blip_Qw) <span class="sc">%&gt;%</span></span>
+<span id="cb14-16"><a href="1-a-ride.html#cb14-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>w, <span class="at">names_to =</span> <span class="st">&quot;f&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;value&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb14-17"><a href="1-a-ride.html#cb14-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb14-18"><a href="1-a-ride.html#cb14-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> w, <span class="at">y =</span> value, <span class="at">color =</span> f), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb14-19"><a href="1-a-ride.html#cb14-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">&quot;f(w)&quot;</span>, <span class="at">title =</span> <span class="fu">bquote</span>(<span class="st">&quot;Visualizing&quot;</span> <span class="sc">~</span> <span class="fu">bar</span>(Q)[<span class="dv">0</span>])) <span class="sc">+</span></span>
+<span id="cb14-20"><a href="1-a-ride.html#cb14-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="cn">NA</span>, <span class="dv">1</span>)</span></code></pre></div>
+<p><img src="img/exercise:visualize-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<ol start="2" style="list-style-type: decimal">
+<li>Adapt the above chunk of code to visualize the marginal density <span class="math inline">\(Q_{0,W}\)</span>
+and conditional probability <span class="math inline">\(\Gbar_{0}\)</span>.</li>
+</ol>
+</div>
+<div id="exo-make-own-experiment" class="section level2 hasAnchor" number="1.4">
+<h2><span class="header-section-number">1.4</span> ⚙ Make your own experiment<a href="1-a-ride.html#exo-make-own-experiment" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>You can easily make your own experiment.</p>
+<ol style="list-style-type: decimal">
+<li><p>Check out the man page of method <code>alter</code> by running <code>?alter</code>.</p></li>
+<li><p>Run the following chunk of code:</p></li>
+</ol>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="1-a-ride.html#cb15-1" aria-hidden="true" tabindex="-1"></a>my_experiment <span class="ot">&lt;-</span> <span class="fu">LAW</span>() <span class="do">## creates an object of class &#39;LAW&#39;</span></span>
+<span id="cb15-2"><a href="1-a-ride.html#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">alter</span>(my_experiment,   <span class="do">## characterize its relevant features</span></span>
+<span id="cb15-3"><a href="1-a-ride.html#cb15-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">QW =</span> <span class="fu">tribble</span>(</span>
+<span id="cb15-4"><a href="1-a-ride.html#cb15-4" aria-hidden="true" tabindex="-1"></a>        <span class="sc">~</span>value, <span class="sc">~</span>weight,</span>
+<span id="cb15-5"><a href="1-a-ride.html#cb15-5" aria-hidden="true" tabindex="-1"></a>        <span class="dv">0</span>, <span class="dv">1</span><span class="sc">/</span><span class="dv">4</span>, <span class="do">## the probabilities must...</span></span>
+<span id="cb15-6"><a href="1-a-ride.html#cb15-6" aria-hidden="true" tabindex="-1"></a>        <span class="dv">1</span>, <span class="dv">3</span><span class="sc">/</span><span class="dv">4</span>  <span class="do">## ... sum up to 1</span></span>
+<span id="cb15-7"><a href="1-a-ride.html#cb15-7" aria-hidden="true" tabindex="-1"></a>      ),</span>
+<span id="cb15-8"><a href="1-a-ride.html#cb15-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">Gbar =</span> <span class="cf">function</span>(W) {</span>
+<span id="cb15-9"><a href="1-a-ride.html#cb15-9" aria-hidden="true" tabindex="-1"></a>        out <span class="ot">&lt;-</span> <span class="fu">rep_len</span>(<span class="dv">0</span>, <span class="fu">length</span>(W))</span>
+<span id="cb15-10"><a href="1-a-ride.html#cb15-10" aria-hidden="true" tabindex="-1"></a>        out[W <span class="sc">==</span> <span class="dv">0</span>] <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">3</span></span>
+<span id="cb15-11"><a href="1-a-ride.html#cb15-11" aria-hidden="true" tabindex="-1"></a>        out[W <span class="sc">==</span> <span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="dv">3</span><span class="sc">/</span><span class="dv">5</span></span>
+<span id="cb15-12"><a href="1-a-ride.html#cb15-12" aria-hidden="true" tabindex="-1"></a>        <span class="fu">return</span>(out)</span>
+<span id="cb15-13"><a href="1-a-ride.html#cb15-13" aria-hidden="true" tabindex="-1"></a>      },</span>
+<span id="cb15-14"><a href="1-a-ride.html#cb15-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">Qbar =</span> <span class="cf">function</span>(AW) {</span>
+<span id="cb15-15"><a href="1-a-ride.html#cb15-15" aria-hidden="true" tabindex="-1"></a>        probs <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">/</span><span class="dv">2</span>, <span class="dv">2</span><span class="sc">/</span><span class="dv">3</span>, <span class="dv">7</span><span class="sc">/</span><span class="dv">8</span>, <span class="dv">4</span><span class="sc">/</span><span class="dv">5</span>), <span class="at">ncol =</span> <span class="dv">2</span>,</span>
+<span id="cb15-16"><a href="1-a-ride.html#cb15-16" aria-hidden="true" tabindex="-1"></a>                        <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="st">&quot;A=0&quot;</span>, <span class="st">&quot;A=1&quot;</span>),</span>
+<span id="cb15-17"><a href="1-a-ride.html#cb15-17" aria-hidden="true" tabindex="-1"></a>                                        <span class="fu">c</span>(<span class="st">&quot;W=0&quot;</span>, <span class="st">&quot;W=1&quot;</span>)))</span>
+<span id="cb15-18"><a href="1-a-ride.html#cb15-18" aria-hidden="true" tabindex="-1"></a>        probs[<span class="fu">cbind</span>(AW[, <span class="st">&quot;A&quot;</span>] <span class="sc">+</span> <span class="dv">1</span>, AW[, <span class="st">&quot;W&quot;</span>] <span class="sc">+</span> <span class="dv">1</span>)]</span>
+<span id="cb15-19"><a href="1-a-ride.html#cb15-19" aria-hidden="true" tabindex="-1"></a>      },</span>
+<span id="cb15-20"><a href="1-a-ride.html#cb15-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">qY =</span> <span class="cf">function</span>(obs) {</span>
+<span id="cb15-21"><a href="1-a-ride.html#cb15-21" aria-hidden="true" tabindex="-1"></a>        probs <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">/</span><span class="dv">2</span>, <span class="dv">2</span><span class="sc">/</span><span class="dv">3</span>, <span class="dv">7</span><span class="sc">/</span><span class="dv">8</span>, <span class="dv">4</span><span class="sc">/</span><span class="dv">5</span>), <span class="at">ncol =</span> <span class="dv">2</span>,</span>
+<span id="cb15-22"><a href="1-a-ride.html#cb15-22" aria-hidden="true" tabindex="-1"></a>                        <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="st">&quot;A=0&quot;</span>, <span class="st">&quot;A=1&quot;</span>),</span>
+<span id="cb15-23"><a href="1-a-ride.html#cb15-23" aria-hidden="true" tabindex="-1"></a>                                        <span class="fu">c</span>(<span class="st">&quot;W=0&quot;</span>, <span class="st">&quot;W=1&quot;</span>)))</span>
+<span id="cb15-24"><a href="1-a-ride.html#cb15-24" aria-hidden="true" tabindex="-1"></a>        probs <span class="ot">&lt;-</span> probs[<span class="fu">cbind</span>(obs[, <span class="st">&quot;A&quot;</span>] <span class="sc">+</span> <span class="dv">1</span>, obs[, <span class="st">&quot;W&quot;</span>] <span class="sc">+</span> <span class="dv">1</span>)]</span>
+<span id="cb15-25"><a href="1-a-ride.html#cb15-25" aria-hidden="true" tabindex="-1"></a>        obs[, <span class="st">&quot;Y&quot;</span>] <span class="sc">*</span> probs <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">-</span> obs[, <span class="st">&quot;Y&quot;</span>]) <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> probs)</span>
+<span id="cb15-26"><a href="1-a-ride.html#cb15-26" aria-hidden="true" tabindex="-1"></a>      },</span>
+<span id="cb15-27"><a href="1-a-ride.html#cb15-27" aria-hidden="true" tabindex="-1"></a>      <span class="at">sample_from =</span> <span class="cf">function</span>(n) {</span>
+<span id="cb15-28"><a href="1-a-ride.html#cb15-28" aria-hidden="true" tabindex="-1"></a>        <span class="do">## preliminary</span></span>
+<span id="cb15-29"><a href="1-a-ride.html#cb15-29" aria-hidden="true" tabindex="-1"></a>        n <span class="ot">&lt;-</span> R.utils<span class="sc">::</span>Arguments<span class="sc">$</span><span class="fu">getInteger</span>(n, <span class="fu">c</span>(<span class="dv">1</span>, <span class="cn">Inf</span>))</span>
+<span id="cb15-30"><a href="1-a-ride.html#cb15-30" aria-hidden="true" tabindex="-1"></a>        <span class="do">## &#39;QW&#39;, &#39;Gbar&#39; and &#39;Qbar&#39; features</span></span>
+<span id="cb15-31"><a href="1-a-ride.html#cb15-31" aria-hidden="true" tabindex="-1"></a>        QW <span class="ot">&lt;-</span> my_experiment<span class="sc">$</span>.QW</span>
+<span id="cb15-32"><a href="1-a-ride.html#cb15-32" aria-hidden="true" tabindex="-1"></a>        Gbar <span class="ot">&lt;-</span> my_experiment<span class="sc">$</span>.Gbar</span>
+<span id="cb15-33"><a href="1-a-ride.html#cb15-33" aria-hidden="true" tabindex="-1"></a>        Qbar <span class="ot">&lt;-</span> my_experiment<span class="sc">$</span>.Qbar</span>
+<span id="cb15-34"><a href="1-a-ride.html#cb15-34" aria-hidden="true" tabindex="-1"></a>        <span class="do">## sampling</span></span>
+<span id="cb15-35"><a href="1-a-ride.html#cb15-35" aria-hidden="true" tabindex="-1"></a>        W <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> QW<span class="sc">$</span>weight[QW<span class="sc">$</span>value <span class="sc">==</span> <span class="dv">1</span>])</span>
+<span id="cb15-36"><a href="1-a-ride.html#cb15-36" aria-hidden="true" tabindex="-1"></a>        A <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fu">Gbar</span>(W))</span>
+<span id="cb15-37"><a href="1-a-ride.html#cb15-37" aria-hidden="true" tabindex="-1"></a>        AW <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="at">W =</span> W, <span class="at">A =</span> A)</span>
+<span id="cb15-38"><a href="1-a-ride.html#cb15-38" aria-hidden="true" tabindex="-1"></a>        Y <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="at">size =</span> <span class="dv">1</span>, <span class="fu">Qbar</span>(AW))</span>
+<span id="cb15-39"><a href="1-a-ride.html#cb15-39" aria-hidden="true" tabindex="-1"></a>        <span class="fu">return</span>(<span class="fu">cbind</span>(AW, <span class="at">Y =</span> Y))</span>
+<span id="cb15-40"><a href="1-a-ride.html#cb15-40" aria-hidden="true" tabindex="-1"></a>      })</span></code></pre></div>
+<p>Note that the <code>QW</code> feature of <code>my_experiment</code> is a <code>tibble</code>, contrary to the
+<code>QW</code> feature of <code>experiment</code> which is a <code>function</code>. The former describes a
+discrete law and the latter is a density. Those are the two configurations
+handled by the package.</p>
+<ol start="3" style="list-style-type: decimal">
+<li>What does the next chunk do?</li>
+</ol>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="1-a-ride.html#cb16-1" aria-hidden="true" tabindex="-1"></a>(<span class="fu">sample_from</span>(my_experiment, <span class="dv">3</span>))</span>
+<span id="cb16-2"><a href="1-a-ride.html#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      W A Y</span></span>
+<span id="cb16-3"><a href="1-a-ride.html#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,] 0 1 1</span></span>
+<span id="cb16-4"><a href="1-a-ride.html#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2,] 1 0 1</span></span>
+<span id="cb16-5"><a href="1-a-ride.html#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [3,] 1 0 1</span></span></code></pre></div>
+<ol start="4" style="list-style-type: decimal">
+<li>Characterize entirely the law of <code>my_experiment</code>. Hint:</li>
+</ol>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="1-a-ride.html#cb17-1" aria-hidden="true" tabindex="-1"></a>obs <span class="ot">&lt;-</span> <span class="fu">sample_from</span>(my_experiment, <span class="fl">1e4</span>)</span>
+<span id="cb17-2"><a href="1-a-ride.html#cb17-2" aria-hidden="true" tabindex="-1"></a>obs <span class="sc">%&gt;%</span> as_tibble <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(W, A, Y) <span class="sc">%&gt;%</span></span>
+<span id="cb17-3"><a href="1-a-ride.html#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">how_many =</span> <span class="fu">n</span>(), <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span>)</span>
+<span id="cb17-4"><a href="1-a-ride.html#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 8 × 4</span></span>
+<span id="cb17-5"><a href="1-a-ride.html#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       W     A     Y how_many</span></span>
+<span id="cb17-6"><a href="1-a-ride.html#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;</span></span>
+<span id="cb17-7"><a href="1-a-ride.html#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1     0     0     0      841</span></span>
+<span id="cb17-8"><a href="1-a-ride.html#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2     0     0     1      876</span></span>
+<span id="cb17-9"><a href="1-a-ride.html#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3     0     1     0      264</span></span>
+<span id="cb17-10"><a href="1-a-ride.html#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4     0     1     1      497</span></span>
+<span id="cb17-11"><a href="1-a-ride.html#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5     1     0     0      370</span></span>
+<span id="cb17-12"><a href="1-a-ride.html#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6     1     0     1     2668</span></span>
+<span id="cb17-13"><a href="1-a-ride.html#cb17-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # … with 2 more rows</span></span>
+<span id="cb17-14"><a href="1-a-ride.html#cb17-14" aria-hidden="true" tabindex="-1"></a>obs <span class="sc">%&gt;%</span> as_tibble <span class="sc">%&gt;%</span> </span>
+<span id="cb17-15"><a href="1-a-ride.html#cb17-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="st">&quot;P(W=1)&quot;</span> <span class="ot">=</span> <span class="fu">mean</span>(W))</span>
+<span id="cb17-16"><a href="1-a-ride.html#cb17-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 1 × 1</span></span>
+<span id="cb17-17"><a href="1-a-ride.html#cb17-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   `P(W=1)`</span></span>
+<span id="cb17-18"><a href="1-a-ride.html#cb17-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      &lt;dbl&gt;</span></span>
+<span id="cb17-19"><a href="1-a-ride.html#cb17-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1    0.752</span></span>
+<span id="cb17-20"><a href="1-a-ride.html#cb17-20" aria-hidden="true" tabindex="-1"></a>obs <span class="sc">%&gt;%</span> as_tibble <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(W) <span class="sc">%&gt;%</span></span>
+<span id="cb17-21"><a href="1-a-ride.html#cb17-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="st">&quot;P(A=1|W)&quot;</span> <span class="ot">=</span> <span class="fu">mean</span>(A))</span>
+<span id="cb17-22"><a href="1-a-ride.html#cb17-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 × 2</span></span>
+<span id="cb17-23"><a href="1-a-ride.html#cb17-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       W `P(A=1|W)`</span></span>
+<span id="cb17-24"><a href="1-a-ride.html#cb17-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;int&gt;      &lt;dbl&gt;</span></span>
+<span id="cb17-25"><a href="1-a-ride.html#cb17-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1     0      0.307</span></span>
+<span id="cb17-26"><a href="1-a-ride.html#cb17-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2     1      0.596</span></span>
+<span id="cb17-27"><a href="1-a-ride.html#cb17-27" aria-hidden="true" tabindex="-1"></a>obs <span class="sc">%&gt;%</span> as_tibble <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(W, A) <span class="sc">%&gt;%</span></span>
+<span id="cb17-28"><a href="1-a-ride.html#cb17-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="st">&quot;P(Y=1|A,W)&quot;</span> <span class="ot">=</span> <span class="fu">mean</span>(Y), <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span>)</span>
+<span id="cb17-29"><a href="1-a-ride.html#cb17-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 4 × 3</span></span>
+<span id="cb17-30"><a href="1-a-ride.html#cb17-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       W     A `P(Y=1|A,W)`</span></span>
+<span id="cb17-31"><a href="1-a-ride.html#cb17-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;int&gt; &lt;int&gt;        &lt;dbl&gt;</span></span>
+<span id="cb17-32"><a href="1-a-ride.html#cb17-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1     0     0        0.510</span></span>
+<span id="cb17-33"><a href="1-a-ride.html#cb17-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2     0     1        0.653</span></span>
+<span id="cb17-34"><a href="1-a-ride.html#cb17-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3     1     0        0.878</span></span>
+<span id="cb17-35"><a href="1-a-ride.html#cb17-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4     1     1        0.806</span></span></code></pre></div>
+<ol start="5" style="list-style-type: decimal">
+<li>Now, make your own experiment.</li>
+</ol>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="1">
+<li id="fn1"><p>A
+summary of the notation used throughout the text is presented
+<a href="A-notation.html#notation">there</a>, in Appendix <a href="A-notation.html#notation">A</a>.<a href="1-a-ride.html#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>We fine-tuned the
+marginal law <span class="math inline">\(Q_{0,W}\)</span> of <span class="math inline">\(W\)</span> to make it easier later on to drive home
+important messages.<a href="1-a-ride.html#fnref2" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="2-parameter.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="assets/gitbook-2.6.7/js/app.min.js"></script>
+<script src="assets/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="assets/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": null,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["tlride-book.pdf"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "section",
+"scroll_hightlight": true,
+"toolbar": {
+"position": "static"
+},
+"edit": null,
+"download": "pdf",
+"search": true,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+}
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

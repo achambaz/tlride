@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Section 10 Targeted minimum loss-based estimation | A Ride in Targeted Learning Territory</title>
+  <meta name="description" content="A ride in targeted learning territory is a gentle introduction to the filed of targeted learning. It weaves together two main threads, one theoretical and the other computational. It uses tlrider, a companion R package built specifically for this project." />
+  <meta name="generator" content="bookdown 0.29 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Section 10 Targeted minimum loss-based estimation | A Ride in Targeted Learning Territory" />
+  <meta property="og:type" content="book" />
+  <meta property="og:image" content="/cover.jpg" />
+  <meta property="og:description" content="A ride in targeted learning territory is a gentle introduction to the filed of targeted learning. It weaves together two main threads, one theoretical and the other computational. It uses tlrider, a companion R package built specifically for this project." />
+  <meta name="github-repo" content="achambaz/tlride" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Section 10 Targeted minimum loss-based estimation | A Ride in Targeted Learning Territory" />
+  
+  <meta name="twitter:description" content="A ride in targeted learning territory is a gentle introduction to the filed of targeted learning. It weaves together two main threads, one theoretical and the other computational. It uses tlrider, a companion R package built specifically for this project." />
+  <meta name="twitter:image" content="/cover.jpg" />
+
+<meta name="author" content="David Benkeser (Emory University)" />
+<meta name="author" content="Antoine Chambaz (Université de Paris)" />
+
+
+<meta name="date" content="2022-10-20" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  <link rel="shortcut icon" href="favicon.png" type="image/x-icon" />
+<link rel="prev" href="9-one-step.html"/>
+<link rel="next" href="11-closing-words.html"/>
+<script src="assets/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="assets/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="assets/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="assets/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="assets/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+  CommonHTML: {
+    scale: 90,
+    linebreaks: {
+      automatic: true
+    }
+  },
+  SVG: {
+    linebreaks: {
+      automatic: true
+    }
+  }, 
+  displayAlign: "left"
+  });
+</script>
+<script type="text/javascript"
+	src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async>
+</script><!-- see also '_output.yaml'
+src="https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"
+src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML" 
+src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"
+-->
+
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="tlride.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><strong><a href="https://achambaz.github.io/tlride/">TLRIDE</a></strong></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a></li>
+<li class="part"><span><b>I On the road</b></span></li>
+<li class="chapter" data-level="1" data-path="1-a-ride.html"><a href="1-a-ride.html"><i class="fa fa-check"></i><b>1</b> A ride</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="1-a-ride.html"><a href="1-a-ride.html#introduction"><i class="fa fa-check"></i><b>1.1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="1.1.1" data-path="1-a-ride.html"><a href="1-a-ride.html#causal-story"><i class="fa fa-check"></i><b>1.1.1</b> A causal story</a></li>
+<li class="chapter" data-level="1.1.2" data-path="1-a-ride.html"><a href="1-a-ride.html#tlrider-package"><i class="fa fa-check"></i><b>1.1.2</b> The <code>tlrider</code> package</a></li>
+<li class="chapter" data-level="1.1.3" data-path="1-a-ride.html"><a href="1-a-ride.html#discuss"><i class="fa fa-check"></i><b>1.1.3</b> What we will discuss</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="1-a-ride.html"><a href="1-a-ride.html#simulation-study"><i class="fa fa-check"></i><b>1.2</b> A simulation study</a>
+<ul>
+<li class="chapter" data-level="1.2.1" data-path="1-a-ride.html"><a href="1-a-ride.html#reproducible-experiment"><i class="fa fa-check"></i><b>1.2.1</b> Reproducible experiment as a law</a></li>
+<li class="chapter" data-level="1.2.2" data-path="1-a-ride.html"><a href="1-a-ride.html#synthetic-experiment"><i class="fa fa-check"></i><b>1.2.2</b> A synthetic reproducible experiment</a></li>
+<li class="chapter" data-level="1.2.3" data-path="1-a-ride.html"><a href="1-a-ride.html#revealing-experiment"><i class="fa fa-check"></i><b>1.2.3</b> Revealing <code>experiment</code></a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="1-a-ride.html"><a href="1-a-ride.html#exo-visualization"><i class="fa fa-check"></i><b>1.3</b> ⚙ Visualization</a></li>
+<li class="chapter" data-level="1.4" data-path="1-a-ride.html"><a href="1-a-ride.html#exo-make-own-experiment"><i class="fa fa-check"></i><b>1.4</b> ⚙ Make your own experiment</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="2-parameter.html"><a href="2-parameter.html"><i class="fa fa-check"></i><b>2</b> The parameter of interest</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="2-parameter.html"><a href="2-parameter.html#parameter-first-pass"><i class="fa fa-check"></i><b>2.1</b> The parameter of interest</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="2-parameter.html"><a href="2-parameter.html#definition"><i class="fa fa-check"></i><b>2.1.1</b> Definition</a></li>
+<li class="chapter" data-level="2.1.2" data-path="2-parameter.html"><a href="2-parameter.html#causal-interpretation"><i class="fa fa-check"></i><b>2.1.2</b> A causal interpretation</a></li>
+<li class="chapter" data-level="2.1.3" data-path="2-parameter.html"><a href="2-parameter.html#causal-computation"><i class="fa fa-check"></i><b>2.1.3</b> A causal computation</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="2-parameter.html"><a href="2-parameter.html#exo-alternative-parameter-first-pass"><i class="fa fa-check"></i><b>2.2</b> ⚙ An alternative parameter of interest</a></li>
+<li class="chapter" data-level="2.3" data-path="2-parameter.html"><a href="2-parameter.html#parameter-second-pass"><i class="fa fa-check"></i><b>2.3</b> The statistical mapping of interest</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="2-parameter.html"><a href="2-parameter.html#opening"><i class="fa fa-check"></i><b>2.3.1</b> Opening discussion</a></li>
+<li class="chapter" data-level="2.3.2" data-path="2-parameter.html"><a href="2-parameter.html#parameter-mapping"><i class="fa fa-check"></i><b>2.3.2</b> The parameter as the value of a statistical mapping at the experiment</a></li>
+<li class="chapter" data-level="2.3.3" data-path="2-parameter.html"><a href="2-parameter.html#value-another-experiment"><i class="fa fa-check"></i><b>2.3.3</b> The value of the statistical mapping at another experiment</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="2-parameter.html"><a href="2-parameter.html#exo-alternative-parameter-second-pass"><i class="fa fa-check"></i><b>2.4</b> ⚙ Alternative statistical mapping</a></li>
+<li class="chapter" data-level="2.5" data-path="2-parameter.html"><a href="2-parameter.html#parameter-third-pass"><i class="fa fa-check"></i><b>2.5</b> Representations</a>
+<ul>
+<li class="chapter" data-level="2.5.1" data-path="2-parameter.html"><a href="2-parameter.html#yet-another"><i class="fa fa-check"></i><b>2.5.1</b> Yet another representation</a></li>
+<li class="chapter" data-level="2.5.2" data-path="2-parameter.html"><a href="2-parameter.html#rep-to-est"><i class="fa fa-check"></i><b>2.5.2</b> From representations to estimation strategies</a></li>
+</ul></li>
+<li class="chapter" data-level="2.6" data-path="2-parameter.html"><a href="2-parameter.html#exo-alternative-parameter-third-pass"><i class="fa fa-check"></i><b>2.6</b> ⚙ Alternative representation</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="3-smooth.html"><a href="3-smooth.html"><i class="fa fa-check"></i><b>3</b> Smoothness</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="3-smooth.html"><a href="3-smooth.html#smooth-first-pass"><i class="fa fa-check"></i><b>3.1</b> Fluctuating smoothly</a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="3-smooth.html"><a href="3-smooth.html#fluctuations"><i class="fa fa-check"></i><b>3.1.1</b> The <code>another_experiment</code> fluctuation</a></li>
+<li class="chapter" data-level="3.1.2" data-path="3-smooth.html"><a href="3-smooth.html#numerical-illus"><i class="fa fa-check"></i><b>3.1.2</b> Numerical illustration</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="3-smooth.html"><a href="3-smooth.html#exo-yet-another-experiment"><i class="fa fa-check"></i><b>3.2</b> ⚙ Yet another experiment</a></li>
+<li class="chapter" data-level="3.3" data-path="3-smooth.html"><a href="3-smooth.html#smooth-second-pass"><i class="fa fa-check"></i><b>3.3</b> ☡  More on fluctuations and smoothness</a>
+<ul>
+<li class="chapter" data-level="3.3.1" data-path="3-smooth.html"><a href="3-smooth.html#smooth-second-pass-fluctuations"><i class="fa fa-check"></i><b>3.3.1</b> Fluctuations</a></li>
+<li class="chapter" data-level="3.3.2" data-path="3-smooth.html"><a href="3-smooth.html#smoothness-and-gradients"><i class="fa fa-check"></i><b>3.3.2</b> Smoothness and gradients</a></li>
+<li class="chapter" data-level="3.3.3" data-path="3-smooth.html"><a href="3-smooth.html#Euclidean-perspective"><i class="fa fa-check"></i><b>3.3.3</b> A Euclidean perspective</a></li>
+<li class="chapter" data-level="3.3.4" data-path="3-smooth.html"><a href="3-smooth.html#canonical-gradient"><i class="fa fa-check"></i><b>3.3.4</b> The canonical gradient</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="3-smooth.html"><a href="3-smooth.html#revisiting"><i class="fa fa-check"></i><b>3.4</b> A fresh look at <code>another_experiment</code></a>
+<ul>
+<li class="chapter" data-level="3.4.1" data-path="3-smooth.html"><a href="3-smooth.html#deriving-the-efficient-influence-curve"><i class="fa fa-check"></i><b>3.4.1</b> Deriving the efficient influence curve</a></li>
+<li class="chapter" data-level="3.4.2" data-path="3-smooth.html"><a href="3-smooth.html#numerical-validation"><i class="fa fa-check"></i><b>3.4.2</b> Numerical validation</a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="3-smooth.html"><a href="3-smooth.html#influence-curves"><i class="fa fa-check"></i><b>3.5</b> ☡  Asymptotic linearity and statistical efficiency</a>
+<ul>
+<li class="chapter" data-level="3.5.1" data-path="3-smooth.html"><a href="3-smooth.html#asymptotic-linearity"><i class="fa fa-check"></i><b>3.5.1</b> Asymptotic linearity</a></li>
+<li class="chapter" data-level="3.5.2" data-path="3-smooth.html"><a href="3-smooth.html#influence-curves-and-gradients"><i class="fa fa-check"></i><b>3.5.2</b> Influence curves and gradients</a></li>
+<li class="chapter" data-level="3.5.3" data-path="3-smooth.html"><a href="3-smooth.html#asymptotic-efficiency"><i class="fa fa-check"></i><b>3.5.3</b> Asymptotic efficiency</a></li>
+</ul></li>
+<li class="chapter" data-level="3.6" data-path="3-smooth.html"><a href="3-smooth.html#exo-cramer-rao"><i class="fa fa-check"></i><b>3.6</b> ⚙ Cramér-Rao bounds</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="4-double-robustness.html"><a href="4-double-robustness.html"><i class="fa fa-check"></i><b>4</b> Double-robustness</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="4-double-robustness.html"><a href="4-double-robustness.html#linear-approximation"><i class="fa fa-check"></i><b>4.1</b> Linear approximations of parameters</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="4-double-robustness.html"><a href="4-double-robustness.html#from-gradients-to-estimators"><i class="fa fa-check"></i><b>4.1.1</b> From gradients to estimators</a></li>
+<li class="chapter" data-level="4.1.2" data-path="4-double-robustness.html"><a href="4-double-robustness.html#another-Euclidean-perspective"><i class="fa fa-check"></i><b>4.1.2</b> A Euclidean perspective</a></li>
+<li class="chapter" data-level="4.1.3" data-path="4-double-robustness.html"><a href="4-double-robustness.html#the-remainder-term"><i class="fa fa-check"></i><b>4.1.3</b> The remainder term</a></li>
+<li class="chapter" data-level="4.1.4" data-path="4-double-robustness.html"><a href="4-double-robustness.html#expressing-the-remainder-term-as-a-function-of-the-relevant-features"><i class="fa fa-check"></i><b>4.1.4</b> Expressing the remainder term as a function of the relevant features</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="4-double-robustness.html"><a href="4-double-robustness.html#exo-remainder-term"><i class="fa fa-check"></i><b>4.2</b> ⚙ The remainder term</a></li>
+<li class="chapter" data-level="4.3" data-path="4-double-robustness.html"><a href="4-double-robustness.html#def-double-robustness"><i class="fa fa-check"></i><b>4.3</b> ☡  Double-robustness</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="4-double-robustness.html"><a href="4-double-robustness.html#the-key-property"><i class="fa fa-check"></i><b>4.3.1</b> The key property</a></li>
+<li class="chapter" data-level="4.3.2" data-path="4-double-robustness.html"><a href="4-double-robustness.html#direct-consequence"><i class="fa fa-check"></i><b>4.3.2</b> Its direct consequence</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="4-double-robustness.html"><a href="4-double-robustness.html#exo-double-robustness"><i class="fa fa-check"></i><b>4.4</b> ⚙ Double-robustness</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="5-inference.html"><a href="5-inference.html"><i class="fa fa-check"></i><b>5</b> Inference</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="5-inference.html"><a href="5-inference.html#where-we-stand"><i class="fa fa-check"></i><b>5.1</b> Where we stand</a></li>
+<li class="chapter" data-level="5.2" data-path="5-inference.html"><a href="5-inference.html#where-we-are-going"><i class="fa fa-check"></i><b>5.2</b> Where we are going</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html"><i class="fa fa-check"></i><b>6</b> A simple inference strategy</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#a-cautionary-detour"><i class="fa fa-check"></i><b>6.1</b> A cautionary detour</a></li>
+<li class="chapter" data-level="6.2" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#delta-method"><i class="fa fa-check"></i><b>6.2</b> ⚙ Delta-method</a></li>
+<li class="chapter" data-level="6.3" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#known-gbar-first-pass"><i class="fa fa-check"></i><b>6.3</b> IPTW estimator assuming the mechanism of action known</a>
+<ul>
+<li class="chapter" data-level="6.3.1" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#a-simple-estimator"><i class="fa fa-check"></i><b>6.3.1</b> A simple estimator</a></li>
+<li class="chapter" data-level="6.3.2" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#elementary-statistical-properties"><i class="fa fa-check"></i><b>6.3.2</b> Elementary statistical properties</a></li>
+<li class="chapter" data-level="6.3.3" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#empirical-inves-IPTW"><i class="fa fa-check"></i><b>6.3.3</b> Empirical investigation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="7-nuisance.html"><a href="7-nuisance.html"><i class="fa fa-check"></i><b>7</b> Nuisance parameters</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="7-nuisance.html"><a href="7-nuisance.html#anatomy"><i class="fa fa-check"></i><b>7.1</b> Anatomy of an expression</a></li>
+<li class="chapter" data-level="7.2" data-path="7-nuisance.html"><a href="7-nuisance.html#an-algorithmic-stance"><i class="fa fa-check"></i><b>7.2</b> An algorithmic stance</a></li>
+<li class="chapter" data-level="7.3" data-path="7-nuisance.html"><a href="7-nuisance.html#nuisance-QW"><i class="fa fa-check"></i><b>7.3</b> <code>QW</code></a></li>
+<li class="chapter" data-level="7.4" data-path="7-nuisance.html"><a href="7-nuisance.html#nuisance-Gbar"><i class="fa fa-check"></i><b>7.4</b> <code>Gbar</code></a>
+<ul>
+<li class="chapter" data-level="7.4.1" data-path="7-nuisance.html"><a href="7-nuisance.html#logis-loss"><i class="fa fa-check"></i><b>7.4.1</b> Working model-based algorithms</a></li>
+<li class="chapter" data-level="7.4.2" data-path="7-nuisance.html"><a href="7-nuisance.html#algo-Gbar-one"><i class="fa fa-check"></i><b>7.4.2</b> Visualization</a></li>
+</ul></li>
+<li class="chapter" data-level="7.5" data-path="7-nuisance.html"><a href="7-nuisance.html#nuisance-Qbar-wm"><i class="fa fa-check"></i><b>7.5</b> ⚙ <code>Qbar</code>, working model-based algorithms</a></li>
+<li class="chapter" data-level="7.6" data-path="7-nuisance.html"><a href="7-nuisance.html#nuisance-Qbar"><i class="fa fa-check"></i><b>7.6</b> <code>Qbar</code></a>
+<ul>
+<li class="chapter" data-level="7.6.1" data-path="7-nuisance.html"><a href="7-nuisance.html#qbar-machine-learning-based-algorithms"><i class="fa fa-check"></i><b>7.6.1</b> <code>Qbar</code>, machine learning-based algorithms</a></li>
+<li class="chapter" data-level="7.6.2" data-path="7-nuisance.html"><a href="7-nuisance.html#Qbar-knn-algo"><i class="fa fa-check"></i><b>7.6.2</b> <code>Qbar</code>, kNN algorithm</a></li>
+<li class="chapter" data-level="7.6.3" data-path="7-nuisance.html"><a href="7-nuisance.html#boosted-trees"><i class="fa fa-check"></i><b>7.6.3</b> <code>Qbar</code>, boosted trees algorithm</a></li>
+</ul></li>
+<li class="chapter" data-level="7.7" data-path="7-nuisance.html"><a href="7-nuisance.html#nuisance-Qbar-ml-exo"><i class="fa fa-check"></i><b>7.7</b> ⚙ ☡  <code>Qbar</code>, machine learning-based algorithms</a></li>
+<li class="chapter" data-level="7.8" data-path="7-nuisance.html"><a href="7-nuisance.html#meta-learning"><i class="fa fa-check"></i><b>7.8</b> Meta-learning/super learning</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html"><i class="fa fa-check"></i><b>8</b> Two “naive” inference strategies</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#why-naive"><i class="fa fa-check"></i><b>8.1</b> Why “naive?”</a></li>
+<li class="chapter" data-level="8.2" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#known-gbar-second-pass"><i class="fa fa-check"></i><b>8.2</b> IPTW estimator</a>
+<ul>
+<li class="chapter" data-level="8.2.1" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#unknown-gbar-constr"><i class="fa fa-check"></i><b>8.2.1</b> Construction and computation</a></li>
+<li class="chapter" data-level="8.2.2" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#elementary-stat-prop-iptw"><i class="fa fa-check"></i><b>8.2.2</b> Elementary statistical properties</a></li>
+<li class="chapter" data-level="8.2.3" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#empirical-inves-IPTW-bis"><i class="fa fa-check"></i><b>8.2.3</b> Empirical investigation</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#exo-a-nice-title"><i class="fa fa-check"></i><b>8.3</b> ⚙ Investigating further the IPTW inference strategy</a></li>
+<li class="chapter" data-level="8.4" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#Gcomp-estimator"><i class="fa fa-check"></i><b>8.4</b> G-computation estimator</a>
+<ul>
+<li class="chapter" data-level="8.4.1" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#Gcomp-construction"><i class="fa fa-check"></i><b>8.4.1</b> Construction and computation</a></li>
+<li class="chapter" data-level="8.4.2" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#elementary-statistical-properties-1"><i class="fa fa-check"></i><b>8.4.2</b> Elementary statistical properties</a></li>
+<li class="chapter" data-level="8.4.3" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#empirical-inves-Gcomp"><i class="fa fa-check"></i><b>8.4.3</b> Empirical investigation, fixed sample size</a></li>
+<li class="chapter" data-level="8.4.4" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#empirical-inves-Gcomp-varying"><i class="fa fa-check"></i><b>8.4.4</b> ☡  Empirical investigation, varying sample size</a></li>
+</ul></li>
+<li class="chapter" data-level="8.5" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#exo-plug-in-estimate"><i class="fa fa-check"></i><b>8.5</b> ⚙ Investigating further the G-computation estimation strategy</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="9-one-step.html"><a href="9-one-step.html"><i class="fa fa-check"></i><b>9</b> One-step correction</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="9-one-step.html"><a href="9-one-step.html#analysis-of-plug-in"><i class="fa fa-check"></i><b>9.1</b> ☡  General analysis of plug-in estimators</a></li>
+<li class="chapter" data-level="9.2" data-path="9-one-step.html"><a href="9-one-step.html#huber-one-step"><i class="fa fa-check"></i><b>9.2</b> One-step correction</a></li>
+<li class="chapter" data-level="9.3" data-path="9-one-step.html"><a href="9-one-step.html#empirical-inves-one-step"><i class="fa fa-check"></i><b>9.3</b> Empirical investigation</a></li>
+<li class="chapter" data-level="9.4" data-path="9-one-step.html"><a href="9-one-step.html#exo-one-step"><i class="fa fa-check"></i><b>9.4</b> ⚙ Investigating further the one-step correction methodology</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="10-TMLE.html"><a href="10-TMLE.html"><i class="fa fa-check"></i><b>10</b> Targeted minimum loss-based estimation</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="10-TMLE.html"><a href="10-TMLE.html#TMLE-motivations"><i class="fa fa-check"></i><b>10.1</b> Motivations</a>
+<ul>
+<li class="chapter" data-level="10.1.1" data-path="10-TMLE.html"><a href="10-TMLE.html#falling-outside-the-parameter-space"><i class="fa fa-check"></i><b>10.1.1</b> Falling outside the parameter space</a></li>
+<li class="chapter" data-level="10.1.2" data-path="10-TMLE.html"><a href="10-TMLE.html#eic-equation"><i class="fa fa-check"></i><b>10.1.2</b> The influence curve equation</a></li>
+<li class="chapter" data-level="10.1.3" data-path="10-TMLE.html"><a href="10-TMLE.html#basic-fact"><i class="fa fa-check"></i><b>10.1.3</b> A basic fact on the influence curve equation</a></li>
+</ul></li>
+<li class="chapter" data-level="10.2" data-path="10-TMLE.html"><a href="10-TMLE.html#targeted-fluctuation-TMLE"><i class="fa fa-check"></i><b>10.2</b> Targeted fluctuation</a>
+<ul>
+<li class="chapter" data-level="10.2.1" data-path="10-TMLE.html"><a href="10-TMLE.html#fluctuating-indirectly"><i class="fa fa-check"></i><b>10.2.1</b> ☡  Fluctuating indirectly</a></li>
+<li class="chapter" data-level="10.2.2" data-path="10-TMLE.html"><a href="10-TMLE.html#fluct-direct"><i class="fa fa-check"></i><b>10.2.2</b> Fluctuating directly</a></li>
+<li class="chapter" data-level="10.2.3" data-path="10-TMLE.html"><a href="10-TMLE.html#exo-fluct"><i class="fa fa-check"></i><b>10.2.3</b> ⚙ More on fluctuations</a></li>
+<li class="chapter" data-level="10.2.4" data-path="10-TMLE.html"><a href="10-TMLE.html#roaming"><i class="fa fa-check"></i><b>10.2.4</b> Targeted roaming of a fluctuation</a></li>
+<li class="chapter" data-level="10.2.5" data-path="10-TMLE.html"><a href="10-TMLE.html#fluct-justification"><i class="fa fa-check"></i><b>10.2.5</b> Justifying the form of the fluctutation</a></li>
+<li class="chapter" data-level="10.2.6" data-path="10-TMLE.html"><a href="10-TMLE.html#exo-tmle-flucs"><i class="fa fa-check"></i><b>10.2.6</b> ⚙ Alternative fluctuation</a></li>
+</ul></li>
+<li class="chapter" data-level="10.3" data-path="10-TMLE.html"><a href="10-TMLE.html#summary-and-perspectives"><i class="fa fa-check"></i><b>10.3</b> Summary and perspectives</a></li>
+<li class="chapter" data-level="10.4" data-path="10-TMLE.html"><a href="10-TMLE.html#empirical-inves-tmle"><i class="fa fa-check"></i><b>10.4</b> Empirical investigation</a>
+<ul>
+<li class="chapter" data-level="10.4.1" data-path="10-TMLE.html"><a href="10-TMLE.html#empirical-inves-tmle-first"><i class="fa fa-check"></i><b>10.4.1</b> A first numerical application</a></li>
+<li class="chapter" data-level="10.4.2" data-path="10-TMLE.html"><a href="10-TMLE.html#exo-tmle"><i class="fa fa-check"></i><b>10.4.2</b> ⚙ A computational exploration</a></li>
+<li class="chapter" data-level="10.4.3" data-path="10-TMLE.html"><a href="10-TMLE.html#empirical-investigation"><i class="fa fa-check"></i><b>10.4.3</b> Empirical investigation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="11-closing-words.html"><a href="11-closing-words.html"><i class="fa fa-check"></i><b>11</b> Closing words</a></li>
+<li class="appendix"><span><b>Appendix</b></span></li>
+<li class="chapter" data-level="A" data-path="A-notation.html"><a href="A-notation.html"><i class="fa fa-check"></i><b>A</b> Notation</a></li>
+<li class="chapter" data-level="B" data-path="B-proofs.html"><a href="B-proofs.html"><i class="fa fa-check"></i><b>B</b> Basic results and their proofs</a>
+<ul>
+<li class="chapter" data-level="B.1" data-path="B-proofs.html"><a href="B-proofs.html#npsem"><i class="fa fa-check"></i><b>B.1</b> NPSEM</a></li>
+<li class="chapter" data-level="B.2" data-path="B-proofs.html"><a href="B-proofs.html#identification"><i class="fa fa-check"></i><b>B.2</b> Identification</a></li>
+<li class="chapter" data-level="B.3" data-path="B-proofs.html"><a href="B-proofs.html#confidence-interval"><i class="fa fa-check"></i><b>B.3</b> Building a confidence interval</a>
+<ul>
+<li class="chapter" data-level="B.3.1" data-path="B-proofs.html"><a href="B-proofs.html#clt"><i class="fa fa-check"></i><b>B.3.1</b> CLT &amp; Slutsky’s lemma</a></li>
+<li class="chapter" data-level="B.3.2" data-path="B-proofs.html"><a href="B-proofs.html#order"><i class="fa fa-check"></i><b>B.3.2</b> CLT and order statistics</a></li>
+</ul></li>
+<li class="chapter" data-level="B.4" data-path="B-proofs.html"><a href="B-proofs.html#another-rep"><i class="fa fa-check"></i><b>B.4</b> Another representation of the parameter of interest</a></li>
+<li class="chapter" data-level="B.5" data-path="B-proofs.html"><a href="B-proofs.html#prop-delta-method"><i class="fa fa-check"></i><b>B.5</b> The delta-method</a></li>
+<li class="chapter" data-level="B.6" data-path="B-proofs.html"><a href="B-proofs.html#oracle-logistic-risk"><i class="fa fa-check"></i><b>B.6</b> The oracle logistic risk</a></li>
+</ul></li>
+<li class="chapter" data-level="C" data-path="C-more-proofs.html"><a href="C-more-proofs.html"><i class="fa fa-check"></i><b>C</b> More results and their proofs</a>
+<ul>
+<li class="chapter" data-level="C.1" data-path="C-more-proofs.html"><a href="C-more-proofs.html#estimation-of-the-asymptotic-variance-of-an-estimator"><i class="fa fa-check"></i><b>C.1</b> Estimation of the asymptotic variance of an estimator</a>
+<ul>
+<li class="chapter" data-level="C.1.1" data-path="C-more-proofs.html"><a href="C-more-proofs.html#iptw-est-var"><i class="fa fa-check"></i><b>C.1.1</b> IPTW estimator based on a well-specified model</a></li>
+<li class="chapter" data-level="C.1.2" data-path="C-more-proofs.html"><a href="C-more-proofs.html#gcomp-est-var"><i class="fa fa-check"></i><b>C.1.2</b> G-computation estimator based on a well-specified model</a></li>
+</ul></li>
+<li class="chapter" data-level="C.2" data-path="C-more-proofs.html"><a href="C-more-proofs.html#app-analysis-of-plug-in"><i class="fa fa-check"></i><b>C.2</b> ☡  General analysis of plug-in estimators</a>
+<ul>
+<li class="chapter" data-level="C.2.1" data-path="C-more-proofs.html"><a href="C-more-proofs.html#app-analysis-of-plug-in-main"><i class="fa fa-check"></i><b>C.2.1</b> Main analysis</a></li>
+<li class="chapter" data-level="C.2.2" data-path="C-more-proofs.html"><a href="C-more-proofs.html#estimation-of-the-asymptotic-variance"><i class="fa fa-check"></i><b>C.2.2</b> Estimation of the asymptotic variance</a></li>
+</ul></li>
+<li class="chapter" data-level="C.3" data-path="C-more-proofs.html"><a href="C-more-proofs.html#asymp-neglig-remain"><i class="fa fa-check"></i><b>C.3</b> Asymptotic negligibility of the remainder term</a></li>
+<li class="chapter" data-level="C.4" data-path="C-more-proofs.html"><a href="C-more-proofs.html#analysis-TMLE"><i class="fa fa-check"></i><b>C.4</b> Analysis of targeted estimators</a>
+<ul>
+<li class="chapter" data-level="C.4.1" data-path="C-more-proofs.html"><a href="C-more-proofs.html#basic-eic-eq"><i class="fa fa-check"></i><b>C.4.1</b> A basic fact on the influence curve equation</a></li>
+<li class="chapter" data-level="C.4.2" data-path="C-more-proofs.html"><a href="C-more-proofs.html#fluct-reg"><i class="fa fa-check"></i><b>C.4.2</b> Fluctuation of the regression function along the fluctuation of a law</a></li>
+<li class="chapter" data-level="C.4.3" data-path="C-more-proofs.html"><a href="C-more-proofs.html#fluct-score"><i class="fa fa-check"></i><b>C.4.3</b> Computing the score of a fluctuation of the regression function</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="D" data-path="D-references.html"><a href="D-references.html"><i class="fa fa-check"></i><b>D</b> References</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">A Ride in Targeted Learning Territory</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+\(\newcommand{\bbO}{\mathbb{O}}\)
+\(\newcommand{\bbD}{\mathbb{D}}\)
+\(\newcommand{\bbP}{\mathbb{P}}\)
+\(\newcommand{\bbR}{\mathbb{R}}\)
+\(\newcommand{\Algo}{\widehat{\mathcal{A}}}\)
+\(\newcommand{\Algora}{\widetilde{\mathcal{A}}}\)
+\(\newcommand{\calF}{\mathcal{F}}\)
+\(\newcommand{\calM}{\mathcal{M}}\)
+\(\newcommand{\calP}{\mathcal{P}}\)
+\(\newcommand{\calO}{\mathcal{O}}\)
+\(\newcommand{\calQ}{\mathcal{Q}}\)
+\(\newcommand{\defq}{\doteq}\)
+\(\newcommand{\Exp}{\textrm{E}}\)
+\(\newcommand{\IC}{\textrm{IC}}\)
+\(\newcommand{\Gbar}{\bar{G}}\)
+\(\newcommand{\one}{\textbf{1}}\)
+\(\newcommand{\psinos}{\psi_{n}^{\textrm{os}}}\)
+\(\renewcommand{\Pr}{\textrm{Pr}}\)
+\(\newcommand{\Phat}{P^{\circ}}\)
+\(\newcommand{\Psihat}{\widehat{\Psi}}\)
+\(\newcommand{\Qbar}{\bar{Q}}\)
+\(\newcommand{\tcg}[1]{\textcolor{olive}{#1}}\)
+\(\DeclareMathOperator{\Dirac}{Dirac}\)
+\(\DeclareMathOperator{\expit}{expit}\)
+\(\DeclareMathOperator{\logit}{logit}\)
+\(\DeclareMathOperator{\Rem}{Rem}\)
+\(\DeclareMathOperator{\Var}{Var}\)
+<div id="TMLE" class="section level1 hasAnchor" number="10">
+<h1><span class="header-section-number">Section 10</span> Targeted minimum loss-based estimation<a href="10-TMLE.html#TMLE" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="TMLE-motivations" class="section level2 hasAnchor" number="10.1">
+<h2><span class="header-section-number">10.1</span> Motivations<a href="10-TMLE.html#TMLE-motivations" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="falling-outside-the-parameter-space" class="section level3 hasAnchor" number="10.1.1">
+<h3><span class="header-section-number">10.1.1</span> Falling outside the parameter space<a href="10-TMLE.html#falling-outside-the-parameter-space" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Section <a href="9-one-step.html#one-step">9</a> introduced the one-step corrected estimator <span class="math inline">\(\psinos\)</span>
+of <span class="math inline">\(\psi_0\)</span>. It is obtained by adding a correction term to an initial plug-in
+estimator <span class="math inline">\(\Psi(\Phat_{n})\)</span>, resulting in an estimator that is asymptotically
+linear with influence curve <span class="math inline">\(\IC = D^{*}(P_{0})\)</span> under mild conditions (see
+Section <a href="9-one-step.html#huber-one-step">9.2</a> and the detailed
+proof <a href="C-more-proofs.html#app-analysis-of-plug-in">there</a> in Appendix
+<a href="C-more-proofs.html#app-analysis-of-plug-in">C.2</a>).</p>
+<p>Unfortunately, the one-step estimator lacks a desirable feature of a plug-in
+estimator: plug-in estimators always lie in the parameter space whereas a
+one-step estimator does not necessarily do so. For example, it must also be
+true that <span class="math inline">\(\psi_0 = \Psi(P_{0}) \in [-1,1]\)</span> yet it may be the case that
+<span class="math inline">\(\psinos \not\in[-1,1]\)</span>.</p>
+<p>It is typically easy to shape an algorithm <span class="math inline">\(\Algo_{\Qbar}\)</span> for the estimation
+of <span class="math inline">\(\Qbar_0\)</span> to output estimators <span class="math inline">\(\Qbar_n\)</span> that, like <span class="math inline">\(\Qbar_{0}\)</span>, take their
+values in <span class="math inline">\([0,1]\)</span>. The plug-in estimator <span class="math inline">\(\psi_{n}\)</span> <a href="8-naive-estimators.html#eq:Gcomp-estimator">(8.1)</a>
+based on such a <span class="math inline">\(\Qbar_{n}\)</span> necessarily satisfies <span class="math inline">\(\psi_{n} \in [-1,1]\)</span>.
+However, the one-step estimator derived from <span class="math inline">\(\psi_{n}\)</span> may fall outside of
+the interval if the correction term <span class="math inline">\(P_{n} D^{*} (\Phat_{n})\)</span> is large.</p>
+</div>
+<div id="eic-equation" class="section level3 hasAnchor" number="10.1.2">
+<h3><span class="header-section-number">10.1.2</span> The influence curve equation<a href="10-TMLE.html#eic-equation" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Upon closer examination of the influence curve <span class="math inline">\(D^*(\Phat_{n})\)</span>, we see that
+this may occur more frequently when <span class="math inline">\(\ell \Gbar_n(A_i,W_i)\)</span> is close to zero
+for at least some <span class="math inline">\(1 \leq i\leq n\)</span>. In words, this may happen if there are
+observations in our data set that we observed under actions <span class="math inline">\(A_i\)</span> that were
+estimated to be unlikely given their respective contexts <span class="math inline">\(W_i\)</span>. In such
+cases, <span class="math inline">\(D^*(\Phat_n)(O_i)\)</span>, and consequently the one-step correction term, may
+be large and cause the one-step estimate to fall outside <span class="math inline">\([-1,1]\)</span>.</p>
+<p>Another way to understand this behavior is to recognize the one-step estimator
+as an initial plug-in estimator that is corrected <em>in the parameter space of</em>
+<span class="math inline">\(\psi_0\)</span>. One of the pillars of targeted learning is to perform, instead, a
+correction <em>in the parameter space of</em> <span class="math inline">\(\Qbar_0\)</span>.</p>
+<p>In particular, consider a law <span class="math inline">\(P_{n}^{*}\)</span> estimating <span class="math inline">\(P_{0}\)</span> that is
+compatible with the estimators <span class="math inline">\(\Qbar_n^*\)</span>, <span class="math inline">\(\Gbar_n\)</span>, and <span class="math inline">\(Q_{n,W}\)</span>, but
+moreover is such that
+<span class="math display" id="eq:solve">\[\begin{equation} 
+P_n  D^*(P_{n}^*)  = 0 \tag{10.1}
+\end{equation}\]</span>
+or, at the very least,
+<span class="math display" id="eq:solve-approx">\[\begin{equation} 
+P_n D^*(P_{n}^*) = o_{P_0}(1/\sqrt{n}). \tag{10.2} 
+\end{equation}\]</span>
+Achieving <a href="10-TMLE.html#eq:solve">(10.1)</a> is called <em>solving the efficient influence curve
+equation</em>. Likewise, achieving <a href="10-TMLE.html#eq:solve-approx">(10.2)</a> is called
+<em>approximately solving the influence curve equation</em>.</p>
+<p>If such estimators can be generated indeed, then the plug-in estimator
+<span class="math display">\[\begin{equation*}     \psi_n^*    \defq     \Psi(P_{n}^{*})    =     \int
+\left(\Qbar_n^*(1,w)  - \Qbar_n^*(0,w)\right)  dQ_{n,W}(w) \end{equation*}\]</span> is
+asymptotically linear with influence curve <span class="math inline">\(\IC = D^{*}(P_{0})\)</span>, under mild
+conditions. Moreover, by virtue of its plug-in construction, it has the
+additional property that in finite-samples <span class="math inline">\(\psi_n^*\)</span> will always obey bounds
+on the parameter space.</p>
+</div>
+<div id="basic-fact" class="section level3 hasAnchor" number="10.1.3">
+<h3><span class="header-section-number">10.1.3</span> A basic fact on the influence curve equation<a href="10-TMLE.html#basic-fact" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Our strategy for constructing such a plug-in estimate begins by generating an
+initial estimator <span class="math inline">\(\Qbar_n\)</span> of <span class="math inline">\(\Qbar_0\)</span> based on an algorithm <span class="math inline">\(\Algo_{\Qbar}\)</span>
+and an estimator <span class="math inline">\(\Gbar_n\)</span> of <span class="math inline">\(\Gbar_0\)</span> based on an algorithm <span class="math inline">\(\Algo_{\Gbar}\)</span>.
+These initial estimators should strive to be as close as possible to their
+respective targets. We use the empirical distribution <span class="math inline">\(Q_{n,W}\)</span> as an
+estimator of <span class="math inline">\(Q_{0,W}\)</span>.</p>
+<p>Now, recall the definition of <span class="math inline">\(D_{1}^{*}\)</span> <a href="3-smooth.html#eq:eif">(3.4)</a> and note that for
+<em>any</em> estimator <span class="math inline">\(\Qbar_n^*\)</span> of <span class="math inline">\(\Qbar_0\)</span> and a law <span class="math inline">\(P_n^{*}\)</span> that is
+compatible with <span class="math inline">\(\Qbar_n^*\)</span> and <span class="math inline">\(Q_{n,W}\)</span>, <span class="math display">\[\begin{equation*}  P_{n}  D_{1}
+(P_{n}^{*}) = 0.
+\end{equation*}\]</span>
+The proof can be found <a href="C-more-proofs.html#basic-eic-eq">there</a> in Appendix <a href="C-more-proofs.html#basic-eic-eq">C.4.1</a>.</p>
+<p>In words, this shows that so long as we use the empirical distribution
+<span class="math inline">\(Q_{n,W}\)</span> to estimate <span class="math inline">\(Q_{0,W}\)</span>, by its very construction achieving
+<a href="10-TMLE.html#eq:solve">(10.1)</a> or <a href="10-TMLE.html#eq:solve-approx">(10.2)</a> is equivalent to solving
+<span class="math display" id="eq:solve-alt">\[\begin{equation} 
+P_n  D_{2}^*(P_{n}^*)  = 0 \tag{10.3}
+\end{equation}\]</span>
+or
+<span class="math display" id="eq:solve-approx-alt">\[\begin{equation} 
+P_n D_{2}^*(P_{n}^*) = o_{P_0}(1/\sqrt{n}). \tag{10.4} 
+\end{equation}\]</span></p>
+<p>It thus remains to devise a strategy for ensuring that <span class="math inline">\(P_n D_2^*(P_n^*) = 0\)</span> or <span class="math inline">\(o_{P_0}(1/\sqrt{n})\)</span>.</p>
+</div>
+</div>
+<div id="targeted-fluctuation-TMLE" class="section level2 hasAnchor" number="10.2">
+<h2><span class="header-section-number">10.2</span> Targeted fluctuation<a href="10-TMLE.html#targeted-fluctuation-TMLE" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Our approach to satisfying <a href="10-TMLE.html#eq:solve-alt">(10.3)</a><a href="#fn21" class="footnote-ref" id="fnref21"><sup>21</sup></a>
+hinges on revising our initial estimator <span class="math inline">\(\Qbar_n\)</span> of <span class="math inline">\(\Qbar_0\)</span>. We propose a
+method for building an estimator of <span class="math inline">\(\Qbar_0\)</span> that is “near to” <span class="math inline">\(\Qbar_n\)</span>, but
+is such that for any law <span class="math inline">\(P_n^*\)</span> that is compatible with this revised
+estimator, <span class="math inline">\(P_n D^*(P_n^*) = 0\)</span>.<a href="#fn22" class="footnote-ref" id="fnref22"><sup>22</sup></a>
+Because <span class="math inline">\(\Qbar_n\)</span> is our best (initial) estimator of <span class="math inline">\(\Qbar_0\)</span>, the new
+estimator that we shall build should be <em>at least as good</em> an estimator of
+<span class="math inline">\(\Qbar_0\)</span> as <span class="math inline">\(\Qbar_n\)</span>. So first, we must propose a way to move between
+regression functions, and then we must propose a way to move to a new
+regression function that fits the data at least as well as <span class="math inline">\(\Qbar_n\)</span>.</p>
+<p>Instead of writing “propos[ing] a way to move between regression functions” we
+may also have written “proposing a way to <em>fluctuate</em> a regression function,”
+thus suggesting very opportunely that the notion of fluctuation as discussed
+in Section <a href="3-smooth.html#smooth-second-pass">3.3</a> may prove instrumental to achieve the
+former objective.</p>
+<div id="fluctuating-indirectly" class="section level3 hasAnchor" number="10.2.1">
+<h3><span class="header-section-number">10.2.1</span> ☡  Fluctuating indirectly<a href="10-TMLE.html#fluctuating-indirectly" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Let us resume the discussion where we left it at the end of Section
+<a href="3-smooth.html#smooth-second-pass-fluctuations">3.3.1</a>. It is easy to show that the
+fluctuation <span class="math inline">\(\{P_{h} : h \in H\}\)</span> of <span class="math inline">\(P\)</span> in direction of <span class="math inline">\(s\)</span> in <span class="math inline">\(\calM\)</span>
+induces a fluctuation <span class="math inline">\(\{\Qbar_{h} : h \in H\}\)</span> of <span class="math inline">\(\Qbar = \left.Q_{h}\right|_{h=0}\)</span> in the space <span class="math inline">\(\calQ \defq \{\Qbar : P \in \calM\}\)</span> of regression functions induced by model <span class="math inline">\(\calM\)</span>. Specifically we
+show <a href="C-more-proofs.html#fluct-reg">there</a> in Appendix <a href="C-more-proofs.html#fluct-reg">C.4.2</a> that, for every <span class="math inline">\(h \in H\)</span>, the conditional mean <span class="math inline">\(\Qbar_{h}(A,W)\)</span> of <span class="math inline">\(Y\)</span> given <span class="math inline">\((A,W)\)</span> under <span class="math inline">\(P_{h}\)</span>
+is given by <span class="math display">\[\begin{equation*}\Qbar_{h}(A,W)  \defq \frac{\Qbar(A,W)  + h
+\Exp_{P}(Ys(O) | A,W)}{1 + h \Exp_{P}(s(O)|A,W)}.\end{equation*}\]</span></p>
+<p>We note that if <span class="math inline">\(s(O)\)</span> depends on <span class="math inline">\(O\)</span> only through <span class="math inline">\((A,W)\)</span> then, abusing
+notation and writing <span class="math inline">\(s(A,W)\)</span> for <span class="math inline">\(s(O)\)</span>,
+<span class="math display" id="eq:Qbarh">\[\begin{align}
+\Qbar_{h}(A,W)  &amp;=  \frac{\Qbar(A,W)  +  h  \Exp_{P}(Ys(A,W)  |  A,W)}{1  +  h
+\Exp_{P}(s(A,W)|A,W)}\notag\\&amp;=\frac{\Qbar(A,W)  + h  s(A,W)\Qbar(A,W)}{1 +  h
+s(A,W)}\notag\\&amp;=\Qbar(A,W).\tag{10.5}
+\end{align}\]</span>
+In words, <span class="math inline">\(\Qbar\)</span> is not fluctuated at all, that is, the laws <span class="math inline">\(P_{h}\)</span> that are
+elements of the fluctuation share the same conditional mean of <span class="math inline">\(Y\)</span> given
+<span class="math inline">\((A,W)\)</span>.<a href="#fn23" class="footnote-ref" id="fnref23"><sup>23</sup></a></p>
+<p>However we find it easier in the present context, notably from a computational
+perspective, to fluctuate <span class="math inline">\(\Qbar_{n}\)</span> <em>directly</em> in <span class="math inline">\(\calQ\)</span>, as opposed to
+<em>indirectly</em> through a fluctuation defined in <span class="math inline">\(\calM\)</span> of a law compatible with
+<span class="math inline">\(\Qbar_{n}\)</span>. The next section introduces such a direct fluctuation.</p>
+</div>
+<div id="fluct-direct" class="section level3 hasAnchor" number="10.2.2">
+<h3><span class="header-section-number">10.2.2</span> Fluctuating directly<a href="10-TMLE.html#fluct-direct" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Set arbitrarily <span class="math inline">\(\Qbar \in \calQ\)</span>. The (direct) fluctuation of <span class="math inline">\(\Qbar\)</span> that we
+propose to consider depends on a user-supplied <span class="math inline">\(\Gbar\)</span>. For any <span class="math inline">\(\Gbar\)</span> such
+that <span class="math inline">\(0 &lt; \ell\Gbar(A,W) &lt; 1\)</span>, <span class="math inline">\(P_{0}\)</span>-almost surely, the <span class="math inline">\(\Gbar\)</span>-specific
+fluctuation model for <span class="math inline">\(\Qbar\)</span> is
+<span class="math display" id="eq:Q-fluct">\[\begin{equation} 
+\calQ(\Qbar,\Gbar)\defq      \left\{(w,a)       \mapsto      \Qbar_{h}(a,w)      \defq
+\expit\left(\logit\left(\Qbar(a,w)\right) +  h \frac{2a -  1}{\ell \Gbar(a,w)}
+\right) : t \in \bbR\right\} \subset \calQ. \tag{10.6} 
+\end{equation}\]</span></p>
+<p>Fluctuation <span class="math inline">\(\calQ(\Qbar,\Gbar)\)</span> is a one-dimensional parametric model
+(indexed by the real-valued parameter <span class="math inline">\(h\)</span>) that goes through <span class="math inline">\(\Qbar\)</span> (at
+<span class="math inline">\(h=0\)</span>). For each <span class="math inline">\(h \in \bbR\)</span>, <span class="math inline">\(\Qbar_{h} \in \calQ\)</span> is the conditional mean
+of <span class="math inline">\(Y\)</span> given <span class="math inline">\((A,W)\)</span> under infinitely many laws <span class="math inline">\(P \in \calM\)</span>.</p>
+<p>The following chunk of code represents three elements of the fluctuations
+<span class="math inline">\(\calQ(\Qbar_{0}, \Gbar_{0})\)</span> and <span class="math inline">\(\calQ(\Qbar_{n,\text{trees}}, \Gbar_{0})\)</span>,
+where <span class="math inline">\(\Qbar_{n,\text{trees}}\)</span> is an estimator of <span class="math inline">\(\Qbar_{0}\)</span> derived by the
+boosted trees algorithm (see Section <a href="7-nuisance.html#boosted-trees">7.6.3</a>).</p>
+
+<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb74-1"><a href="10-TMLE.html#cb74-1" aria-hidden="true" tabindex="-1"></a>Qbar_hminus <span class="ot">&lt;-</span> <span class="fu">fluctuate</span>(Qbar, Gbar, <span class="at">h =</span> <span class="sc">-</span><span class="dv">1</span>)</span>
+<span id="cb74-2"><a href="10-TMLE.html#cb74-2" aria-hidden="true" tabindex="-1"></a>Qbar_hplus <span class="ot">&lt;-</span> <span class="fu">fluctuate</span>(Qbar, Gbar, <span class="at">h =</span> <span class="sc">+</span><span class="dv">1</span>)</span>
+<span id="cb74-3"><a href="10-TMLE.html#cb74-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb74-4"><a href="10-TMLE.html#cb74-4" aria-hidden="true" tabindex="-1"></a>Qbar_trees <span class="ot">&lt;-</span> <span class="fu">wrapper</span>(Qbar_hat_trees, <span class="cn">FALSE</span>)</span>
+<span id="cb74-5"><a href="10-TMLE.html#cb74-5" aria-hidden="true" tabindex="-1"></a>Qbar_trees_hminus <span class="ot">&lt;-</span> <span class="fu">fluctuate</span>(Qbar_trees, Gbar, <span class="at">h =</span> <span class="sc">-</span><span class="dv">1</span>)</span>
+<span id="cb74-6"><a href="10-TMLE.html#cb74-6" aria-hidden="true" tabindex="-1"></a>Qbar_trees_hplus <span class="ot">&lt;-</span> <span class="fu">fluctuate</span>(Qbar_trees, Gbar, <span class="at">h =</span> <span class="sc">+</span><span class="dv">1</span>)</span>
+<span id="cb74-7"><a href="10-TMLE.html#cb74-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb74-8"><a href="10-TMLE.html#cb74-8" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">w =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="at">length.out =</span> <span class="fl">1e3</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb74-9"><a href="10-TMLE.html#cb74-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">truth_0_1 =</span> <span class="fu">Qbar</span>(<span class="fu">cbind</span>(<span class="at">A =</span> <span class="dv">1</span>, <span class="at">W =</span> w)),</span>
+<span id="cb74-10"><a href="10-TMLE.html#cb74-10" aria-hidden="true" tabindex="-1"></a>         <span class="at">truth_0_0 =</span> <span class="fu">Qbar</span>(<span class="fu">cbind</span>(<span class="at">A =</span> <span class="dv">0</span>, <span class="at">W =</span> w)),</span>
+<span id="cb74-11"><a href="10-TMLE.html#cb74-11" aria-hidden="true" tabindex="-1"></a>         <span class="at">trees_0_1 =</span> <span class="fu">Qbar_trees</span>(<span class="fu">cbind</span>(<span class="at">A =</span> <span class="dv">1</span>, <span class="at">W =</span> w)),</span>
+<span id="cb74-12"><a href="10-TMLE.html#cb74-12" aria-hidden="true" tabindex="-1"></a>         <span class="at">trees_0_0 =</span> <span class="fu">Qbar_trees</span>(<span class="fu">cbind</span>(<span class="at">A =</span> <span class="dv">0</span>, <span class="at">W =</span> w)),</span>
+<span id="cb74-13"><a href="10-TMLE.html#cb74-13" aria-hidden="true" tabindex="-1"></a>         <span class="at">truth_hminus_1 =</span> <span class="fu">Qbar_hminus</span>(<span class="fu">cbind</span>(<span class="at">A =</span> <span class="dv">1</span>, <span class="at">W =</span> w)),</span>
+<span id="cb74-14"><a href="10-TMLE.html#cb74-14" aria-hidden="true" tabindex="-1"></a>         <span class="at">truth_hminus_0 =</span> <span class="fu">Qbar_hminus</span>(<span class="fu">cbind</span>(<span class="at">A =</span> <span class="dv">0</span>, <span class="at">W =</span> w)),</span>
+<span id="cb74-15"><a href="10-TMLE.html#cb74-15" aria-hidden="true" tabindex="-1"></a>         <span class="at">trees_hminus_1 =</span> <span class="fu">Qbar_trees_hminus</span>(<span class="fu">cbind</span>(<span class="at">A =</span> <span class="dv">1</span>, <span class="at">W =</span> w)),</span>
+<span id="cb74-16"><a href="10-TMLE.html#cb74-16" aria-hidden="true" tabindex="-1"></a>         <span class="at">trees_hminus_0 =</span> <span class="fu">Qbar_trees_hminus</span>(<span class="fu">cbind</span>(<span class="at">A =</span> <span class="dv">0</span>, <span class="at">W =</span> w)),</span>
+<span id="cb74-17"><a href="10-TMLE.html#cb74-17" aria-hidden="true" tabindex="-1"></a>         <span class="at">truth_hplus_1 =</span> <span class="fu">Qbar_hplus</span>(<span class="fu">cbind</span>(<span class="at">A =</span> <span class="dv">1</span>, <span class="at">W =</span> w)),</span>
+<span id="cb74-18"><a href="10-TMLE.html#cb74-18" aria-hidden="true" tabindex="-1"></a>         <span class="at">truth_hplus_0 =</span> <span class="fu">Qbar_hplus</span>(<span class="fu">cbind</span>(<span class="at">A =</span> <span class="dv">0</span>, <span class="at">W =</span> w)),</span>
+<span id="cb74-19"><a href="10-TMLE.html#cb74-19" aria-hidden="true" tabindex="-1"></a>         <span class="at">trees_hplus_1 =</span> <span class="fu">Qbar_trees_hplus</span>(<span class="fu">cbind</span>(<span class="at">A =</span> <span class="dv">1</span>, <span class="at">W =</span> w)),</span>
+<span id="cb74-20"><a href="10-TMLE.html#cb74-20" aria-hidden="true" tabindex="-1"></a>         <span class="at">trees_hplus_0 =</span> <span class="fu">Qbar_trees_hplus</span>(<span class="fu">cbind</span>(<span class="at">A =</span> <span class="dv">0</span>, <span class="at">W =</span> w))) <span class="sc">%&gt;%</span></span>
+<span id="cb74-21"><a href="10-TMLE.html#cb74-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>w, <span class="at">names_to =</span> <span class="st">&quot;f&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;value&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb74-22"><a href="10-TMLE.html#cb74-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract</span>(f, <span class="fu">c</span>(<span class="st">&quot;f&quot;</span>, <span class="st">&quot;h&quot;</span>, <span class="st">&quot;a&quot;</span>), <span class="st">&quot;([^_]+)_([^_]+)_([01]+)&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb74-23"><a href="10-TMLE.html#cb74-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">f =</span> <span class="fu">ifelse</span>(f <span class="sc">==</span> <span class="st">&quot;truth&quot;</span>, <span class="st">&quot;Q_0&quot;</span>, <span class="st">&quot;Q_n&quot;</span>),</span>
+<span id="cb74-24"><a href="10-TMLE.html#cb74-24" aria-hidden="true" tabindex="-1"></a>         <span class="at">h =</span> <span class="fu">factor</span>(<span class="fu">ifelse</span>(h <span class="sc">==</span> <span class="st">&quot;0&quot;</span>, <span class="dv">0</span>, <span class="fu">ifelse</span>(h <span class="sc">==</span> <span class="st">&quot;hplus&quot;</span>, <span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>)))) <span class="sc">%&gt;%</span></span>
+<span id="cb74-25"><a href="10-TMLE.html#cb74-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">a =</span> <span class="fu">paste0</span>(<span class="st">&quot;a=&quot;</span>, a),</span>
+<span id="cb74-26"><a href="10-TMLE.html#cb74-26" aria-hidden="true" tabindex="-1"></a>         <span class="at">fh =</span> <span class="fu">paste0</span>(<span class="st">&quot;(&quot;</span>, f, <span class="st">&quot;,&quot;</span>, h, <span class="st">&quot;)&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb74-27"><a href="10-TMLE.html#cb74-27" aria-hidden="true" tabindex="-1"></a>  ggplot <span class="sc">+</span></span>
+<span id="cb74-28"><a href="10-TMLE.html#cb74-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> w, <span class="at">y =</span> value, <span class="at">color =</span> h, <span class="at">linetype =</span> f, <span class="at">group =</span> fh),</span>
+<span id="cb74-29"><a href="10-TMLE.html#cb74-29" aria-hidden="true" tabindex="-1"></a>            <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb74-30"><a href="10-TMLE.html#cb74-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="fu">bquote</span>(<span class="fu">paste</span>(f[h](a,w))),</span>
+<span id="cb74-31"><a href="10-TMLE.html#cb74-31" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="fu">bquote</span>(<span class="st">&quot;Visualizing three elements of two fluctuations of&quot;</span></span>
+<span id="cb74-32"><a href="10-TMLE.html#cb74-32" aria-hidden="true" tabindex="-1"></a>                      <span class="sc">~</span> <span class="fu">bar</span>(Q)[<span class="dv">0</span>] <span class="sc">~</span> <span class="st">&quot;and&quot;</span> <span class="sc">~</span> <span class="fu">bar</span>(Q)[n])) <span class="sc">+</span></span>
+<span id="cb74-33"><a href="10-TMLE.html#cb74-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="cn">NA</span>, <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb74-34"><a href="10-TMLE.html#cb74-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> a)</span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:fluctuation"></span>
+<img src="img/fluctuation-1.png" alt="Representing three elements \(\Qbar_{h}\) of the fluctuations \(\calQ(\Qbar_{0}, \Gbar_{0})\) and \(\calQ(\Qbar_{n,\text{trees}}, \Gbar_{0})\), respectively, where \(\Qbar_{n,\text{trees}}\) is an estimator of \(\Qbar_{0}\) derived by the boosted trees algorithm (see Section 7.6.3). The three elements correspond to \(h=-1,0,1\). When \(h=0\), \(\Qbar_{h}\) equals either \(\Qbar_{0}\) or \(\Qbar_{n,\text{trees}}\), depending on which fluctuation is roamed." width="70%" />
+<p class="caption">
+Figure 10.1: Representing three elements <span class="math inline">\(\Qbar_{h}\)</span> of the fluctuations <span class="math inline">\(\calQ(\Qbar_{0}, \Gbar_{0})\)</span> and <span class="math inline">\(\calQ(\Qbar_{n,\text{trees}}, \Gbar_{0})\)</span>, respectively, where <span class="math inline">\(\Qbar_{n,\text{trees}}\)</span> is an estimator of <span class="math inline">\(\Qbar_{0}\)</span> derived by the boosted trees algorithm (see Section <a href="7-nuisance.html#boosted-trees">7.6.3</a>). The three elements correspond to <span class="math inline">\(h=-1,0,1\)</span>. When <span class="math inline">\(h=0\)</span>, <span class="math inline">\(\Qbar_{h}\)</span> equals either <span class="math inline">\(\Qbar_{0}\)</span> or <span class="math inline">\(\Qbar_{n,\text{trees}}\)</span>, depending on which fluctuation is roamed.
+</p>
+</div>
+</div>
+<div id="exo-fluct" class="section level3 hasAnchor" number="10.2.3">
+<h3><span class="header-section-number">10.2.3</span> ⚙ More on fluctuations<a href="10-TMLE.html#exo-fluct" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ol style="list-style-type: decimal">
+<li><p>Justify the series of equalities in <a href="10-TMLE.html#eq:Qbarh">(10.5)</a>.</p></li>
+<li><p>Justify that, in fact, if <span class="math inline">\(s(O)\)</span> depends on <span class="math inline">\(O\)</span> only through <span class="math inline">\((A,W)\)</span> then
+the conditional law of <span class="math inline">\(Y\)</span> given <span class="math inline">\((A,W)\)</span> under <span class="math inline">\(P_{h}\)</span> equals that under
+<span class="math inline">\(P\)</span>.</p></li>
+</ol>
+</div>
+<div id="roaming" class="section level3 hasAnchor" number="10.2.4">
+<h3><span class="header-section-number">10.2.4</span> Targeted roaming of a fluctuation<a href="10-TMLE.html#roaming" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Recall that our goal is to build an estimator of <span class="math inline">\(\Qbar_0\)</span> that is <em>at least
+as good</em> as <span class="math inline">\(\Qbar_n\)</span>. We will look for this enhanced estimator in the
+fluctuation <span class="math inline">\(\calQ(\Qbar_{n}, \Gbar_{n})\)</span> where <span class="math inline">\(\Gbar_{n}\)</span> is an estimator of
+<span class="math inline">\(\Gbar_{0}\)</span> that is bounded away from 0 and 1. Thus, the estimator writes as
+<span class="math inline">\(\Qbar_{n,h_{n}}\)</span> for some data-driven <span class="math inline">\(h_{n} \in \bbR\)</span>. We will clarify why
+we do so <a href="10-TMLE.html#fluct-justification">at a later time</a></p>
+<p>To assess the performance of all the candidates included in the fluctuation,
+we formally rely on the empirical risk function <span class="math inline">\(h \mapsto \Exp_{P_{n}} \left(L_{y} (\Qbar_{n,h})(O)\right)\)</span> where <span class="math display">\[\begin{equation*}\Exp_{P_{n}}
+\left(L_{y}   (\Qbar_{n,h})(O)\right)  =   \frac{1}{n}  \sum_{i=1}^{n}   L_{y}
+(\Qbar_{n,h})(O_{i})\end{equation*}\]</span> and the logistic (or negative binomial)
+loss function <span class="math inline">\(L_{y}\)</span> is given by
+<span class="math display" id="eq:logis-loss-y">\[\begin{equation*} 
+-L_{y}(f)(O) \defq Y
+\log f(A,W) + (1 - Y) \log \left(1 - f(A,W)\right) \tag{10.7}
+\end{equation*}\]</span>
+for any function <span class="math inline">\(f:\{0,1\} \times [0,1] \to [0,1]\)</span>. This loss
+function is the counterpart of the loss function <span class="math inline">\(L_{a}\)</span> defined in
+<a href="7-nuisance.html#eq:logis-loss">(7.1)</a>. The justification that we gave in Section
+<a href="7-nuisance.html#logis-loss">7.4.1</a> of the relevance of <span class="math inline">\(L_{a}\)</span> also applies here, <em>mutatis
+mutandis</em>. In summary, the oracle risk <span class="math inline">\(\Exp_{P_{0}} \left(L_{y} (f)(O)\right)\)</span> of <span class="math inline">\(f\)</span> is a real-valued measure of discrepancy between
+<span class="math inline">\(\Qbar_{0}\)</span> and <span class="math inline">\(f\)</span>; <span class="math inline">\(\Qbar_{0}\)</span> minimizes <span class="math inline">\(f \mapsto \Exp_{P_{0}} \left(L_{y} (f)(O)\right)\)</span> over the set of all (measurable) functions <span class="math inline">\(f:[0,1] \times \{0,1\} \times [0,1] \to [0,1]\)</span>; and a minimizer <span class="math inline">\(h_{0} \in \bbR\)</span> of <span class="math inline">\(h \mapsto \Exp_{P_{0}} \left(L_{y} (\Qbar_{n,h})(O)\right)\)</span> identifies the
+element of fluctuation <span class="math inline">\(\calQ(\Qbar_{n}, \Gbar_{n})\)</span> that is closest to
+<span class="math inline">\(\Qbar_{0}\)</span> (some details are given <a href="B-proofs.html#oracle-logistic-risk">there</a> in Appendix
+<a href="B-proofs.html#oracle-logistic-risk">B.6</a>).</p>
+<p>It should not come as a surprise after this discussion that the aforementioned
+data-driven <span class="math inline">\(h_{n}\)</span> is chosen to be the minimizer of the empirical risk
+function, <em>i.e.</em>, <span class="math display">\[\begin{equation*}h_{n} \defq  \mathop{\arg\min}_{h \in
+\bbR}  \Exp_{P_{n}}  \left(L_{y}  (\Qbar_{n,h})(O)\right).\end{equation*}\]</span> The
+criterion is convex so the optimization program is well-posed.</p>
+<p>The next chunk of code illustrates the search of an approximation of <span class="math inline">\(h_{n}\)</span>
+over a grid of candidate values.</p>
+<div class="sourceCode" id="cb75"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb75-1"><a href="10-TMLE.html#cb75-1" aria-hidden="true" tabindex="-1"></a>candidates <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="fl">0.01</span>, <span class="fl">0.01</span>, <span class="at">length.out =</span> <span class="fl">1e4</span>)</span>
+<span id="cb75-2"><a href="10-TMLE.html#cb75-2" aria-hidden="true" tabindex="-1"></a>W <span class="ot">&lt;-</span> obs[<span class="dv">1</span><span class="sc">:</span><span class="fl">1e3</span>, <span class="st">&quot;W&quot;</span>]</span>
+<span id="cb75-3"><a href="10-TMLE.html#cb75-3" aria-hidden="true" tabindex="-1"></a>A <span class="ot">&lt;-</span> obs[<span class="dv">1</span><span class="sc">:</span><span class="fl">1e3</span>, <span class="st">&quot;A&quot;</span>]</span>
+<span id="cb75-4"><a href="10-TMLE.html#cb75-4" aria-hidden="true" tabindex="-1"></a>Y <span class="ot">&lt;-</span> obs[<span class="dv">1</span><span class="sc">:</span><span class="fl">1e3</span>, <span class="st">&quot;Y&quot;</span>]</span>
+<span id="cb75-5"><a href="10-TMLE.html#cb75-5" aria-hidden="true" tabindex="-1"></a>lGAW <span class="ot">&lt;-</span> <span class="fu">compute_lGbar_hatAW</span>(A, W, Gbar_hat)</span>
+<span id="cb75-6"><a href="10-TMLE.html#cb75-6" aria-hidden="true" tabindex="-1"></a>QAW <span class="ot">&lt;-</span> <span class="fu">compute_Qbar_hatAW</span>(A, W, Qbar_hat_trees)</span>
+<span id="cb75-7"><a href="10-TMLE.html#cb75-7" aria-hidden="true" tabindex="-1"></a>risk <span class="ot">&lt;-</span> <span class="fu">sapply</span>(candidates,</span>
+<span id="cb75-8"><a href="10-TMLE.html#cb75-8" aria-hidden="true" tabindex="-1"></a>               <span class="cf">function</span>(h) {</span>
+<span id="cb75-9"><a href="10-TMLE.html#cb75-9" aria-hidden="true" tabindex="-1"></a>                 QAW_h <span class="ot">&lt;-</span> <span class="fu">expit</span>(<span class="fu">logit</span>(QAW)  <span class="sc">+</span> h <span class="sc">*</span> (<span class="dv">2</span> <span class="sc">*</span> A <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">/</span> lGAW)</span>
+<span id="cb75-10"><a href="10-TMLE.html#cb75-10" aria-hidden="true" tabindex="-1"></a>                 <span class="sc">-</span><span class="fu">mean</span>(Y <span class="sc">*</span> <span class="fu">log</span>(QAW_h) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">-</span> Y) <span class="sc">*</span> <span class="fu">log</span>(<span class="dv">1</span> <span class="sc">-</span> QAW_h))</span>
+<span id="cb75-11"><a href="10-TMLE.html#cb75-11" aria-hidden="true" tabindex="-1"></a>               })</span>
+<span id="cb75-12"><a href="10-TMLE.html#cb75-12" aria-hidden="true" tabindex="-1"></a>idx_min <span class="ot">&lt;-</span> <span class="fu">which.min</span>(risk)</span>
+<span id="cb75-13"><a href="10-TMLE.html#cb75-13" aria-hidden="true" tabindex="-1"></a>idx_zero <span class="ot">&lt;-</span> <span class="fu">which.min</span>(<span class="fu">abs</span>(candidates))[<span class="dv">1</span>]</span>
+<span id="cb75-14"><a href="10-TMLE.html#cb75-14" aria-hidden="true" tabindex="-1"></a>labels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">expression</span>(R[n](<span class="fu">bar</span>(Q)[<span class="fu">list</span>(n,hn)]<span class="sc">^</span><span class="fu">list</span>(o))),</span>
+<span id="cb75-15"><a href="10-TMLE.html#cb75-15" aria-hidden="true" tabindex="-1"></a>            <span class="fu">expression</span>(R[n](<span class="fu">bar</span>(Q)[<span class="fu">list</span>(n,<span class="dv">0</span>)]<span class="sc">^</span><span class="fu">list</span>(o))))</span>
+<span id="cb75-16"><a href="10-TMLE.html#cb75-16" aria-hidden="true" tabindex="-1"></a>risk <span class="sc">%&gt;%</span> enframe <span class="sc">%&gt;%</span></span>
+<span id="cb75-17"><a href="10-TMLE.html#cb75-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">h =</span> candidates) <span class="sc">%&gt;%</span></span>
+<span id="cb75-18"><a href="10-TMLE.html#cb75-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">abs</span>(h <span class="sc">-</span> h[idx_min]) <span class="sc">&lt;=</span> <span class="fu">abs</span>(h[idx_min])) <span class="sc">%&gt;%</span></span>
+<span id="cb75-19"><a href="10-TMLE.html#cb75-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb75-20"><a href="10-TMLE.html#cb75-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> h, <span class="at">y =</span> value), <span class="at">color =</span> <span class="st">&quot;#CC6666&quot;</span>) <span class="sc">+</span></span>
+<span id="cb75-21"><a href="10-TMLE.html#cb75-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">c</span>(<span class="dv">0</span>, candidates[idx_min])) <span class="sc">+</span></span>
+<span id="cb75-22"><a href="10-TMLE.html#cb75-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fu">c</span>(risk[idx_min], risk[idx_zero])) <span class="sc">+</span></span>
+<span id="cb75-23"><a href="10-TMLE.html#cb75-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(</span>
+<span id="cb75-24"><a href="10-TMLE.html#cb75-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bquote</span>(<span class="st">&quot;empirical logistic risk, &quot;</span> <span class="sc">~</span> R[n](<span class="fu">bar</span>(Q)[<span class="fu">list</span>(n,h)]<span class="sc">^</span><span class="fu">list</span>(o))),</span>
+<span id="cb75-25"><a href="10-TMLE.html#cb75-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">trans =</span> <span class="st">&quot;exp&quot;</span>, <span class="at">labels =</span> <span class="cn">NULL</span>, </span>
+<span id="cb75-26"><a href="10-TMLE.html#cb75-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">sec.axis =</span> <span class="fu">sec_axis</span>(<span class="sc">~</span> .,</span>
+<span id="cb75-27"><a href="10-TMLE.html#cb75-27" aria-hidden="true" tabindex="-1"></a>                        <span class="at">breaks =</span> <span class="fu">c</span>(risk[idx_min], risk[idx_zero]),</span>
+<span id="cb75-28"><a href="10-TMLE.html#cb75-28" aria-hidden="true" tabindex="-1"></a>                        <span class="at">labels =</span> labels))</span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:grid-search"></span>
+<img src="img/grid-search-1.png" alt="Representing the evolution of the empirical risk function as \(h\) ranges over a grid of values. One sees that the risk at \(h=0\) (i.e., the risk of \(\Qbar_{n}\)) is larger that the minimal risk, achieved at \(h \approx\) -0.003 (which must be close to that of the optimal \(\Qbar_{n,h_{n}}\))." width="70%" />
+<p class="caption">
+Figure 10.2: Representing the evolution of the empirical risk function as <span class="math inline">\(h\)</span> ranges over a grid of values. One sees that the risk at <span class="math inline">\(h=0\)</span> (<em>i.e.</em>, the risk of <span class="math inline">\(\Qbar_{n}\)</span>) is larger that the minimal risk, achieved at <span class="math inline">\(h \approx\)</span> -0.003 (which must be close to that of the optimal <span class="math inline">\(\Qbar_{n,h_{n}}\)</span>).
+</p>
+</div>
+
+<p>Figure <a href="10-TMLE.html#fig:grid-search">10.2</a> reveals how moving away slightly from <span class="math inline">\(h=0\)</span> to
+the left (<em>i.e.</em>, to <span class="math inline">\(h_{n}\)</span> equal to -0.003,
+rounded to three decimal places) entails a decrease of the empirical risk. The
+gain is modest at the scale of the empirical risk, but considerable in terms
+of inference, as we explain below.</p>
+</div>
+<div id="fluct-justification" class="section level3 hasAnchor" number="10.2.5">
+<h3><span class="header-section-number">10.2.5</span> Justifying the form of the fluctutation<a href="10-TMLE.html#fluct-justification" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Let us define <span class="math inline">\(\Qbar_{n}^{*} \defq \Qbar_{n, h_{n}}\)</span>. We justify in two
+steps our assertion that moving from <span class="math inline">\(\left.\Qbar_{n}\right|_{h=0} = \Qbar_{n}\)</span> to <span class="math inline">\(\Qbar_{n}^{*}\)</span> along fluctuation <span class="math inline">\(\calQ(\Qbar_{n}, \Gbar_{n})\)</span>
+has a considerable impact for the inference of <span class="math inline">\(\psi_{0}\)</span>.</p>
+<p>First, we note that there is no need to iterate the updating procedure.
+Specifically, even if we tried to fluctuate <span class="math inline">\(\Qbar_{n}^{*}\)</span> along the
+fluctuation <span class="math inline">\(\calQ(\Qbar_{n}^{*}, \Gbar_{n}) = \{\Qbar_{n,h&#39;}^{*} : h&#39; \in \bbR\}\)</span> defined like <span class="math inline">\(\calQ(\Qbar_{n}, \Gbar_{n})\)</span> <a href="10-TMLE.html#eq:Q-fluct">(10.6)</a> with
+<span class="math inline">\(\Qbar_{n,h_{n}}\)</span> substituted for <span class="math inline">\(\Qbar_{n}\)</span>, then we would not move at all.
+This is obvious because there is a one-to-one smooth correspondence between
+the parameter <span class="math inline">\(h&#39;\)</span> indexing <span class="math inline">\(\calQ(\Qbar_{n}^{*}, \Gbar_{n})\)</span> and the
+parameter <span class="math inline">\(h\)</span> indexing <span class="math inline">\(\calQ(\Qbar_{n}, \Gbar_{n})\)</span> (namely, <span class="math inline">\(h&#39; = h + h_{n}\)</span>). Therefore, the derivative of (the real-valued function over <span class="math inline">\(\bbR\)</span>)
+<span class="math inline">\(h \mapsto \Exp_{P_n} \left(L_{y} (\Qbar_{n,h})(O)\right)\)</span> evaluated at its
+minimizer <span class="math inline">\(h_{n}\)</span> equals 0. Equivalently (see <a href="C-more-proofs.html#fluct-score">there</a> in
+Appendix <a href="C-more-proofs.html#fluct-score">C.4.3</a> for a justification of the last but one equality
+below),</p>
+<p><span class="math display" id="eq:fluct-score">\[\begin{align}\notag     \frac{d}{d      h}     &amp;      \left.      \Exp_{P_{n}}
+\left(L_{y}(\Qbar_{n,h}^{*})(O)\right)\right|_{h=0}      \\     \notag      &amp;=
+-\frac{1}{n}\left.\frac{d}{d     h}     \sum_{i=1}^{n}    \left(Y_{i}     \log
+\Qbar_{n,h}^{*}(A_{i},    W_{i})    +    (1    -    Y_{i})    \log\left(1    -
+\Qbar_{n,h}^{*}(A_{i}, W_{i})\right)\right)\right|_{h=0} \\ \notag &amp;= -\frac{1}{n}\sum_{i=1}^{n} \left(\frac{Y_{i}}{\Qbar_{n}^{*}(A_{i}, W_{i})} - \frac{1 - Y_{i}}{1 - \Qbar_{n}^{*}(A_{i}, W_{i})}\right) \times \left.\frac{d}{d h} \Qbar_{n,h}^{*}(A_{i}, W_{i})\right|_{h=0} \\ \notag&amp;= -\frac{1}{n}\sum_{i=1}^{n} \frac{Y_{i} - \Qbar_{n}^{*}(A_{i}, W_{i})}{\Qbar_{n}^{*}(A_{i}, W_{i}) \times \left(1 - \Qbar_{n}^{*}(A_{i}, W_{i})\right)} \left.\frac{d}{d h} \Qbar_{n,h}^{*}(A_{i}, W_{i})\right|_{h=0}  \\ &amp;= -\frac{1}{n}\sum_{i=1}^{n} \frac{2A_{i} - 1}{\ell\Gbar_{n}(A_{i}, W_{i})} \left(Y_{i} - \Qbar_{n}^{*}(A_{i}, W_{i})\right) = 0. \tag{10.8}\end{align}\]</span></p>
+<p>Second, let <span class="math inline">\(P_{n}^{*}\)</span> be a law in <span class="math inline">\(\calM\)</span> such that the <span class="math inline">\(Q_{W}\)</span>, <span class="math inline">\(\Gbar\)</span> and
+<span class="math inline">\(\Qbar\)</span> features of <span class="math inline">\(P_{n}^{*}\)</span> equal <span class="math inline">\(Q_{n,W}\)</span>, <span class="math inline">\(\Gbar_{n}\)</span> and <span class="math inline">\(Q_{n}^{*}\)</span>,
+respectively. In other words, <span class="math inline">\(P_{n}^{*}\)</span> is compatible with <span class="math inline">\(Q_{n,W}\)</span>,
+<span class="math inline">\(\Gbar_{n}\)</span> and <span class="math inline">\(\Qbar_{n}^{*}\)</span>.<a href="#fn24" class="footnote-ref" id="fnref24"><sup>24</sup></a> Note that the last equality in <a href="10-TMLE.html#eq:fluct-score">(10.8)</a>
+equivalently writes as <span class="math display">\[\begin{equation*}P_{n}  D_{2}^{*}   (P_{n}^{*})  =
+0.\end{equation*}\]</span> Thus the (direct) fluctuation solves
+<a href="10-TMLE.html#eq:solve-alt">(10.3)</a>. Now, we have already argued in Section <a href="10-TMLE.html#basic-fact">10.1.3</a>
+that it also holds that <span class="math display">\[\begin{equation*}P_{n}  D_{1}^{*}  (P_{n}^{*})  =
+0.\end{equation*}\]</span> Consequently, <span class="math inline">\(P_{n}^{*}\)</span> solves the efficient influence
+curve equation, that is, satisfies <a href="10-TMLE.html#eq:solve">(10.1)</a>. As argued in Section
+<a href="10-TMLE.html#eic-equation">10.1.2</a>, it thus follows that the plug-in estimator
+<span class="math display">\[\begin{equation*}     \psi_n^*    \defq     \Psi(P_{n}^{*})    =     \int
+\left(\Qbar_n^*(1,w)  - \Qbar_n^*(0,w)\right)  dQ_{n,W}(w) \end{equation*}\]</span> is
+asymptotically linear with influence curve <span class="math inline">\(\IC = D^{*}(P_{0})\)</span>, under mild
+conditions. Moreover, by virtue of its plug-in construction, it has the
+additional property that in finite-samples <span class="math inline">\(\psi_n^*\)</span> will always obey bounds
+on the parameter space.</p>
+</div>
+<div id="exo-tmle-flucs" class="section level3 hasAnchor" number="10.2.6">
+<h3><span class="header-section-number">10.2.6</span> ⚙ Alternative fluctuation<a href="10-TMLE.html#exo-tmle-flucs" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The following exercises will have you consider an alternative means of
+performing a fluctuation. For <span class="math inline">\(a = 0, 1\)</span>, consider the following
+fluctuation model for <span class="math inline">\(\Qbar^a \defq \Qbar(a,\cdot)\)</span>:
+<span class="math display" id="eq:Q-fluct-alt">\[\begin{equation} 
+\calQ^a(\Qbar^a)
+\defq      \left\{w       \mapsto      \Qbar_{h}^a(w)      \defq
+\expit\left(\logit\left(\Qbar(a,w)\right) +  h
+\right) : h \in \bbR\right\} \subset \calQ. \tag{10.9} 
+\end{equation}\]</span>
+Let
+<span class="math display">\[\begin{equation*}
+  \calQ^{\text{alt}}(\Qbar)   \defq   \left\{(a,w)  \mapsto   \Qbar_{h_0,
+  h_1}(a,w) \defq a \times
+  \Qbar_{h_{1}}^1(w) + (1-a) \Qbar_{h_{0}}^0(w) : h_{0}, h_{1} \in \bbR\right\}
+\end{equation*}\]</span>
+be the fluctuation model for <span class="math inline">\(\Qbar\)</span> that is implied by the two submodels for
+<span class="math inline">\(\Qbar^1\)</span> and <span class="math inline">\(\Qbar^0\)</span>.</p>
+<p>Also for a given <span class="math inline">\(\Gbar\)</span> satisfying that <span class="math inline">\(0 &lt; \ell\Gbar(A,W) &lt; 1\)</span>,
+<span class="math inline">\(P_{0}\)</span>-almost surely, and both <span class="math inline">\(a=0,1\)</span>, consider the loss function
+<span class="math inline">\(L_{y,\Gbar}^{a}\)</span> given by
+<span class="math display">\[\begin{equation*}
+   L_{y,\Gbar}^{a} (f) (A,W) \defq\frac{\one\{A = a\}}{\ell\Gbar(A, W)} L_{y}
+   (f)(O)
+\end{equation*}\]</span>
+for any function <span class="math inline">\(f:\{0,1\} \times [0,1] \to [0,1]\)</span>, where <span class="math inline">\(L_{y}\)</span> is defined
+in <a href="10-TMLE.html#eq:logis-loss-y">(10.7)</a> above. It yields the
+empirical risk function
+<span class="math display">\[\begin{equation*}
+(h_{0}, h_{1}) \mapsto \sum_{a = 0,1}  \Exp_{P_{n}}
+\left(L^a_{y, \Gbar} (\Qbar^a_{n,h_a})(O)\right).
+\end{equation*}\]</span></p>
+<ol style="list-style-type: decimal">
+<li><p>Comment on the differences between these fluctuation model and loss
+function compared to those discussed above.</p></li>
+<li><p>Visualize three elements of <span class="math inline">\(\calQ^{\text{alt}}(\Qbar_0)\)</span> and
+<span class="math inline">\(\calQ^{\text{alt}}(\Qbar_n)\)</span>: choose three values for <span class="math inline">\((h_0, h_1)\)</span> and
+reproduce Figure <a href="10-TMLE.html#fig:fluctuation">10.1</a>.</p></li>
+<li><p>Argue that in order to minimize the empirical risk over all <span class="math inline">\((h_0, h_1) \in \bbR^2\)</span>, we may minimize over <span class="math inline">\(h_0 \in \bbR\)</span> and <span class="math inline">\(h_1 \in \bbR\)</span> separately.</p></li>
+<li><p>Visualize how the empirical risk with <span class="math inline">\(\Gbar = \Gbar_n\)</span> varies for different elements
+<span class="math inline">\(\Qbar_{n, h_0, h_1}\)</span> of <span class="math inline">\(\calQ(\Qbar_n)\)</span>. For simplicity (and with the justification of problem 3),
+you may wish to make a separate figure (like Figure <a href="10-TMLE.html#fig:grid-search">10.2</a>) for <span class="math inline">\(a = 0, 1\)</span>
+that illustrates how the empirical risk varies as a function of <span class="math inline">\(h_a\)</span> while setting <span class="math inline">\(h_{1 - a} = 0\)</span>.</p></li>
+<li><p>☡  Justify the validity of <span class="math inline">\(L^a_{y, \Gbar}\)</span> as a loss function for <span class="math inline">\(\Qbar^a_0\)</span>:
+show that amongst all functions that map <span class="math inline">\(w\)</span> to <span class="math inline">\((0,1)\)</span>, the true risk
+<span class="math inline">\(\Exp_{P_0}\left(L^a_{y, \Gbar}(f)(O)\right)\)</span> is minimized when <span class="math inline">\(f = \Qbar^a_0\)</span>.</p></li>
+<li><p>☡  Argue that your answer to problem 2 also implies that the summed loss function <span class="math inline">\(\sum_{a=0,1} L^a_{y, \Gbar}\)</span>
+is valid for <span class="math inline">\(\Qbar\)</span>.</p></li>
+<li><p>☡  Justify the combination of these loss function and fluctuation by repeating
+the calculation in equation <a href="10-TMLE.html#eq:fluct-score">(10.8)</a> above, <em>mutatis mutandis</em>.</p></li>
+</ol>
+</div>
+</div>
+<div id="summary-and-perspectives" class="section level2 hasAnchor" number="10.3">
+<h2><span class="header-section-number">10.3</span> Summary and perspectives<a href="10-TMLE.html#summary-and-perspectives" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The procedure laid out in Section <a href="10-TMLE.html#TMLE">10</a> is called <em>targeted minimum
+loss-based estimation</em> (TMLE). The nomenclature derives from its logistics.
+We first generated an (un-targeted) initial estimator of <span class="math inline">\(\Psi(P_0)\)</span> by
+substituting for <span class="math inline">\(P_{0}\)</span> a law <span class="math inline">\(\Phat_{n}\)</span> compatible with initial estimators
+of some <span class="math inline">\(\Psi\)</span>-specific relevant nuisance parameters. Then through
+loss-minimization, we built a <em>targeted</em> estimator by substituting for
+<span class="math inline">\(\Phat_{n}\)</span> a law <span class="math inline">\(P_{n}^{*}\)</span> compatible with the nuisance parameters that we
+updated in a targeted fashion.</p>
+<p>The TMLE procedure was coined in 2006 by Mark van der Laan and Dan Rubin
+<span class="citation">(Laan and Rubin 2006)</span>. It has since then been developed and applied in a great variety of
+contexts. We refer to the monographies <span class="citation">(Laan and Rose 2011)</span> and <span class="citation">(Laan and Rose 2018)</span> for a
+rich overview.</p>
+<p>In summary, targeted learning bridges the gap between formal inference of
+finite-dimensional parameters <span class="math inline">\(\Psi(P_{0})\)</span> of the law <span class="math inline">\(P_{0}\)</span> of the data,
+via bootstrapping or influence curves, and data-adaptive, loss-based, machine
+learning estimation of <span class="math inline">\(\Psi\)</span>-specific infinite-dimensional features thereof
+(the so-called nuisance parameters). A typical example concerns the super
+learning-based, targeted estimation of effect parameters defined as
+identifiable versions of causal quantities. The TMLE algorithm integrates
+completely the estimation of the relevant nuisance parameters by super
+learning <span class="citation">(Laan, Polley, and Hubbard 2007)</span>. Under mild assumptions, the targeting step removes the bias
+of the initial estimators of the targeted effects. The resulting TMLEs enjoy
+many desirable statistical properties: among others, by being substitution
+estimators, they lie in the parameter space; they are often double-robust;
+they lend themselves to the construction of confidence regions.</p>
+<p>The scientific community is always engaged in devising and promoting enhanced
+principles for sounder research through the better design of experimental and
+nonexperimental studies and the development of more reliable and honest
+statistical analyses. By focusing on prespecified analytic plans and
+algorithms that make realistic assumptions in more flexible nonparametric or
+semiparametric statistical models, targeted learning has been at the forefront of
+this concerted effort. Under this light, targeted learning notably consists in
+translating knowledge about the data and underlying data-generating mechanism
+into a realistic model; in expressing the research question under the form of
+a statistical estimation problem; in analyzing the statistical estimation
+problem within the frame of the model; in developing <em>ad hoc</em> algorithms
+grounded in theory and tailored to the question at stake to map knowledge and
+data into an answer coupled to an assessment of its trustworthiness.</p>
+<p>Quoting <span class="citation">(Laan and Rose 2018)</span>:</p>
+<blockquote>
+<p>Over the last decade, targeted learning has been established as a reliable framework for constructing effect estimators and prediction functions. The continued development of targeted learning has led to new solutions for existing problems in many data structures in addition to discoveries in varied applied areas. This has included work in randomized controlled trials, parameters defined by a marginal structural model, case-control studies, collaborative TMLE, missing and censored data, longitudinal data, effect modification, comparative effectiveness research, aging, cancer, occupational exposures, plan payment risk adjustment, and HIV, as well as others. In many cases, these studies compared targeted learning techniques to standard approaches, demonstrating improved performance in simulations and realworld applications.</p>
+</blockquote>
+<p>It is now time to resume our introduction to TMLE and to carry out an
+empirical investigation of its statistical properties in the context of the
+estimation of <span class="math inline">\(\psi_{0}\)</span>.</p>
+</div>
+<div id="empirical-inves-tmle" class="section level2 hasAnchor" number="10.4">
+<h2><span class="header-section-number">10.4</span> Empirical investigation<a href="10-TMLE.html#empirical-inves-tmle" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="empirical-inves-tmle-first" class="section level3 hasAnchor" number="10.4.1">
+<h3><span class="header-section-number">10.4.1</span> A first numerical application<a href="10-TMLE.html#empirical-inves-tmle-first" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Let us illustrate the principle of targeted minimum loss estimation by
+updating the G-computation estimator built on the <span class="math inline">\(n=1000\)</span> first observations
+in <code>obs</code> by relying on <span class="math inline">\(\Algo_{\Qbar,\text{kNN}}\)</span>, that is, on the algorithm
+for the estimation of <span class="math inline">\(\Qbar_{0}\)</span> as it is implemented in <code>estimate_Qbar</code> with
+its argument <code>algorithm</code> set to the built-in <code>kknn_algo</code> (see Section
+<a href="7-nuisance.html#Qbar-knn-algo">7.6.2</a>). In Section <a href="9-one-step.html#empirical-inves-one-step">9.3</a>, we
+performed a one-step correction of the same initial estimator.</p>
+<p>The algorithm has been trained earlier on this data set and produced the
+object <code>Qbar_hat_kknn</code>. The following chunk of code prints the initial
+estimator <code>psin_kknn</code>, its one-step update <code>psin_kknn_os</code>, then applies the
+targeting step and presents the resulting estimator:</p>
+<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb76-1"><a href="10-TMLE.html#cb76-1" aria-hidden="true" tabindex="-1"></a>(psin_kknn)</span>
+<span id="cb76-2"><a href="10-TMLE.html#cb76-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 1 × 2</span></span>
+<span id="cb76-3"><a href="10-TMLE.html#cb76-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   psi_n   sig_n</span></span>
+<span id="cb76-4"><a href="10-TMLE.html#cb76-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;dbl&gt;   &lt;dbl&gt;</span></span>
+<span id="cb76-5"><a href="10-TMLE.html#cb76-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 0.101 0.00306</span></span>
+<span id="cb76-6"><a href="10-TMLE.html#cb76-6" aria-hidden="true" tabindex="-1"></a>(psin_kknn_os)</span>
+<span id="cb76-7"><a href="10-TMLE.html#cb76-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 1 × 3</span></span>
+<span id="cb76-8"><a href="10-TMLE.html#cb76-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    psi_n  sig_n    crit_n</span></span>
+<span id="cb76-9"><a href="10-TMLE.html#cb76-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;</span></span>
+<span id="cb76-10"><a href="10-TMLE.html#cb76-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 0.0999 0.0171 -0.000633</span></span>
+<span id="cb76-11"><a href="10-TMLE.html#cb76-11" aria-hidden="true" tabindex="-1"></a>(psin_kknn_tmle <span class="ot">&lt;-</span> <span class="fu">apply_targeting_step</span>(<span class="fu">head</span>(obs, <span class="fl">1e3</span>),</span>
+<span id="cb76-12"><a href="10-TMLE.html#cb76-12" aria-hidden="true" tabindex="-1"></a>                                        <span class="fu">wrapper</span>(Gbar_hat, <span class="cn">FALSE</span>),</span>
+<span id="cb76-13"><a href="10-TMLE.html#cb76-13" aria-hidden="true" tabindex="-1"></a>                                        <span class="fu">wrapper</span>(Qbar_hat_kknn, <span class="cn">FALSE</span>)))</span>
+<span id="cb76-14"><a href="10-TMLE.html#cb76-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 1 × 3</span></span>
+<span id="cb76-15"><a href="10-TMLE.html#cb76-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    psi_n  sig_n    crit_n</span></span>
+<span id="cb76-16"><a href="10-TMLE.html#cb76-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;</span></span>
+<span id="cb76-17"><a href="10-TMLE.html#cb76-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 0.0999 0.0171 -2.05e-17</span></span></code></pre></div>
+<p>In the call to <code>apply_targeting_step</code> we provide <em>(i)</em> the data set at hand
+(first line), <em>(ii)</em> the estimator <code>Gbar_hat</code> of <span class="math inline">\(\Gbar_{0}\)</span> that we built
+earlier by using algorithm <span class="math inline">\(\Algo_{\Gbar,1}\)</span> (second line; see Section
+<a href="7-nuisance.html#algo-Gbar-one">7.4.2</a>), <em>(iii)</em> the estimator <code>Qbar_hat_kknn</code> of <span class="math inline">\(\Qbar_{0}\)</span>
+(third line). Apparently, in this particular example, the one-step correction
+and targeted correction updater similarly the initial estimator.</p>
+</div>
+<div id="exo-tmle" class="section level3 hasAnchor" number="10.4.2">
+<h3><span class="header-section-number">10.4.2</span> ⚙ A computational exploration<a href="10-TMLE.html#exo-tmle" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ol style="list-style-type: decimal">
+<li><p>Consult the man page of function <code>apply_targeting_step</code> (run
+<code>?apply_targeting_step</code>) and explain what is the role of its input
+<code>epsilon</code>.</p></li>
+<li><p>Run the chunk of code below. What does it do? Hint: check out the chunks of
+code of Sections <a href="7-nuisance.html#Qbar-knn-algo">7.6.2</a>, <a href="8-naive-estimators.html#unknown-gbar-constr">8.2.1</a> and
+<a href="10-TMLE.html#empirical-inves-tmle-first">10.4.1</a>.</p></li>
+</ol>
+
+<div class="sourceCode" id="cb77"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb77-1"><a href="10-TMLE.html#cb77-1" aria-hidden="true" tabindex="-1"></a>epsilon <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="fl">1e-2</span>, <span class="fl">1e-2</span>, <span class="at">length.out =</span> <span class="fl">1e2</span>)</span>
+<span id="cb77-2"><a href="10-TMLE.html#cb77-2" aria-hidden="true" tabindex="-1"></a>Gbar_hat_w <span class="ot">&lt;-</span> <span class="fu">wrapper</span>(Gbar_hat, <span class="cn">FALSE</span>)</span>
+<span id="cb77-3"><a href="10-TMLE.html#cb77-3" aria-hidden="true" tabindex="-1"></a>Qbar_kknn <span class="ot">&lt;-</span> <span class="fu">wrapper</span>(Qbar_hat_kknn, <span class="cn">FALSE</span>)</span>
+<span id="cb77-4"><a href="10-TMLE.html#cb77-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb77-5"><a href="10-TMLE.html#cb77-5" aria-hidden="true" tabindex="-1"></a>psi_trees_epsilon <span class="ot">&lt;-</span> <span class="fu">sapply</span>(epsilon, <span class="cf">function</span>(h) {</span>
+<span id="cb77-6"><a href="10-TMLE.html#cb77-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">apply_targeting_step</span>(<span class="fu">head</span>(obs, <span class="fl">1e3</span>), Gbar_hat_w,</span>
+<span id="cb77-7"><a href="10-TMLE.html#cb77-7" aria-hidden="true" tabindex="-1"></a>                       Qbar_trees, <span class="at">epsilon =</span> h) <span class="sc">%&gt;%</span></span>
+<span id="cb77-8"><a href="10-TMLE.html#cb77-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(psi_n, crit_n) <span class="sc">%&gt;%</span> as.matrix</span>
+<span id="cb77-9"><a href="10-TMLE.html#cb77-9" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb77-10"><a href="10-TMLE.html#cb77-10" aria-hidden="true" tabindex="-1"></a>idx_trees <span class="ot">&lt;-</span> <span class="fu">which.min</span>(<span class="fu">abs</span>(psi_trees_epsilon[<span class="dv">2</span>, ]))</span>
+<span id="cb77-11"><a href="10-TMLE.html#cb77-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb77-12"><a href="10-TMLE.html#cb77-12" aria-hidden="true" tabindex="-1"></a>psi_kknn_epsilon <span class="ot">&lt;-</span> <span class="fu">sapply</span>(epsilon, <span class="cf">function</span>(h) {</span>
+<span id="cb77-13"><a href="10-TMLE.html#cb77-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">apply_targeting_step</span>(<span class="fu">head</span>(obs, <span class="fl">1e3</span>), Gbar_hat_w,</span>
+<span id="cb77-14"><a href="10-TMLE.html#cb77-14" aria-hidden="true" tabindex="-1"></a>                       Qbar_kknn, <span class="at">epsilon =</span> h) <span class="sc">%&gt;%</span></span>
+<span id="cb77-15"><a href="10-TMLE.html#cb77-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(psi_n, crit_n) <span class="sc">%&gt;%</span> as.matrix</span>
+<span id="cb77-16"><a href="10-TMLE.html#cb77-16" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb77-17"><a href="10-TMLE.html#cb77-17" aria-hidden="true" tabindex="-1"></a>idx_kknn <span class="ot">&lt;-</span> <span class="fu">which.min</span>(<span class="fu">abs</span>(psi_kknn_epsilon[<span class="dv">2</span>, ]))</span>
+<span id="cb77-18"><a href="10-TMLE.html#cb77-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb77-19"><a href="10-TMLE.html#cb77-19" aria-hidden="true" tabindex="-1"></a><span class="fu">rbind</span>(<span class="fu">t</span>(psi_trees_epsilon), <span class="fu">t</span>(psi_kknn_epsilon)) <span class="sc">%&gt;%</span> as_tibble <span class="sc">%&gt;%</span></span>
+<span id="cb77-20"><a href="10-TMLE.html#cb77-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="st">&quot;psi_n&quot;</span> <span class="ot">=</span> V1, <span class="st">&quot;crit_n&quot;</span> <span class="ot">=</span> V2) <span class="sc">%&gt;%</span></span>
+<span id="cb77-21"><a href="10-TMLE.html#cb77-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">type =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&quot;trees&quot;</span>, <span class="st">&quot;kknn&quot;</span>), <span class="at">each =</span> <span class="fu">length</span>(epsilon))) <span class="sc">%&gt;%</span> </span>
+<span id="cb77-22"><a href="10-TMLE.html#cb77-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb77-23"><a href="10-TMLE.html#cb77-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> crit_n, <span class="at">y =</span> psi_n, <span class="at">color =</span> type)) <span class="sc">+</span></span>
+<span id="cb77-24"><a href="10-TMLE.html#cb77-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb77-25"><a href="10-TMLE.html#cb77-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fu">c</span>(psi_trees_epsilon[<span class="dv">1</span>,idx_trees],</span>
+<span id="cb77-26"><a href="10-TMLE.html#cb77-26" aria-hidden="true" tabindex="-1"></a>                            psi_kknn_epsilon[<span class="dv">1</span>,idx_kknn])) <span class="sc">+</span></span>
+<span id="cb77-27"><a href="10-TMLE.html#cb77-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="fu">bquote</span>(<span class="fu">paste</span>(P[n]<span class="sc">~</span>D<span class="sc">^</span><span class="st">&quot;*&quot;</span>, (P[<span class="fu">list</span>(n,h)]<span class="sc">^</span>o))),</span>
+<span id="cb77-28"><a href="10-TMLE.html#cb77-28" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="fu">bquote</span>(<span class="fu">Psi</span>(P[<span class="fu">list</span>(n,h)]<span class="sc">^</span>o)))</span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:exo-tmle"></span>
+<img src="img/exo-tmle-1.png" alt="Figure produced when running the chunk of code from problem 2 in Section 10.4.2." width="70%" />
+<p class="caption">
+Figure 10.3: Figure produced when running the chunk of code from problem 2 in Section <a href="10-TMLE.html#exo-tmle">10.4.2</a>.
+</p>
+</div>
+<ol start="3" style="list-style-type: decimal">
+<li>Discuss the fact that the colored curves in Figure <a href="10-TMLE.html#fig:exo-tmle">10.3</a>
+look like segments.</li>
+</ol>
+</div>
+<div id="empirical-investigation" class="section level3 hasAnchor" number="10.4.3">
+<h3><span class="header-section-number">10.4.3</span> Empirical investigation<a href="10-TMLE.html#empirical-investigation" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>To assess more broadly what is the impact of the targeting step, let us apply
+it to the estimators that we built in Section <a href="8-naive-estimators.html#empirical-inves-Gcomp">8.4.3</a>. In
+Section <a href="9-one-step.html#empirical-inves-one-step">9.3</a>, we applied the one-step correction to
+the same estimators.</p>
+<p>The object <code>learned_features_fixed_sample_size</code> already contains the estimated
+features of <span class="math inline">\(P_{0}\)</span> that are needed to perform the targeting step on the
+estimators <span class="math inline">\(\psi_{n}^{d}\)</span> and <span class="math inline">\(\psi_{n}^{e}\)</span>, thus we merely have to call the
+function <code>apply_targeting_step</code>.</p>
+
+<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb78-1"><a href="10-TMLE.html#cb78-1" aria-hidden="true" tabindex="-1"></a>psi_tmle <span class="ot">&lt;-</span> learned_features_fixed_sample_size <span class="sc">%&gt;%</span></span>
+<span id="cb78-2"><a href="10-TMLE.html#cb78-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">tmle_d =</span></span>
+<span id="cb78-3"><a href="10-TMLE.html#cb78-3" aria-hidden="true" tabindex="-1"></a>           <span class="fu">pmap</span>(<span class="fu">list</span>(obs, Gbar_hat, Qbar_hat_d),</span>
+<span id="cb78-4"><a href="10-TMLE.html#cb78-4" aria-hidden="true" tabindex="-1"></a>                <span class="sc">~</span> <span class="fu">apply_targeting_step</span>(<span class="fu">as.matrix</span>(..<span class="dv">1</span>),</span>
+<span id="cb78-5"><a href="10-TMLE.html#cb78-5" aria-hidden="true" tabindex="-1"></a>                                 <span class="fu">wrapper</span>(..<span class="dv">2</span>, <span class="cn">FALSE</span>),</span>
+<span id="cb78-6"><a href="10-TMLE.html#cb78-6" aria-hidden="true" tabindex="-1"></a>                                 <span class="fu">wrapper</span>(..<span class="dv">3</span>, <span class="cn">FALSE</span>))),</span>
+<span id="cb78-7"><a href="10-TMLE.html#cb78-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">tmle_e =</span></span>
+<span id="cb78-8"><a href="10-TMLE.html#cb78-8" aria-hidden="true" tabindex="-1"></a>           <span class="fu">pmap</span>(<span class="fu">list</span>(obs, Gbar_hat, Qbar_hat_e),</span>
+<span id="cb78-9"><a href="10-TMLE.html#cb78-9" aria-hidden="true" tabindex="-1"></a>                <span class="sc">~</span> <span class="fu">apply_targeting_step</span>(<span class="fu">as.matrix</span>(..<span class="dv">1</span>),</span>
+<span id="cb78-10"><a href="10-TMLE.html#cb78-10" aria-hidden="true" tabindex="-1"></a>                                 <span class="fu">wrapper</span>(..<span class="dv">2</span>, <span class="cn">FALSE</span>),</span>
+<span id="cb78-11"><a href="10-TMLE.html#cb78-11" aria-hidden="true" tabindex="-1"></a>                                 <span class="fu">wrapper</span>(..<span class="dv">3</span>, <span class="cn">FALSE</span>)))) <span class="sc">%&gt;%</span></span>
+<span id="cb78-12"><a href="10-TMLE.html#cb78-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(tmle_d, tmle_e) <span class="sc">%&gt;%</span></span>
+<span id="cb78-13"><a href="10-TMLE.html#cb78-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="fu">c</span>(<span class="st">`</span><span class="at">tmle_d</span><span class="st">`</span>, <span class="st">`</span><span class="at">tmle_e</span><span class="st">`</span>),</span>
+<span id="cb78-14"><a href="10-TMLE.html#cb78-14" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">&quot;type&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;estimates&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb78-15"><a href="10-TMLE.html#cb78-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract</span>(type, <span class="st">&quot;type&quot;</span>, <span class="st">&quot;_([de])$&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb78-16"><a href="10-TMLE.html#cb78-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">type =</span> <span class="fu">paste0</span>(type, <span class="st">&quot;_targeted&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb78-17"><a href="10-TMLE.html#cb78-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(estimates) <span class="sc">%&gt;%</span></span>
+<span id="cb78-18"><a href="10-TMLE.html#cb78-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(type) <span class="sc">%&gt;%</span></span>
+<span id="cb78-19"><a href="10-TMLE.html#cb78-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">sig_alt =</span> <span class="fu">sd</span>(psi_n)) <span class="sc">%&gt;%</span></span>
+<span id="cb78-20"><a href="10-TMLE.html#cb78-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">clt_ =</span> (psi_n <span class="sc">-</span> psi_zero) <span class="sc">/</span> sig_n,</span>
+<span id="cb78-21"><a href="10-TMLE.html#cb78-21" aria-hidden="true" tabindex="-1"></a>         <span class="at">clt_alt =</span> (psi_n <span class="sc">-</span> psi_zero) <span class="sc">/</span> sig_alt) <span class="sc">%&gt;%</span></span>
+<span id="cb78-22"><a href="10-TMLE.html#cb78-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="fu">c</span>(<span class="st">`</span><span class="at">clt_</span><span class="st">`</span>, <span class="st">`</span><span class="at">clt_alt</span><span class="st">`</span>),</span>
+<span id="cb78-23"><a href="10-TMLE.html#cb78-23" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">&quot;key&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;clt&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb78-24"><a href="10-TMLE.html#cb78-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract</span>(key, <span class="st">&quot;key&quot;</span>, <span class="st">&quot;_(.*)$&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb78-25"><a href="10-TMLE.html#cb78-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">key =</span> <span class="fu">ifelse</span>(key <span class="sc">==</span> <span class="st">&quot;&quot;</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb78-26"><a href="10-TMLE.html#cb78-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="st">&quot;auto_renormalization&quot;</span> <span class="ot">=</span> key)</span>
+<span id="cb78-27"><a href="10-TMLE.html#cb78-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb78-28"><a href="10-TMLE.html#cb78-28" aria-hidden="true" tabindex="-1"></a>(bias_tmle <span class="ot">&lt;-</span> psi_tmle <span class="sc">%&gt;%</span></span>
+<span id="cb78-29"><a href="10-TMLE.html#cb78-29" aria-hidden="true" tabindex="-1"></a>   <span class="fu">group_by</span>(type, auto_renormalization) <span class="sc">%&gt;%</span></span>
+<span id="cb78-30"><a href="10-TMLE.html#cb78-30" aria-hidden="true" tabindex="-1"></a>   <span class="fu">summarize</span>(<span class="at">bias =</span> <span class="fu">mean</span>(clt)) <span class="sc">%&gt;%</span> ungroup)</span>
+<span id="cb78-31"><a href="10-TMLE.html#cb78-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 4 × 3</span></span>
+<span id="cb78-32"><a href="10-TMLE.html#cb78-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   type       auto_renormalization     bias</span></span>
+<span id="cb78-33"><a href="10-TMLE.html#cb78-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;      &lt;lgl&gt;                   &lt;dbl&gt;</span></span>
+<span id="cb78-34"><a href="10-TMLE.html#cb78-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 d_targeted FALSE                -0.0147 </span></span>
+<span id="cb78-35"><a href="10-TMLE.html#cb78-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 d_targeted TRUE                 -0.0313 </span></span>
+<span id="cb78-36"><a href="10-TMLE.html#cb78-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 e_targeted FALSE                 0.0132 </span></span>
+<span id="cb78-37"><a href="10-TMLE.html#cb78-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 e_targeted TRUE                 -0.00407</span></span>
+<span id="cb78-38"><a href="10-TMLE.html#cb78-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb78-39"><a href="10-TMLE.html#cb78-39" aria-hidden="true" tabindex="-1"></a>fig <span class="ot">&lt;-</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb78-40"><a href="10-TMLE.html#cb78-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y), </span>
+<span id="cb78-41"><a href="10-TMLE.html#cb78-41" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> <span class="fu">tibble</span>(<span class="at">x =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">4</span>, <span class="dv">4</span>, <span class="at">length.out =</span> <span class="fl">1e3</span>),</span>
+<span id="cb78-42"><a href="10-TMLE.html#cb78-42" aria-hidden="true" tabindex="-1"></a>                          <span class="at">y =</span> <span class="fu">dnorm</span>(x)),</span>
+<span id="cb78-43"><a href="10-TMLE.html#cb78-43" aria-hidden="true" tabindex="-1"></a>            <span class="at">linetype =</span> <span class="dv">1</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb78-44"><a href="10-TMLE.html#cb78-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="fu">aes</span>(clt, <span class="at">fill =</span> type, <span class="at">colour =</span> type),</span>
+<span id="cb78-45"><a href="10-TMLE.html#cb78-45" aria-hidden="true" tabindex="-1"></a>               psi_tmle, <span class="at">alpha =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
+<span id="cb78-46"><a href="10-TMLE.html#cb78-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="fu">aes</span>(<span class="at">xintercept =</span> bias, <span class="at">colour =</span> type),</span>
+<span id="cb78-47"><a href="10-TMLE.html#cb78-47" aria-hidden="true" tabindex="-1"></a>             bias_tmle, <span class="at">size =</span> <span class="fl">1.5</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb78-48"><a href="10-TMLE.html#cb78-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> auto_renormalization,</span>
+<span id="cb78-49"><a href="10-TMLE.html#cb78-49" aria-hidden="true" tabindex="-1"></a>             <span class="at">labeller =</span></span>
+<span id="cb78-50"><a href="10-TMLE.html#cb78-50" aria-hidden="true" tabindex="-1"></a>               <span class="fu">as_labeller</span>(<span class="fu">c</span>(<span class="st">`</span><span class="at">TRUE</span><span class="st">`</span> <span class="ot">=</span> <span class="st">&quot;auto-renormalization: TRUE&quot;</span>,</span>
+<span id="cb78-51"><a href="10-TMLE.html#cb78-51" aria-hidden="true" tabindex="-1"></a>                             <span class="st">`</span><span class="at">FALSE</span><span class="st">`</span> <span class="ot">=</span> <span class="st">&quot;auto-renormalization: FALSE&quot;</span>)),</span>
+<span id="cb78-52"><a href="10-TMLE.html#cb78-52" aria-hidden="true" tabindex="-1"></a>             <span class="at">scales =</span> <span class="st">&quot;free&quot;</span>)</span>
+<span id="cb78-53"><a href="10-TMLE.html#cb78-53" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb78-54"><a href="10-TMLE.html#cb78-54" aria-hidden="true" tabindex="-1"></a>fig <span class="sc">+</span></span>
+<span id="cb78-55"><a href="10-TMLE.html#cb78-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb78-56"><a href="10-TMLE.html#cb78-56" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="fu">bquote</span>(<span class="fu">paste</span>(<span class="fu">sqrt</span>(n<span class="sc">/</span>v[n]<span class="sc">^</span>{<span class="st">&quot;*&quot;</span>})<span class="sc">*</span></span>
+<span id="cb78-57"><a href="10-TMLE.html#cb78-57" aria-hidden="true" tabindex="-1"></a>                        (psi[n]<span class="sc">^</span>{<span class="st">&quot;*&quot;</span>} <span class="sc">-</span> psi[<span class="dv">0</span>]))))</span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:tmle"></span>
+<img src="img/tmle-1.png" alt="Kernel density estimators of the law of two targeted estimators of \(\psi_{0}\) (recentered with respect to \(\psi_{0}\), and renormalized). The estimators respectively hinge on algorithms \(\Algo_{\Qbar,1}\) (d) and \(\Algo_{\Qbar,\text{kNN}}\) (e) to estimate \(\Qbar_{0}\), and on a targeting step. Two renormalization schemes are considered, either based on an estimator of the asymptotic variance (left) or on the empirical variance computed across the 1000 independent replications of the estimators (right). We emphasize that the \(x\)-axis ranges differ between the left and right plots." width="70%" />
+<p class="caption">
+Figure 10.4: Kernel density estimators of the law of two targeted estimators of <span class="math inline">\(\psi_{0}\)</span> (recentered with respect to <span class="math inline">\(\psi_{0}\)</span>, and renormalized). The estimators respectively hinge on algorithms <span class="math inline">\(\Algo_{\Qbar,1}\)</span> (d) and <span class="math inline">\(\Algo_{\Qbar,\text{kNN}}\)</span> (e) to estimate <span class="math inline">\(\Qbar_{0}\)</span>, and on a targeting step. Two renormalization schemes are considered, either based on an estimator of the asymptotic variance (left) or on the empirical variance computed across the 1000 independent replications of the estimators (right). We emphasize that the <span class="math inline">\(x\)</span>-axis ranges differ between the left and right plots.
+</p>
+</div>
+<p>We see that the step of targeting is as promised: the bias of the resulting
+estimators is minimized relative to the naive estimators. Comparing
+these results to those obtain using one-step estimators (Section
+<a href="9-one-step.html#empirical-inves-one-step">9.3</a>), we find quite similar performance between
+one-step and TMLE estimators.</p>
+</div>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="21">
+<li id="fn21"><p>or <a href="10-TMLE.html#eq:solve-approx-alt">(10.4)</a>.<a href="10-TMLE.html#fnref21" class="footnote-back">↩︎</a></p></li>
+<li id="fn22"><p>or <span class="math inline">\(P_n D^*(P_n^*) = o_{P_0}(1/\sqrt{n})\)</span>.<a href="10-TMLE.html#fnref22" class="footnote-back">↩︎</a></p></li>
+<li id="fn23"><p>In fact, more generally, the conditional <em>law</em> of <span class="math inline">\(Y\)</span> given <span class="math inline">\((A,W)\)</span>
+is not fluctuated. See the corresponding problem in Section <a href="10-TMLE.html#exo-fluct">10.2.3</a>.<a href="10-TMLE.html#fnref23" class="footnote-back">↩︎</a></p></li>
+<li id="fn24"><p>In Section <a href="9-one-step.html#analysis-of-plug-in">9.1</a>, we
+defined <span class="math inline">\(\Phat_{n}\)</span> similarly with <span class="math inline">\(\Qbar_{n}\)</span> substituted for
+<span class="math inline">\(\Qbar_{n}^{*}\)</span>.<a href="10-TMLE.html#fnref24" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="9-one-step.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="11-closing-words.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="assets/gitbook-2.6.7/js/app.min.js"></script>
+<script src="assets/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="assets/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": null,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["tlride-book.pdf"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "section",
+"scroll_hightlight": true,
+"toolbar": {
+"position": "static"
+},
+"edit": null,
+"download": "pdf",
+"search": true,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+}
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

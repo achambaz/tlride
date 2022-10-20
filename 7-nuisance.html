@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Section 7 Nuisance parameters | A Ride in Targeted Learning Territory</title>
+  <meta name="description" content="A ride in targeted learning territory is a gentle introduction to the filed of targeted learning. It weaves together two main threads, one theoretical and the other computational. It uses tlrider, a companion R package built specifically for this project." />
+  <meta name="generator" content="bookdown 0.29 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Section 7 Nuisance parameters | A Ride in Targeted Learning Territory" />
+  <meta property="og:type" content="book" />
+  <meta property="og:image" content="/cover.jpg" />
+  <meta property="og:description" content="A ride in targeted learning territory is a gentle introduction to the filed of targeted learning. It weaves together two main threads, one theoretical and the other computational. It uses tlrider, a companion R package built specifically for this project." />
+  <meta name="github-repo" content="achambaz/tlride" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Section 7 Nuisance parameters | A Ride in Targeted Learning Territory" />
+  
+  <meta name="twitter:description" content="A ride in targeted learning territory is a gentle introduction to the filed of targeted learning. It weaves together two main threads, one theoretical and the other computational. It uses tlrider, a companion R package built specifically for this project." />
+  <meta name="twitter:image" content="/cover.jpg" />
+
+<meta name="author" content="David Benkeser (Emory University)" />
+<meta name="author" content="Antoine Chambaz (Université de Paris)" />
+
+
+<meta name="date" content="2022-10-20" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  <link rel="shortcut icon" href="favicon.png" type="image/x-icon" />
+<link rel="prev" href="6-simple-strategy.html"/>
+<link rel="next" href="8-naive-estimators.html"/>
+<script src="assets/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="assets/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="assets/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="assets/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="assets/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+  CommonHTML: {
+    scale: 90,
+    linebreaks: {
+      automatic: true
+    }
+  },
+  SVG: {
+    linebreaks: {
+      automatic: true
+    }
+  }, 
+  displayAlign: "left"
+  });
+</script>
+<script type="text/javascript"
+	src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async>
+</script><!-- see also '_output.yaml'
+src="https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"
+src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML" 
+src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"
+-->
+
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="tlride.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><strong><a href="https://achambaz.github.io/tlride/">TLRIDE</a></strong></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome</a></li>
+<li class="part"><span><b>I On the road</b></span></li>
+<li class="chapter" data-level="1" data-path="1-a-ride.html"><a href="1-a-ride.html"><i class="fa fa-check"></i><b>1</b> A ride</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="1-a-ride.html"><a href="1-a-ride.html#introduction"><i class="fa fa-check"></i><b>1.1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="1.1.1" data-path="1-a-ride.html"><a href="1-a-ride.html#causal-story"><i class="fa fa-check"></i><b>1.1.1</b> A causal story</a></li>
+<li class="chapter" data-level="1.1.2" data-path="1-a-ride.html"><a href="1-a-ride.html#tlrider-package"><i class="fa fa-check"></i><b>1.1.2</b> The <code>tlrider</code> package</a></li>
+<li class="chapter" data-level="1.1.3" data-path="1-a-ride.html"><a href="1-a-ride.html#discuss"><i class="fa fa-check"></i><b>1.1.3</b> What we will discuss</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="1-a-ride.html"><a href="1-a-ride.html#simulation-study"><i class="fa fa-check"></i><b>1.2</b> A simulation study</a>
+<ul>
+<li class="chapter" data-level="1.2.1" data-path="1-a-ride.html"><a href="1-a-ride.html#reproducible-experiment"><i class="fa fa-check"></i><b>1.2.1</b> Reproducible experiment as a law</a></li>
+<li class="chapter" data-level="1.2.2" data-path="1-a-ride.html"><a href="1-a-ride.html#synthetic-experiment"><i class="fa fa-check"></i><b>1.2.2</b> A synthetic reproducible experiment</a></li>
+<li class="chapter" data-level="1.2.3" data-path="1-a-ride.html"><a href="1-a-ride.html#revealing-experiment"><i class="fa fa-check"></i><b>1.2.3</b> Revealing <code>experiment</code></a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="1-a-ride.html"><a href="1-a-ride.html#exo-visualization"><i class="fa fa-check"></i><b>1.3</b> ⚙ Visualization</a></li>
+<li class="chapter" data-level="1.4" data-path="1-a-ride.html"><a href="1-a-ride.html#exo-make-own-experiment"><i class="fa fa-check"></i><b>1.4</b> ⚙ Make your own experiment</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="2-parameter.html"><a href="2-parameter.html"><i class="fa fa-check"></i><b>2</b> The parameter of interest</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="2-parameter.html"><a href="2-parameter.html#parameter-first-pass"><i class="fa fa-check"></i><b>2.1</b> The parameter of interest</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="2-parameter.html"><a href="2-parameter.html#definition"><i class="fa fa-check"></i><b>2.1.1</b> Definition</a></li>
+<li class="chapter" data-level="2.1.2" data-path="2-parameter.html"><a href="2-parameter.html#causal-interpretation"><i class="fa fa-check"></i><b>2.1.2</b> A causal interpretation</a></li>
+<li class="chapter" data-level="2.1.3" data-path="2-parameter.html"><a href="2-parameter.html#causal-computation"><i class="fa fa-check"></i><b>2.1.3</b> A causal computation</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="2-parameter.html"><a href="2-parameter.html#exo-alternative-parameter-first-pass"><i class="fa fa-check"></i><b>2.2</b> ⚙ An alternative parameter of interest</a></li>
+<li class="chapter" data-level="2.3" data-path="2-parameter.html"><a href="2-parameter.html#parameter-second-pass"><i class="fa fa-check"></i><b>2.3</b> The statistical mapping of interest</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="2-parameter.html"><a href="2-parameter.html#opening"><i class="fa fa-check"></i><b>2.3.1</b> Opening discussion</a></li>
+<li class="chapter" data-level="2.3.2" data-path="2-parameter.html"><a href="2-parameter.html#parameter-mapping"><i class="fa fa-check"></i><b>2.3.2</b> The parameter as the value of a statistical mapping at the experiment</a></li>
+<li class="chapter" data-level="2.3.3" data-path="2-parameter.html"><a href="2-parameter.html#value-another-experiment"><i class="fa fa-check"></i><b>2.3.3</b> The value of the statistical mapping at another experiment</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="2-parameter.html"><a href="2-parameter.html#exo-alternative-parameter-second-pass"><i class="fa fa-check"></i><b>2.4</b> ⚙ Alternative statistical mapping</a></li>
+<li class="chapter" data-level="2.5" data-path="2-parameter.html"><a href="2-parameter.html#parameter-third-pass"><i class="fa fa-check"></i><b>2.5</b> Representations</a>
+<ul>
+<li class="chapter" data-level="2.5.1" data-path="2-parameter.html"><a href="2-parameter.html#yet-another"><i class="fa fa-check"></i><b>2.5.1</b> Yet another representation</a></li>
+<li class="chapter" data-level="2.5.2" data-path="2-parameter.html"><a href="2-parameter.html#rep-to-est"><i class="fa fa-check"></i><b>2.5.2</b> From representations to estimation strategies</a></li>
+</ul></li>
+<li class="chapter" data-level="2.6" data-path="2-parameter.html"><a href="2-parameter.html#exo-alternative-parameter-third-pass"><i class="fa fa-check"></i><b>2.6</b> ⚙ Alternative representation</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="3-smooth.html"><a href="3-smooth.html"><i class="fa fa-check"></i><b>3</b> Smoothness</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="3-smooth.html"><a href="3-smooth.html#smooth-first-pass"><i class="fa fa-check"></i><b>3.1</b> Fluctuating smoothly</a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="3-smooth.html"><a href="3-smooth.html#fluctuations"><i class="fa fa-check"></i><b>3.1.1</b> The <code>another_experiment</code> fluctuation</a></li>
+<li class="chapter" data-level="3.1.2" data-path="3-smooth.html"><a href="3-smooth.html#numerical-illus"><i class="fa fa-check"></i><b>3.1.2</b> Numerical illustration</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="3-smooth.html"><a href="3-smooth.html#exo-yet-another-experiment"><i class="fa fa-check"></i><b>3.2</b> ⚙ Yet another experiment</a></li>
+<li class="chapter" data-level="3.3" data-path="3-smooth.html"><a href="3-smooth.html#smooth-second-pass"><i class="fa fa-check"></i><b>3.3</b> ☡  More on fluctuations and smoothness</a>
+<ul>
+<li class="chapter" data-level="3.3.1" data-path="3-smooth.html"><a href="3-smooth.html#smooth-second-pass-fluctuations"><i class="fa fa-check"></i><b>3.3.1</b> Fluctuations</a></li>
+<li class="chapter" data-level="3.3.2" data-path="3-smooth.html"><a href="3-smooth.html#smoothness-and-gradients"><i class="fa fa-check"></i><b>3.3.2</b> Smoothness and gradients</a></li>
+<li class="chapter" data-level="3.3.3" data-path="3-smooth.html"><a href="3-smooth.html#Euclidean-perspective"><i class="fa fa-check"></i><b>3.3.3</b> A Euclidean perspective</a></li>
+<li class="chapter" data-level="3.3.4" data-path="3-smooth.html"><a href="3-smooth.html#canonical-gradient"><i class="fa fa-check"></i><b>3.3.4</b> The canonical gradient</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="3-smooth.html"><a href="3-smooth.html#revisiting"><i class="fa fa-check"></i><b>3.4</b> A fresh look at <code>another_experiment</code></a>
+<ul>
+<li class="chapter" data-level="3.4.1" data-path="3-smooth.html"><a href="3-smooth.html#deriving-the-efficient-influence-curve"><i class="fa fa-check"></i><b>3.4.1</b> Deriving the efficient influence curve</a></li>
+<li class="chapter" data-level="3.4.2" data-path="3-smooth.html"><a href="3-smooth.html#numerical-validation"><i class="fa fa-check"></i><b>3.4.2</b> Numerical validation</a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="3-smooth.html"><a href="3-smooth.html#influence-curves"><i class="fa fa-check"></i><b>3.5</b> ☡  Asymptotic linearity and statistical efficiency</a>
+<ul>
+<li class="chapter" data-level="3.5.1" data-path="3-smooth.html"><a href="3-smooth.html#asymptotic-linearity"><i class="fa fa-check"></i><b>3.5.1</b> Asymptotic linearity</a></li>
+<li class="chapter" data-level="3.5.2" data-path="3-smooth.html"><a href="3-smooth.html#influence-curves-and-gradients"><i class="fa fa-check"></i><b>3.5.2</b> Influence curves and gradients</a></li>
+<li class="chapter" data-level="3.5.3" data-path="3-smooth.html"><a href="3-smooth.html#asymptotic-efficiency"><i class="fa fa-check"></i><b>3.5.3</b> Asymptotic efficiency</a></li>
+</ul></li>
+<li class="chapter" data-level="3.6" data-path="3-smooth.html"><a href="3-smooth.html#exo-cramer-rao"><i class="fa fa-check"></i><b>3.6</b> ⚙ Cramér-Rao bounds</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="4-double-robustness.html"><a href="4-double-robustness.html"><i class="fa fa-check"></i><b>4</b> Double-robustness</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="4-double-robustness.html"><a href="4-double-robustness.html#linear-approximation"><i class="fa fa-check"></i><b>4.1</b> Linear approximations of parameters</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="4-double-robustness.html"><a href="4-double-robustness.html#from-gradients-to-estimators"><i class="fa fa-check"></i><b>4.1.1</b> From gradients to estimators</a></li>
+<li class="chapter" data-level="4.1.2" data-path="4-double-robustness.html"><a href="4-double-robustness.html#another-Euclidean-perspective"><i class="fa fa-check"></i><b>4.1.2</b> A Euclidean perspective</a></li>
+<li class="chapter" data-level="4.1.3" data-path="4-double-robustness.html"><a href="4-double-robustness.html#the-remainder-term"><i class="fa fa-check"></i><b>4.1.3</b> The remainder term</a></li>
+<li class="chapter" data-level="4.1.4" data-path="4-double-robustness.html"><a href="4-double-robustness.html#expressing-the-remainder-term-as-a-function-of-the-relevant-features"><i class="fa fa-check"></i><b>4.1.4</b> Expressing the remainder term as a function of the relevant features</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="4-double-robustness.html"><a href="4-double-robustness.html#exo-remainder-term"><i class="fa fa-check"></i><b>4.2</b> ⚙ The remainder term</a></li>
+<li class="chapter" data-level="4.3" data-path="4-double-robustness.html"><a href="4-double-robustness.html#def-double-robustness"><i class="fa fa-check"></i><b>4.3</b> ☡  Double-robustness</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="4-double-robustness.html"><a href="4-double-robustness.html#the-key-property"><i class="fa fa-check"></i><b>4.3.1</b> The key property</a></li>
+<li class="chapter" data-level="4.3.2" data-path="4-double-robustness.html"><a href="4-double-robustness.html#direct-consequence"><i class="fa fa-check"></i><b>4.3.2</b> Its direct consequence</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="4-double-robustness.html"><a href="4-double-robustness.html#exo-double-robustness"><i class="fa fa-check"></i><b>4.4</b> ⚙ Double-robustness</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="5-inference.html"><a href="5-inference.html"><i class="fa fa-check"></i><b>5</b> Inference</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="5-inference.html"><a href="5-inference.html#where-we-stand"><i class="fa fa-check"></i><b>5.1</b> Where we stand</a></li>
+<li class="chapter" data-level="5.2" data-path="5-inference.html"><a href="5-inference.html#where-we-are-going"><i class="fa fa-check"></i><b>5.2</b> Where we are going</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html"><i class="fa fa-check"></i><b>6</b> A simple inference strategy</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#a-cautionary-detour"><i class="fa fa-check"></i><b>6.1</b> A cautionary detour</a></li>
+<li class="chapter" data-level="6.2" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#delta-method"><i class="fa fa-check"></i><b>6.2</b> ⚙ Delta-method</a></li>
+<li class="chapter" data-level="6.3" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#known-gbar-first-pass"><i class="fa fa-check"></i><b>6.3</b> IPTW estimator assuming the mechanism of action known</a>
+<ul>
+<li class="chapter" data-level="6.3.1" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#a-simple-estimator"><i class="fa fa-check"></i><b>6.3.1</b> A simple estimator</a></li>
+<li class="chapter" data-level="6.3.2" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#elementary-statistical-properties"><i class="fa fa-check"></i><b>6.3.2</b> Elementary statistical properties</a></li>
+<li class="chapter" data-level="6.3.3" data-path="6-simple-strategy.html"><a href="6-simple-strategy.html#empirical-inves-IPTW"><i class="fa fa-check"></i><b>6.3.3</b> Empirical investigation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="7-nuisance.html"><a href="7-nuisance.html"><i class="fa fa-check"></i><b>7</b> Nuisance parameters</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="7-nuisance.html"><a href="7-nuisance.html#anatomy"><i class="fa fa-check"></i><b>7.1</b> Anatomy of an expression</a></li>
+<li class="chapter" data-level="7.2" data-path="7-nuisance.html"><a href="7-nuisance.html#an-algorithmic-stance"><i class="fa fa-check"></i><b>7.2</b> An algorithmic stance</a></li>
+<li class="chapter" data-level="7.3" data-path="7-nuisance.html"><a href="7-nuisance.html#nuisance-QW"><i class="fa fa-check"></i><b>7.3</b> <code>QW</code></a></li>
+<li class="chapter" data-level="7.4" data-path="7-nuisance.html"><a href="7-nuisance.html#nuisance-Gbar"><i class="fa fa-check"></i><b>7.4</b> <code>Gbar</code></a>
+<ul>
+<li class="chapter" data-level="7.4.1" data-path="7-nuisance.html"><a href="7-nuisance.html#logis-loss"><i class="fa fa-check"></i><b>7.4.1</b> Working model-based algorithms</a></li>
+<li class="chapter" data-level="7.4.2" data-path="7-nuisance.html"><a href="7-nuisance.html#algo-Gbar-one"><i class="fa fa-check"></i><b>7.4.2</b> Visualization</a></li>
+</ul></li>
+<li class="chapter" data-level="7.5" data-path="7-nuisance.html"><a href="7-nuisance.html#nuisance-Qbar-wm"><i class="fa fa-check"></i><b>7.5</b> ⚙ <code>Qbar</code>, working model-based algorithms</a></li>
+<li class="chapter" data-level="7.6" data-path="7-nuisance.html"><a href="7-nuisance.html#nuisance-Qbar"><i class="fa fa-check"></i><b>7.6</b> <code>Qbar</code></a>
+<ul>
+<li class="chapter" data-level="7.6.1" data-path="7-nuisance.html"><a href="7-nuisance.html#qbar-machine-learning-based-algorithms"><i class="fa fa-check"></i><b>7.6.1</b> <code>Qbar</code>, machine learning-based algorithms</a></li>
+<li class="chapter" data-level="7.6.2" data-path="7-nuisance.html"><a href="7-nuisance.html#Qbar-knn-algo"><i class="fa fa-check"></i><b>7.6.2</b> <code>Qbar</code>, kNN algorithm</a></li>
+<li class="chapter" data-level="7.6.3" data-path="7-nuisance.html"><a href="7-nuisance.html#boosted-trees"><i class="fa fa-check"></i><b>7.6.3</b> <code>Qbar</code>, boosted trees algorithm</a></li>
+</ul></li>
+<li class="chapter" data-level="7.7" data-path="7-nuisance.html"><a href="7-nuisance.html#nuisance-Qbar-ml-exo"><i class="fa fa-check"></i><b>7.7</b> ⚙ ☡  <code>Qbar</code>, machine learning-based algorithms</a></li>
+<li class="chapter" data-level="7.8" data-path="7-nuisance.html"><a href="7-nuisance.html#meta-learning"><i class="fa fa-check"></i><b>7.8</b> Meta-learning/super learning</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html"><i class="fa fa-check"></i><b>8</b> Two “naive” inference strategies</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#why-naive"><i class="fa fa-check"></i><b>8.1</b> Why “naive?”</a></li>
+<li class="chapter" data-level="8.2" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#known-gbar-second-pass"><i class="fa fa-check"></i><b>8.2</b> IPTW estimator</a>
+<ul>
+<li class="chapter" data-level="8.2.1" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#unknown-gbar-constr"><i class="fa fa-check"></i><b>8.2.1</b> Construction and computation</a></li>
+<li class="chapter" data-level="8.2.2" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#elementary-stat-prop-iptw"><i class="fa fa-check"></i><b>8.2.2</b> Elementary statistical properties</a></li>
+<li class="chapter" data-level="8.2.3" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#empirical-inves-IPTW-bis"><i class="fa fa-check"></i><b>8.2.3</b> Empirical investigation</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#exo-a-nice-title"><i class="fa fa-check"></i><b>8.3</b> ⚙ Investigating further the IPTW inference strategy</a></li>
+<li class="chapter" data-level="8.4" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#Gcomp-estimator"><i class="fa fa-check"></i><b>8.4</b> G-computation estimator</a>
+<ul>
+<li class="chapter" data-level="8.4.1" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#Gcomp-construction"><i class="fa fa-check"></i><b>8.4.1</b> Construction and computation</a></li>
+<li class="chapter" data-level="8.4.2" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#elementary-statistical-properties-1"><i class="fa fa-check"></i><b>8.4.2</b> Elementary statistical properties</a></li>
+<li class="chapter" data-level="8.4.3" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#empirical-inves-Gcomp"><i class="fa fa-check"></i><b>8.4.3</b> Empirical investigation, fixed sample size</a></li>
+<li class="chapter" data-level="8.4.4" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#empirical-inves-Gcomp-varying"><i class="fa fa-check"></i><b>8.4.4</b> ☡  Empirical investigation, varying sample size</a></li>
+</ul></li>
+<li class="chapter" data-level="8.5" data-path="8-naive-estimators.html"><a href="8-naive-estimators.html#exo-plug-in-estimate"><i class="fa fa-check"></i><b>8.5</b> ⚙ Investigating further the G-computation estimation strategy</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="9-one-step.html"><a href="9-one-step.html"><i class="fa fa-check"></i><b>9</b> One-step correction</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="9-one-step.html"><a href="9-one-step.html#analysis-of-plug-in"><i class="fa fa-check"></i><b>9.1</b> ☡  General analysis of plug-in estimators</a></li>
+<li class="chapter" data-level="9.2" data-path="9-one-step.html"><a href="9-one-step.html#huber-one-step"><i class="fa fa-check"></i><b>9.2</b> One-step correction</a></li>
+<li class="chapter" data-level="9.3" data-path="9-one-step.html"><a href="9-one-step.html#empirical-inves-one-step"><i class="fa fa-check"></i><b>9.3</b> Empirical investigation</a></li>
+<li class="chapter" data-level="9.4" data-path="9-one-step.html"><a href="9-one-step.html#exo-one-step"><i class="fa fa-check"></i><b>9.4</b> ⚙ Investigating further the one-step correction methodology</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="10-TMLE.html"><a href="10-TMLE.html"><i class="fa fa-check"></i><b>10</b> Targeted minimum loss-based estimation</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="10-TMLE.html"><a href="10-TMLE.html#TMLE-motivations"><i class="fa fa-check"></i><b>10.1</b> Motivations</a>
+<ul>
+<li class="chapter" data-level="10.1.1" data-path="10-TMLE.html"><a href="10-TMLE.html#falling-outside-the-parameter-space"><i class="fa fa-check"></i><b>10.1.1</b> Falling outside the parameter space</a></li>
+<li class="chapter" data-level="10.1.2" data-path="10-TMLE.html"><a href="10-TMLE.html#eic-equation"><i class="fa fa-check"></i><b>10.1.2</b> The influence curve equation</a></li>
+<li class="chapter" data-level="10.1.3" data-path="10-TMLE.html"><a href="10-TMLE.html#basic-fact"><i class="fa fa-check"></i><b>10.1.3</b> A basic fact on the influence curve equation</a></li>
+</ul></li>
+<li class="chapter" data-level="10.2" data-path="10-TMLE.html"><a href="10-TMLE.html#targeted-fluctuation-TMLE"><i class="fa fa-check"></i><b>10.2</b> Targeted fluctuation</a>
+<ul>
+<li class="chapter" data-level="10.2.1" data-path="10-TMLE.html"><a href="10-TMLE.html#fluctuating-indirectly"><i class="fa fa-check"></i><b>10.2.1</b> ☡  Fluctuating indirectly</a></li>
+<li class="chapter" data-level="10.2.2" data-path="10-TMLE.html"><a href="10-TMLE.html#fluct-direct"><i class="fa fa-check"></i><b>10.2.2</b> Fluctuating directly</a></li>
+<li class="chapter" data-level="10.2.3" data-path="10-TMLE.html"><a href="10-TMLE.html#exo-fluct"><i class="fa fa-check"></i><b>10.2.3</b> ⚙ More on fluctuations</a></li>
+<li class="chapter" data-level="10.2.4" data-path="10-TMLE.html"><a href="10-TMLE.html#roaming"><i class="fa fa-check"></i><b>10.2.4</b> Targeted roaming of a fluctuation</a></li>
+<li class="chapter" data-level="10.2.5" data-path="10-TMLE.html"><a href="10-TMLE.html#fluct-justification"><i class="fa fa-check"></i><b>10.2.5</b> Justifying the form of the fluctutation</a></li>
+<li class="chapter" data-level="10.2.6" data-path="10-TMLE.html"><a href="10-TMLE.html#exo-tmle-flucs"><i class="fa fa-check"></i><b>10.2.6</b> ⚙ Alternative fluctuation</a></li>
+</ul></li>
+<li class="chapter" data-level="10.3" data-path="10-TMLE.html"><a href="10-TMLE.html#summary-and-perspectives"><i class="fa fa-check"></i><b>10.3</b> Summary and perspectives</a></li>
+<li class="chapter" data-level="10.4" data-path="10-TMLE.html"><a href="10-TMLE.html#empirical-inves-tmle"><i class="fa fa-check"></i><b>10.4</b> Empirical investigation</a>
+<ul>
+<li class="chapter" data-level="10.4.1" data-path="10-TMLE.html"><a href="10-TMLE.html#empirical-inves-tmle-first"><i class="fa fa-check"></i><b>10.4.1</b> A first numerical application</a></li>
+<li class="chapter" data-level="10.4.2" data-path="10-TMLE.html"><a href="10-TMLE.html#exo-tmle"><i class="fa fa-check"></i><b>10.4.2</b> ⚙ A computational exploration</a></li>
+<li class="chapter" data-level="10.4.3" data-path="10-TMLE.html"><a href="10-TMLE.html#empirical-investigation"><i class="fa fa-check"></i><b>10.4.3</b> Empirical investigation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="11-closing-words.html"><a href="11-closing-words.html"><i class="fa fa-check"></i><b>11</b> Closing words</a></li>
+<li class="appendix"><span><b>Appendix</b></span></li>
+<li class="chapter" data-level="A" data-path="A-notation.html"><a href="A-notation.html"><i class="fa fa-check"></i><b>A</b> Notation</a></li>
+<li class="chapter" data-level="B" data-path="B-proofs.html"><a href="B-proofs.html"><i class="fa fa-check"></i><b>B</b> Basic results and their proofs</a>
+<ul>
+<li class="chapter" data-level="B.1" data-path="B-proofs.html"><a href="B-proofs.html#npsem"><i class="fa fa-check"></i><b>B.1</b> NPSEM</a></li>
+<li class="chapter" data-level="B.2" data-path="B-proofs.html"><a href="B-proofs.html#identification"><i class="fa fa-check"></i><b>B.2</b> Identification</a></li>
+<li class="chapter" data-level="B.3" data-path="B-proofs.html"><a href="B-proofs.html#confidence-interval"><i class="fa fa-check"></i><b>B.3</b> Building a confidence interval</a>
+<ul>
+<li class="chapter" data-level="B.3.1" data-path="B-proofs.html"><a href="B-proofs.html#clt"><i class="fa fa-check"></i><b>B.3.1</b> CLT &amp; Slutsky’s lemma</a></li>
+<li class="chapter" data-level="B.3.2" data-path="B-proofs.html"><a href="B-proofs.html#order"><i class="fa fa-check"></i><b>B.3.2</b> CLT and order statistics</a></li>
+</ul></li>
+<li class="chapter" data-level="B.4" data-path="B-proofs.html"><a href="B-proofs.html#another-rep"><i class="fa fa-check"></i><b>B.4</b> Another representation of the parameter of interest</a></li>
+<li class="chapter" data-level="B.5" data-path="B-proofs.html"><a href="B-proofs.html#prop-delta-method"><i class="fa fa-check"></i><b>B.5</b> The delta-method</a></li>
+<li class="chapter" data-level="B.6" data-path="B-proofs.html"><a href="B-proofs.html#oracle-logistic-risk"><i class="fa fa-check"></i><b>B.6</b> The oracle logistic risk</a></li>
+</ul></li>
+<li class="chapter" data-level="C" data-path="C-more-proofs.html"><a href="C-more-proofs.html"><i class="fa fa-check"></i><b>C</b> More results and their proofs</a>
+<ul>
+<li class="chapter" data-level="C.1" data-path="C-more-proofs.html"><a href="C-more-proofs.html#estimation-of-the-asymptotic-variance-of-an-estimator"><i class="fa fa-check"></i><b>C.1</b> Estimation of the asymptotic variance of an estimator</a>
+<ul>
+<li class="chapter" data-level="C.1.1" data-path="C-more-proofs.html"><a href="C-more-proofs.html#iptw-est-var"><i class="fa fa-check"></i><b>C.1.1</b> IPTW estimator based on a well-specified model</a></li>
+<li class="chapter" data-level="C.1.2" data-path="C-more-proofs.html"><a href="C-more-proofs.html#gcomp-est-var"><i class="fa fa-check"></i><b>C.1.2</b> G-computation estimator based on a well-specified model</a></li>
+</ul></li>
+<li class="chapter" data-level="C.2" data-path="C-more-proofs.html"><a href="C-more-proofs.html#app-analysis-of-plug-in"><i class="fa fa-check"></i><b>C.2</b> ☡  General analysis of plug-in estimators</a>
+<ul>
+<li class="chapter" data-level="C.2.1" data-path="C-more-proofs.html"><a href="C-more-proofs.html#app-analysis-of-plug-in-main"><i class="fa fa-check"></i><b>C.2.1</b> Main analysis</a></li>
+<li class="chapter" data-level="C.2.2" data-path="C-more-proofs.html"><a href="C-more-proofs.html#estimation-of-the-asymptotic-variance"><i class="fa fa-check"></i><b>C.2.2</b> Estimation of the asymptotic variance</a></li>
+</ul></li>
+<li class="chapter" data-level="C.3" data-path="C-more-proofs.html"><a href="C-more-proofs.html#asymp-neglig-remain"><i class="fa fa-check"></i><b>C.3</b> Asymptotic negligibility of the remainder term</a></li>
+<li class="chapter" data-level="C.4" data-path="C-more-proofs.html"><a href="C-more-proofs.html#analysis-TMLE"><i class="fa fa-check"></i><b>C.4</b> Analysis of targeted estimators</a>
+<ul>
+<li class="chapter" data-level="C.4.1" data-path="C-more-proofs.html"><a href="C-more-proofs.html#basic-eic-eq"><i class="fa fa-check"></i><b>C.4.1</b> A basic fact on the influence curve equation</a></li>
+<li class="chapter" data-level="C.4.2" data-path="C-more-proofs.html"><a href="C-more-proofs.html#fluct-reg"><i class="fa fa-check"></i><b>C.4.2</b> Fluctuation of the regression function along the fluctuation of a law</a></li>
+<li class="chapter" data-level="C.4.3" data-path="C-more-proofs.html"><a href="C-more-proofs.html#fluct-score"><i class="fa fa-check"></i><b>C.4.3</b> Computing the score of a fluctuation of the regression function</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="D" data-path="D-references.html"><a href="D-references.html"><i class="fa fa-check"></i><b>D</b> References</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">A Ride in Targeted Learning Territory</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+\(\newcommand{\bbO}{\mathbb{O}}\)
+\(\newcommand{\bbD}{\mathbb{D}}\)
+\(\newcommand{\bbP}{\mathbb{P}}\)
+\(\newcommand{\bbR}{\mathbb{R}}\)
+\(\newcommand{\Algo}{\widehat{\mathcal{A}}}\)
+\(\newcommand{\Algora}{\widetilde{\mathcal{A}}}\)
+\(\newcommand{\calF}{\mathcal{F}}\)
+\(\newcommand{\calM}{\mathcal{M}}\)
+\(\newcommand{\calP}{\mathcal{P}}\)
+\(\newcommand{\calO}{\mathcal{O}}\)
+\(\newcommand{\calQ}{\mathcal{Q}}\)
+\(\newcommand{\defq}{\doteq}\)
+\(\newcommand{\Exp}{\textrm{E}}\)
+\(\newcommand{\IC}{\textrm{IC}}\)
+\(\newcommand{\Gbar}{\bar{G}}\)
+\(\newcommand{\one}{\textbf{1}}\)
+\(\newcommand{\psinos}{\psi_{n}^{\textrm{os}}}\)
+\(\renewcommand{\Pr}{\textrm{Pr}}\)
+\(\newcommand{\Phat}{P^{\circ}}\)
+\(\newcommand{\Psihat}{\widehat{\Psi}}\)
+\(\newcommand{\Qbar}{\bar{Q}}\)
+\(\newcommand{\tcg}[1]{\textcolor{olive}{#1}}\)
+\(\DeclareMathOperator{\Dirac}{Dirac}\)
+\(\DeclareMathOperator{\expit}{expit}\)
+\(\DeclareMathOperator{\logit}{logit}\)
+\(\DeclareMathOperator{\Rem}{Rem}\)
+\(\DeclareMathOperator{\Var}{Var}\)
+<div id="nuisance" class="section level1 hasAnchor" number="7">
+<h1><span class="header-section-number">Section 7</span> Nuisance parameters<a href="7-nuisance.html#nuisance" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="anatomy" class="section level2 hasAnchor" number="7.1">
+<h2><span class="header-section-number">7.1</span> Anatomy of an expression<a href="7-nuisance.html#anatomy" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p></p>
+<p>From now, all the inference strategies that we will present unfold in two or
+three stages. For all of them, the first stage consists in estimating a
+selection of features of the law <span class="math inline">\(P_{0}\)</span> of the experiment. Specifically, the
+features are chosen among <span class="math inline">\(Q_{0,W}\)</span> (the marginal law of <span class="math inline">\(W\)</span> under <span class="math inline">\(P_{0}\)</span>),
+<span class="math inline">\(\Gbar_{0}\)</span> (the conditional probability that <span class="math inline">\(A=1\)</span> given <span class="math inline">\(W\)</span> under <span class="math inline">\(P_{0}\)</span>)
+and <span class="math inline">\(\Qbar_{0}\)</span> (the conditional mean of <span class="math inline">\(Y\)</span> given <span class="math inline">\(A\)</span> and <span class="math inline">\(W\)</span> under <span class="math inline">\(P_{0}\)</span>).</p>
+<p>In this context, because they are not the parameter of primary interest
+(<em>i.e.</em>, they are not the real-valued feature <span class="math inline">\(\Psi(P_{0})\)</span>), they are often
+referred to as <em>nuisance parameters</em> of <span class="math inline">\(P_{0}\)</span>. The unflaterring expression
+conveys the notion that their estimation is merely an intermediate step along
+our path towards an inference of the target parameter.</p>
+<p>As for the reason why <span class="math inline">\(Q_{0,W}\)</span>, <span class="math inline">\(\Gbar_{0}\)</span> and <span class="math inline">\(\Qbar_{0}\)</span> are singled out,
+it is because of their role in the definition of <span class="math inline">\(\Psi\)</span> and the efficient
+influence curve <span class="math inline">\(D^{*}(P_{0})\)</span>.</p>
+<p></p>
+</div>
+<div id="an-algorithmic-stance" class="section level2 hasAnchor" number="7.2">
+<h2><span class="header-section-number">7.2</span> An algorithmic stance<a href="7-nuisance.html#an-algorithmic-stance" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p></p>
+<p>In general, we can view an estimator of any feature <span class="math inline">\(f_0\)</span> of <span class="math inline">\(P_{0}\)</span> as the
+output of an algorithm <span class="math inline">\(\Algo\)</span> that maps any element of</p>
+<p><span class="math display">\[\begin{equation*}    \calM^{\text{empirical}}     \defq    \left\{\frac{1}{m}
+\sum_{i=1}^{m} \Dirac(o_{i}) : m \geq 1, o_{1}, \ldots, o_{m} \in [0,1] \times
+\{0,1\} \times [0,1]\right\} \end{equation*}\]</span></p>
+<p>to the set <span class="math inline">\(\calF\)</span> where <span class="math inline">\(f_{0}\)</span> is known to live. Here,
+<span class="math inline">\(\calM^{\text{empirical}}\)</span> can be interpreted as the set of all possible
+empirical measures summarizing the outcomes of any number of replications of
+the experiment <span class="math inline">\(P_{0}\)</span>. In particular, <span class="math inline">\(P_{n}\)</span> belongs to this set.</p>
+<p>The <code>tlrider</code> package includes such template algorithms for the estimation of
+<span class="math inline">\(Q_{0,W}\)</span>, <span class="math inline">\(\Gbar_{0}\)</span> and <span class="math inline">\(\Qbar_{0}\)</span>. We illustrate how they work and their
+use in the next sections.</p>
+</div>
+<div id="nuisance-QW" class="section level2 hasAnchor" number="7.3">
+<h2><span class="header-section-number">7.3</span> <code>QW</code><a href="7-nuisance.html#nuisance-QW" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>For instance, <code>estimate_QW</code> is an algorithm <span class="math inline">\(\Algo_{Q_{W}}\)</span> for the estimation
+of the marginal law of <span class="math inline">\(W\)</span> under <span class="math inline">\(P_{0}\)</span> (to see its man page, simply run
+<code>?estimate_QW</code>). It is a map from <span class="math inline">\(\calM^{\text{empirical}}\)</span> to the set of
+laws on <span class="math inline">\([0,1]\)</span>. The following chunk of code estimates <span class="math inline">\(Q_{0,W}\)</span> based on the
+<span class="math inline">\(n = 1000\)</span> first observations in <code>obs</code>:</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="7-nuisance.html#cb42-1" aria-hidden="true" tabindex="-1"></a>QW_hat <span class="ot">&lt;-</span> <span class="fu">estimate_QW</span>(<span class="fu">head</span>(obs, <span class="fl">1e3</span>))</span></code></pre></div>
+<p>It is easy to sample independent observations from <code>QW_hat</code>. To do so, we
+create an object of class <code>LAW</code> then set its marginal law of <span class="math inline">\(W\)</span> to that
+described by <code>QW_hat</code> and specify its <code>sample_from</code> feature:</p>
+
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="7-nuisance.html#cb43-1" aria-hidden="true" tabindex="-1"></a>empirical_experiment <span class="ot">&lt;-</span> <span class="fu">LAW</span>()</span>
+<span id="cb43-2"><a href="7-nuisance.html#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="fu">alter</span>(empirical_experiment, <span class="at">QW =</span> QW_hat)</span>
+<span id="cb43-3"><a href="7-nuisance.html#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="fu">alter</span>(empirical_experiment, <span class="at">sample_from =</span> <span class="cf">function</span>(n) {</span>
+<span id="cb43-4"><a href="7-nuisance.html#cb43-4" aria-hidden="true" tabindex="-1"></a>  QW <span class="ot">&lt;-</span> <span class="fu">get_feature</span>(empirical_experiment, <span class="st">&quot;QW&quot;</span>)</span>
+<span id="cb43-5"><a href="7-nuisance.html#cb43-5" aria-hidden="true" tabindex="-1"></a>  W <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">pull</span>(QW, <span class="st">&quot;value&quot;</span>), n, <span class="at">prob =</span> <span class="fu">pull</span>(QW, <span class="st">&quot;weight&quot;</span>))</span>
+<span id="cb43-6"><a href="7-nuisance.html#cb43-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cbind</span>(<span class="at">W =</span> W, <span class="at">A =</span> <span class="cn">NA</span>, <span class="at">Y =</span> <span class="cn">NA</span>)</span>
+<span id="cb43-7"><a href="7-nuisance.html#cb43-7" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb43-8"><a href="7-nuisance.html#cb43-8" aria-hidden="true" tabindex="-1"></a>W <span class="ot">&lt;-</span> <span class="fu">sample_from</span>(empirical_experiment, <span class="fl">1e3</span>) <span class="sc">%&gt;%</span> as_tibble</span>
+<span id="cb43-9"><a href="7-nuisance.html#cb43-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-10"><a href="7-nuisance.html#cb43-10" aria-hidden="true" tabindex="-1"></a>W <span class="sc">%&gt;%</span></span>
+<span id="cb43-11"><a href="7-nuisance.html#cb43-11" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb43-12"><a href="7-nuisance.html#cb43-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x =</span> W, <span class="at">y =</span> <span class="fu">stat</span>(density)), <span class="at">bins =</span> <span class="dv">40</span>) <span class="sc">+</span></span>
+<span id="cb43-13"><a href="7-nuisance.html#cb43-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> <span class="fu">get_feature</span>(experiment, <span class="st">&quot;QW&quot;</span>), <span class="at">col =</span> <span class="st">&quot;red&quot;</span>)</span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:estimate-QW-two"></span>
+<img src="img/estimate-QW-two-1.png" alt="Histogram representing 1000 observations drawn independently from QW_hat. The superimposed red curve is the true density of \(Q_{0,W}\)." width="70%" />
+<p class="caption">
+Figure 7.1: Histogram representing 1000 observations drawn independently from <code>QW_hat</code>. The superimposed red curve is the true density of <span class="math inline">\(Q_{0,W}\)</span>.
+</p>
+</div>
+<p>Note that all the <span class="math inline">\(W\)</span>s sampled from <code>QW_hat</code> fall in the set <span class="math inline">\(\{W_{1}, \ldots, W_{n}\}\)</span> of observed <span class="math inline">\(W\)</span>s in <code>obs</code> (an obvious fact given the definition of
+the <code>sample_from</code> feature of <code>empirical_experiment</code>:</p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="7-nuisance.html#cb44-1" aria-hidden="true" tabindex="-1"></a>(<span class="fu">length</span>(<span class="fu">intersect</span>(<span class="fu">pull</span>(W, W), <span class="fu">head</span>(obs[, <span class="st">&quot;W&quot;</span>], <span class="fl">1e3</span>))))</span>
+<span id="cb44-2"><a href="7-nuisance.html#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 1000</span></span></code></pre></div>
+<p>This is because <code>estimate_QW</code> estimates <span class="math inline">\(Q_{0,W}\)</span> with its empirical
+counterpart, <em>i.e.</em>,</p>
+<p><span class="math display">\[\begin{equation*}\frac{1}{n} \sum_{i=1}^{n} \Dirac(W_{i}).\end{equation*}\]</span></p>
+</div>
+<div id="nuisance-Gbar" class="section level2 hasAnchor" number="7.4">
+<h2><span class="header-section-number">7.4</span> <code>Gbar</code><a href="7-nuisance.html#nuisance-Gbar" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Another template algorithm is built-in into <code>tlrider</code>: <code>estimate_Gbar</code> (to see
+its man page, simply run <code>?estimate_Gbar</code>). Unlike <code>estimate_QW</code>,
+<code>estimate_Gbar</code> needs further specification of the algorithm. The package also
+includes examples of such specifications.</p>
+<p>There are two sorts of specifications, of which we say that they are either
+<em>working model-based</em> or <em>machine learning-based</em>. We discuss the former sort
+in the next subsection. The latter sort is discussed in Section
+<a href="7-nuisance.html#nuisance-Qbar">7.6</a>.</p>
+<div id="logis-loss" class="section level3 hasAnchor" number="7.4.1">
+<h3><span class="header-section-number">7.4.1</span> Working model-based algorithms<a href="7-nuisance.html#logis-loss" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p></p>
+<p>Let us take a look at <code>working_model_G_one</code> for instance:</p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="7-nuisance.html#cb45-1" aria-hidden="true" tabindex="-1"></a>working_model_G_one</span>
+<span id="cb45-2"><a href="7-nuisance.html#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $model</span></span>
+<span id="cb45-3"><a href="7-nuisance.html#cb45-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; function (...) </span></span>
+<span id="cb45-4"><a href="7-nuisance.html#cb45-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; {</span></span>
+<span id="cb45-5"><a href="7-nuisance.html#cb45-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     trim_glm_fit(glm(family = binomial(), ...))</span></span>
+<span id="cb45-6"><a href="7-nuisance.html#cb45-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; }</span></span>
+<span id="cb45-7"><a href="7-nuisance.html#cb45-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &lt;environment: 0x56115606af08&gt;</span></span>
+<span id="cb45-8"><a href="7-nuisance.html#cb45-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb45-9"><a href="7-nuisance.html#cb45-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $formula</span></span>
+<span id="cb45-10"><a href="7-nuisance.html#cb45-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; A ~ I(W^0.5) + I(abs(W - 5/12)^0.5) + I(W^1) + I(abs(W - 5/12)^1) + </span></span>
+<span id="cb45-11"><a href="7-nuisance.html#cb45-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     I(W^1.5) + I(abs(W - 5/12)^1.5)</span></span>
+<span id="cb45-12"><a href="7-nuisance.html#cb45-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &lt;environment: 0x56115606af08&gt;</span></span>
+<span id="cb45-13"><a href="7-nuisance.html#cb45-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb45-14"><a href="7-nuisance.html#cb45-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $type_of_preds</span></span>
+<span id="cb45-15"><a href="7-nuisance.html#cb45-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;response&quot;</span></span>
+<span id="cb45-16"><a href="7-nuisance.html#cb45-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb45-17"><a href="7-nuisance.html#cb45-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; attr(,&quot;ML&quot;)</span></span>
+<span id="cb45-18"><a href="7-nuisance.html#cb45-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] FALSE</span></span></code></pre></div>
+<p>and focus on its <code>model</code> and <code>formula</code> attributes. The former relies on the
+<code>glm</code> and <code>binomial</code> functions from <code>base</code> <code>R</code>, and on <code>trim_glm_fit</code> (which
+removes information that we do not need from the standard output of <code>glm</code>,
+simply run <code>?trim_glm_fit</code> to see the function’s man page). The latter is a
+<code>formula</code> that characterizes what we call a <em>working model</em> for <span class="math inline">\(\Gbar_{0}\)</span>.</p>
+<p>In words, by using <code>working_model_G_one</code> we implicitly choose the so-called
+logistic (or negative binomial) loss function <span class="math inline">\(L_{a}\)</span> given by</p>
+<p><span class="math display" id="eq:logis-loss">\[\begin{equation} 
+\tag{7.1} -L_{a}(f)(A,W) \defq A \log f(W) + (1 - A)
+\log (1 - f(W)) 
+\end{equation}\]</span></p>
+<p>for any function <span class="math inline">\(f : [0,1] \to [0,1]\)</span> paired with the working model
+<span class="math display">\[\begin{equation*}   \calF_{1}   \defq    \left\{f_{\theta}   :   \theta   \in
+\bbR^{7}\right\}  \end{equation*}\]</span> where, for any <span class="math inline">\(\theta \in \bbR^{7}\)</span>,
+<span class="math display">\[\begin{equation*}\logit  f_{\theta}  (W)  \defq \theta_{0}  +  \sum_{j=1}^{3}
+\left(\theta_{j} W^{j/2} + \theta_{3+j} |W - 5/12|^{j/2}\right).\end{equation*}\]</span></p>
+<p>We acted as oracles when we specified the working model: it is
+<em>well-specified</em>, <em>i.e.</em>, it happens that <span class="math inline">\(\Gbar_{0}\)</span> is the unique minimizer
+of the risk entailed by <span class="math inline">\(L_{a}\)</span> over <span class="math inline">\(\calF_{1}\)</span>: <span class="math display">\[\begin{equation*}\Gbar_{0} =
+\mathop{\arg\min}_{f_{\theta}        \in        \calF_{1}}        \Exp_{P_{0}}
+\left(L_{a}(f_{\theta})(A,W)\right).\end{equation*}\]</span> Therefore, the estimator
+<span class="math inline">\(\Gbar_{n}\)</span> obtained by minimizing the empirical risk</p>
+<p><span class="math display">\[\begin{equation*}
+\Exp_{P_{n}} \left(L_{a}(f_{\theta})(A,W)\right)  = \frac{1}{n} \sum_{i=1}^{n}
+L_{a}(f_{\theta})(A_{i},W_{i})
+\end{equation*}\]</span></p>
+<p>over <span class="math inline">\(\calF_{1}\)</span> estimates <span class="math inline">\(\Gbar_{0}\)</span> consistently.</p>
+<p>Of course, it is seldom certain in real life that the target feature, here
+<span class="math inline">\(\Gbar_{0}\)</span>, belongs to the working model.<a href="#fn11" class="footnote-ref" id="fnref11"><sup>11</sup></a> Suppose for
+instance that we choose a small finite-dimensional working model <span class="math inline">\(\calF_{2}\)</span>
+without acting as an oracle. Then consistency certainly fails to hold.
+However, if <span class="math inline">\(\Gbar_{0}\)</span> can nevertheless be <em>projected</em> unambiguously onto
+<span class="math inline">\(\calF_{2}\)</span> (an assumption that cannot be checked), then the estimator might
+converge to the projection.</p>
+</div>
+<div id="algo-Gbar-one" class="section level3 hasAnchor" number="7.4.2">
+<h3><span class="header-section-number">7.4.2</span> Visualization<a href="7-nuisance.html#algo-Gbar-one" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>To illustrate the use of the algorithm <span class="math inline">\(\Algo_{\Gbar,1}\)</span> obtained by combining
+<code>estimate_Gbar</code> and <code>working_model_G_one</code>, let us estimate <span class="math inline">\(\Gbar_{0}\)</span> based
+on the first <span class="math inline">\(n = 1000\)</span> observations in <code>obs</code>:</p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="7-nuisance.html#cb46-1" aria-hidden="true" tabindex="-1"></a>Gbar_hat <span class="ot">&lt;-</span> <span class="fu">estimate_Gbar</span>(<span class="fu">head</span>(obs, <span class="fl">1e3</span>), <span class="at">algorithm =</span> working_model_G_one)</span></code></pre></div>
+<p>Using <code>compute_Gbar_hat_W</code><a href="#fn12" class="footnote-ref" id="fnref12"><sup>12</sup></a>
+(simply run <code>?compute_Gbar_hat_W</code> to see its man page) makes it is easy to
+compare visually the estimator <span class="math inline">\(\Gbar_{n} \defq \Algo_{\Gbar,1}(P_{n})\)</span> with
+its target <span class="math inline">\(\Gbar_0\)</span>:</p>
+
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="7-nuisance.html#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">w =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="at">length.out =</span> <span class="fl">1e3</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb47-2"><a href="7-nuisance.html#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">&quot;truth&quot;</span> <span class="ot">=</span> <span class="fu">Gbar</span>(w),</span>
+<span id="cb47-3"><a href="7-nuisance.html#cb47-3" aria-hidden="true" tabindex="-1"></a>         <span class="st">&quot;estimated&quot;</span> <span class="ot">=</span> <span class="fu">compute_Gbar_hatW</span>(w, Gbar_hat)) <span class="sc">%&gt;%</span></span>
+<span id="cb47-4"><a href="7-nuisance.html#cb47-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>w, <span class="at">names_to =</span> <span class="st">&quot;f&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;value&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb47-5"><a href="7-nuisance.html#cb47-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb47-6"><a href="7-nuisance.html#cb47-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> w, <span class="at">y =</span> value, <span class="at">color =</span> f), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb47-7"><a href="7-nuisance.html#cb47-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">&quot;f(w)&quot;</span>,</span>
+<span id="cb47-8"><a href="7-nuisance.html#cb47-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="fu">bquote</span>(<span class="st">&quot;Visualizing&quot;</span> <span class="sc">~</span> <span class="fu">bar</span>(G)[<span class="dv">0</span>] <span class="sc">~</span> <span class="st">&quot;and&quot;</span> <span class="sc">~</span> <span class="fu">hat</span>(G)[n])) <span class="sc">+</span></span>
+<span id="cb47-9"><a href="7-nuisance.html#cb47-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="cn">NA</span>, <span class="dv">1</span>)</span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:estimate-Gbar-three"></span>
+<img src="img/estimate-Gbar-three-1.png" alt="Comparing \(\Gbar_{n}\defq \Algo_{\Gbar,1}(P_{n})\) and \(\Gbar_{0}\). The estimator is consistent because the algorithm relies on a working model that is correctly specified." width="70%" />
+<p class="caption">
+Figure 7.2: Comparing <span class="math inline">\(\Gbar_{n}\defq \Algo_{\Gbar,1}(P_{n})\)</span> and <span class="math inline">\(\Gbar_{0}\)</span>. The estimator is consistent because the algorithm relies on a working model that is correctly specified.
+</p>
+</div>
+</div>
+</div>
+<div id="nuisance-Qbar-wm" class="section level2 hasAnchor" number="7.5">
+<h2><span class="header-section-number">7.5</span> ⚙ <code>Qbar</code>, working model-based algorithms<a href="7-nuisance.html#nuisance-Qbar-wm" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>A third template algorithm is built-in into <code>tlrider</code>: <code>estimate_Qbar</code> (to see
+its man page, simply run <code>?estimate_Qbar</code>). Like <code>estimate_Gbar</code>,
+<code>estimate_Qbar</code> needs further specification of the algorithm. The package also
+includes examples of such specifications, which can also be either working
+model-based (see Section <a href="7-nuisance.html#nuisance-Gbar">7.4</a>) or machine learning-based (see
+Sections <a href="7-nuisance.html#nuisance-Qbar">7.6</a> and <a href="7-nuisance.html#nuisance-Qbar-ml-exo">7.7</a>).</p>
+<p>There are built-in specifications similar to <code>working_model_G_one</code>, <em>e.g.</em>,</p>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="7-nuisance.html#cb48-1" aria-hidden="true" tabindex="-1"></a>working_model_Q_one</span>
+<span id="cb48-2"><a href="7-nuisance.html#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $model</span></span>
+<span id="cb48-3"><a href="7-nuisance.html#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; function (...) </span></span>
+<span id="cb48-4"><a href="7-nuisance.html#cb48-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; {</span></span>
+<span id="cb48-5"><a href="7-nuisance.html#cb48-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     trim_glm_fit(glm(family = binomial(), ...))</span></span>
+<span id="cb48-6"><a href="7-nuisance.html#cb48-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; }</span></span>
+<span id="cb48-7"><a href="7-nuisance.html#cb48-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &lt;environment: 0x56115606af08&gt;</span></span>
+<span id="cb48-8"><a href="7-nuisance.html#cb48-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb48-9"><a href="7-nuisance.html#cb48-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $formula</span></span>
+<span id="cb48-10"><a href="7-nuisance.html#cb48-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Y ~ A * (I(W^0.5) + I(W^1) + I(W^1.5))</span></span>
+<span id="cb48-11"><a href="7-nuisance.html#cb48-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &lt;environment: 0x56115606af08&gt;</span></span>
+<span id="cb48-12"><a href="7-nuisance.html#cb48-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb48-13"><a href="7-nuisance.html#cb48-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $type_of_preds</span></span>
+<span id="cb48-14"><a href="7-nuisance.html#cb48-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;response&quot;</span></span>
+<span id="cb48-15"><a href="7-nuisance.html#cb48-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb48-16"><a href="7-nuisance.html#cb48-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; attr(,&quot;ML&quot;)</span></span>
+<span id="cb48-17"><a href="7-nuisance.html#cb48-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] FALSE</span></span>
+<span id="cb48-18"><a href="7-nuisance.html#cb48-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; attr(,&quot;stratify&quot;)</span></span>
+<span id="cb48-19"><a href="7-nuisance.html#cb48-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] FALSE</span></span></code></pre></div>
+<ol style="list-style-type: decimal">
+<li>Drawing inspiration from Section <a href="7-nuisance.html#nuisance-Gbar">7.4</a>, comment upon and use
+the algorithm <span class="math inline">\(\Algo_{\Qbar,1}\)</span> obtained by combining <code>estimate_Gbar</code> and
+<code>working_model_Q_one</code>.</li>
+</ol>
+<p></p>
+</div>
+<div id="nuisance-Qbar" class="section level2 hasAnchor" number="7.6">
+<h2><span class="header-section-number">7.6</span> <code>Qbar</code><a href="7-nuisance.html#nuisance-Qbar" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="qbar-machine-learning-based-algorithms" class="section level3 hasAnchor" number="7.6.1">
+<h3><span class="header-section-number">7.6.1</span> <code>Qbar</code>, machine learning-based algorithms<a href="7-nuisance.html#qbar-machine-learning-based-algorithms" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p></p>
+<p>We explained how algorithm <span class="math inline">\(\Algo_{\Gbar,1}\)</span> is based on a working model (and
+<em>you</em> did for <span class="math inline">\(\Algo_{\Qbar,1}\)</span>). It is not the case that all algorithms are
+based on working models in the same (admittedly rather narrow) sense. We
+propose to say that those algorithms that are not based on working models like
+<span class="math inline">\(\Algo_{\Gbar,1}\)</span>, for instance, are instead <em>machine learning-based</em>.</p>
+<p>Typically, machine learning-based algorithms are more data-adaptive; they rely
+on larger working models, and/or fine-tune parameters that must be calibrated,
+<em>e.g.</em> by cross-validation. Furthermore,
+they call for being stacked,
+<em>i.e.</em>, combined by means of another outer algorithm (involving
+cross-validation) into a more powerful machine learning-based
+<em>meta-algorithm</em>. The super
+learning methodology is a
+popular stacking algorithm.</p>
+<p>We will elaborate further on this important topic in another forthcoming part
+and merely touch upon it in Section <a href="7-nuisance.html#meta-learning">7.8</a>. Here, we simply
+illustrate the concept with two specifications built-in into <code>tlrider</code>. Based
+on the <em><span class="math inline">\(k\)</span>-nearest neighbors</em> non-parametric estimating methodology, the
+first one is discussed in the next subsection. Based on <em>boosted trees</em>,
+another non-parametric estimating methodology, the second one is used in the
+exercise that follows the next subsection.</p>
+</div>
+<div id="Qbar-knn-algo" class="section level3 hasAnchor" number="7.6.2">
+<h3><span class="header-section-number">7.6.2</span> <code>Qbar</code>, kNN algorithm<a href="7-nuisance.html#Qbar-knn-algo" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Algorithm <span class="math inline">\(\Algo_{\Qbar,\text{kNN}}\)</span> is obtained by combining <code>estimate_Qbar</code>
+and <code>kknn_algo</code>. The training of <span class="math inline">\(\Algo_{\Qbar,\text{kNN}}\)</span> (<em>i.e.</em>, the
+making of the output <span class="math inline">\(\Algo_{\Qbar,\text{kNN}} (P_{n})\)</span> is implemented based
+on function <code>caret::train</code> of the <code>caret</code> (classification and regression
+training) package (to see its man page, simply run <code>?caret::train</code>). Some
+additional specifications are provided in <code>kknn_grid</code> and <code>kknn_control</code>.</p>
+<p>In a nutshell, <span class="math inline">\(\Algo_{\Qbar,\text{kNN}}\)</span> estimates <span class="math inline">\(\Qbar_{0}(1,\cdot)\)</span> and
+<span class="math inline">\(\Qbar_{0}(0,\cdot)\)</span> separately. Each of them is estimated by applying the
+<span class="math inline">\(k\)</span>-nearest neighbors methodology as it is implemented in function
+<code>kknn::train.kknn</code> from the <code>kknn</code> package (to see its man page, simply run
+<code>?kknn::train.kknn</code>).<a href="#fn13" class="footnote-ref" id="fnref13"><sup>13</sup></a> The following chunk of code trains
+algorithm <span class="math inline">\(\Algo_{\Qbar,\text{kNN}}\)</span> on <span class="math inline">\(P_{n}\)</span>:</p>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="7-nuisance.html#cb49-1" aria-hidden="true" tabindex="-1"></a>Qbar_hat_kknn <span class="ot">&lt;-</span> <span class="fu">estimate_Qbar</span>(<span class="fu">head</span>(obs, <span class="fl">1e3</span>),</span>
+<span id="cb49-2"><a href="7-nuisance.html#cb49-2" aria-hidden="true" tabindex="-1"></a>                               <span class="at">algorithm =</span> kknn_algo,</span>
+<span id="cb49-3"><a href="7-nuisance.html#cb49-3" aria-hidden="true" tabindex="-1"></a>                               <span class="at">trControl =</span> kknn_control,</span>
+<span id="cb49-4"><a href="7-nuisance.html#cb49-4" aria-hidden="true" tabindex="-1"></a>                               <span class="at">tuneGrid =</span> kknn_grid)</span></code></pre></div>
+<p>Using <code>compute_Qbar_hat_AW</code> (simply run <code>?compute_Qbar_hat_AW</code> to see its man
+page) makes it is easy to compare visually the estimator <span class="math inline">\(\Qbar_{n,\text{kNN}} \defq \Algo_{\Qbar,\text{kNN}}(P_{n})\)</span> with its target <span class="math inline">\(\Qbar0\)</span>, see Figure
+<a href="7-nuisance.html#fig:estimate-Qbar-five">7.3</a>.</p>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="7-nuisance.html#cb50-1" aria-hidden="true" tabindex="-1"></a>fig <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">w =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="at">length.out =</span> <span class="fl">1e3</span>),</span>
+<span id="cb50-2"><a href="7-nuisance.html#cb50-2" aria-hidden="true" tabindex="-1"></a>              <span class="at">truth_1 =</span> <span class="fu">Qbar</span>(<span class="fu">cbind</span>(<span class="at">A =</span> <span class="dv">1</span>, <span class="at">W =</span> w)),</span>
+<span id="cb50-3"><a href="7-nuisance.html#cb50-3" aria-hidden="true" tabindex="-1"></a>              <span class="at">truth_0 =</span> <span class="fu">Qbar</span>(<span class="fu">cbind</span>(<span class="at">A =</span> <span class="dv">0</span>, <span class="at">W =</span> w)),</span>
+<span id="cb50-4"><a href="7-nuisance.html#cb50-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">kNN_1 =</span> <span class="fu">compute_Qbar_hatAW</span>(<span class="dv">1</span>, w, Qbar_hat_kknn),</span>
+<span id="cb50-5"><a href="7-nuisance.html#cb50-5" aria-hidden="true" tabindex="-1"></a>              <span class="at">kNN_0 =</span> <span class="fu">compute_Qbar_hatAW</span>(<span class="dv">0</span>, w, Qbar_hat_kknn))</span></code></pre></div>
+</div>
+<div id="boosted-trees" class="section level3 hasAnchor" number="7.6.3">
+<h3><span class="header-section-number">7.6.3</span> <code>Qbar</code>, boosted trees algorithm<a href="7-nuisance.html#boosted-trees" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Algorithm <span class="math inline">\(\Algo_{\Qbar,\text{trees}}\)</span> is obtained by combining
+<code>estimate_Qbar</code> and <code>bstTree_algo</code>. The training of
+<span class="math inline">\(\Algo_{\Qbar,\text{trees}}\)</span> (<em>i.e.</em>, the making of the output
+<span class="math inline">\(\Algo_{\Qbar,\text{trees}} (P_{n})\)</span> is implemented based on function
+<code>caret::train</code> of the <code>caret</code> package. Some additional specifications are
+provided in <code>bstTree_grid</code> and <code>bstTree_control</code>.</p>
+<p>In a nutshell, <span class="math inline">\(\Algo_{\Qbar,\text{trees}}\)</span> estimates <span class="math inline">\(\Qbar_{0}(1,\cdot)\)</span> and
+<span class="math inline">\(\Qbar_{0}(0,\cdot)\)</span> separately. Each of them is estimated by boosted trees
+as implemented in function <code>bst::bst</code> from the <code>bst</code> (gradient boosting)
+package (to see its man page, simply run <code>?bst::bst</code>).<a href="#fn14" class="footnote-ref" id="fnref14"><sup>14</sup></a> The following chunk of code
+trains algorithm <span class="math inline">\(\Algo_{\Qbar,\text{trees}}\)</span> on <span class="math inline">\(P_{n}\)</span>, and reveals what are
+the optimal fine-tune parameters for the estimation of <span class="math inline">\(\Qbar_{0}(1,\cdot)\)</span>
+and <span class="math inline">\(\Qbar_{0}(0,\cdot)\)</span>:</p>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="7-nuisance.html#cb51-1" aria-hidden="true" tabindex="-1"></a>Qbar_hat_trees <span class="ot">&lt;-</span> <span class="fu">estimate_Qbar</span>(<span class="fu">head</span>(obs, <span class="fl">1e3</span>),</span>
+<span id="cb51-2"><a href="7-nuisance.html#cb51-2" aria-hidden="true" tabindex="-1"></a>                                <span class="at">algorithm =</span> bstTree_algo,</span>
+<span id="cb51-3"><a href="7-nuisance.html#cb51-3" aria-hidden="true" tabindex="-1"></a>                                <span class="at">trControl =</span> bstTree_control,</span>
+<span id="cb51-4"><a href="7-nuisance.html#cb51-4" aria-hidden="true" tabindex="-1"></a>                                <span class="at">tuneGrid =</span> bstTree_grid)</span>
+<span id="cb51-5"><a href="7-nuisance.html#cb51-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-6"><a href="7-nuisance.html#cb51-6" aria-hidden="true" tabindex="-1"></a>Qbar_hat_trees <span class="sc">%&gt;%</span> <span class="fu">filter</span>(a <span class="sc">==</span> <span class="st">&quot;one&quot;</span>) <span class="sc">%&gt;%</span> <span class="fu">pull</span>(fit) <span class="sc">%&gt;%</span></span>
+<span id="cb51-7"><a href="7-nuisance.html#cb51-7" aria-hidden="true" tabindex="-1"></a>  capture.output <span class="sc">%&gt;%</span> <span class="fu">tail</span>(<span class="dv">3</span>) <span class="sc">%&gt;%</span> <span class="fu">str_wrap</span>(<span class="at">width =</span> <span class="dv">60</span>) <span class="sc">%&gt;%</span> cat</span>
+<span id="cb51-8"><a href="7-nuisance.html#cb51-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; RMSE was used to select the optimal model using the smallest</span></span>
+<span id="cb51-9"><a href="7-nuisance.html#cb51-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; value. The final values used for the model were mstop = 30,</span></span>
+<span id="cb51-10"><a href="7-nuisance.html#cb51-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; maxdepth = 2 and nu = 0.2.</span></span>
+<span id="cb51-11"><a href="7-nuisance.html#cb51-11" aria-hidden="true" tabindex="-1"></a>                                                             </span>
+<span id="cb51-12"><a href="7-nuisance.html#cb51-12" aria-hidden="true" tabindex="-1"></a>Qbar_hat_trees <span class="sc">%&gt;%</span> <span class="fu">filter</span>(a <span class="sc">==</span> <span class="st">&quot;zero&quot;</span>) <span class="sc">%&gt;%</span> <span class="fu">pull</span>(fit) <span class="sc">%&gt;%</span></span>
+<span id="cb51-13"><a href="7-nuisance.html#cb51-13" aria-hidden="true" tabindex="-1"></a>  capture.output <span class="sc">%&gt;%</span> <span class="fu">tail</span>(<span class="dv">3</span>) <span class="sc">%&gt;%</span> <span class="fu">str_wrap</span>(<span class="at">width =</span> <span class="dv">60</span>) <span class="sc">%&gt;%</span> cat</span>
+<span id="cb51-14"><a href="7-nuisance.html#cb51-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; RMSE was used to select the optimal model using the smallest</span></span>
+<span id="cb51-15"><a href="7-nuisance.html#cb51-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; value. The final values used for the model were mstop = 30,</span></span>
+<span id="cb51-16"><a href="7-nuisance.html#cb51-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; maxdepth = 1 and nu = 0.1.</span></span></code></pre></div>
+<p>We can compare visually the estimators <span class="math inline">\(\Qbar_{n,\text{kNN}}\)</span>,
+<span class="math inline">\(\Qbar_{n,\text{trees}} \defq \Algo_{\Qbar,\text{trees}}(P_{n})\)</span> with its
+target <span class="math inline">\(\Qbar_0\)</span>, see Figure <a href="7-nuisance.html#fig:estimate-Qbar-five">7.3</a>. In summary,
+<span class="math inline">\(\Qbar_{n,\text{kNN}}\)</span> is rather good, though very variable at the vincinity
+of the break points. As for <span class="math inline">\(\Qbar_{n,\text{trees}}\)</span>, it does not seem to
+capture the shape of its target.</p>
+
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="7-nuisance.html#cb52-1" aria-hidden="true" tabindex="-1"></a>fig <span class="sc">%&gt;%</span></span>
+<span id="cb52-2"><a href="7-nuisance.html#cb52-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">trees_1 =</span> <span class="fu">compute_Qbar_hatAW</span>(<span class="dv">1</span>, w, Qbar_hat_trees),</span>
+<span id="cb52-3"><a href="7-nuisance.html#cb52-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">trees_0 =</span> <span class="fu">compute_Qbar_hatAW</span>(<span class="dv">0</span>, w, Qbar_hat_trees)) <span class="sc">%&gt;%</span></span>
+<span id="cb52-4"><a href="7-nuisance.html#cb52-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>w, <span class="at">names_to =</span> <span class="st">&quot;f&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;value&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb52-5"><a href="7-nuisance.html#cb52-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract</span>(f, <span class="fu">c</span>(<span class="st">&quot;f&quot;</span>, <span class="st">&quot;a&quot;</span>), <span class="st">&quot;([^_]+)_([01]+)&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb52-6"><a href="7-nuisance.html#cb52-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">a =</span> <span class="fu">paste0</span>(<span class="st">&quot;a=&quot;</span>, a)) <span class="sc">%&gt;%</span></span>
+<span id="cb52-7"><a href="7-nuisance.html#cb52-7" aria-hidden="true" tabindex="-1"></a>  ggplot <span class="sc">+</span></span>
+<span id="cb52-8"><a href="7-nuisance.html#cb52-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> w, <span class="at">y =</span> value, <span class="at">color =</span> f), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb52-9"><a href="7-nuisance.html#cb52-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">&quot;f(w)&quot;</span>,</span>
+<span id="cb52-10"><a href="7-nuisance.html#cb52-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="fu">bquote</span>(<span class="st">&quot;Visualizing&quot;</span> <span class="sc">~</span> <span class="fu">bar</span>(Q)[<span class="dv">0</span>] <span class="sc">~</span> <span class="st">&quot;and its estimators&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb52-11"><a href="7-nuisance.html#cb52-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="cn">NA</span>, <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb52-12"><a href="7-nuisance.html#cb52-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> a)</span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:estimate-Qbar-five"></span>
+<img src="img/estimate-Qbar-five-1.png" alt="Comparing to their target two (machine learning-based) estimators of \(\Qbar_{0}\), one based on the \(k\)-nearest neighbors and the other on boosted trees." width="70%" />
+<p class="caption">
+Figure 7.3: Comparing to their target two (machine learning-based) estimators of <span class="math inline">\(\Qbar_{0}\)</span>, one based on the <span class="math inline">\(k\)</span>-nearest neighbors and the other on boosted trees.
+</p>
+</div>
+</div>
+</div>
+<div id="nuisance-Qbar-ml-exo" class="section level2 hasAnchor" number="7.7">
+<h2><span class="header-section-number">7.7</span> ⚙ ☡  <code>Qbar</code>, machine learning-based algorithms<a href="7-nuisance.html#nuisance-Qbar-ml-exo" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<ol style="list-style-type: decimal">
+<li><p>Using <code>estimate_Q</code>, make your own machine learning-based algorithm for the
+estimation of <span class="math inline">\(\Qbar_{0}\)</span>.</p></li>
+<li><p>Train your algorithm on the same data set as <span class="math inline">\(\Algo_{\Qbar,\text{kNN}}\)</span> and
+<span class="math inline">\(\Algo_{\Qbar,\text{trees}}\)</span>. If, like <span class="math inline">\(\Algo_{\Qbar,\text{trees}}\)</span>, your
+algorithm includes a fine-tuning procedure, comment upon the optimal,
+data-driven specification.</p></li>
+<li><p>Plot your estimators of <span class="math inline">\(\Qbar_{0}(1,\cdot)\)</span> and <span class="math inline">\(\Qbar_{0}(0,\cdot)\)</span> on
+Figure <a href="7-nuisance.html#fig:estimate-Qbar-five">7.3</a>.</p></li>
+</ol>
+</div>
+<div id="meta-learning" class="section level2 hasAnchor" number="7.8">
+<h2><span class="header-section-number">7.8</span> Meta-learning/super learning<a href="7-nuisance.html#meta-learning" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Without a great deal of previous experience or scientific expertise, it would
+have likely been difficult for us to <em>a priori</em> postulate which of the two
+above machine learning algorithms (or indeed the algorithm based on a working
+model) would perform better for estimation of <span class="math inline">\(\bar{Q}_0\)</span>. Rather than
+committing to one single algorithm, we may instead wish to resort to
+meta-learning or super learning. In this approach, one specifies a <em>library</em>
+of candidate algorithms for estimating a given nuisance parameter.
+Cross-validation is used to determine an <em>ensemble</em> (<em>e.g.</em> convex
+combination) of the algorithms that yields the best fit to the underlying
+function. In this way, one can learn in real time which algorithms tend to
+fit the data best and shift attention towards those algorithms.</p>
+<p></p>
+<p></p>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="11">
+<li id="fn11"><p>In fact, if one knows nothing
+about the feature, then it is <em>certain</em> that it does not belong to whichever
+small finite-dimensional working model we may come up with.<a href="7-nuisance.html#fnref11" class="footnote-back">↩︎</a></p></li>
+<li id="fn12"><p>See also the companion function
+<code>compute_lGbar_hat_AW</code> (run <code>?compute_lGbar_hat_AW</code> to see its man page.<a href="7-nuisance.html#fnref12" class="footnote-back">↩︎</a></p></li>
+<li id="fn13"><p>Specifically, argument <code>kmax</code> (maximum number of
+neighbors considered) is set to 5, argument <code>distance</code> (parameter of the
+Minkowski distance) is set to 2, and argument <code>kernel</code> is set to <code>gaussian</code>.
+The best value of <span class="math inline">\(k\)</span> is chosen between 1 and <code>kmax</code> by leave-one-out. No
+outer cross-validation is needed.<a href="7-nuisance.html#fnref13" class="footnote-back">↩︎</a></p></li>
+<li id="fn14"><p>Specifically, argument
+<code>mstop</code> (number of boosting iterations for prediction) is one among 10, 20 and
+30; argument <code>nu</code> (stepsize of the shrinkage parameter) is one among 0.1 and
+0.2; argument <code>maxdepth</code> (maximum depth of the base learner, a tree) is one
+among 1, 2 and 5. An outer 10-fold cross-validation is carried out to select
+the best combination of fine-tune parameters.<a href="7-nuisance.html#fnref14" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="6-simple-strategy.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="8-naive-estimators.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="assets/gitbook-2.6.7/js/app.min.js"></script>
+<script src="assets/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="assets/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": null,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["tlride-book.pdf"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "section",
+"scroll_hightlight": true,
+"toolbar": {
+"position": "static"
+},
+"edit": null,
+"download": "pdf",
+"search": true,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+}
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
